@@ -1,17 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        
+        <title>{% block title %}Dashboard Admin{% endblock %}</title>
+        
+        <!-- Favicon -->
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        
         {% block stylesheets %}
-        {% endblock %}
-
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
+            <!-- Bootstrap CSS -->
+            <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap/dist/css/bootstrap.min.css') }}">
+            
+            <!-- Bootstrap Icons -->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+            
+            <!-- Google Fonts (optionnel) -->
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+            
+            <!-- Your custom CSS -->
+            <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
         {% endblock %}
     </head>
+    
     <body>
+        <!-- Page Loader -->
+        <div class="page-loader" id="pageLoader">
+            <div class="spinner"></div>
+        </div>
+        
+        <!-- Main Content -->
         {% block body %}{% endblock %}
+        
+        {% block javascripts %}
+            <!-- jQuery (optionnel) -->
+            <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+            
+            <!-- Bootstrap Bundle JS -->
+            <script src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+            
+            <!-- Page Loader Script -->
+            <script src="{{ asset('assets/js/main.js') }}"></script>
+            
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
     </body>
 </html>

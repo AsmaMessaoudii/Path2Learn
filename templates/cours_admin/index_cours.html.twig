@@ -1,0 +1,451 @@
+{# templates/cours_admin/index_cours.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Cours{% endblock %}
+
+{% block body %}
+<div class="d-flex">
+
+    <!-- ===== Sidebar ===== -->
+    <nav class="sidebar vh-100 sticky-top bg-dark">
+        <div class="p-4 h-100 d-flex flex-column">
+
+            <h5 class="text-white mb-4">
+                <i class="bi bi-mortarboard-fill me-2"></i> Gestion Académique
+            </h5>
+
+            <div class="list-group list-group-borderless flex-grow-1">
+
+                {# Sidebar Cours / Ressources avec data-bs-toggle="pill" #}
+                <a class="list-group-item list-group-item-action text-white active" href="#cours-tab" data-bs-toggle="tab" id="sidebar-cours-link">
+                    <i class="bi bi-journal-text me-2"></i> Cours
+                </a>
+
+                <a class="list-group-item list-group-item-action text-white" href="#ressources-tab" data-bs-toggle="tab" id="sidebar-ressources-link">
+                    <i class="bi bi-folder-symlink me-2"></i> Ressources pédagogiques
+                </a>
+
+                <a class="list-group-item mt-3 list-group-item-action text-white" href="{{ path('admin_dashboard') }}">
+                    <i class="bi bi-arrow-left me-2"></i> Retour Dashboard
+                </a>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== Main Content ===== -->
+    <div class="flex-grow-1">
+
+        <main class="p-4" style="background:#f0f2f5">
+
+            <div class="mb-4">
+                <h4 class="fw-bold">Gestion des Cours</h4>
+                <p class="text-muted small">
+                    Ajouter, modifier et gérer les cours et ressources pédagogiques
+                </p>
+            </div>
+
+            <!-- ===== Tabs ===== -->
+            <ul class="nav nav-pills mb-4" id="main-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#cours-tab" data-bs-toggle="tab" id="nav-cours-link">
+                        📘 Cours ({{ coursList|length }})
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#ressources-tab" data-bs-toggle="tab" id="nav-ressources-link">
+                        📂 Ressources pédagogiques ({{ ressourcesList|length }})
+                    </a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+
+                <!-- ================= Cours ================= -->
+                <div class="tab-pane fade show active" id="cours-tab">
+
+                    <!-- Formulaire d'ajout de cours -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white fw-bold">
+                            Ajouter un cours
+                        </div>
+
+                        <div class="card-body">
+                            {{ form_start(formCours) }}
+                            <div class="row g-3">
+                                <!-- Ligne 1 : Titre et Matière -->
+                                <div class="col-md-6">
+                                    {{ form_row(formCours.titre, {
+                                        'attr': {'class': 'form-control'},
+                                        'row_attr': {'class': 'mb-3'}
+                                    }) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_row(formCours.matiere, {
+                                        'attr': {'class': 'form-control'},
+                                        'row_attr': {'class': 'mb-3'}
+                                    }) }}
+                                </div>
+                                
+                                <!-- Ligne 2 : Description complète -->
+                                <div class="col-12">
+                                    {{ form_row(formCours.description, {
+                                        'attr': {'class': 'form-control', 'rows': 3},
+                                        'row_attr': {'class': 'mb-3'}
+                                    }) }}
+                                </div>
+                                
+                                <!-- Ligne 3 : Niveau, Durée, Statut -->
+                                <div class="col-md-4">
+                                    {{ form_row(formCours.niveau, {
+                                        'attr': {'class': 'form-select'},
+                                        'row_attr': {'class': 'mb-3'}
+                                    }) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_row(formCours.duree, {
+                                        'attr': {'class': 'form-control'},
+                                        'row_attr': {'class': 'mb-3'}
+                                    }) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_row(formCours.statut, {
+                                        'attr': {'class': 'form-select'},
+                                        'row_attr': {'class': 'mb-3'}
+                                    }) }}
+                                </div>
+                                
+                                <!-- Ligne 4 : Email prof et Date création -->
+                                <div class="col-md-6">
+                                    {{ form_row(formCours.emailProf, {
+                                        'attr': {'class': 'form-control'},
+                                        'row_attr': {'class': 'mb-3'}
+                                    }) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_row(formCours.dateCreation, {
+                                        'attr': {'class': 'form-control'},
+                                        'row_attr': {'class': 'mb-3'}
+                                    }) }}
+                                </div>
+                            </div>
+                            
+                            <!-- Boutons d'action - AJOUT DU BOUTON ANNULER -->
+                            <div class="col-12 d-flex justify-content-between mt-3">
+                                <button type="button" class="btn btn-outline-secondary" onclick="resetCoursForm()">
+                                    <i class="bi bi-x-circle me-1"></i> Annuler
+                                </button>
+                                <div>
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="bi bi-plus-circle me-1"></i> Ajouter le cours
+                                    </button>
+                                </div>
+                            </div>
+                            {{ form_end(formCours) }}
+                        </div>
+                    </div>
+
+                    <!-- Liste des cours existants -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
+                            <span>Liste des cours ({{ coursList|length }})</span>
+                            
+                        </div>
+                        <div class="card-body">
+                            {% if coursList is empty %}
+                                <div class="text-center py-4 text-muted">
+                                    <i class="bi bi-journal-x display-4"></i>
+                                    <p class="mt-2">Aucun cours pour le moment</p>
+                                </div>
+                            {% else %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Titre</th>
+                                                <th>Matière</th>
+                                                <th>Niveau</th>
+                                                <th>Durée</th>
+                                                <th>Statut</th>
+                                                <th>Date création</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for cours in coursList %}
+                                                <tr>
+                                                    <td>{{ cours.titre }}</td>
+                                                    <td>{{ cours.matiere }}</td>
+                                                    <td>
+                                                        <span class="badge bg-info">{{ cours.niveau }}</span>
+                                                    </td>
+                                                    <td>{{ cours.duree }}h</td>
+                                                    <td>
+                                                        {% if cours.statut == 'publie' %}
+                                                            <span class="badge bg-success">Publié</span>
+                                                        {% else %}
+                                                            <span class="badge bg-warning">Non publié</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>{{ cours.dateCreation|date('d/m/Y') }}</td>
+                                                    <td>
+                                                        <div class="btn-group btn-group-sm">
+                                                            <a href="#" class="btn btn-outline-primary">
+                                                                <i class="bi bi-eye"></i>
+                                                            </a>
+                                                            <a href="#" class="btn btn-outline-secondary">
+                                                                <i class="bi bi-pencil"></i>
+                                                            </a>
+                                                            <a href="#" class="btn btn-outline-danger">
+                                                                <i class="bi bi-trash"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ================= Ressources ================= -->
+                <div class="tab-pane fade" id="ressources-tab">
+
+                    <!-- Bouton pour revenir aux cours -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0">Gestion des Ressources pédagogiques</h5>
+                        
+                    </div>
+
+                    <!-- Formulaire d'ajout de ressource -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white fw-bold">
+                            Ajouter une ressource pédagogique
+                        </div>
+
+                        <div class="card-body">
+                            {{ form_start(formRessource) }}
+                            <div class="row g-3">
+                                <!-- Ligne 1 : Titre et Type -->
+                                <div class="col-md-6">
+                                    {{ form_row(formRessource.titre, {
+                                        'attr': {'class': 'form-control'},
+                                        'row_attr': {'class': 'mb-3'}
+                                    }) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_row(formRessource.type, {
+                                        'attr': {'class': 'form-select'},
+                                        'row_attr': {'class': 'mb-3'}
+                                    }) }}
+                                </div>
+                                
+                                <!-- Ligne 2 : URL et Cours associé -->
+                                <div class="col-md-6">
+                                    {{ form_row(formRessource.url, {
+                                        'attr': {'class': 'form-control'},
+                                        'row_attr': {'class': 'mb-3'}
+                                    }) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_row(formRessource.cours, {
+                                        'attr': {'class': 'form-select'},
+                                        'row_attr': {'class': 'mb-3'}
+                                    }) }}
+                                </div>
+                            </div>
+                            
+                            <!-- Boutons d'action -->
+                            <div class="col-12 d-flex justify-content-between mt-3">
+                               
+                                <div>
+                                    <button type="reset" class="btn btn-light me-2">
+                                        <i class="bi bi-x-circle me-1"></i> Annuler
+                                    </button>
+                                    <button type="submit" class="btn btn-success px-4">
+                                        <i class="bi bi-upload me-1"></i> Ajouter la ressource
+                                    </button>
+                                </div>
+                            </div>
+                            {{ form_end(formRessource) }}
+                        </div>
+                    </div>
+                    
+                    <!-- Liste des ressources -->
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white fw-bold">
+        Ressources existantes ({{ ressourcesList|length }})
+    </div>
+    <div class="card-body">
+        {% if ressourcesList is empty %}
+            <div class="text-center py-4 text-muted">
+                <i class="bi bi-folder-x display-4"></i>
+                <p class="mt-2">Aucune ressource pour le moment</p>
+                <p class="small">Ajoutez votre première ressource pédagogique ci-dessus</p>
+            </div>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Titre</th>
+                            <th>Type</th>
+                            <th>Cours</th>
+                            <th>Date ajout</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ressource in ressourcesList %}
+                            <tr>
+                                <td>{{ ressource.titre }}</td>
+                                <td>
+                                    <span class="badge bg-info">{{ ressource.type }}</span>
+                                </td>
+                                <td>
+                                    {% if ressource.cours %}
+                                        {{ ressource.cours.titre }}
+                                    {% else %}
+                                        <span class="text-muted">Aucun cours</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ ressource.dateAjout|date('d/m/Y') }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ ressource.url }}" target="_blank" class="btn btn-outline-primary" title="Voir">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-outline-secondary" title="Modifier">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form method="post" action="{{ path('admin_ressources_delete', {'id': ressource.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette ressource ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ressource.id) }}">
+                                            <button type="submit" class="btn btn-outline-danger" title="Supprimer">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+{# ===== JS ===== #}
+{% block javascripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Variables pour les éléments de tab
+        const coursesTabLink = document.getElementById('nav-cours-link');
+        const resourcesTabLink = document.getElementById('nav-ressources-link');
+        const sidebarCoursesLink = document.getElementById('sidebar-cours-link');
+        const sidebarResourcesLink = document.getElementById('sidebar-ressources-link');
+        
+        // Fonction pour activer un onglet
+        function activateTab(tabElement) {
+            if (tabElement) {
+                const tab = new bootstrap.Tab(tabElement);
+                tab.show();
+            }
+        }
+        
+        // Fonction pour synchroniser les liens actifs
+        function syncActiveLinks(activeTabId) {
+            // Mettre à jour les onglets principaux
+            [coursesTabLink, resourcesTabLink, sidebarCoursesLink, sidebarResourcesLink].forEach(link => {
+                if (link.getAttribute('href') === activeTabId) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+        
+        // Fonction pour réinitialiser le formulaire Cours
+        function resetCoursForm() {
+            // Récupérer tous les champs du formulaire cours
+            const form = document.querySelector('#formCours') || document.querySelector('form[name="cours"]');
+            if (form) {
+                form.reset();
+                
+                // Réinitialiser les sélecteurs à leur première option
+                const selects = form.querySelectorAll('select');
+                selects.forEach(select => {
+                    select.selectedIndex = 0;
+                });
+                
+                // Réinitialiser les champs date
+                const dateInputs = form.querySelectorAll('input[type="date"]');
+                dateInputs.forEach(input => {
+                    input.value = '';
+                });
+                
+                console.log('Formulaire cours réinitialisé');
+            }
+        }
+        
+        // Gestionnaire pour le bouton "Voir les ressources"
+        const btnShowResources = document.getElementById('btn-show-resources');
+        if (btnShowResources) {
+            btnShowResources.addEventListener('click', function() {
+                activateTab(resourcesTabLink);
+                syncActiveLinks('#ressources-tab');
+            });
+        }
+        
+        // Gestionnaire pour le bouton "Retour aux cours" (en haut)
+        const btnShowCourses = document.getElementById('btn-show-courses');
+        if (btnShowCourses) {
+            btnShowCourses.addEventListener('click', function() {
+                activateTab(coursesTabLink);
+                syncActiveLinks('#cours-tab');
+            });
+        }
+        
+        // Gestionnaire pour le bouton "Retour aux cours" (en bas)
+        const btnBackToCourses = document.getElementById('btn-back-to-courses');
+        if (btnBackToCourses) {
+            btnBackToCourses.addEventListener('click', function() {
+                activateTab(coursesTabLink);
+                syncActiveLinks('#cours-tab');
+            });
+        }
+        
+        // Écouter les événements de changement d'onglet pour synchroniser
+        document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+            tab.addEventListener('shown.bs.tab', function(event) {
+                const activeTabId = event.target.getAttribute('href');
+                syncActiveLinks(activeTabId);
+            });
+        });
+        
+        // Initialiser la synchronisation au chargement
+        const activeTab = document.querySelector('.tab-pane.fade.show.active');
+        if (activeTab) {
+            const activeTabId = '#' + activeTab.id;
+            syncActiveLinks(activeTabId);
+        }
+        
+        // Exposer la fonction resetCoursForm globalement
+        window.resetCoursForm = resetCoursForm;
+    });
+</script>
+{% endblock %}
+
+{% endblock %}
