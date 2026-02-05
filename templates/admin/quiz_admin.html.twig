@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Quiz & Évaluations{% endblock %}
+
+{% block body %}
+<div class="d-flex">
+
+    <!-- Sidebar -->
+    <nav class="sidebar vh-100 sticky-top bg-dark">
+        <div class="p-4 h-100 d-flex flex-column">
+            <h5 class="text-white mb-4"><i class="bi bi-patch-question-fill me-2"></i> Gestion des Quiz</h5>
+            <div class="list-group list-group-borderless flex-grow-1">
+                <a class="list-group-item active" href="#">Questions</a>
+                <a class="list-group-item mt-3" href="{{ path('admin_dashboard') }}">Retour Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="flex-grow-1 p-4" style="background:#f0f2f5;">
+
+        <h4>Questions & Choix</h4>
+
+        <!-- Liste des questions -->
+        {% for question in questions %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white fw-bold">
+                    {{ question.titre }}
+                    <span class="text-muted small float-end">
+                        Durée: {{ question.duree }} min | Note max: {{ question.noteMax }}
+                        {% if question.user %} | Créé par: {{ question.user.username }} {% endif %}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <p>{{ question.description }}</p>
+                    <ul class="list-group mb-3">
+                        {% for choix in question.choix %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ choix.contenu }}
+                                {% if choix.estCorrect %}
+                                    <span class="badge bg-success">Correct</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Incorrect</span>
+                                {% endif %}
+                            </li>
+                        {% else %}
+                            <li class="list-group-item text-muted">Aucun choix ajouté</li>
+                        {% endfor %}
+                    </ul>
+
+                    <!-- Bouton pour ajouter un choix -->
+                    <a href="{{ path('add_choix', {'questionId': question.id}) }}" class="btn btn-sm btn-primary">
+                        Ajouter un choix
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            <p>Aucune question disponible.</p>
+        {% endfor %}
+
+        <!-- Formulaire ajout question -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-bold">Ajouter une Question</div>
+            <div class="card-body">
+                {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
+
+                    <div class="col-md-6">
+                        {{ form_row(form.titre) }}
+                    </div>
+
+                    <div class="col-md-3">
+                        {{ form_row(form.duree) }}
+                    </div>
+
+                    <div class="col-md-3">
+                        {{ form_row(form.noteMax) }}
+                    </div>
+
+                    <div class="col-12">
+                        {{ form_row(form.description) }}
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                    </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
