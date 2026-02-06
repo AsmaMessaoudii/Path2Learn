@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block body %}
+<div class="d-flex">
+
+    {% include 'layout/sidebar.html.twig' %}
+
+    <div class="flex-grow-1 min-vh-100 d-flex flex-column">
+
+        {% include 'layout/navbar.html.twig' %}
+
+        <main class="p-4 flex-grow-1" style="background-color: #f0f2f5;">
+            <div class="container-fluid">
+
+                <!-- Header -->
+                <div class="mb-4">
+                    <h4 class="fw-bold mb-1">Tableau de Bord Administratif</h4>
+                    <p class="text-muted small">Bienvenue sur votre espace de gestion centralisée.</p>
+                </div>
+
+                {% set portfolio = portfolios|first %}
+                {% set projets = portfolio.projet %}
+
+                <!-- PORTFOLIO CARD -->
+                <div class="card border-0 shadow-sm p-5">
+
+                    <!-- PORTFOLIO INFO (ALWAYS VISIBLE) -->
+                    <div class="mb-5">
+
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+    <h4 class="fw-bold mb-0">
+        {{ portfolio.titre }}
+    </h4>
+
+    <small class="text-muted">
+        Créé le {{ portfolio.dateCreation|date('d/m/Y') }}
+    </small>
+</div>
+
+<p class="text-muted mb-0">
+    {{ portfolio.description }}
+</p>
+
+
+                    </div>
+
+                    <hr class="mb-4">
+
+                    <!-- PROJECT SECTION -->
+                    {% if projets is empty %}
+                        <!-- EMPTY PROJECT STATE -->
+
+                        <div class="text-center py-4">
+
+                            <i class="bi bi-folder-x fs-1 text-muted mb-3"></i>
+
+                            <h5 class="fw-bold">Aucun projet</h5>
+
+                            <p class="text-muted mb-4">
+                                Il n’y a aucun projet enregistré dans ce portfolio pour le moment.
+                            </p>
+
+                            <a href="{{ path('app_projet') }}"
+                               class="btn btn-primary px-4 py-2 rounded-pill">
+                                <i class="bi bi-plus-circle me-2"></i>
+                                Créer votre premier projet
+                            </a>
+
+                        </div>
+
+                    {% else %}
+                        <!-- PROJECT LIST -->
+
+                        <div class="row g-4">
+                            {% for projet in projets %}
+                                <div class="col-md-4">
+                                    <div class="card border-0 shadow-sm p-3 h-100">
+
+                                        <h6 class="fw-bold mb-1">
+                                            {{ projet.titreProjet }}
+                                        </h6>
+
+                                        <p class="text-muted small mb-2">
+                                            {{ projet.description }}
+                                        </p>
+
+                                        <small class="text-muted">
+                                            Réalisé le {{ projet.dateRealisation|date('d/m/Y') }}
+                                        </small>
+
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                </div>
+                <!-- END PORTFOLIO CARD -->
+
+            </div>
+        </main>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block body %}
+<div class="d-flex">
+
+    <!-- Sidebar -->
+    {% include 'layout/sidebar.html.twig' %}
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 min-vh-100 d-flex flex-column">
+
+        <!-- Navbar -->
+        {% include 'layout/navbar.html.twig' %}
+
+        <!-- ================= Main ================= -->
+        <main class="p-4 flex-grow-1" style="background-color: #f0f2f5;">
+            <div class="container-fluid">
+
+                <div class="mb-4">
+                    <h4 class="fw-bold mb-1">Tableau de Bord Administratif</h4>
+                    <p class="text-muted small">Bienvenue sur votre espace de gestion centralisée.</p>
+                </div>
+
+                <div class="row g-4">
+
+    <!-- PORTFOLIO COUNT -->
+    <!--<div class="col-12">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <p class="text-muted small mb-0">Nombre de projets</p>
+            <h3 class="fw-bold mb-0">{{ portfolios|length }}</h3>
+        </div>
+    </div>-->
+
+    {% if portfolios is empty %}
+        <!-- EMPTY STATE -->
+<div class="col-12">
+    <div class="card border-0 shadow-sm text-center p-5">
+
+        <i class="bi bi-folder-x fs-1 text-muted mb-3"></i>
+
+        <h5 class="fw-bold">Aucun portfolio</h5>
+
+        <p class="text-muted small mb-4">
+            Il n’y a aucun projet enregistré dans le portfolio pour le moment.
+        </p>
+
+        <!-- CTA BUTTON -->
+        <div>
+            <a href="{{ path('portfolio_newPortfolio') }}"
+               class="btn btn-primary px-4 py-2 rounded-pill">
+                <i class="bi bi-plus-circle me-2"></i>
+                Créer votre portfolio
+            </a>
+        </div>
+
+    </div>
+</div>
+
+
+    {% else %}
+    {% set portfolio = portfolios|first %}
+
+    <div class="col-12">
+
+
+
+
+
+
+    
+    <div class="card border-0 shadow-sm text-center p-5">
+
+            <!-- Title -->
+            <h4 class="fw-bold mb-3">
+                {{ portfolio.titre }}
+            </h4>
+
+            <i class="bi bi-folder-x fs-1 text-muted mb-3"></i>
+            <h5 class="fw-bold">Aucun porjet</h5>
+
+            <!-- Empty-like content -->
+            <p class="text-muted mb-4">
+                Il n’y a aucun projet enregistré dans le portfolio pour le moment.
+            </p>
+
+           <!-- Optional info -->
+<small class="text-muted d-block mb-4">
+    Créé le {{ portfolio.dateCreation|date('d/m/Y') }}
+</small>
+
+<!-- CTA BUTTON -->
+<div>
+    <a href="{{ path('portfolio_newPortfolio') }}"
+       class="btn btn-primary px-4 py-2 rounded-pill">
+        <i class="bi bi-plus-circle me-2"></i>
+        Créer votre Premier Projet
+    </a>
+</div>
+
+
+        </div>
+    </div>
+     {% endif %}
+
+
+</div>
+
+
+
+            </div>
+        </main>
+
+    </div>
+</div>
+{% endblock %}

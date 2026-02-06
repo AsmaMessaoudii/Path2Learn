@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block body %}
+<div class="d-flex">
+
+    <!-- Sidebar -->
+    {% include 'layout/sidebar.html.twig' %}
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 min-vh-100 d-flex flex-column">
+
+        <!-- Navbar -->
+        {% include 'layout/navbar.html.twig' %}
+
+        <!-- Main -->
+        <main class="p-4 flex-grow-1" style="background-color: #f0f2f5;">
+            <div class="container-fluid">
+
+                <div class="mb-4">
+                    <h4 class="fw-bold mb-1">Tableau de Bord Administratif</h4>
+                    <p class="text-muted small">Bienvenue sur votre espace de gestion centralisée.</p>
+                </div>
+
+                <!-- Content here -->
+
+            </div>
+        </main>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block body %}
+<div class="d-flex">
+
+    <!-- Sidebar -->
+    {% include 'layout/sidebar.html.twig' %}
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 min-vh-100 d-flex flex-column">
+
+        <!-- Navbar -->
+        {% include 'layout/navbar.html.twig' %}
+
+        <!-- ================= Main ================= -->
+        <main class="p-4 flex-grow-1" style="background-color: #f0f2f5;">
+            <div class="container-fluid">
+
+                
+
+                <div class="row g-4">
+
+   
+{{ form_start(form) }}
+
+<div class="mb-3">
+    {{ form_label(form.titre) }}
+    {{ form_widget(form.titre, { attr: { class: 'form-control' } }) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.description) }}
+    {{ form_widget(form.description, { attr: { class: 'form-control' } }) }}
+</div>
+
+<button class="btn btn-primary">Enregistrer</button>
+
+{{ form_end(form) }}
+
+    
+
+    
+
+                </div>
+
+
+
+            </div>
+        </main>
+
+    </div>
+</div>
+{% endblock %}
