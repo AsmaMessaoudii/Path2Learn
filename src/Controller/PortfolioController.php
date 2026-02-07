@@ -42,5 +42,41 @@ public function new(Request $request, EntityManagerInterface $em): Response
     ]);
 }
 
+#[Route('/portfolio/{id}/edit', name: 'portfolio_edit')]
+public function edit(
+    Portfolio $portfolio,
+    Request $request,
+    EntityManagerInterface $em
+): Response
+{
+    $form = $this->createForm(PortfolioType::class, $portfolio);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $em->flush();
+
+        return $this->redirectToRoute('app_portfolio');
+    }
+
+    return $this->render('portfolio/UpdatePortfolio.html.twig', [
+        'form' => $form->createView(),
+        'portfolio' => $portfolio,
+    ]);
+}
+
+#[Route('/portfolio/{id}/delete', name: 'portfolio_delete', methods: ['POST'])]
+public function delete(
+    Request $request,
+    Portfolio $portfolio,
+    EntityManagerInterface $em
+): Response
+{
+    if ($this->isCsrfTokenValid('delete-portfolio-' . $portfolio->getId(), $request->request->get('_token'))) {
+        $em->remove($portfolio);
+        $em->flush();
+    }
+
+    return $this->redirectToRoute('app_portfolio');
+}
 
 }

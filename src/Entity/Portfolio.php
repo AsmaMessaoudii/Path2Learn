@@ -35,8 +35,10 @@ class Portfolio
     /**
      * @var Collection<int, Projet>
      */
-    #[ORM\OneToMany(targetEntity: Projet::class, mappedBy: 'portfolio')]
-    private Collection $projet;
+    #[ORM\OneToMany(
+    targetEntity: Projet::class,mappedBy: 'portfolio',orphanRemoval: true,cascade: ['remove'])]
+private Collection $projet;
+
 
     public function __construct()
     {

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Admin Dashboard{% endblock %}
+{% block title %}Créer Portfolio{% endblock %}
 
 {% block body %}
 <div class="d-flex">
@@ -15,40 +15,62 @@
         {% include 'layout/navbar.html.twig' %}
 
         <!-- ================= Main ================= -->
-        <main class="p-4 flex-grow-1" style="background-color: #f0f2f5;">
-            <div class="container-fluid">
+        <main class="p-4 flex-grow-1 d-flex justify-content-center align-items-center"
+      style="background-color: #f0f2f5;">
 
-                
+    <div class="container">
 
-                <div class="row g-4">
+        <div class="row justify-content-center">
 
-   
-{{ form_start(form) }}
+            <!-- WIDER COLUMN -->
+            <div class="col-md-8 col-lg-6">
 
-<div class="mb-3">
-    {{ form_label(form.titre) }}
-    {{ form_widget(form.titre, { attr: { class: 'form-control' } }) }}
-</div>
+                <!-- BIG FORM CARD -->
+                <div class="card shadow border-0 p-5">
 
-<div class="mb-3">
-    {{ form_label(form.description) }}
-    {{ form_widget(form.description, { attr: { class: 'form-control' } }) }}
-</div>
+                    <h4 class="fw-bold text-center mb-4">
+                        Créer votre Portfolio
+                    </h4>
 
-<button class="btn btn-primary">Enregistrer</button>
+                    {{ form_start(form) }}
 
-{{ form_end(form) }}
+                        <div class="mb-4">
+                            {{ form_label(form.titre, null, {
+                                label_attr: { class: 'fw-semibold' }
+                            }) }}
+                            {{ form_widget(form.titre, {
+                                attr: { class: 'form-control form-control-lg' }
+                            }) }}
+                        </div>
 
-    
+                        <div class="mb-4">
+                            {{ form_label(form.description, null, {
+                                label_attr: { class: 'fw-semibold' }
+                            }) }}
+                            {{ form_widget(form.description, {
+                                attr: { class: 'form-control form-control-lg', rows: 4 }
+                            }) }}
+                        </div>
 
-    
+                        <div class="d-grid mt-4">
+                            <button class="btn btn-primary btn-lg rounded-pill">
+                                Enregistrer
+                            </button>
+                        </div>
+
+                    {{ form_end(form) }}
 
                 </div>
-
-
+                <!-- END FORM CARD -->
 
             </div>
-        </main>
+
+        </div>
+
+    </div>
+
+</main>
+
 
     </div>
 </div>

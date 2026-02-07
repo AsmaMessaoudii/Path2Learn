@@ -21,78 +21,103 @@
                 </div>
 
                 {% set portfolio = portfolios|first %}
-                {% set projets = portfolio.projet %}
 
                 <!-- PORTFOLIO CARD -->
                 <div class="card border-0 shadow-sm p-5">
 
-                    <!-- PORTFOLIO INFO (ALWAYS VISIBLE) -->
-                    <div class="mb-5">
+                    {% if portfolio %}
 
-                        <div class="d-flex justify-content-between align-items-center mb-1">
+                        <!-- PORTFOLIO INFO -->
+                        <div class="mb-5">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <div class="d-flex align-items-center gap-2">
     <h4 class="fw-bold mb-0">
         {{ portfolio.titre }}
     </h4>
 
-    <small class="text-muted">
-        Créé le {{ portfolio.dateCreation|date('d/m/Y') }}
-    </small>
+    <!-- EDIT BUTTON -->
+    <a href="{{ path('portfolio_edit', { id: portfolio.id }) }}"
+       class="btn btn-sm btn-light text-secondary"
+       title="Modifier">
+        <i class="bi bi-pencil"></i>
+    </a>
+
+    <!-- DELETE BUTTON -->
+    <form method="post"
+      action="{{ path('portfolio_delete', { id: portfolio.id }) }}"
+      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce portfolio ?');"
+      class="d-inline">
+
+    <input type="hidden"
+           name="_token"
+           value="{{ csrf_token('delete-portfolio-' ~ portfolio.id) }}">
+
+    <button class="btn btn-sm btn-light text-secondary"
+            title="Supprimer">
+        <i class="bi bi-trash"></i>
+    </button>
+</form>
+
 </div>
 
-<p class="text-muted mb-0">
-    {{ portfolio.description }}
-</p>
+                                <small class="text-muted">
+                                    Créé le {{ portfolio.dateCreation|date('d/m/Y') }}
+                                </small>
+                            </div>
 
+                            <p class="text-muted mb-0">
+                                {{ portfolio.description }}
+                            </p>
+                        </div>
 
-                    </div>
+                        <hr class="mb-4">
 
-                    <hr class="mb-4">
+                        {% set projets = portfolio.projet %}
 
-                    <!-- PROJECT SECTION -->
-                    {% if projets is empty %}
-                        <!-- EMPTY PROJECT STATE -->
+                        <!-- PROJECT SECTION -->
+                        {% if projets is empty %}
+                            <div class="text-center mt-4">
+    <p class="text-muted mb-3">
+        Aucun projet dans ce portfolio.
+    </p>
 
+    <a href="{{ path('project_new', { portfolioId: portfolio.id }) }}"
+       class="btn btn-outline-primary rounded-pill px-4">
+        <i class="bi bi-plus-circle me-2"></i>
+        Ajouter un projet
+    </a>
+</div>
+
+                        {% else %}
+                            <div class="row g-4 mt-3">
+                                {% for projet in projets %}
+                                    <div class="col-md-4">
+                                        <div class="card p-3 shadow-sm">
+                                            <h6 class="fw-bold">{{ projet.titreProjet }}</h6>
+                                            <p class="text-muted small">{{ projet.description }}</p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                    {% else %}
                         <div class="text-center py-4">
 
                             <i class="bi bi-folder-x fs-1 text-muted mb-3"></i>
 
-                            <h5 class="fw-bold">Aucun projet</h5>
+                            <h5 class="fw-bold">Aucun Portfolio</h5>
 
                             <p class="text-muted mb-4">
-                                Il n’y a aucun projet enregistré dans ce portfolio pour le moment.
+                                Il n’y a aucun Portfolio enregistré pour le moment.
                             </p>
 
-                            <a href="{{ path('app_projet') }}"
+                            <a href="{{ path('portfolio_newPortfolio') }}"
                                class="btn btn-primary px-4 py-2 rounded-pill">
                                 <i class="bi bi-plus-circle me-2"></i>
-                                Créer votre premier projet
+                                Créer votre portfolio
                             </a>
 
-                        </div>
-
-                    {% else %}
-                        <!-- PROJECT LIST -->
-
-                        <div class="row g-4">
-                            {% for projet in projets %}
-                                <div class="col-md-4">
-                                    <div class="card border-0 shadow-sm p-3 h-100">
-
-                                        <h6 class="fw-bold mb-1">
-                                            {{ projet.titreProjet }}
-                                        </h6>
-
-                                        <p class="text-muted small mb-2">
-                                            {{ projet.description }}
-                                        </p>
-
-                                        <small class="text-muted">
-                                            Réalisé le {{ projet.dateRealisation|date('d/m/Y') }}
-                                        </small>
-
-                                    </div>
-                                </div>
-                            {% endfor %}
                         </div>
                     {% endif %}
 
