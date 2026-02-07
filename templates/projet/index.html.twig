@@ -1,113 +1,79 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Admin Dashboard{% endblock %}
+{% block title %}Projet{% endblock %}
 
 {% block body %}
 <div class="d-flex">
 
-    <!-- Sidebar -->
     {% include 'layout/sidebar.html.twig' %}
 
-    <!-- Main Content -->
     <div class="flex-grow-1 min-vh-100 d-flex flex-column">
 
-        <!-- Navbar -->
         {% include 'layout/navbar.html.twig' %}
 
-        <!-- ================= Main ================= -->
         <main class="p-4 flex-grow-1" style="background-color: #f0f2f5;">
             <div class="container-fluid">
 
                 <div class="mb-4">
-                    <h4 class="fw-bold mb-1">Tableau de Bord Administratif</h4>
-                    <p class="text-muted small">Bienvenue sur votre espace de gestion centralisée.</p>
+                    <h4 class="fw-bold mb-1">Détails du projet</h4>
                 </div>
 
-                <div class="row g-4">
+                <div class="card border-0 shadow-sm p-5">
 
-    <!-- PORTFOLIO COUNT -->
-    <!--<div class="col-12">
-        <div class="d-flex align-items-center justify-content-between mb-2">
-            <p class="text-muted small mb-0">Nombre de projets</p>
-            <h3 class="fw-bold mb-0">{{ portfolios|length }}</h3>
-        </div>
-    </div>-->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold mb-0">
+        {{ projet.titreProjet }}
+    </h4>
 
-    {% if portfolios is empty %}
-        <!-- EMPTY STATE -->
-<div class="col-12">
-    <div class="card border-0 shadow-sm text-center p-5">
+    <div class="d-flex gap-2">
 
-        <i class="bi bi-folder-x fs-1 text-muted mb-3"></i>
+        <!-- EDIT PROJECT -->
+        <a href="{{ path('project_edit', { id: projet.id }) }}"
+           class="btn btn-sm btn-light text-secondary"
+           title="Modifier">
+            <i class="bi bi-pencil"></i>
+        </a>
 
-        <h5 class="fw-bold">Aucun portfolio</h5>
+        <!-- DELETE PROJECT -->
+        <form method="post"
+              action="{{ path('project_delete', { id: projet.id }) }}"
+              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce projet ?');">
 
-        <p class="text-muted small mb-4">
-            Il n’y a aucun projet enregistré dans le portfolio pour le moment.
-        </p>
+            <input type="hidden"
+                   name="_token"
+                   value="{{ csrf_token('delete-project-' ~ projet.id) }}">
 
-        <!-- CTA BUTTON -->
-        <div>
-            <a href="{{ path('portfolio_newPortfolio') }}"
-               class="btn btn-primary px-4 py-2 rounded-pill">
-                <i class="bi bi-plus-circle me-2"></i>
-                Créer votre portfolio
-            </a>
-        </div>
+            <button class="btn btn-sm btn-light text-danger"
+                    title="Supprimer">
+                <i class="bi bi-trash"></i>
+            </button>
+        </form>
 
     </div>
 </div>
 
 
-    {% else %}
-    {% set portfolio = portfolios|first %}
+                    <p class="text-muted">
+                        {{ projet.description }}
+                    </p>
 
-    <div class="col-12">
+                    <p class="text-muted">
+                        {{ projet.technologies }}
+                    </p>
 
-
-
-
-
-
-    
-    <div class="card border-0 shadow-sm text-center p-5">
-
-            <!-- Title -->
-            <h4 class="fw-bold mb-3">
-                {{ portfolio.titre }}
-            </h4>
-
-            <i class="bi bi-folder-x fs-1 text-muted mb-3"></i>
-            <h5 class="fw-bold">Aucun porjet</h5>
-
-            <!-- Empty-like content -->
-            <p class="text-muted mb-4">
-                Il n’y a aucun projet enregistré dans le portfolio pour le moment.
-            </p>
-
-           <!-- Optional info -->
-<small class="text-muted d-block mb-4">
-    Créé le {{ portfolio.dateCreation|date('d/m/Y') }}
-</small>
-
-<!-- CTA BUTTON -->
-<div>
-    <a href="{{ path('portfolio_newPortfolio') }}"
-       class="btn btn-primary px-4 py-2 rounded-pill">
-        <i class="bi bi-plus-circle me-2"></i>
-        Créer votre Premier Projet
+                    <p class="text-muted">
+    <a href="{{ projet.lienDemo }}" target="_blank" rel="noopener noreferrer">
+        {{ projet.lienDemo }}
     </a>
-</div>
+</p>
 
 
-        </div>
-    </div>
-     {% endif %}
+                    <a href="{{ path('app_portfolio') }}"
+                       class="btn btn-sm btn-light mt-4">
+                        ← Retour au portfolio
+                    </a>
 
-
-</div>
-
-
+                </div>
 
             </div>
         </main>

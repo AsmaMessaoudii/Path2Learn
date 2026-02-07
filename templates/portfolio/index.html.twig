@@ -31,34 +31,33 @@
                         <div class="mb-5">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <div class="d-flex align-items-center gap-2">
-    <h4 class="fw-bold mb-0">
-        {{ portfolio.titre }}
-    </h4>
+                                    <h4 class="fw-bold mb-0">
+                                        {{ portfolio.titre }}
+                                    </h4>
 
-    <!-- EDIT BUTTON -->
-    <a href="{{ path('portfolio_edit', { id: portfolio.id }) }}"
-       class="btn btn-sm btn-light text-secondary"
-       title="Modifier">
-        <i class="bi bi-pencil"></i>
-    </a>
+                                    <!-- EDIT BUTTON -->
+                                    <a href="{{ path('portfolio_edit', { id: portfolio.id }) }}"
+                                       class="btn btn-sm btn-light text-secondary"
+                                       title="Modifier">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
 
-    <!-- DELETE BUTTON -->
-    <form method="post"
-      action="{{ path('portfolio_delete', { id: portfolio.id }) }}"
-      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce portfolio ?');"
-      class="d-inline">
+                                    <!-- DELETE BUTTON -->
+                                    <form method="post"
+                                          action="{{ path('portfolio_delete', { id: portfolio.id }) }}"
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce portfolio ?');"
+                                          class="d-inline">
 
-    <input type="hidden"
-           name="_token"
-           value="{{ csrf_token('delete-portfolio-' ~ portfolio.id) }}">
+                                        <input type="hidden"
+                                               name="_token"
+                                               value="{{ csrf_token('delete-portfolio-' ~ portfolio.id) }}">
 
-    <button class="btn btn-sm btn-light text-secondary"
-            title="Supprimer">
-        <i class="bi bi-trash"></i>
-    </button>
-</form>
-
-</div>
+                                        <button class="btn btn-sm btn-light text-secondary"
+                                                title="Supprimer">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
 
                                 <small class="text-muted">
                                     Créé le {{ portfolio.dateCreation|date('d/m/Y') }}
@@ -74,30 +73,45 @@
 
                         {% set projets = portfolio.projet %}
 
-                        <!-- PROJECT SECTION -->
                         {% if projets is empty %}
                             <div class="text-center mt-4">
-    <p class="text-muted mb-3">
-        Aucun projet dans ce portfolio.
-    </p>
-
-    <a href="{{ path('project_new', { portfolioId: portfolio.id }) }}"
-       class="btn btn-outline-primary rounded-pill px-4">
-        <i class="bi bi-plus-circle me-2"></i>
-        Ajouter un projet
-    </a>
-</div>
+                                <a href="{{ path('project_new', { portfolioId: portfolio.id }) }}"
+                                   class="btn btn-primary px-4 py-2 rounded-pill">
+                                    <i class="bi bi-plus-circle me-2"></i>
+                                    Ajouter un projet
+                                </a>
+                            </div>
 
                         {% else %}
                             <div class="row g-4 mt-3">
+                                {% set colors = ['#7bb7e0','#8fd6ad','#d49089','#c7a0d7','#e9be79'] %}
+                                
                                 {% for projet in projets %}
-                                    <div class="col-md-4">
-                                        <div class="card p-3 shadow-sm">
-                                            <h6 class="fw-bold">{{ projet.titreProjet }}</h6>
-                                            <p class="text-muted small">{{ projet.description }}</p>
-                                        </div>
+                                    <div class="col-md-3">
+                                        <a href="{{ path('app_projet', { id: projet.id }) }}" 
+                                           class="text-decoration-none">
+                                            <div class="card d-flex align-items-center justify-content-center 
+                                                        text-white shadow-sm hover-shadow projet-card"
+                                                 style="background-color: {{ colors[loop.index0 % colors|length] }};">
+                                                <h6 class="fw-bold text-center">{{ projet.titreProjet }}</h6>
+                                                <p class="text-light small text-center">{{ projet.description }}</p>
+                                                <p class="text-light small text-center">{{ projet.technologies }}</p>
+                                            </div>
+                                        </a>
                                     </div>
                                 {% endfor %}
+
+                                <!-- ADD NEW PROJECT CARD -->
+                                <div class="col-md-4">
+                                    <a href="{{ path('project_new', { portfolioId: portfolio.id }) }}"
+                                       class="text-decoration-none">
+                                        <div class="card d-flex align-items-center justify-content-center 
+                                                    text-dark shadow-sm hover-shadow add-project-card">
+                                            <i class="bi bi-plus-circle fs-2 mb-2"></i>
+                                            <span>Ajouter un projet</span>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
                         {% endif %}
 
@@ -129,4 +143,45 @@
 
     </div>
 </div>
+
+{% endblock %}
+
+{% block styles %}
+<style>
+.projet-card {
+    aspect-ratio: 1 / 1;
+    border-radius: 12px; 
+    transition: transform 0.2s, box-shadow 0.2s;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.projet-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.add-project-card {
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    border: 2px dashed #ced4da;
+    color: #495057;
+    background-color: #c8d3dd;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.add-project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    background-color: #acb5bf;
+}
+</style>
 {% endblock %}
