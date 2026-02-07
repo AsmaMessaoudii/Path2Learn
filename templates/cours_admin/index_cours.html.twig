@@ -1,7 +1,6 @@
-{# templates/cours_admin/index_cours.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestion des Cours{% endblock %}
+{% block title %}Gestion des Cours et Ressources{% endblock %}
 
 {% block body %}
 <div class="d-flex">
@@ -16,12 +15,13 @@
 
             <div class="list-group list-group-borderless flex-grow-1">
 
-                {# Sidebar Cours / Ressources avec data-bs-toggle="pill" #}
-                <a class="list-group-item list-group-item-action text-white active" href="#cours-tab" data-bs-toggle="tab" id="sidebar-cours-link">
+                <!-- Modifié pour utiliser path vers admin_cours_index -->
+                <a class="list-group-item list-group-item-action text-white {{ active_tab == 'cours' ? 'active' : '' }}" href="{{ path('admin_cours_index') }}">
                     <i class="bi bi-journal-text me-2"></i> Cours
                 </a>
 
-                <a class="list-group-item list-group-item-action text-white" href="#ressources-tab" data-bs-toggle="tab" id="sidebar-ressources-link">
+                <!-- Modifié pour utiliser path vers admin_ressources_index -->
+                <a class="list-group-item list-group-item-action text-white {{ active_tab == 'ressources' ? 'active' : '' }}" href="{{ path('admin_ressources_index') }}">
                     <i class="bi bi-folder-symlink me-2"></i> Ressources pédagogiques
                 </a>
 
@@ -39,21 +39,36 @@
         <main class="p-4" style="background:#f0f2f5">
 
             <div class="mb-4">
-                <h4 class="fw-bold">Gestion des Cours</h4>
+                <h4 class="fw-bold">Gestion des Cours et Ressources</h4>
                 <p class="text-muted small">
                     Ajouter, modifier et gérer les cours et ressources pédagogiques
                 </p>
             </div>
 
+            <!-- ===== Flash Messages ===== -->
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>{{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+            
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>{{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+
             <!-- ===== Tabs ===== -->
             <ul class="nav nav-pills mb-4" id="main-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#cours-tab" data-bs-toggle="tab" id="nav-cours-link">
+                    <a class="nav-link {{ active_tab == 'cours' ? 'active' : '' }}" href="{{ path('admin_cours_index') }}" id="nav-cours-link">
                         📘 Cours ({{ coursList|length }})
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#ressources-tab" data-bs-toggle="tab" id="nav-ressources-link">
+                    <a class="nav-link {{ active_tab == 'ressources' ? 'active' : '' }}" href="{{ path('admin_ressources_index') }}" id="nav-ressources-link">
                         📂 Ressources pédagogiques ({{ ressourcesList|length }})
                     </a>
                 </li>
@@ -61,95 +76,323 @@
 
             <div class="tab-content">
 
-                <!-- ================= Cours ================= -->
+                <!-- ================= COURS ================= -->
+                {% if active_tab == 'cours' %}
                 <div class="tab-pane fade show active" id="cours-tab">
 
-                    <!-- Formulaire d'ajout de cours -->
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-header bg-white fw-bold">
-                            Ajouter un cours
+                    <!-- Modal pour View -->
+                    {% if selectedCours is not null and editForm is null %}
+                        <div class="modal-backdrop fade show" id="modalBackdrop"></div>
+                        <div class="modal fade show d-block" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="false" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title" id="viewModalLabel">
+                                            <i class="bi bi-eye me-2"></i>Détails du cours
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" onclick="window.location.href='{{ path('admin_cours_index') }}'"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><strong>Titre :</strong> {{ selectedCours.titre }}</p>
+                                                <p><strong>Matière :</strong> {{ selectedCours.matiere }}</p>
+                                                <p><strong>Niveau :</strong> <span class="badge bg-info">{{ selectedCours.niveau }}</span></p>
+                                                <p><strong>Durée :</strong> {{ selectedCours.duree }} minutes</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><strong>Statut :</strong> 
+                                                    {% if selectedCours.statut == 'publié' %}
+                                                        <span class="badge bg-success">Publié</span>
+                                                    {% elseif selectedCours.statut == 'brouillon' %}
+                                                        <span class="badge bg-warning">Brouillon</span>
+                                                    {% else %}
+                                                        <span class="badge bg-secondary">Archivé</span>
+                                                    {% endif %}
+                                                </p>
+                                                <p><strong>Date création :</strong> {{ selectedCours.dateCreation|date('d/m/Y') }}</p>
+                                                <p><strong>Email professeur :</strong> {{ selectedCours.emailProf }}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-3">
+                                            <h6>Description :</h6>
+                                            <div class="border rounded p-3 bg-light">
+                                                {{ selectedCours.description|nl2br }}
+                                            </div>
+                                        </div>
+                                        
+                                        {% if selectedCours.ressourcePedagogiques|length > 0 %}
+                                            <div class="mt-4">
+                                                <h6>Ressources associées :</h6>
+                                                <div class="list-group mt-2">
+                                                    {% for ressource in selectedCours.ressourcePedagogiques %}
+                                                        <div class="list-group-item">
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <div>
+                                                                    <h6 class="mb-1">{{ ressource.titre }}</h6>
+                                                                    <small class="text-muted">
+                                                                        <span class="badge bg-info">{{ ressource.type }}</span>
+                                                                        - {{ ressource.dateAjout|date('d/m/Y') }}
+                                                                    </small>
+                                                                </div>
+                                                                <a href="{{ ressource.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                                    <i class="bi bi-download"></i>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ path('admin_cours_index') }}'">
+                                            <i class="bi bi-x-circle me-1"></i> Fermer
+                                        </button>
+                                        <a href="{{ path('admin_cours_edit', {'id': selectedCours.id}) }}" class="btn btn-warning">
+                                            <i class="bi bi-pencil me-1"></i> Modifier
+                                        </a>
+                                        <form method="post" action="{{ path('admin_cours_delete', {'id': selectedCours.id}) }}" class="d-inline"
+                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ? Toutes les ressources associées seront également supprimées.');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_cours_' ~ selectedCours.id) }}">
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="bi bi-trash me-1"></i> Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                    {% endif %}
 
-                        <div class="card-body">
-                            {{ form_start(formCours) }}
-                            <div class="row g-3">
-                                <!-- Ligne 1 : Titre et Matière -->
-                                <div class="col-md-6">
-                                    {{ form_row(formCours.titre, {
-                                        'attr': {'class': 'form-control'},
-                                        'row_attr': {'class': 'mb-3'}
-                                    }) }}
-                                </div>
-                                <div class="col-md-6">
-                                    {{ form_row(formCours.matiere, {
-                                        'attr': {'class': 'form-control'},
-                                        'row_attr': {'class': 'mb-3'}
-                                    }) }}
-                                </div>
-                                
-                                <!-- Ligne 2 : Description complète -->
-                                <div class="col-12">
-                                    {{ form_row(formCours.description, {
-                                        'attr': {'class': 'form-control', 'rows': 3},
-                                        'row_attr': {'class': 'mb-3'}
-                                    }) }}
-                                </div>
-                                
-                                <!-- Ligne 3 : Niveau, Durée, Statut -->
-                                <div class="col-md-4">
-                                    {{ form_row(formCours.niveau, {
-                                        'attr': {'class': 'form-select'},
-                                        'row_attr': {'class': 'mb-3'}
-                                    }) }}
-                                </div>
-                                <div class="col-md-4">
-                                    {{ form_row(formCours.duree, {
-                                        'attr': {'class': 'form-control'},
-                                        'row_attr': {'class': 'mb-3'}
-                                    }) }}
-                                </div>
-                                <div class="col-md-4">
-                                    {{ form_row(formCours.statut, {
-                                        'attr': {'class': 'form-select'},
-                                        'row_attr': {'class': 'mb-3'}
-                                    }) }}
-                                </div>
-                                
-                                <!-- Ligne 4 : Email prof et Date création -->
-                                <div class="col-md-6">
-                                    {{ form_row(formCours.emailProf, {
-                                        'attr': {'class': 'form-control'},
-                                        'row_attr': {'class': 'mb-3'}
-                                    }) }}
-                                </div>
-                                <div class="col-md-6">
-                                    {{ form_row(formCours.dateCreation, {
-                                        'attr': {'class': 'form-control'},
-                                        'row_attr': {'class': 'mb-3'}
-                                    }) }}
+                    <!-- Formulaire d'édition de cours -->
+                    {% if editForm is not null %}
+                        <div class="modal-backdrop fade show" id="modalBackdrop"></div>
+                        <div class="modal fade show d-block" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="false" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-warning text-white">
+                                        <h5 class="modal-title" id="editModalLabel">
+                                            <i class="bi bi-pencil me-2"></i>Modifier le cours
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" onclick="window.location.href='{{ selectedCours ? path('admin_cours_view', {'id': selectedCours.id}) : path('admin_cours_index') }}'"></button>
+                                    </div>
+                                    {{ form_start(editForm, {'attr': {'id': 'edit_cours_form', 'novalidate': 'novalidate'}}) }}
+                                    <input type="hidden" name="form_name" value="{{ editForm.vars.name }}">
+                                    
+                                    <div class="modal-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    {{ form_label(editForm.titre, "Titre *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(editForm.titre, {'attr': {'class': 'form-control'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(editForm.titre) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    {{ form_label(editForm.matiere, "Matière *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(editForm.matiere, {'attr': {'class': 'form-control'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(editForm.matiere) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-12">
+                                                <div class="mb-3">
+                                                    {{ form_label(editForm.description, "Description *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(editForm.description, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(editForm.description) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    {{ form_label(editForm.niveau, "Niveau *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(editForm.niveau, {'attr': {'class': 'form-select'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(editForm.niveau) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    {{ form_label(editForm.duree, "Durée (minutes) *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(editForm.duree, {'attr': {'class': 'form-control'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(editForm.duree) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    {{ form_label(editForm.statut, "Statut *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(editForm.statut, {'attr': {'class': 'form-select'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(editForm.statut) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    {{ form_label(editForm.emailProf, "Email professeur *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(editForm.emailProf, {'attr': {'class': 'form-control'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(editForm.emailProf) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    {{ form_label(editForm.dateCreation, "Date création *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(editForm.dateCreation, {'attr': {'class': 'form-control'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(editForm.dateCreation) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a href="{{ selectedCours ? path('admin_cours_view', {'id': selectedCours.id}) : path('admin_cours_index') }}" class="btn btn-secondary">
+                                            <i class="bi bi-x-circle me-1"></i> Annuler
+                                        </a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-check-circle me-1"></i> Enregistrer
+                                        </button>
+                                    </div>
+                                    {{ form_end(editForm) }}
                                 </div>
                             </div>
-                            
-                            <!-- Boutons d'action - AJOUT DU BOUTON ANNULER -->
-                            <div class="col-12 d-flex justify-content-between mt-3">
-                                <button type="button" class="btn btn-outline-secondary" onclick="resetCoursForm()">
-                                    <i class="bi bi-x-circle me-1"></i> Annuler
-                                </button>
-                                <div>
-                                    <button type="submit" class="btn btn-primary px-4">
-                                        <i class="bi bi-plus-circle me-1"></i> Ajouter le cours
-                                    </button>
-                                </div>
-                            </div>
-                            {{ form_end(formCours) }}
                         </div>
-                    </div>
+                    {% endif %}
+
+                    <!-- Formulaire d'ajout de cours (seulement si pas en mode view/edit) -->
+                    {% if selectedCours is null and editForm is null %}
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-white fw-bold">
+                                <i class="bi bi-plus-circle me-2"></i> Ajouter un cours
+                            </div>
+
+                            <div class="card-body">
+                                {% if formCours is not null %}
+                                    {{ form_start(formCours, {'attr': {'id': 'cours_form', 'novalidate': 'novalidate'}}) }}
+                                    <input type="hidden" name="form_name" value="{{ formCours.vars.name }}">
+                                    
+                                    <div class="row g-3">
+                                        <!-- Ligne 1 : Titre et Matière -->
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form_label(formCours.titre, "Titre *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                {{ form_widget(formCours.titre, {'attr': {'class': 'form-control'}}) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formCours.titre) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form_label(formCours.matiere, "Matière *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                {{ form_widget(formCours.matiere, {'attr': {'class': 'form-control'}}) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formCours.matiere) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Ligne 2 : Description complète -->
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                {{ form_label(formCours.description, "Description *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                {{ form_widget(formCours.description, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formCours.description) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Ligne 3 : Niveau, Durée, Statut -->
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                {{ form_label(formCours.niveau, "Niveau *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                {{ form_widget(formCours.niveau, {'attr': {'class': 'form-select'}}) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formCours.niveau) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                {{ form_label(formCours.duree, "Durée (minutes) *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                {{ form_widget(formCours.duree, {'attr': {'class': 'form-control'}}) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formCours.duree) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                {{ form_label(formCours.statut, "Statut *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                {{ form_widget(formCours.statut, {'attr': {'class': 'form-select'}}) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formCours.statut) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Ligne 4 : Email prof et Date création -->
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form_label(formCours.emailProf, "Email professeur *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                {{ form_widget(formCours.emailProf, {'attr': {'class': 'form-control'}}) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formCours.emailProf) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form_label(formCours.dateCreation, "Date création *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                {{ form_widget(formCours.dateCreation, {'attr': {'class': 'form-control'}}) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formCours.dateCreation) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Boutons d'action -->
+                                    <div class="col-12 d-flex justify-content-between mt-3">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="resetForm('cours_form')">
+                                            <i class="bi bi-x-circle me-1"></i> Annuler
+                                        </button>
+                                        <div>
+                                            <button type="submit" class="btn btn-primary px-4">
+                                                <i class="bi bi-plus-circle me-1"></i> Ajouter le cours
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {{ form_end(formCours) }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
 
                     <!-- Liste des cours existants -->
                     <div class="card border-0 shadow-sm">
                         <div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
                             <span>Liste des cours ({{ coursList|length }})</span>
-                            
+                            <span class="text-muted small">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Cliquez sur les icônes pour voir, modifier ou supprimer
+                            </span>
                         </div>
                         <div class="card-body">
                             {% if coursList is empty %}
@@ -179,26 +422,32 @@
                                                     <td>
                                                         <span class="badge bg-info">{{ cours.niveau }}</span>
                                                     </td>
-                                                    <td>{{ cours.duree }}h</td>
+                                                    <td>{{ cours.duree }} min</td>
                                                     <td>
-                                                        {% if cours.statut == 'publie' %}
+                                                        {% if cours.statut == 'publié' %}
                                                             <span class="badge bg-success">Publié</span>
+                                                        {% elseif cours.statut == 'brouillon' %}
+                                                            <span class="badge bg-warning">Brouillon</span>
                                                         {% else %}
-                                                            <span class="badge bg-warning">Non publié</span>
+                                                            <span class="badge bg-secondary">Archivé</span>
                                                         {% endif %}
                                                     </td>
                                                     <td>{{ cours.dateCreation|date('d/m/Y') }}</td>
                                                     <td>
                                                         <div class="btn-group btn-group-sm">
-                                                            <a href="#" class="btn btn-outline-primary">
+                                                            <a href="{{ path('admin_cours_view', {'id': cours.id}) }}" class="btn btn-outline-primary" title="Voir détails">
                                                                 <i class="bi bi-eye"></i>
                                                             </a>
-                                                            <a href="#" class="btn btn-outline-secondary">
+                                                            <a href="{{ path('admin_cours_edit', {'id': cours.id}) }}" class="btn btn-outline-secondary" title="Modifier">
                                                                 <i class="bi bi-pencil"></i>
                                                             </a>
-                                                            <a href="#" class="btn btn-outline-danger">
-                                                                <i class="bi bi-trash"></i>
-                                                            </a>
+                                                            <form method="post" action="{{ path('admin_cours_delete', {'id': cours.id}) }}" class="d-inline" 
+                                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ? Toutes les ressources associées seront également supprimées.');">
+                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete_cours_' ~ cours.id) }}">
+                                                                <button type="submit" class="btn btn-outline-danger" title="Supprimer">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </form>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -211,165 +460,376 @@
                     </div>
 
                 </div>
+                {% endif %}
 
-                <!-- ================= Ressources ================= -->
-                <div class="tab-pane fade" id="ressources-tab">
+                <!-- ================= RESSOURCES ================= -->
+                {% if active_tab == 'ressources' %}
+                <div class="tab-pane fade show active" id="ressources-tab">
 
-                    <!-- Bouton pour revenir aux cours -->
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="mb-0">Gestion des Ressources pédagogiques</h5>
-                        
-                    </div>
-
-                    <!-- Formulaire d'ajout de ressource -->
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-header bg-white fw-bold">
-                            Ajouter une ressource pédagogique
-                        </div>
-
-                        <div class="card-body">
-                            {{ form_start(formRessource) }}
-                            <div class="row g-3">
-                                <!-- Ligne 1 : Titre et Type -->
-                                <div class="col-md-6">
-                                    {{ form_row(formRessource.titre, {
-                                        'attr': {'class': 'form-control'},
-                                        'row_attr': {'class': 'mb-3'}
-                                    }) }}
-                                </div>
-                                <div class="col-md-6">
-                                    {{ form_row(formRessource.type, {
-                                        'attr': {'class': 'form-select'},
-                                        'row_attr': {'class': 'mb-3'}
-                                    }) }}
-                                </div>
-                                
-                                <!-- Ligne 2 : URL et Cours associé -->
-                                <div class="col-md-6">
-                                    {{ form_row(formRessource.url, {
-                                        'attr': {'class': 'form-control'},
-                                        'row_attr': {'class': 'mb-3'}
-                                    }) }}
-                                </div>
-                                <div class="col-md-6">
-                                    {{ form_row(formRessource.cours, {
-                                        'attr': {'class': 'form-select'},
-                                        'row_attr': {'class': 'mb-3'}
-                                    }) }}
-                                </div>
-                            </div>
-                            
-                            <!-- Boutons d'action -->
-                            <div class="col-12 d-flex justify-content-between mt-3">
-                               
-                                <div>
-                                    <button type="reset" class="btn btn-light me-2">
-                                        <i class="bi bi-x-circle me-1"></i> Annuler
-                                    </button>
-                                    <button type="submit" class="btn btn-success px-4">
-                                        <i class="bi bi-upload me-1"></i> Ajouter la ressource
-                                    </button>
-                                </div>
-                            </div>
-                            {{ form_end(formRessource) }}
-                        </div>
-                    </div>
-                    
-                    <!-- Liste des ressources -->
-<div class="card border-0 shadow-sm">
-    <div class="card-header bg-white fw-bold">
-        Ressources existantes ({{ ressourcesList|length }})
-    </div>
-    <div class="card-body">
-        {% if ressourcesList is empty %}
-            <div class="text-center py-4 text-muted">
-                <i class="bi bi-folder-x display-4"></i>
-                <p class="mt-2">Aucune ressource pour le moment</p>
-                <p class="small">Ajoutez votre première ressource pédagogique ci-dessus</p>
-            </div>
-        {% else %}
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Titre</th>
-                            <th>Type</th>
-                            <th>Cours</th>
-                            <th>Date ajout</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for ressource in ressourcesList %}
-                            <tr>
-                                <td>{{ ressource.titre }}</td>
-                                <td>
-                                    <span class="badge bg-info">{{ ressource.type }}</span>
-                                </td>
-                                <td>
-                                    {% if ressource.cours %}
-                                        {{ ressource.cours.titre }}
-                                    {% else %}
-                                        <span class="text-muted">Aucun cours</span>
-                                    {% endif %}
-                                </td>
-                                <td>{{ ressource.dateAjout|date('d/m/Y') }}</td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <a href="{{ ressource.url }}" target="_blank" class="btn btn-outline-primary" title="Voir">
-                                            <i class="bi bi-eye"></i>
+                    <!-- Modal pour View Ressource -->
+                    {% if selectedRessource is defined and selectedRessource is not null and editRessourceForm is null %}
+                        <div class="modal-backdrop fade show" id="modalBackdropRessource"></div>
+                        <div class="modal fade show d-block" id="viewRessourceModal" tabindex="-1" aria-labelledby="viewRessourceModalLabel" aria-hidden="false" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title" id="viewRessourceModalLabel">
+                                            <i class="bi bi-eye me-2"></i>Détails de la ressource
+                                        </h5>
+                                        <!-- Modifié pour admin_ressources_index -->
+                                        <button type="button" class="btn-close btn-close-white" onclick="window.location.href='{{ path('admin_ressources_index') }}'"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><strong>Titre :</strong> {{ selectedRessource.titre }}</p>
+                                                <p><strong>Type :</strong> <span class="badge bg-info">{{ selectedRessource.type }}</span></p>
+                                                <p><strong>Date d'ajout :</strong> {{ selectedRessource.dateAjout|date('d/m/Y') }}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><strong>Cours associé :</strong> 
+                                                    {% if selectedRessource.cours %}
+                                                        {{ selectedRessource.cours.titre }}
+                                                    {% else %}
+                                                        <span class="text-muted">Aucun cours</span>
+                                                    {% endif %}
+                                                </p>
+                                                <p><strong>URL :</strong> 
+                                                    <a href="{{ selectedRessource.url }}" target="_blank" class="text-decoration-none text-break" title="{{ selectedRessource.url }}">
+                                                        {{ selectedRessource.url|slice(0, 50) }}{% if selectedRessource.url|length > 50 %}...{% endif %}
+                                                    </a>
+                                                </p>
+                                                <p><strong>Sécurisé :</strong> 
+                                                    {% if selectedRessource.url|lower starts with 'https://' %}
+                                                        <span class="badge bg-success">HTTPS</span>
+                                                    {% else %}
+                                                        <span class="badge bg-warning">HTTP</span>
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <!-- Modifié pour admin_ressources_index -->
+                                        <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ path('admin_ressources_index') }}'">
+                                            <i class="bi bi-x-circle me-1"></i> Fermer
+                                        </button>
+                                        <!-- Modifié pour admin_ressources_edit -->
+                                        <a href="{{ path('admin_ressources_edit', {'id': selectedRessource.id}) }}" class="btn btn-warning">
+                                            <i class="bi bi-pencil me-1"></i> Modifier
                                         </a>
-                                        <a href="#" class="btn btn-outline-secondary" title="Modifier">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <form method="post" action="{{ path('admin_ressources_delete', {'id': ressource.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette ressource ?');">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ressource.id) }}">
-                                            <button type="submit" class="btn btn-outline-danger" title="Supprimer">
-                                                <i class="bi bi-trash"></i>
+                                        <!-- Modifié pour admin_ressources_delete -->
+                                        <form method="post" action="{{ path('admin_ressources_delete', {'id': selectedRessource.id}) }}" class="d-inline"
+                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette ressource ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_ressource_' ~ selectedRessource.id) }}">
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="bi bi-trash me-1"></i> Supprimer
                                             </button>
                                         </form>
                                     </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endif %}
-    </div>
-</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Formulaire d'édition de ressource -->
+                    {% if editRessourceForm is defined and editRessourceForm is not null %}
+                        <div class="modal-backdrop fade show" id="modalBackdropRessource"></div>
+                        <div class="modal fade show d-block" id="editRessourceModal" tabindex="-1" aria-labelledby="editRessourceModalLabel" aria-hidden="false" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-warning text-white">
+                                        <h5 class="modal-title" id="editRessourceModalLabel">
+                                            <i class="bi bi-pencil me-2"></i>Modifier la ressource
+                                        </h5>
+                                        <!-- Modifié pour admin_ressources_index -->
+                                        <button type="button" class="btn-close btn-close-white" onclick="window.location.href='{{ selectedRessource ? path('admin_ressources_view', {'id': selectedRessource.id}) : path('admin_ressources_index') }}'"></button>
+                                    </div>
+                                    {{ form_start(editRessourceForm, {'attr': {'id': 'edit_ressource_form', 'novalidate': 'novalidate'}}) }}
+                                    <input type="hidden" name="form_name" value="{{ editRessourceForm.vars.name }}">
+                                    
+                                    <div class="modal-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    {{ form_label(editRessourceForm.titre, "Titre *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(editRessourceForm.titre, {'attr': {'class': 'form-control'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(editRessourceForm.titre) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    {{ form_label(editRessourceForm.type, "Type *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(editRessourceForm.type, {'attr': {'class': 'form-select'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(editRessourceForm.type) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-12">
+                                                <div class="mb-3">
+                                                    {{ form_label(editRessourceForm.url, "URL *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(editRessourceForm.url, {'attr': {'class': 'form-control'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(editRessourceForm.url) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-12">
+                                                <div class="mb-3">
+                                                    {{ form_label(editRessourceForm.cours, "Cours associé *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(editRessourceForm.cours, {'attr': {'class': 'form-select'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(editRessourceForm.cours) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <!-- Modifié pour admin_ressources_index -->
+                                        <a href="{{ selectedRessource ? path('admin_ressources_view', {'id': selectedRessource.id}) : path('admin_ressources_index') }}" class="btn btn-secondary">
+                                            <i class="bi bi-x-circle me-1"></i> Annuler
+                                        </a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-check-circle me-1"></i> Enregistrer
+                                        </button>
+                                    </div>
+                                    {{ form_end(editRessourceForm) }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Formulaire d'ajout de ressource -->
+                    {% if (selectedRessource is not defined or selectedRessource is null) and editRessourceForm is null %}
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-white fw-bold">
+                                <i class="bi bi-plus-circle me-2"></i> Ajouter une ressource pédagogique
+                            </div>
+
+                            <div class="card-body">
+                                {% if formRessource is not null %}
+                                    {{ form_start(formRessource, {'attr': {'id': 'ressource_form', 'novalidate': 'novalidate'}}) }}
+                                    <input type="hidden" name="form_name" value="{{ formRessource.vars.name }}">
+                                    
+                                    <div class="row g-3">
+                                        <!-- Ligne 1 : Titre et Type -->
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form_label(formRessource.titre, "Titre *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                {{ form_widget(formRessource.titre, {'attr': {'class': 'form-control'}}) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formRessource.titre) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form_label(formRessource.type, "Type *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                {{ form_widget(formRessource.type, {'attr': {'class': 'form-select'}}) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formRessource.type) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Ligne 2 : URL et Cours associé -->
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                {{ form_label(formRessource.url, "URL *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                {{ form_widget(formRessource.url, {'attr': {'class': 'form-control'}}) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formRessource.url) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                {{ form_label(formRessource.cours, "Cours associé *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                {{ form_widget(formRessource.cours, {'attr': {'class': 'form-select'}}) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formRessource.cours) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Boutons d'action -->
+                                    <div class="col-12 d-flex justify-content-between mt-3">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="resetForm('ressource_form')">
+                                            <i class="bi bi-x-circle me-1"></i> Annuler
+                                        </button>
+                                        <div>
+                                            <button type="submit" class="btn btn-success px-4">
+                                                <i class="bi bi-upload me-1"></i> Ajouter la ressource
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {{ form_end(formRessource) }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Liste des ressources -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white fw-bold">
+                            Ressources existantes ({{ ressourcesList|length }})
+                        </div>
+                        <div class="card-body">
+                            {% if ressourcesList is empty %}
+                                <div class="text-center py-4 text-muted">
+                                    <i class="bi bi-folder-x display-4"></i>
+                                    <p class="mt-2">Aucune ressource pour le moment</p>
+                                    <p class="small">Ajoutez votre première ressource pédagogique ci-dessus</p>
+                                </div>
+                            {% else %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Titre</th>
+                                                <th>Type</th>
+                                                <th>Cours</th>
+                                                <th>Date ajout</th>
+                                                <th>URL</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for ressource in ressourcesList %}
+                                                <tr>
+                                                    <td>{{ ressource.titre }}</td>
+                                                    <td>
+                                                        <span class="badge bg-info">{{ ressource.type }}</span>
+                                                    </td>
+                                                    <td>
+                                                        {% if ressource.cours %}
+                                                            {{ ressource.cours.titre }}
+                                                        {% else %}
+                                                            <span class="text-muted">Aucun cours</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>{{ ressource.dateAjout|date('d/m/Y') }}</td>
+                                                    <td>
+                                                        <a href="{{ ressource.url }}" target="_blank" class="text-decoration-none" title="{{ ressource.url }}">
+                                                            <i class="bi bi-link-45deg"></i> Lien
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group btn-group-sm">
+                                                            <!-- Modifié pour admin_ressources_view -->
+                                                            <a href="{{ path('admin_ressources_view', {'id': ressource.id}) }}" class="btn btn-outline-primary" title="Voir détails">
+                                                                <i class="bi bi-eye"></i>
+                                                            </a>
+                                                            <!-- Modifié pour admin_ressources_edit -->
+                                                            <a href="{{ path('admin_ressources_edit', {'id': ressource.id}) }}" class="btn btn-outline-secondary" title="Modifier">
+                                                                <i class="bi bi-pencil"></i>
+                                                            </a>
+                                                            <!-- Modifié pour admin_ressources_delete -->
+                                                            <form method="post" action="{{ path('admin_ressources_delete', {'id': ressource.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette ressource ?');">
+                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete_ressource_' ~ ressource.id) }}">
+                                                                <button type="submit" class="btn btn-outline-danger" title="Supprimer">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
 
                 </div>
+                {% endif %}
+                <!-- Fin du tab-pane Ressources -->
 
             </div>
+            <!-- Fin du tab-content -->
 
         </main>
     </div>
 </div>
 
-{# ===== JS ===== #}
+{% endblock %}
+
 {% block javascripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Variables pour les éléments de tab
-        const coursesTabLink = document.getElementById('nav-cours-link');
-        const resourcesTabLink = document.getElementById('nav-ressources-link');
-        const sidebarCoursesLink = document.getElementById('sidebar-cours-link');
-        const sidebarResourcesLink = document.getElementById('sidebar-ressources-link');
+        console.log('Page chargée - Gestion des cours et ressources');
         
-        // Fonction pour activer un onglet
-        function activateTab(tabElement) {
-            if (tabElement) {
-                const tab = new bootstrap.Tab(tabElement);
-                tab.show();
+        // Définir la date du jour par défaut
+        const today = new Date().toISOString().split('T')[0];
+        const dateInputs = document.querySelectorAll('input[type="date"]');
+        dateInputs.forEach(input => {
+            if (!input.value) {
+                input.value = today;
             }
-        }
+        });
         
-        // Fonction pour synchroniser les liens actifs
-        function syncActiveLinks(activeTabId) {
-            // Mettre à jour les onglets principaux
-            [coursesTabLink, resourcesTabLink, sidebarCoursesLink, sidebarResourcesLink].forEach(link => {
-                if (link.getAttribute('href') === activeTabId) {
+        // Fonction pour réinitialiser un formulaire
+        window.resetForm = function(formId) {
+            const form = document.getElementById(formId);
+            if (form) {
+                form.reset();
+                
+                // Réinitialiser les selects
+                const selects = form.querySelectorAll('select');
+                selects.forEach(select => {
+                    select.selectedIndex = 0;
+                });
+                
+                // Réinitialiser la date
+                const dateInputs = form.querySelectorAll('input[type="date"]');
+                dateInputs.forEach(input => {
+                    input.value = today;
+                });
+                
+                // Effacer les erreurs
+                const errors = form.querySelectorAll('.text-danger');
+                errors.forEach(error => {
+                    error.innerHTML = '';
+                });
+                
+                // Réinitialiser les champs invalides
+                const invalidFields = form.querySelectorAll('.is-invalid');
+                invalidFields.forEach(field => {
+                    field.classList.remove('is-invalid');
+                });
+                
+                console.log('Formulaire ' + formId + ' réinitialisé');
+            } else {
+                console.error('Formulaire ' + formId + ' non trouvé');
+            }
+        };
+        
+        // Sauvegarder l'onglet actif dans localStorage
+        const navLinks = document.querySelectorAll('#main-tabs .nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                const href = this.getAttribute('href');
+                localStorage.setItem('activeTab', href);
+                console.log('Onglet sauvegardé:', href);
+            });
+        });
+        
+        // Restaurer l'onglet actif au chargement si dans la même session
+        const savedTab = localStorage.getItem('activeTab');
+        if (savedTab && savedTab !== window.location.pathname) {
+            console.log('Onglet restauré:', savedTab);
+            // Mettre à jour la classe active
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === savedTab) {
                     link.classList.add('active');
                 } else {
                     link.classList.remove('active');
@@ -377,75 +837,211 @@
             });
         }
         
-        // Fonction pour réinitialiser le formulaire Cours
-        function resetCoursForm() {
-            // Récupérer tous les champs du formulaire cours
-            const form = document.querySelector('#formCours') || document.querySelector('form[name="cours"]');
-            if (form) {
-                form.reset();
+        // Validation en temps réel
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            // Validation à la soumission
+            form.addEventListener('submit', function(event) {
+                console.log('Form submission for: ' + form.id);
                 
-                // Réinitialiser les sélecteurs à leur première option
-                const selects = form.querySelectorAll('select');
-                selects.forEach(select => {
-                    select.selectedIndex = 0;
+                let isValid = true;
+                const requiredFields = form.querySelectorAll('[required]');
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        field.classList.add('is-invalid');
+                        const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                        if (errorDiv) {
+                            errorDiv.textContent = 'Ce champ est obligatoire';
+                        }
+                        isValid = false;
+                    } else {
+                        field.classList.remove('is-invalid');
+                        const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                        if (errorDiv) {
+                            errorDiv.textContent = '';
+                        }
+                    }
                 });
                 
-                // Réinitialiser les champs date
-                const dateInputs = form.querySelectorAll('input[type="date"]');
-                dateInputs.forEach(input => {
-                    input.value = '';
+                // Validation spécifique pour email
+                const emailFields = form.querySelectorAll('input[type="email"]');
+                emailFields.forEach(field => {
+                    if (field.value.trim()) {
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(field.value)) {
+                            field.classList.add('is-invalid');
+                            const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                            if (errorDiv) {
+                                errorDiv.textContent = 'Veuillez entrer une adresse email valide';
+                            }
+                            isValid = false;
+                        }
+                    }
                 });
                 
-                console.log('Formulaire cours réinitialisé');
-            }
-        }
-        
-        // Gestionnaire pour le bouton "Voir les ressources"
-        const btnShowResources = document.getElementById('btn-show-resources');
-        if (btnShowResources) {
-            btnShowResources.addEventListener('click', function() {
-                activateTab(resourcesTabLink);
-                syncActiveLinks('#ressources-tab');
+                // Validation spécifique pour URL
+                const urlFields = form.querySelectorAll('input[type="url"]');
+                urlFields.forEach(field => {
+                    if (field.value.trim()) {
+                        const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+                        if (!urlRegex.test(field.value)) {
+                            field.classList.add('is-invalid');
+                            const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                            if (errorDiv) {
+                                errorDiv.textContent = 'Veuillez entrer une URL valide';
+                            }
+                            isValid = false;
+                        }
+                    }
+                });
+                
+                // Validation pour les nombres positifs
+                const numberFields = form.querySelectorAll('input[type="number"]');
+                numberFields.forEach(field => {
+                    if (field.value.trim()) {
+                        const value = parseInt(field.value);
+                        if (isNaN(value) || value <= 0) {
+                            field.classList.add('is-invalid');
+                            const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                            if (errorDiv) {
+                                errorDiv.textContent = 'Veuillez entrer un nombre positif';
+                            }
+                            isValid = false;
+                        }
+                    }
+                });
+                
+                if (!isValid) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    
+                    // Afficher un message général
+                    const existingAlert = form.querySelector('.alert-danger');
+                    if (!existingAlert) {
+                        const alert = document.createElement('div');
+                        alert.className = 'alert alert-danger mt-3';
+                        alert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Veuillez corriger les erreurs dans le formulaire';
+                        form.prepend(alert);
+                        
+                        // Supprimer l'alerte après 5 secondes
+                        setTimeout(() => {
+                            alert.remove();
+                        }, 5000);
+                    }
+                    
+                    // Scroll vers la première erreur
+                    const firstError = form.querySelector('.is-invalid');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        firstError.focus();
+                    }
+                }
             });
-        }
-        
-        // Gestionnaire pour le bouton "Retour aux cours" (en haut)
-        const btnShowCourses = document.getElementById('btn-show-courses');
-        if (btnShowCourses) {
-            btnShowCourses.addEventListener('click', function() {
-                activateTab(coursesTabLink);
-                syncActiveLinks('#cours-tab');
-            });
-        }
-        
-        // Gestionnaire pour le bouton "Retour aux cours" (en bas)
-        const btnBackToCourses = document.getElementById('btn-back-to-courses');
-        if (btnBackToCourses) {
-            btnBackToCourses.addEventListener('click', function() {
-                activateTab(coursesTabLink);
-                syncActiveLinks('#cours-tab');
-            });
-        }
-        
-        // Écouter les événements de changement d'onglet pour synchroniser
-        document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
-            tab.addEventListener('shown.bs.tab', function(event) {
-                const activeTabId = event.target.getAttribute('href');
-                syncActiveLinks(activeTabId);
+            
+            // Validation en temps réel
+            form.querySelectorAll('input, select, textarea').forEach(field => {
+                field.addEventListener('blur', function() {
+                    validateField(this);
+                });
+                
+                field.addEventListener('input', function() {
+                    // Effacer l'erreur quand l'utilisateur commence à taper
+                    if (this.classList.contains('is-invalid')) {
+                        this.classList.remove('is-invalid');
+                        const errorDiv = this.closest('.mb-3')?.querySelector('.text-danger');
+                        if (errorDiv) {
+                            errorDiv.textContent = '';
+                        }
+                    }
+                });
             });
         });
         
-        // Initialiser la synchronisation au chargement
-        const activeTab = document.querySelector('.tab-pane.fade.show.active');
-        if (activeTab) {
-            const activeTabId = '#' + activeTab.id;
-            syncActiveLinks(activeTabId);
+        function validateField(field) {
+            if (field.hasAttribute('required') && !field.value.trim()) {
+                field.classList.add('is-invalid');
+                const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                if (errorDiv) {
+                    errorDiv.textContent = 'Ce champ est obligatoire';
+                }
+                return false;
+            }
+            
+            // Validation email
+            if (field.type === 'email' && field.value.trim()) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(field.value)) {
+                    field.classList.add('is-invalid');
+                    const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                    if (errorDiv) {
+                        errorDiv.textContent = 'Veuillez entrer une adresse email valide';
+                    }
+                    return false;
+                }
+            }
+            
+            // Validation URL
+            if (field.type === 'url' && field.value.trim()) {
+                const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+                if (!urlRegex.test(field.value)) {
+                    field.classList.add('is-invalid');
+                    const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                    if (errorDiv) {
+                        errorDiv.textContent = 'Veuillez entrer une URL valide';
+                    }
+                    return false;
+                }
+            }
+            
+            // Validation nombre
+            if (field.type === 'number' && field.value.trim()) {
+                const value = parseInt(field.value);
+                if (isNaN(value) || value <= 0) {
+                    field.classList.add('is-invalid');
+                    const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                    if (errorDiv) {
+                        errorDiv.textContent = 'Veuillez entrer un nombre positif';
+                    }
+                    return false;
+                }
+            }
+            
+            // Si tout est valide
+            field.classList.remove('is-invalid');
+            const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+            if (errorDiv) {
+                errorDiv.textContent = '';
+            }
+            return true;
         }
         
-        // Exposer la fonction resetCoursForm globalement
-        window.resetCoursForm = resetCoursForm;
+        // Fermer les modals avec Escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const activeModal = document.querySelector('.modal.show');
+                if (activeModal) {
+                    const closeBtn = activeModal.querySelector('.btn-close');
+                    if (closeBtn) {
+                        closeBtn.click();
+                    }
+                }
+            }
+        });
+        
+        // Initialiser les champs avec des classes d'erreur si nécessaire
+        document.querySelectorAll('.text-danger:not(:empty)').forEach(errorDiv => {
+            const input = errorDiv.closest('.mb-3')?.querySelector('input, select, textarea');
+            if (input) {
+                input.classList.add('is-invalid');
+            }
+        });
+        
+        // Détecter le changement d'onglet et mettre à jour localStorage
+        window.addEventListener('beforeunload', function() {
+            // Ne pas effacer le localStorage lors du rafraîchissement
+            // Il sera automatiquement restauré au prochain chargement
+        });
     });
 </script>
-{% endblock %}
-
 {% endblock %}
