@@ -1,0 +1,622 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ question.titre }} - Quiz{% endblock %}
+
+{% block body %}
+<header class="navbar-light navbar-sticky header-static">
+    <!-- Nav START -->
+    <nav class="navbar navbar-expand-xl">
+        <div class="container-fluid px-3 px-xl-5">
+            <!-- Logo START -->
+            <a class="navbar-brand" href="{{ path('home') }}">
+                <img class="light-mode-item navbar-brand-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 250px;">
+                <img class="dark-mode-item navbar-brand-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 250px;">
+            </a>
+            <!-- Logo END -->
+
+            <!-- Responsive navbar toggler -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-animation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+
+            <!-- Main navbar START -->
+            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+                <!-- Nav Main menu START -->
+                <ul class="navbar-nav navbar-nav-scroll me-auto">
+                    <!-- Nav item Demos -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Services</a>
+                        <ul class="dropdown-menu" aria-labelledby="demoMenu">
+                            <li> <a class="dropdown-item active" href="{{ path('home') }}">Portfolio</a></li>
+                            <li> <a class="dropdown-item" href="#">Événements</a></li>
+                            <li> <a class="dropdown-item" href="#">Certification</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Pages -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
+                        <ul class="dropdown-menu" aria-labelledby="pagesMenu">
+                            <li><a class="dropdown-item" href="{{ path('quiz') }}">QUIZ</a></li>
+                            <li><a class="dropdown-item" href="#">Ressources</a></li>
+                            <li><a class="dropdown-item" href="#">Projets</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Account -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
+                        <ul class="dropdown-menu" aria-labelledby="accounntMenu">
+                            <li><a class="dropdown-item" href="{{ path('instructor') }}"><i class="fas fa-user-tie fa-fw me-1"></i>Enseignants</a></li>
+                            <li><a class="dropdown-item" href="{{ path('student_dashboard') }}"><i class="fas fa-user-graduate fa-fw me-1"></i>Étudiants</a></li>
+                            <li><a class="dropdown-item" href="{{ path('admin_dashboard') }}"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Nav Main menu END -->
+
+                <!-- Nav Search START -->
+                <div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+                    <div class="nav-item w-100">
+                        <form class="position-relative">
+                            <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
+                            <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+                                <i class="fas fa-search fs-6 "></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Nav Search END -->
+            </div>
+            <!-- Main navbar END -->
+
+            <!-- Profile START -->
+            <div class="dropdown ms-1 ms-lg-0">
+                <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                </a>
+                <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+                    <!-- Links -->
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+                    <li><a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+                </ul>
+            </div>
+            <!-- Profile START -->
+        </div>
+    </nav>
+    <!-- Nav END -->
+</header>
+
+<!-- Header END -->
+<figure class="position-absolute top-50 start-0 translate-middle-y ms-n7 d-none d-xxl-block">
+		<svg class="rotate-74 fill-danger opacity-1">
+			<circle cx="180.4" cy="15.5" r="7.7" />
+			<path d="m159.9 22.4c-3.8 0-6.9-3.1-6.9-6.9s3.1-6.9 6.9-6.9 6.9 3.1 6.9 6.9-3.1 6.9-6.9 6.9z" />
+			<ellipse transform="matrix(.3862 -.9224 .9224 .3862 71.25 138.08)" cx="139.4" cy="15.5" rx="6.1" ry="6.1" />
+			<circle cx="118.9" cy="15.5" r="5.4" />
+			<path d="m98.4 20.1c-2.5 0-4.6-2.1-4.6-4.6s2.1-4.6 4.6-4.6 4.6 2.1 4.6 4.6-2.1 4.6-4.6 4.6z" />
+			<path d="m77.9 19.3c-2.1 0-3.8-1.7-3.8-3.8s1.7-3.8 3.8-3.8 3.8 1.7 3.8 3.8-1.7 3.8-3.8 3.8z" />
+			<path d="m57.3 18.6c-1.7 0-3.1-1.4-3.1-3.1s1.4-3.1 3.1-3.1 3.1 1.4 3.1 3.1-1.4 3.1-3.1 3.1z" />
+			<path d="m36.8 17.8c-1.3 0-2.3-1-2.3-2.3s1-2.3 2.3-2.3 2.3 1 2.3 2.3-1 2.3-2.3 2.3z" />
+			<circle cx="16.3" cy="15.5" r="1.6" />
+			<circle cx="180.4" cy="38.5" r="7.7" />
+			<path d="m159.9 45.3c-3.8 0-6.9-3.1-6.9-6.9s3.1-6.9 6.9-6.9 6.9 3.1 6.9 6.9-3.1 6.9-6.9 6.9z" />
+			<ellipse transform="matrix(.8486 -.5291 .5291 .8486 .7599 79.566)" cx="139.4" cy="38.5" rx="6.1" ry="6.1" />
+			<circle cx="118.9" cy="38.5" r="5.4" />
+			<path d="m98.4 43.1c-2.5 0-4.6-2.1-4.6-4.6s2.1-4.6 4.6-4.6 4.6 2.1 4.6 4.6-2.1 4.6-4.6 4.6z" />
+			<circle cx="77.9" cy="38.5" r="3.8" />
+			<path d="m57.3 41.5c-1.7 0-3.1-1.4-3.1-3.1s1.4-3.1 3.1-3.1 3.1 1.4 3.1 3.1c0 1.8-1.4 3.1-3.1 3.1z" />
+			<path d="m36.8 40.8c-1.3 0-2.3-1-2.3-2.3s1-2.3 2.3-2.3 2.3 1 2.3 2.3-1 2.3-2.3 2.3z" />
+			<circle cx="16.3" cy="38.5" r="1.6" />
+			<circle cx="180.4" cy="61.4" r="7.7" />
+			<path d="m159.9 68.3c-3.8 0-6.9-3.1-6.9-6.9s3.1-6.9 6.9-6.9 6.9 3.1 6.9 6.9-3.1 6.9-6.9 6.9z" />
+			<ellipse transform="matrix(.3862 -.9224 .9224 .3862 28.902 166.26)" cx="139.4" cy="61.4" rx="6.1" ry="6.1" />
+			<circle cx="118.9" cy="61.4" r="5.4" />
+			<path d="m98.4 66c-2.5 0-4.6-2.1-4.6-4.6s2.1-4.6 4.6-4.6 4.6 2.1 4.6 4.6c0 2.6-2.1 4.6-4.6 4.6z" />
+			<path d="m77.9 65.2c-2.1 0-3.8-1.7-3.8-3.8s1.7-3.8 3.8-3.8 3.8 1.7 3.8 3.8-1.7 3.8-3.8 3.8z" />
+			<path d="m57.3 64.5c-1.7 0-3.1-1.4-3.1-3.1s1.4-3.1 3.1-3.1 3.1 1.4 3.1 3.1-1.4 3.1-3.1 3.1z" />
+			<path d="m36.8 63.7c-1.3 0-2.3-1-2.3-2.3s1-2.3 2.3-2.3 2.3 1 2.3 2.3-1 2.3-2.3 2.3z" />
+			<circle cx="16.3" cy="61.4" r="1.6" />
+			<circle cx="180.4" cy="84.4" r="7.7" />
+			<path d="m159.9 91.3c-3.8 0-6.9-3.1-6.9-6.9s3.1-6.9 6.9-6.9 6.9 3.1 6.9 6.9-3.1 6.9-6.9 6.9z" />
+			<path	d="m139.4 90.5c-3.4 0-6.1-2.7-6.1-6.1s2.7-6.1 6.1-6.1 6.1 2.7 6.1 6.1c0 3.3-2.7 6.1-6.1 6.1z" />
+			<circle cx="118.9" cy="84.4" r="5.4" />
+			<path d="m98.4 89c-2.5 0-4.6-2.1-4.6-4.6s2.1-4.6 4.6-4.6 4.6 2.1 4.6 4.6-2.1 4.6-4.6 4.6z" />
+			<path d="m77.9 88.2c-2.1 0-3.8-1.7-3.8-3.8s1.7-3.8 3.8-3.8 3.8 1.7 3.8 3.8-1.7 3.8-3.8 3.8z" />
+			<path d="m57.3 87.4c-1.7 0-3.1-1.4-3.1-3.1s1.4-3.1 3.1-3.1 3.1 1.4 3.1 3.1c0 1.8-1.4 3.1-3.1 3.1z" />
+			<path d="m36.8 86.7c-1.3 0-2.3-1-2.3-2.3s1-2.3 2.3-2.3 2.3 1 2.3 2.3-1 2.3-2.3 2.3z" />
+			<circle cx="16.3" cy="84.4" r="1.6" />
+		</svg>
+	</figure>
+	<!-- SVG END -->
+
+	<!-- SVG START -->
+	<span class="position-absolute top-50 end-0 translate-middle-y mt-5 me-n5 d-none d-xxl-inline-flex">
+		<svg class="fill-warning rotate-186 opacity-8">
+			<path d="m35.4 54.2c0 0.6 0 1.1-0.1 1.7-0.9 9.3-9.2 16.1-18.5 15.1-4.5-0.4-8.5-2.6-11.4-6.1-2.8-3.5-4.2-7.9-3.7-12.4 0.9-9.3 9.2-16.1 18.5-15.1 4.5 0.4 8.5 2.6 11.4 6.1 2.4 3 3.8 6.8 3.8 10.7zm-33.4 0c0 3.8 1.3 7.5 3.8 10.4 2.8 3.4 6.8 5.5 11.2 6 9.1 0.9 17.2-5.8 18.1-14.8 0.4-4.4-0.9-8.7-3.7-12.1s-6.8-5.5-11.2-6c-9.2-0.8-17.3 5.8-18.2 14.9v1.6z" />
+			<path d="m39 54.1c0 1.1-0.1 2.2-0.3 3.3-1.8 9.8-11.2 16.2-21 14.4-4.7-0.8-8.8-3.5-11.5-7.4-2.7-4-3.7-8.7-2.8-13.5 1.8-9.8 11.2-16.2 21-14.4 4.7 0.9 8.8 3.6 11.5 7.5 2.1 3 3.1 6.6 3.1 10.1zm-35.6 0.1c0 3.5 1.1 7 3.1 9.9 2.7 3.9 6.7 6.5 11.3 7.4 9.6 1.8 18.8-4.5 20.6-14.1 0.9-4.6-0.1-9.3-2.8-13.2s-6.7-6.5-11.3-7.4c-9.6-1.8-18.8 4.5-20.6 14.1-0.2 1.1-0.3 2.2-0.3 3.3z" />
+			<path d="m42.8 54.2c0 1.7-0.2 3.3-0.7 5-2.7 10.2-13.3 16.3-23.5 13.6-5-1.3-9.1-4.5-11.7-8.9-2.5-4.5-3.2-9.7-1.9-14.7 2.7-10.2 13.3-16.3 23.5-13.6 5 1.3 9.1 4.5 11.7 8.9 1.7 3 2.6 6.3 2.6 9.7zm-38.1 0c0 3.3 0.9 6.5 2.5 9.4 2.5 4.4 6.6 7.5 11.5 8.8 10 2.7 20.4-3.3 23.1-13.4 1.3-4.9 0.6-9.9-1.9-14.3s-6.6-7.5-11.5-8.8c-10-2.6-20.4 3.4-23 13.4-0.5 1.6-0.7 3.3-0.7 4.9z" />
+			<path d="m46.7 54.2c0 2.2-0.4 4.5-1.1 6.6-3.6 10.7-15.3 16.5-26.1 12.8-5.2-1.8-9.4-5.4-11.8-10.4-2.4-4.9-2.8-10.5-1-15.7 3.6-10.6 15.3-16.4 26-12.8l-0.1 0.2 0.1-0.2c5.2 1.8 9.4 5.4 11.8 10.4 1.5 2.9 2.2 6 2.2 9.1zm-40.8 0c0 3.1 0.7 6.1 2.1 8.9 2.4 4.8 6.5 8.4 11.6 10.2 10.5 3.6 22-2.1 25.6-12.6 1.7-5.1 1.4-10.6-1-15.4s-6.5-8.4-11.6-10.2c-10.5-3.6-22 2.1-25.6 12.6-0.7 2.1-1.1 4.3-1.1 6.5z" />
+			<path d="m50.7 54.2c0 2.8-0.5 5.6-1.6 8.2-4.5 11.2-17.4 16.6-28.6 12.1-5.4-2.2-9.7-6.4-12-11.8s-2.3-11.4-0.1-16.8c4.5-11.2 17.4-16.6 28.6-12.1 5.4 2.2 9.7 6.4 12 11.8 1.1 2.8 1.7 5.7 1.7 8.6zm-43.6 0c0 2.8 0.6 5.7 1.7 8.4 2.2 5.3 6.4 9.4 11.8 11.6 11 4.5 23.6-0.9 28.1-11.9 2.2-5.3 2.1-11.2-0.1-16.5s-6.4-9.4-11.8-11.6c-11-4.5-23.6 0.9-28.1 11.9-1.1 2.6-1.6 5.3-1.6 8.1z" />
+		</svg>
+	</span>
+	<!-- SVG END -->
+
+	<!-- SVG START -->
+	<figure class="position-absolute top-0 start-0 ms-5">
+		<svg class="fill-orange opacity-4" width="29px" height="29px">
+			<path d="M29.004,14.502 C29.004,22.512 22.511,29.004 14.502,29.004 C6.492,29.004 -0.001,22.512 -0.001,14.502 C-0.001,6.492 6.492,-0.001 14.502,-0.001 C22.511,-0.001 29.004,6.492 29.004,14.502 Z"></path>
+		</svg>
+	</figure>
+	<!-- SVG END -->
+
+<main class="pt-5 pb-5" style="min-height: calc(100vh - 200px); background: url('{{ asset('assets/images/pattern/04.png') }}') no-repeat center center; background-size: cover;">
+    <div class="container">
+        <!-- Informations utilisateur -->
+        <div class="alert alert-info mb-4">
+            <i class="bi bi-person-circle me-2"></i>
+            <strong>Utilisateur:</strong> {{ selectedUser.email }}
+            <a href="{{ path('quiz') }}" class="btn btn-sm btn-outline-info ms-3">
+                <i class="bi bi-arrow-left me-1"></i> Changer d'utilisateur
+            </a>
+        </div>
+        
+        <!-- Vérifier si l'utilisateur a déjà répondu -->
+        <div id="already-answered-alert" class="alert alert-warning" style="display: none;">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Vous avez déjà répondu à ce quiz. Mode consultation uniquement.
+        </div>
+        
+        <!-- Breadcrumb et header quiz -->
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <h1 class="display-5 mb-3">{{ question.titre }}</h1>
+                <p class="lead mb-0">{{ question.description }}</p>
+            </div>
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <h6 class="text-muted mb-2"><i class="bi bi-clock me-2"></i>Temps restant</h6>
+                        <div id="timer" class="display-4 fw-bold text-primary">
+                            {{ question.duree ? question.duree ~ ':00' : '∞' }}
+                        </div>
+                        <h6 class="text-muted mb-2 mt-3"><i class="bi bi-star me-2"></i>Score</h6>
+                        <div class="h2 fw-bold">
+                            <span id="current-score">0</span>/<span id="max-score">{{ question.noteMax }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz content -->
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card border-0 shadow">
+                    <div class="card-body p-4">
+                        <h4 class="mb-4"><i class="bi bi-question-circle-fill text-primary me-2"></i>Sélectionnez votre réponse :</h4>
+                        <div id="choices-container" class="mb-4">
+                            {% for choix in question.choix %}
+                            <div class="choice-item mb-3">
+                                <input type="radio" class="btn-check" name="choice" id="choice{{ choix.id }}" value="{{ choix.id }}">
+                                <label class="btn btn-outline-primary w-100 text-start p-3 d-flex align-items-center" for="choice{{ choix.id }}" style="border-radius: 10px; cursor: pointer;">
+                                    <div class="choice-number me-3">
+                                        <span class="badge bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">{{ loop.index }}</span>
+                                    </div>
+                                    <div class="choice-text flex-grow-1">{{ choix.contenu }}</div>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                            <a href="{{ path('quiz') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-2"></i>Retour aux quiz</a>
+                            <button id="validate-btn" class="btn btn-success" disabled><i class="bi bi-check-circle me-2"></i>Valider la réponse</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feedback -->
+                <div id="feedback-section" class="card border-0 shadow mt-4" style="display: none;">
+                    <div class="card-body p-4 text-center">
+                        <div id="feedback-icon" class="display-1 mb-3"></div>
+                        <h3 id="feedback-title" class="mb-3"></h3>
+                        <p id="feedback-message" class="lead mb-4"></p>
+                        <div class="row justify-content-center mb-4">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-muted">Votre score</h6>
+                                        <div class="display-4 fw-bold text-primary" id="score-obtained">0</div>
+                                        <p class="small text-muted mb-0">sur {{ question.noteMax }} points maximum</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <a href="{{ path('quiz') }}" class="btn btn-primary me-2"><i class="bi bi-list me-2"></i>Retour à la liste</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer START -->
+<footer class="pt-5">
+    <div class="container">
+        <!-- Row START -->
+        <div class="row g-4">
+            <div class="col-lg-3">
+                <a class="me-0 d-flex align-items-center" href="{{ path('home') }}">
+                    <img class="light-mode-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 200px;">
+                    <img class="dark-mode-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 200px;">
+                </a>
+            </div>
+
+            <!-- Widget 2 START -->
+            <div class="col-lg-6">
+                <div class="row g-4">
+                    <!-- Link block -->
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Entreprise</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">À propos de nous</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Nous contacter</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Actualités et blogs</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Bibliothèque</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Carrière</a></li>
+                        </ul>
+                    </div>
+                                    
+                    <!-- Link block -->
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Communauté</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">Documentation</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Forum</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Plan du site</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Link block -->
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Enseignement</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">Devenir formateur</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Guide pratique</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Termes et conditions</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Widget 2 END -->
+
+            <!-- Widget 3 START -->
+            <div class="col-lg-3">
+                <h5 class="mb-2 mb-md-4">Contact</h5>
+                <!-- Time -->
+                <p class="mb-2">
+                    Numéro gratuit : <span class="h6 fw-light ms-2">+216 20629612</span>
+                    <span class="d-block small">(9:AM to 8:PM IST)</span>
+                </p>
+
+                <p class="mb-0">Email: <span class="h6 fw-light ms-2">example@gmail.com</span></p>
+
+                <div class="row g-2 mt-2">
+                    <!-- Google play store button -->
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-6">
+                        <a href="#"> <img src="{{ asset('assets/images/client/google-play.svg') }}" alt=""> </a>
+                    </div>
+                    <!-- App store button -->
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-6">
+                        <a href="#"> <img src="{{ asset('assets/images/client/app-store.svg') }}" alt="app-store"> </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="mt-4 mb-0">
+
+        <!-- Bottom footer -->
+        <div class="py-3">
+            <div class="container px-0">
+                <div class="d-lg-flex justify-content-between align-items-center py-3 text-center text-md-left">
+                    <!-- copyright text -->
+                    <div class="text-body text-primary-hover"> © 2026 Développé par <a href="https://www.webestica.com/" target="_blank" class="text-body">Path2learn</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- Footer END -->
+
+<!-- Back to top -->
+<div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const questionId = {{ question.id }};
+    const userId = {{ selectedUserId }};
+    const maxTime = {{ question.duree ? question.duree * 60 : 0 }};
+    const maxScore = {{ question.noteMax }};
+    
+    // Vérifier si l'utilisateur a déjà répondu
+    const userResponses = JSON.parse(localStorage.getItem(`quiz_responses_${userId}`) || '{}');
+    const questionKey = `question_${questionId}`;
+    const existingResponse = userResponses[questionKey];
+    
+    if (existingResponse) {
+        // Mode consultation
+        document.getElementById('already-answered-alert').style.display = 'block';
+        document.getElementById('validate-btn').disabled = true;
+        document.getElementById('validate-btn').textContent = 'Déjà répondu';
+        document.getElementById('current-score').textContent = existingResponse.score;
+        
+        // Afficher les réponses
+        document.querySelectorAll('.choice-item').forEach(item => {
+            const choiceId = parseInt(item.querySelector('input').value);
+            const label = item.querySelector('label');
+            const input = item.querySelector('input');
+            
+            input.disabled = true;
+            
+            if (choiceId === existingResponse.correctChoiceId) {
+                label.classList.remove('btn-outline-primary');
+                label.classList.add('btn-success', 'text-white');
+                label.innerHTML += '<span class="badge bg-success ms-2"><i class="bi bi-check-lg"></i> Correct</span>';
+            } else if (choiceId === existingResponse.selectedChoiceId) {
+                label.classList.remove('btn-outline-primary');
+                label.classList.add('btn-danger', 'text-white');
+                label.innerHTML += '<span class="badge bg-danger ms-2"><i class="bi bi-x-lg"></i> Votre choix</span>';
+            } else {
+                label.classList.remove('btn-outline-primary');
+                label.classList.add('btn-outline-secondary');
+            }
+            label.style.cursor = 'not-allowed';
+        });
+        
+        // Afficher le feedback
+        showFeedback(
+            existingResponse.isCorrect ? '✅' : '❌',
+            existingResponse.isCorrect ? 'Correct !' : 'Incorrect',
+            existingResponse.isCorrect ? 
+                `Félicitations ! Vous avez obtenu ${existingResponse.score} points.` :
+                `Dommage ! La bonne réponse était le choix ${existingResponse.correctChoiceId}.`,
+            existingResponse.isCorrect ? 'success' : 'danger'
+        );
+        
+        document.getElementById('score-obtained').textContent = existingResponse.score;
+        document.getElementById('timer').textContent = 'Terminé';
+        
+        return; // Arrêter l'exécution du script
+    }
+    
+    // Mode normal (pas encore répondu)
+    let timeLeft = maxTime;
+    let timerInterval = null;
+    let selectedChoiceId = null;
+    let isAnswered = false;
+    
+    const timerEl = document.getElementById('timer');
+    const validateBtn = document.getElementById('validate-btn');
+    
+    // Démarrer le timer immédiatement
+    startTimer();
+    
+    function startTimer() {
+        if(maxTime > 0) {
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                if(timeLeft > 0 && !isAnswered) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                }
+                if(timeLeft <= 0 && !isAnswered) {
+                    handleTimeOut();
+                }
+            }, 1000);
+        }
+    }
+    
+    function updateTimerDisplay() {
+        if(maxTime === 0) { 
+            timerEl.textContent = '∞'; 
+            return; 
+        }
+        const min = Math.floor(timeLeft / 60);
+        const sec = timeLeft % 60;
+        timerEl.textContent = `${min}:${sec.toString().padStart(2,'0')}`;
+        
+        if (timeLeft <= 30 && timeLeft > 10) {
+            timerEl.className = 'display-4 fw-bold text-warning';
+        } else if (timeLeft <= 10) {
+            timerEl.className = 'display-4 fw-bold text-danger';
+        } else {
+            timerEl.className = 'display-4 fw-bold text-primary';
+        }
+    }
+    
+    function handleTimeOut() {
+        isAnswered = true;
+        clearInterval(timerInterval);
+        validateBtn.disabled = true;
+        validateBtn.textContent = 'Temps écoulé';
+        
+        document.querySelectorAll('.choice-item label').forEach(label => {
+            label.classList.add('disabled');
+            label.style.cursor = 'not-allowed';
+            label.style.opacity = '0.6';
+        });
+        
+        if(selectedChoiceId) {
+            submitAnswer();
+        } else {
+            showFeedback('⏰','Temps écoulé !','Le temps pour répondre à cette question est terminé.','warning');
+        }
+    }
+    
+    // Gestion des choix
+    document.querySelectorAll('input[name="choice"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            if(isAnswered) return;
+            selectedChoiceId = this.value;
+            validateBtn.disabled = false;
+            
+            document.querySelectorAll('.choice-item label').forEach(label => {
+                label.classList.remove('active','bg-primary','text-white');
+            });
+            
+            const selectedLabel = document.querySelector(`label[for="choice${selectedChoiceId}"]`);
+            if(selectedLabel) {
+                selectedLabel.classList.add('active','bg-primary','text-white');
+            }
+        });
+    });
+    
+    // Validation de la réponse
+    validateBtn.addEventListener('click', function() {
+        if(!selectedChoiceId || isAnswered) return;
+        submitAnswer();
+    });
+    
+    function submitAnswer() {
+        isAnswered = true;
+        clearInterval(timerInterval);
+        validateBtn.disabled = true;
+        validateBtn.textContent = 'Validation...';
+        
+        fetch('{{ path("quiz_check_answer") }}', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ 
+                questionId: questionId, 
+                selectedChoiceId: selectedChoiceId,
+                userId: userId
+            })
+        })
+        .then(res => res.json())
+        .then(result => {
+            if(!result.success) {
+                throw new Error(result.error);
+            }
+            
+            // Mettre à jour le score affiché
+            document.getElementById('current-score').textContent = result.score;
+            
+            // Sauvegarder la réponse dans localStorage
+            const responseData = {
+                selectedChoiceId: parseInt(selectedChoiceId),
+                isCorrect: result.isCorrect,
+                score: result.score,
+                maxScore: result.maxScore,
+                correctChoiceId: result.correctChoiceId,
+                timestamp: Date.now()
+            };
+            
+            // Utiliser la fonction saveQuizResponse définie dans quiz.html.twig
+            if (typeof saveQuizResponse === 'function') {
+                saveQuizResponse(userId, questionId, responseData);
+            } else {
+                // Fallback si la fonction n'est pas définie
+                const key = `quiz_responses_${userId}`;
+                const userResponses = JSON.parse(localStorage.getItem(key) || '{}');
+                userResponses[`question_${questionId}`] = responseData;
+                localStorage.setItem(key, JSON.stringify(userResponses));
+            }
+            
+            // Mettre en évidence les réponses
+            document.querySelectorAll('.choice-item').forEach(item => {
+                const choiceId = parseInt(item.querySelector('input').value);
+                const label = item.querySelector('label');
+                const input = item.querySelector('input');
+                
+                input.disabled = true;
+                
+                if(choiceId === result.correctChoiceId) {
+                    label.classList.remove('btn-outline-primary');
+                    label.classList.add('btn-success','text-white');
+                    label.innerHTML += '<span class="badge bg-success ms-2"><i class="bi bi-check-lg"></i> Correct</span>';
+                } else if(choiceId == selectedChoiceId) {
+                    label.classList.remove('btn-outline-primary');
+                    label.classList.add('btn-danger','text-white');
+                    label.innerHTML += '<span class="badge bg-danger ms-2"><i class="bi bi-x-lg"></i> Votre choix</span>';
+                } else {
+                    label.classList.remove('btn-outline-primary');
+                    label.classList.add('btn-outline-secondary');
+                }
+                label.style.cursor = 'not-allowed';
+            });
+    
+            if(result.isCorrect) {
+                showFeedback('✅','Correct !',`Félicitations ! Vous avez obtenu ${result.score} points.`,'success');
+            } else {
+                showFeedback('❌','Incorrect',`Dommage ! La bonne réponse était le choix ${result.correctChoiceId}.`,'danger');
+            }
+    
+            document.getElementById('score-obtained').textContent = result.score;
+            
+            // Rediriger après 3 secondes
+            setTimeout(() => {
+                window.location.href = "{{ path('quiz') }}";
+            }, 3000);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showFeedback('❌','Erreur','Une erreur est survenue lors de la soumission.','danger');
+            validateBtn.textContent = 'Erreur - Réessayer';
+            validateBtn.disabled = false;
+            isAnswered = false;
+        });
+    }
+    
+    function showFeedback(icon, title, message, type){
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackMessage = document.getElementById('feedback-message');
+        feedbackIcon.textContent = icon;
+        feedbackIcon.className = `display-1 mb-3 text-${type}`;
+        feedbackTitle.textContent = title;
+        feedbackTitle.className = `mb-3 text-${type}`;
+        feedbackMessage.textContent = message;
+        document.getElementById('feedback-section').style.display = 'block';
+        document.getElementById('feedback-section').scrollIntoView({behavior:'smooth'});
+    }
+});
+</script>
+<style>
+html, body {
+    background-color: #ffffff !important;
+    height: 100%;
+    margin: 0;
+}
+
+.layout-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.page-content {
+    flex: 1;
+    background-color: #ffffff;
+}
+
+.site-footer {
+    background-color: #0d6efd;
+    color: white;
+}
+
+</style>
+
+{% endblock %}

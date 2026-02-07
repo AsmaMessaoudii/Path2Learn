@@ -5,89 +5,318 @@
 {% block body %}
 <div class="d-flex">
 
-    <!-- Sidebar -->
+    <!-- SIDEBAR -->
     <nav class="sidebar vh-100 sticky-top bg-dark">
         <div class="p-4 h-100 d-flex flex-column">
-            <h5 class="text-white mb-4"><i class="bi bi-patch-question-fill me-2"></i> Gestion des Quiz</h5>
-            <div class="list-group list-group-borderless flex-grow-1">
+            <h5 class="text-white mb-4">
+                <i class="bi bi-patch-question-fill me-2"></i> Gestion des Quiz
+            </h5>
+
+            <div class="list-group list-group-flush flex-grow-1">
                 <a class="list-group-item active" href="#">Questions</a>
-                <a class="list-group-item mt-3" href="{{ path('admin_dashboard') }}">Retour Dashboard</a>
+                <a class="list-group-item mt-3" href="{{ path('admin_dashboard') }}">
+                    ⬅ Retour Dashboard
+                </a>
             </div>
         </div>
     </nav>
 
-    <!-- Main content -->
-    <div class="flex-grow-1 p-4" style="background:#f0f2f5;">
+    <!-- MAIN CONTENT -->
+    <div class="flex-grow-1 p-4" style="background:#f4f6f9;">
 
-        <h4>Questions & Choix</h4>
+        <h4 class="mb-4">Questions & Choix</h4>
 
-        <!-- Liste des questions -->
+        {# ================= FLASH MESSAGES ================= #}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle me-2"></i>{{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+        
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>{{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+
+        {# ================= QUESTIONS ================= #}
         {% for question in questions %}
             <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-white fw-bold">
-                    {{ question.titre }}
-                    <span class="text-muted small float-end">
-                        Durée: {{ question.duree }} min | Note max: {{ question.noteMax }}
-                        {% if question.user %} | Créé par: {{ question.user.username }} {% endif %}
-                    </span>
-                </div>
                 <div class="card-body">
-                    <p>{{ question.description }}</p>
-                    <ul class="list-group mb-3">
+
+                    <!-- HEADER -->
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h5 class="mb-1">{{ question.titre }}</h5>
+                            <small class="text-muted">
+                                ⏱ {{ question.duree }} min · 🎯 {{ question.noteMax }} pts
+                                {% if question.user %} · 👤 {{ question.user.username }}{% endif %}
+                            </small>
+                        </div>
+
+                        <!-- ACTIONS QUESTION -->
+                        <div class="btn-group btn-group-sm">
+                            <a href="{{ path('edit_question', {'id': question.id}) }}"
+                               class="btn btn-outline-success" title="Modifier">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <form method="post"
+                                  action="{{ path('delete_question', {'id': question.id}) }}"
+                                  onsubmit="return confirm('Supprimer cette question ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_question_' ~ question.id) }}">
+                                <button class="btn btn-outline-danger" title="Supprimer">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- DESCRIPTION -->
+                    <p class="text-secondary mb-3">{{ question.description }}</p>
+
+                    <!-- CHOIX -->
+                    <ul class="list-group list-group-flush mb-3">
                         {% for choix in question.choix %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                {{ choix.contenu }}
-                                {% if choix.estCorrect %}
-                                    <span class="badge bg-success">Correct</span>
-                                {% else %}
-                                    <span class="badge bg-secondary">Incorrect</span>
-                                {% endif %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+
+                                <div>
+                                    {{ choix.contenu }}
+                                    {% if choix.estCorrect %}
+                                        <span class="badge bg-success ms-2">Correct</span>
+                                    {% else %}
+                                        <span class="badge bg-light text-muted ms-2">Incorrect</span>
+                                    {% endif %}
+                                </div>
+
+                                <!-- ACTIONS CHOIX -->
+                                <div class="d-flex gap-2">
+                                    <a href="{{ path('edit_choix', {'id': choix.id}) }}"
+                                       class="text-success" title="Modifier">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+
+                                    <form method="post"
+                                          action="{{ path('delete_choix', {'id': choix.id}) }}"
+                                          onsubmit="return confirm('Supprimer ce choix ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_choix_' ~ choix.id) }}">
+                                        <button class="btn btn-link text-danger p-0" title="Supprimer">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </li>
                         {% else %}
-                            <li class="list-group-item text-muted">Aucun choix ajouté</li>
+                            <li class="list-group-item text-muted px-0">Aucun choix ajouté</li>
                         {% endfor %}
                     </ul>
 
-                    <!-- Bouton pour ajouter un choix -->
-                    <a href="{{ path('add_choix', {'questionId': question.id}) }}" class="btn btn-sm btn-primary">
-                        Ajouter un choix
+                    <!-- AJOUT CHOIX -->
+                    <a href="{{ path('add_choix', {'questionId': question.id}) }}"
+                       class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-plus-circle"></i> Ajouter un choix
                     </a>
+
                 </div>
             </div>
         {% else %}
-            <p>Aucune question disponible.</p>
+            <p class="text-muted">Aucune question disponible.</p>
         {% endfor %}
 
-        <!-- Formulaire ajout question -->
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white fw-bold">Ajouter une Question</div>
+        {# ================= FORMULAIRE QUESTION ================= #}
+        <div class="card border-0 shadow-sm mt-5">
+            <div class="card-header bg-white fw-bold">
+                {% if editMode %}
+                    ✏ Modifier la question
+                {% else %}
+                    ➕ Ajouter une question
+                {% endif %}
+            </div>
+
             <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
-
+                {{ form_start(form, {'attr': {'id': 'question_form', 'novalidate': 'novalidate'}}) }}
+                <input type="hidden" name="form_name" value="{{ form.vars.name }}">
+                
+                <div class="row g-3">
                     <div class="col-md-6">
-                        {{ form_row(form.titre) }}
+                        <div class="mb-3">
+                            {{ form_label(form.titre, "Titre *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            {{ form_widget(form.titre, {'attr': {'class': 'form-control' ~ (form.titre.vars.errors|length > 0 ? ' is-invalid' : '')}}) }}
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.titre) }}
+                            </div>
+                        </div>
                     </div>
 
                     <div class="col-md-3">
-                        {{ form_row(form.duree) }}
+                        <div class="mb-3">
+                            {{ form_label(form.duree, "Durée (minutes) *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            {{ form_widget(form.duree, {'attr': {'class': 'form-control' ~ (form.duree.vars.errors|length > 0 ? ' is-invalid' : '')}}) }}
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.duree) }}
+                            </div>
+                        </div>
                     </div>
 
                     <div class="col-md-3">
-                        {{ form_row(form.noteMax) }}
+                        <div class="mb-3">
+                            {{ form_label(form.noteMax, "Note maximale *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            {{ form_widget(form.noteMax, {'attr': {'class': 'form-control' ~ (form.noteMax.vars.errors|length > 0 ? ' is-invalid' : '')}}) }}
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.noteMax) }}
+                            </div>
+                        </div>
                     </div>
 
                     <div class="col-12">
-                        {{ form_row(form.description) }}
+                        <div class="mb-3">
+                            {{ form_label(form.description, "Description *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                            {{ form_widget(form.description, {'attr': {'class': 'form-control' ~ (form.description.vars.errors|length > 0 ? ' is-invalid' : ''), 'rows': 4}}) }}
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.description) }}
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary">Ajouter</button>
-                    </div>
+                    <div class="col-12 d-flex gap-2">
+                        <button type="submit"
+                                class="btn {% if editMode %}btn-success{% else %}btn-primary{% endif %}">
+                            <i class="bi {% if editMode %}bi-check-circle-fill{% else %}bi-plus-circle-fill{% endif %}"></i>
+                            {% if editMode %} Mettre à jour {% else %} Ajouter {% endif %}
+                        </button>
 
+                        {% if editMode %}
+                            <a href="{{ path('quiz_admin') }}" class="btn btn-secondary">
+                                Annuler
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
                 {{ form_end(form) }}
             </div>
         </div>
-
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Validation en temps réel
+    const form = document.getElementById('question_form');
+    
+    if (form) {
+        // Validation à la soumission
+        form.addEventListener('submit', function(event) {
+            let isValid = true;
+            const requiredFields = form.querySelectorAll('[required]');
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                    if (errorDiv) {
+                        errorDiv.textContent = 'Ce champ est obligatoire';
+                    }
+                    isValid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                    const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                    if (errorDiv) {
+                        errorDiv.textContent = '';
+                    }
+                }
+            });
+            
+            // Validation pour les nombres positifs
+            const numberFields = form.querySelectorAll('input[type="number"]');
+            numberFields.forEach(field => {
+                if (field.value.trim()) {
+                    const value = parseInt(field.value);
+                    if (isNaN(value) || value <= 0) {
+                        field.classList.add('is-invalid');
+                        const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                        if (errorDiv) {
+                            errorDiv.textContent = 'Veuillez entrer un nombre positif';
+                        }
+                        isValid = false;
+                    }
+                }
+            });
+            
+            if (!isValid) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // Scroll vers la première erreur
+                const firstError = form.querySelector('.is-invalid');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                }
+            }
+        });
+        
+        // Validation en temps réel
+        form.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('blur', function() {
+                validateField(this);
+            });
+            
+            field.addEventListener('input', function() {
+                // Effacer l'erreur quand l'utilisateur commence à taper
+                if (this.classList.contains('is-invalid')) {
+                    this.classList.remove('is-invalid');
+                    const errorDiv = this.closest('.mb-3')?.querySelector('.text-danger');
+                    if (errorDiv) {
+                        errorDiv.textContent = '';
+                    }
+                }
+            });
+        });
+    }
+    
+    function validateField(field) {
+        if (field.hasAttribute('required') && !field.value.trim()) {
+            field.classList.add('is-invalid');
+            const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+            if (errorDiv) {
+                errorDiv.textContent = 'Ce champ est obligatoire';
+            }
+            return false;
+        }
+        
+        // Validation nombre
+        if (field.type === 'number' && field.value.trim()) {
+            const value = parseInt(field.value);
+            if (isNaN(value) || value <= 0) {
+                field.classList.add('is-invalid');
+                const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                if (errorDiv) {
+                    errorDiv.textContent = 'Veuillez entrer un nombre positif';
+                }
+                return false;
+            }
+        }
+        
+        // Si tout est valide
+        field.classList.remove('is-invalid');
+        const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+        if (errorDiv) {
+            errorDiv.textContent = '';
+        }
+        return true;
+    }
+    
+    // Initialiser les champs avec des classes d'erreur si nécessaire
+    document.querySelectorAll('.text-danger:not(:empty)').forEach(errorDiv => {
+        const input = errorDiv.closest('.mb-3')?.querySelector('input, select, textarea');
+        if (input) {
+            input.classList.add('is-invalid');
+        }
+    });
+});
+</script>
 {% endblock %}

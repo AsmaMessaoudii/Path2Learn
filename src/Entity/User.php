@@ -314,4 +314,9 @@ class User
 
         return $this;
     }
+      public function getUsername(): string
+    {
+        return $this->prenom . ' ' . $this->nom;
+    }
+
 }
