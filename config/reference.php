@@ -1534,6 +1534,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     },
  * }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  * @psalm-type VichUploaderConfig = array{
  *     default_filename_attribute_suffix?: scalar|Param|null, // Default: "_name"
@@ -1574,6 +1575,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     }>,
  * }
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1589,9 +1592,12 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     monolog?: MonologConfig,
  *     knp_snappy?: KnpSnappyConfig,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *     vich_uploader?: VichUploaderConfig,
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1610,9 +1616,12 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         maker?: MakerConfig,
  *         knp_snappy?: KnpSnappyConfig,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *         vich_uploader?: VichUploaderConfig,
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1629,9 +1638,12 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         monolog?: MonologConfig,
  *         knp_snappy?: KnpSnappyConfig,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *         vich_uploader?: VichUploaderConfig,
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1649,9 +1661,12 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         monolog?: MonologConfig,
  *         knp_snappy?: KnpSnappyConfig,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
  *         vich_uploader?: VichUploaderConfig,
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

@@ -17,6 +17,9 @@ class CoursRepository extends ServiceEntityRepository
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
     //    /**
     //     * @return Cours[] Returns an array of Cours objects
     //     */
@@ -42,6 +45,7 @@ class CoursRepository extends ServiceEntityRepository
     //        ;
     //    }
 }
+<<<<<<< HEAD
 =======
     public function getStatisticsByStatus(): array
     {
@@ -220,3 +224,5 @@ public function searchPublishedCourses(string $searchTerm): array
 }
 }
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz

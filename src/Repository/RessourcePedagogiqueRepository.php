@@ -17,6 +17,9 @@ class RessourcePedagogiqueRepository extends ServiceEntityRepository
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
     //    /**
     //     * @return RessourcePedagogique[] Returns an array of RessourcePedagogique objects
     //     */
@@ -42,6 +45,7 @@ class RessourcePedagogiqueRepository extends ServiceEntityRepository
     //        ;
     //    }
 }
+<<<<<<< HEAD
 =======
     public function findAllSorted(string $sortBy = 'titre', string $direction = 'ASC'): array
     {
@@ -80,3 +84,5 @@ class RessourcePedagogiqueRepository extends ServiceEntityRepository
     }
 }
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz

@@ -17,6 +17,9 @@ class QuestionRepository extends ServiceEntityRepository
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
     /**
      * Recherche des questions selon différents critères avec tri
      */
@@ -119,6 +122,7 @@ class QuestionRepository extends ServiceEntityRepository
     }
 
     
+<<<<<<< HEAD
 }
 =======
     //    /**
@@ -147,3 +151,6 @@ class QuestionRepository extends ServiceEntityRepository
     //    }
 }
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+}
+>>>>>>> gestionquiz

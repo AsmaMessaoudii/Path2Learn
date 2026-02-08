@@ -8,9 +8,12 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 use Symfony\Component\Validator\Constraints as Assert;
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
 
 #[ORM\Entity(repositoryClass: CoursRepository::class)]
 class Cours
@@ -22,6 +25,9 @@ class Cours
 
     #[ORM\Column(length: 100)]
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
     private ?string $titre = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -46,6 +52,7 @@ class Cours
     private ?string $statut = null;
 
     #[ORM\ManyToOne(inversedBy: 'cours')]
+<<<<<<< HEAD
 =======
     #[Assert\NotBlank(message: "Le titre du cours est obligatoire")]
     #[Assert\Length(
@@ -121,11 +128,14 @@ class Cours
     #[ORM\ManyToOne(inversedBy: 'cours')]
    // #[Assert\NotNull(message: "L'utilisateur est obligatoire")]
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
     private ?User $user = null;
 
     /**
      * @var Collection<int, RessourcePedagogique>
      */
+<<<<<<< HEAD
 <<<<<<< HEAD
     #[ORM\OneToMany(targetEntity: RessourcePedagogique::class, mappedBy: 'cours')]
 =======
@@ -137,15 +147,21 @@ class Cours
     )]
     #[Assert\Valid]
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+    #[ORM\OneToMany(targetEntity: RessourcePedagogique::class, mappedBy: 'cours')]
+>>>>>>> gestionquiz
     private Collection $ressourcePedagogiques;
 
     public function __construct()
     {
         $this->ressourcePedagogiques = new ArrayCollection();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         $this->dateCreation = new \DateTime();
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
     }
 
     public function getId(): ?int
@@ -162,9 +178,13 @@ class Cours
     {
         $this->titre = $titre;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+>>>>>>> gestionquiz
         return $this;
     }
 
@@ -177,9 +197,13 @@ class Cours
     {
         $this->description = $description;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+>>>>>>> gestionquiz
         return $this;
     }
 
@@ -192,9 +216,13 @@ class Cours
     {
         $this->niveau = $niveau;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+>>>>>>> gestionquiz
         return $this;
     }
 
@@ -207,9 +235,13 @@ class Cours
     {
         $this->matiere = $matiere;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+>>>>>>> gestionquiz
         return $this;
     }
 
@@ -222,9 +254,13 @@ class Cours
     {
         $this->duree = $duree;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+>>>>>>> gestionquiz
         return $this;
     }
 
@@ -237,9 +273,13 @@ class Cours
     {
         $this->dateCreation = $dateCreation;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+>>>>>>> gestionquiz
         return $this;
     }
 
@@ -252,9 +292,13 @@ class Cours
     {
         $this->emailProf = $emailProf;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+>>>>>>> gestionquiz
         return $this;
     }
 
@@ -267,9 +311,13 @@ class Cours
     {
         $this->statut = $statut;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+>>>>>>> gestionquiz
         return $this;
     }
 
@@ -282,9 +330,13 @@ class Cours
     {
         $this->user = $user;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+>>>>>>> gestionquiz
         return $this;
     }
 
@@ -303,9 +355,13 @@ class Cours
             $ressourcePedagogique->setCours($this);
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+>>>>>>> gestionquiz
         return $this;
     }
 
@@ -313,18 +369,26 @@ class Cours
     {
         if ($this->ressourcePedagogiques->removeElement($ressourcePedagogique)) {
 <<<<<<< HEAD
+<<<<<<< HEAD
             // set the owning side to null (unless already changed)
 =======
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+            // set the owning side to null (unless already changed)
+>>>>>>> gestionquiz
             if ($ressourcePedagogique->getCours() === $this) {
                 $ressourcePedagogique->setCours(null);
             }
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
 
         return $this;
     }
 }
+<<<<<<< HEAD
 =======
         return $this;
     }
@@ -334,3 +398,5 @@ class Cours
     }
 }
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz

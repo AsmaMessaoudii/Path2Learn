@@ -8,9 +8,13 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 <<<<<<< HEAD
+<<<<<<< HEAD
 use Symfony\Component\Validator\Constraints as Assert;
 =======
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+use Symfony\Component\Validator\Constraints as Assert;
+>>>>>>> gestionquiz
 
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
 class Question
@@ -22,6 +26,9 @@ class Question
 
     #[ORM\Column(length: 150)]
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
     #[Assert\NotBlank(message: "Le titre est requis")]
     #[Assert\Length(
         min: 5,
@@ -37,11 +44,14 @@ class Question
         min: 10,
         minMessage: "La description doit contenir au moins {{ limit }} caractères"
     )]
+<<<<<<< HEAD
 =======
     private ?string $titre = null;
 
     #[ORM\Column(type: Types::TEXT)]
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
@@ -49,6 +59,9 @@ class Question
 
     #[ORM\Column]
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
     #[Assert\NotBlank(message: "La durée est requise")]
     #[Assert\Positive(message: "La durée doit être positive")]
     #[Assert\Range(
@@ -66,11 +79,14 @@ class Question
         max: 100,
         notInRangeMessage: "La note doit être entre {{ min }} et {{ max }} points"
     )]
+<<<<<<< HEAD
 =======
     private ?int $duree = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 0)]
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
     private ?string $noteMax = null;
 
     #[ORM\ManyToOne(inversedBy: 'question')]
@@ -80,10 +96,14 @@ class Question
      * @var Collection<int, Choix>
      */
 <<<<<<< HEAD
+<<<<<<< HEAD
     #[ORM\OneToMany(mappedBy: 'question', targetEntity: Choix::class, cascade: ['remove'], orphanRemoval: true)]
 =======
     #[ORM\OneToMany(targetEntity: Choix::class, mappedBy: 'question')]
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+    #[ORM\OneToMany(mappedBy: 'question', targetEntity: Choix::class, cascade: ['remove'], orphanRemoval: true)]
+>>>>>>> gestionquiz
     private Collection $choix;
 
     public function __construct()
@@ -92,9 +112,13 @@ class Question
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+>>>>>>> gestionquiz
     public function getId(): ?int
     {
         return $this->id;
@@ -130,6 +154,7 @@ class Question
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       public function setDateCreation(\DateTime $dateCreation): self
     {
         $this->dateCreation = $dateCreation;
@@ -139,6 +164,11 @@ class Question
         $this->dateCreation = $dateCreation;
 
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+      public function setDateCreation(\DateTime $dateCreation): self
+    {
+        $this->dateCreation = $dateCreation;
+>>>>>>> gestionquiz
         return $this;
     }
 

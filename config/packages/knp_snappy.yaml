@@ -3,10 +3,14 @@ knp_snappy:
         enabled: true
         binary: '%env(WKHTMLTOPDF_PATH)%'
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
         options: []
     image:
         enabled: true
         binary: '%env(WKHTMLTOIMAGE_PATH)%'
+<<<<<<< HEAD
         options: []
 =======
         options:
@@ -15,3 +19,6 @@ knp_snappy:
         enabled: true
         binary: '%env(WKHTMLTOIMAGE_PATH)%'
 >>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+        options: []
+>>>>>>> gestionquiz
