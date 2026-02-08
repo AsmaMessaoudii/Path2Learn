@@ -353,11 +353,19 @@ Portfolio Section START -->
 			{% if portfolio %}
 				<!-- PORTFOLIO INFO -->
 				<div class="mb-5">
+					<!-- PORTFOLIO HEADER WITH BUTTONS -->
 					<div class="d-flex justify-content-between align-items-center mb-1">
 						<div class="d-flex align-items-center gap-2">
 							<h4 class="fw-bold mb-0">
 								{{ portfolio.titre }}
 							</h4>
+
+							<!-- EXPORT PDF BUTTON - Version icône seulement -->
+							<a href="{{ path('home_portfolio_export_pdf', { id: portfolio.id }) }}"
+							   class="btn btn-sm btn-light text-danger" 
+							   title="Exporter en PDF" onclick="this.disabled=true; this.innerHTML='<i class=\"bi bi-hourglass\"></i>';">
+								<i class="bi bi-file-pdf"></i>
+							</a>
 
 							<!-- EDIT BUTTON -->
 							<a href="{{ path('home_portfolio_edit', { id: portfolio.id }) }}"
@@ -381,9 +389,14 @@ Portfolio Section START -->
 							</form>
 						</div>
 
-						<small class="text-muted">
-							Créé le {{ portfolio.dateCreation|date('d/m/Y') }}
-						</small>
+						<div class="d-flex align-items-center gap-3">
+							<small class="text-muted">
+								{{ portfolio.projet|length }} projet(s)
+							</small>
+							<small class="text-muted">
+								Créé le {{ portfolio.dateCreation|date('d/m/Y') }}
+							</small>
+						</div>
 					</div>
 
 					<p class="text-muted mb-0">
@@ -741,6 +754,26 @@ Footer END -->
 .badge {
     font-size: 0.7em;
     padding: 0.25em 0.5em;
+}
+
+.btn-light {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+.btn-light:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+.btn-light.text-danger:hover {
+    color: #dc3545 !important;
+    background-color: #f8d7da;
+}
+
+.btn-light.text-secondary:hover {
+    color: #6c757d !important;
+    background-color: #e2e3e5;
 }
 
 .input-group-text {

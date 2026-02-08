@@ -29,22 +29,30 @@
 
                         <!-- PORTFOLIO INFO -->
                         <div class="mb-5">
+                            <!-- PORTFOLIO HEADER WITH BUTTONS -->
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <div class="d-flex align-items-center gap-2">
                                     <h4 class="fw-bold mb-0">
                                         {{ portfolio.titre }}
                                     </h4>
+<!-- EXPORT PDF BUTTON - Version icône seulement -->
+<a href="{{ path('portfolio_export_pdf', { id: portfolio.id }) }}"
+   class="btn btn-sm btn-light text-danger" 
+   title="Exporter en PDF" onclick="this.disabled=true; this.innerHTML='<i class=\"bi bi-hourglass\"></i>';
+    ">
+    <i class="bi bi-file-pdf"></i>
+</a>
+
+                                    
 
                                     <!-- DELETE BUTTON -->
                                     <form method="post"
                                           action="{{ path('portfolio_delete', { id: portfolio.id }) }}"
                                           onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce portfolio ?');"
                                           class="d-inline">
-
                                         <input type="hidden"
                                                name="_token"
                                                value="{{ csrf_token('delete-portfolio-' ~ portfolio.id) }}">
-
                                         <button class="btn btn-sm btn-light text-secondary"
                                                 title="Supprimer">
                                             <i class="bi bi-trash"></i>
@@ -52,9 +60,14 @@
                                     </form>
                                 </div>
 
-                                <small class="text-muted">
-                                    {{ portfolio.projet|length }} projet(s)
-                                </small>
+                                <div class="d-flex align-items-center gap-3">
+                                    <small class="text-muted">
+                                        {{ portfolio.projet|length }} projet(s)
+                                    </small>
+                                    <small class="text-muted">
+                                        Créé le {{ portfolio.dateCreation|date('d/m/Y') }}
+                                    </small>
+                                </div>
                             </div>
 
                             <p class="text-muted mb-0">
@@ -155,9 +168,11 @@
                             <div class="text-center mt-4">
                                 <i class="bi bi-inbox fs-1 text-muted mb-3"></i>
                                 <h5 class="fw-bold">Aucun Projet</h5>
+                                <p class="text-muted mb-4">
+                                    Aucun projet trouvé dans ce portfolio.
+                                </p>
                                 
                             </div>
-
                         {% else %}
                             <div class="row g-4 mt-3">
                                 {% set colors = ['#7bb7e0','#8fd6ad','#95fbb9','#c7a0d7','#e9be79'] %}
@@ -194,10 +209,7 @@
                                     </div>
                                 {% endfor %}
 
-                                <!-- ADD NEW PROJECT CARD -->
-                                <div class="col-md-3">
-                                    
-                                </div>
+                                
                             </div>
                         {% endif %}
 
@@ -262,6 +274,26 @@
 .badge {
     font-size: 0.7em;
     padding: 0.25em 0.5em;
+}
+
+.btn-light {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+.btn-light:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+.btn-light.text-danger:hover {
+    color: #dc3545 !important;
+    background-color: #f8d7da;
+}
+
+.btn-light.text-secondary:hover {
+    color: #6c757d !important;
+    background-color: #e2e3e5;
 }
 </style>
 {% endblock %}

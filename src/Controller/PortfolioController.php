@@ -11,6 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 final class PortfolioController extends AbstractController
 {
@@ -109,13 +111,26 @@ final class PortfolioController extends AbstractController
         $form = $this->createForm(PortfolioType::class, $portfolio);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($portfolio);
-            $em->flush();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                try {
+                    // Nettoyage des données
+                    if (method_exists($portfolio, 'sanitize')) {
+                        $portfolio->sanitize();
+                    }
+                    
+                    $em->persist($portfolio);
+                    $em->flush();
 
-            $this->addFlash('success', 'Portfolio créé avec succès !');
-
-            return $this->redirectToRoute('home_portfolio');
+                    $this->addFlash('success', 'Portfolio créé avec succès !');
+                    return $this->redirectToRoute('home_portfolio');
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Erreur lors de la création : ' . $e->getMessage());
+                }
+            } else {
+                // Formulaire invalide - afficher un message d'erreur
+                $this->addFlash('error', 'Veuillez corriger les erreurs dans le formulaire.');
+            }
         }
 
         return $this->render('home/HomeCreatePortfolio.html.twig', [
@@ -132,13 +147,24 @@ final class PortfolioController extends AbstractController
         $form = $this->createForm(PortfolioType::class, $portfolio);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($portfolio);
-            $em->flush();
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                try {
+                    if (method_exists($portfolio, 'sanitize')) {
+                        $portfolio->sanitize();
+                    }
+                    
+                    $em->persist($portfolio);
+                    $em->flush();
 
-            $this->addFlash('success', 'Portfolio créé avec succès !');
-
-            return $this->redirectToRoute('app_portfolio');
+                    $this->addFlash('success', 'Portfolio créé avec succès !');
+                    return $this->redirectToRoute('app_portfolio');
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Erreur : ' . $e->getMessage());
+                }
+            } else {
+                $this->addFlash('error', 'Veuillez corriger les erreurs.');
+            }
         }
 
         return $this->render('portfolio/CreatePortfolio.html.twig', [
@@ -157,12 +183,22 @@ final class PortfolioController extends AbstractController
         $form = $this->createForm(PortfolioType::class, $portfolio);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
-
-            $this->addFlash('success', 'Portfolio modifié avec succès !');
-
-            return $this->redirectToRoute('home_portfolio');
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                try {
+                    if (method_exists($portfolio, 'sanitize')) {
+                        $portfolio->sanitize();
+                    }
+                    
+                    $em->flush();
+                    $this->addFlash('success', 'Portfolio modifié avec succès !');
+                    return $this->redirectToRoute('home_portfolio');
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Erreur lors de la modification : ' . $e->getMessage());
+                }
+            } else {
+                $this->addFlash('error', 'Veuillez corriger les erreurs.');
+            }
         }
 
         return $this->render('home/HomeUpdatePortfolio.html.twig', [
@@ -182,12 +218,22 @@ final class PortfolioController extends AbstractController
         $form = $this->createForm(PortfolioType::class, $portfolio);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
-
-            $this->addFlash('success', 'Portfolio modifié avec succès !');
-
-            return $this->redirectToRoute('app_portfolio');
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                try {
+                    if (method_exists($portfolio, 'sanitize')) {
+                        $portfolio->sanitize();
+                    }
+                    
+                    $em->flush();
+                    $this->addFlash('success', 'Portfolio modifié avec succès !');
+                    return $this->redirectToRoute('app_portfolio');
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Erreur : ' . $e->getMessage());
+                }
+            } else {
+                $this->addFlash('error', 'Veuillez corriger les erreurs.');
+            }
         }
 
         return $this->render('portfolio/UpdatePortfolio.html.twig', [
@@ -208,10 +254,13 @@ final class PortfolioController extends AbstractController
             'delete-portfolio-' . $portfolio->getId(),
             $request->request->get('_token')
         )) {
-            $em->remove($portfolio);
-            $em->flush();
-
-            $this->addFlash('success', 'Portfolio supprimé avec succès !');
+            try {
+                $em->remove($portfolio);
+                $em->flush();
+                $this->addFlash('success', 'Portfolio supprimé avec succès !');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Erreur lors de la suppression : ' . $e->getMessage());
+            }
         } else {
             $this->addFlash('error', 'Token CSRF invalide.');
         }
@@ -228,10 +277,13 @@ final class PortfolioController extends AbstractController
     ): Response
     {
         if ($this->isCsrfTokenValid('delete-portfolio-' . $portfolio->getId(), $request->request->get('_token'))) {
-            $em->remove($portfolio);
-            $em->flush();
-
-            $this->addFlash('success', 'Portfolio supprimé avec succès !');
+            try {
+                $em->remove($portfolio);
+                $em->flush();
+                $this->addFlash('success', 'Portfolio supprimé avec succès !');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Erreur : ' . $e->getMessage());
+            }
         } else {
             $this->addFlash('error', 'Token CSRF invalide.');
         }
@@ -250,5 +302,105 @@ final class PortfolioController extends AbstractController
     public function resetFilters(): Response
     {
         return $this->redirectToRoute('app_portfolio');
+    }
+
+    #[Route('/home/portfolio/{id}/export-pdf', name: 'home_portfolio_export_pdf')]
+    public function exportPdfFront(Portfolio $portfolio, ProjetRepository $projetRepository): Response
+    {
+        // Increase memory and timeout limits
+        ini_set('memory_limit', '256M');
+        set_time_limit(300);
+        
+        // Get all projects for this portfolio
+        $projets = $projetRepository->findBy(['portfolio' => $portfolio], ['dateRealisation' => 'DESC']);
+        
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+        $pdfOptions->set('isRemoteEnabled', true);
+        $pdfOptions->set('isHtml5ParserEnabled', true);
+        
+        $dompdf = new Dompdf($pdfOptions);
+        
+        try {
+            $html = $this->renderView('portfolio/pdf_export.html.twig', [
+                'portfolio' => $portfolio,
+                'projets' => $projets,
+            ]);
+            
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+            
+            $date = new \DateTime();
+            $filename = 'portfolio_' . $portfolio->getId() . '_' . $date->format('Y-m-d') . '.pdf';
+            
+            // Clean filename
+            $filename = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $filename);
+            
+            $output = $dompdf->output();
+            
+            return new Response($output, 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+                'Content-Length' => strlen($output),
+                'Cache-Control' => 'private, max-age=0, must-revalidate',
+                'Pragma' => 'public'
+            ]);
+            
+        } catch (\Exception $e) {
+            error_log('Portfolio PDF Export Error: ' . $e->getMessage());
+            
+            $this->addFlash('error', 'Erreur lors de la génération du PDF: ' . $e->getMessage());
+            return $this->redirectToRoute('home_portfolio');
+        }
+    }
+
+    #[Route('/portfolio/{id}/export-pdf', name: 'portfolio_export_pdf')]
+    public function exportPdf(int $id, PortfolioRepository $portfolioRepository): Response
+    {
+        $portfolio = $portfolioRepository->find($id);
+        
+        if (!$portfolio) {
+            throw $this->createNotFoundException('Portfolio non trouvé');
+        }
+
+        // Récupérer les projets
+        $projets = $portfolio->getProjet();
+        
+        // Configuration de Dompdf
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'DejaVu Sans, Arial, sans-serif');
+        $pdfOptions->set('isRemoteEnabled', true);
+        $pdfOptions->set('isHtml5ParserEnabled', true);
+        
+        $dompdf = new Dompdf($pdfOptions);
+        
+        // Rendu du template
+        $html = $this->renderView('portfolio/pdf_export.html.twig', [
+            'portfolio' => $portfolio,
+            'projets' => $projets,
+        ]);
+        
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        
+        try {
+            $dompdf->render();
+            
+            // Envoi du PDF
+            $output = $dompdf->output();
+            
+            return new Response($output, 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="portfolio-' . $portfolio->getTitre() . '.pdf"',
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
+            ]);
+            
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erreur lors de la génération du PDF: ' . $e->getMessage());
+            return $this->redirectToRoute('app_portfolio');
+        }
     }
 }

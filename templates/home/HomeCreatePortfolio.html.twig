@@ -7,6 +7,7 @@
 {% block body %}
 
 
+
 <!-- Mirrored from eduport.webestica.com/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 02 Feb 2026 11:03:58 GMT -->
 <head>
 	<title>Education and Course Theme</title>
@@ -944,48 +945,45 @@ Trending courses START -->
 
                     {{ form_start(form) }}
 
-                        <div class="mb-4">
-                            {{ form_label(form.titre, null, {
-                                label_attr: { class: 'form-label fw-semibold' }
-                            }) }}
-                            {{ form_widget(form.titre, {
-                                attr: {
-                                    class: 'form-control form-control-lg',
-                                    placeholder: 'Ex : Portfolio Développeur Web'
-                                }
-                            }) }}
-                            {{ form_errors(form.titre) }}
-                        </div>
+    {# Champ titre avec gestion d'erreur #}
+    <div class="mb-4">
+        {{ form_label(form.titre) }}
+        {{ form_widget(form.titre, {
+            'attr': {
+                'class': 'form-control' ~ (form.titre.vars.errors|length > 0 ? ' is-invalid' : '')
+            }
+        }) }}
+        {% if form.titre.vars.errors|length > 0 %}
+            <div class="invalid-feedback d-block">
+                {% for error in form.titre.vars.errors %}
+                    <div>{{ error.message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 
-                        <div class="mb-4">
-                            {{ form_label(form.description, null, {
-                                label_attr: { class: 'form-label fw-semibold' }
-                            }) }}
-                            {{ form_widget(form.description, {
-                                attr: {
-                                    class: 'form-control',
-                                    rows: 4,
-                                    placeholder: 'Décrivez brièvement votre portfolio...'
-                                }
-                            }) }}
-                            {{ form_errors(form.description) }}
-                        </div>
+    {# Champ description avec gestion d'erreur #}
+    <div class="mb-4">
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description, {
+            'attr': {
+                'class': 'form-control' ~ (form.description.vars.errors|length > 0 ? ' is-invalid' : ''),
+                'rows': 5
+            }
+        }) }}
+        {% if form.description.vars.errors|length > 0 %}
+            <div class="invalid-feedback d-block">
+                {% for error in form.description.vars.errors %}
+                    <div>{{ error.message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 
-                        <!-- Actions -->
-                        <div class="d-flex justify-content-between align-items-center mt-5">
-                            <a href="{{ path('home_portfolio') }}"
-                               class="btn btn-outline-secondary px-4 rounded-pill">
-                                <i class="bi bi-arrow-left me-2"></i>
-                                Retour
-                            </a>
+    {# Bouton submit #}
+    <button type="submit" class="btn btn-primary">Créer</button>
 
-                            <button class="btn btn-primary px-5 py-2 rounded-pill">
-                                <i class="bi bi-check-circle me-2"></i>
-                                Créer le portfolio
-                            </button>
-                        </div>
-
-                    {{ form_end(form) }}
+{{ form_end(form) }}
 
                 </div>
 

@@ -21,47 +21,64 @@
                 <div class="card border-0 shadow-sm p-5">
 
                     <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="fw-bold mb-0">
-        {{ projet.titreProjet }}
-    </h4>
+                        <h4 class="fw-bold mb-0">
+                            {{ projet.titreProjet }}
+                        </h4>
 
-    <div class="d-flex gap-2">
+                        <div class="d-flex gap-2">
+                            
 
-        
+                            <!-- EXPORT PDF -->
+                            <a href="{{ path('projet_export_pdf', { id: projet.id }) }}"
+                               class="btn btn-sm btn-light text-danger export-pdf-btn"
+                               title="Exporter en PDF"
+                               data-id="{{ projet.id }}">
+                                <i class="bi bi-file-pdf"></i>
+                                <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                            </a>
 
-        <!-- DELETE PROJECT -->
-        <form method="post"
-              action="{{ path('project_delete', { id: projet.id }) }}"
-              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce projet ?');">
+                            <!-- DELETE PROJECT -->
+                            <form method="post"
+                                  action="{{ path('project_delete', { id: projet.id }) }}"
+                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce projet ?');">
 
-            <input type="hidden"
-                   name="_token"
-                   value="{{ csrf_token('delete-project-' ~ projet.id) }}">
+                                <input type="hidden"
+                                       name="_token"
+                                       value="{{ csrf_token('delete-project-' ~ projet.id) }}">
 
-            <button class="btn btn-sm btn-light text-danger"
-                    title="Supprimer">
-                <i class="bi bi-trash"></i>
-            </button>
-        </form>
+                                <button class="btn btn-sm btn-light text-danger"
+                                        title="Supprimer">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
 
-    </div>
-</div>
+                    {% if projet.description %}
+                    <div class="mb-4">
+                        <h6 class="text-muted fw-semibold">Description</h6>
+                        <p class="text-muted">{{ projet.description }}</p>
+                    </div>
+                    {% endif %}
 
+                    {% if projet.technologies %}
+                    <div class="mb-4">
+                        <h6 class="text-muted fw-semibold">Technologies utilisées</h6>
+                        <p class="text-muted">{{ projet.technologies }}</p>
+                    </div>
+                    {% endif %}
 
-                    <p class="text-muted">
-                        {{ projet.description }}
-                    </p>
-
-                    <p class="text-muted">
-                        {{ projet.technologies }}
-                    </p>
-
-                    <p class="text-muted">
-    <a href="{{ projet.lienDemo }}" target="_blank" rel="noopener noreferrer">
-        {{ projet.lienDemo }}
-    </a>
-</p>
-
+                    {% if projet.lienDemo %}
+                    <div class="mb-4">
+                        <h6 class="text-muted fw-semibold">Lien de démonstration</h6>
+                        <p class="text-muted">
+                            <a href="{{ projet.lienDemo }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                                {{ projet.lienDemo }}
+                                <i class="bi bi-box-arrow-up-right ms-1"></i>
+                            </a>
+                        </p>
+                    </div>
+                    {% endif %}
 
                     <a href="{{ path('app_portfolio') }}"
                        class="btn btn-sm btn-light mt-4">
@@ -75,4 +92,84 @@
 
     </div>
 </div>
+
+<!-- JavaScript for PDF Export with Loading Indicator -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const exportPdfBtns = document.querySelectorAll('.export-pdf-btn');
+    
+    exportPdfBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const spinner = this.querySelector('.spinner-border');
+            const icon = this.querySelector('.bi-file-pdf');
+            const originalText = this.innerHTML;
+            const projectId = this.getAttribute('data-id');
+            const url = this.getAttribute('href');
+            
+            // Show loading state
+            if (spinner) {
+                spinner.classList.remove('d-none');
+                icon.classList.add('d-none');
+            }
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Génération...';
+            
+            // Store the response for later use
+            let responseClone;
+            
+            // Fetch PDF
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP: ${response.status}`);
+                    }
+                    // Clone the response to use it later
+                    responseClone = response.clone();
+                    return response.blob();
+                })
+                .then(blob => {
+                    // Create download link
+                    const downloadUrl = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = downloadUrl;
+                    
+                    // Get filename from Content-Disposition header or create one
+                    const contentDisposition = responseClone.headers.get('Content-Disposition');
+                    let filename = `projet_${projectId}_${new Date().toISOString().split('T')[0]}.pdf`;
+                    
+                    if (contentDisposition) {
+                        const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                        if (filenameMatch) {
+                            filename = filenameMatch[1];
+                        }
+                    }
+                    
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    
+                    // Cleanup
+                    window.URL.revokeObjectURL(downloadUrl);
+                    document.body.removeChild(a);
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Erreur lors de l\'export PDF. Veuillez réessayer.\n' + error.message);
+                })
+                .finally(() => {
+                    // Reset button state
+                    if (spinner) {
+                        spinner.classList.add('d-none');
+                        icon.classList.remove('d-none');
+                    }
+                    this.disabled = false;
+                    this.innerHTML = originalText;
+                });
+        });
+    });
+});
+</script>
 {% endblock %}

@@ -946,6 +946,14 @@ Trending courses START -->
                         <i class="bi bi-pencil"></i>
                     </a>
 
+                    
+                    <!-- EXPORT PDF -->
+<a href="{{ path('front_projet_export_pdf', { id: projet.id }) }}"
+   class="btn btn-sm btn-outline-danger"
+   title="Exporter en PDF">
+    <i class="bi bi-file-pdf"></i>
+</a>
+
                     <!-- DELETE PROJECT -->
                     <form method="post"
                           action="{{ path('front_project_delete', { id: projet.id }) }}"
