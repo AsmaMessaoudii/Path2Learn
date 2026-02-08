@@ -16,7 +16,6 @@ class QuizController extends AbstractController
     #[Route('/quiz', name: 'quiz')]
     public function index(EntityManagerInterface $entityManager): Response
     {
-        // Récupérer tous les utilisateurs pour la checkbox
         $users = $entityManager->getRepository(User::class)->findAll();
         $questions = $entityManager->getRepository(Question::class)->findAll();
         
@@ -29,7 +28,6 @@ class QuizController extends AbstractController
     #[Route('/quiz/play/{id}', name: 'quiz_play')]
     public function play(int $id, EntityManagerInterface $entityManager, Request $request): Response
     {
-        // Récupérer le paramètre d'utilisateur depuis l'URL
         $userId = $request->query->get('user');
         
         if (!$userId) {
@@ -37,24 +35,31 @@ class QuizController extends AbstractController
             return $this->redirectToRoute('quiz');
         }
         
-        // Vérifier que l'utilisateur existe
         $user = $entityManager->getRepository(User::class)->find($userId);
         if (!$user) {
             $this->addFlash('error', 'Utilisateur non trouvé.');
             return $this->redirectToRoute('quiz');
         }
         
-        // Récupérer la question
         $question = $entityManager->getRepository(Question::class)->find($id);
         
         if (!$question) {
             throw $this->createNotFoundException('Question non trouvée.');
         }
         
+        // Compter le nombre de réponses correctes
+        $correctCount = 0;
+        foreach ($question->getChoix() as $choice) {
+            if ($choice->isEstCorrect()) {
+                $correctCount++;
+            }
+        }
+        
         return $this->render('quiz/play.html.twig', [
             'question' => $question,
             'selectedUserId' => $userId,
             'selectedUser' => $user,
+            'correctCount' => $correctCount,
         ]);
     }
 
@@ -64,10 +69,10 @@ class QuizController extends AbstractController
         $data = json_decode($request->getContent(), true);
         
         $questionId = $data['questionId'] ?? null;
-        $selectedChoiceId = $data['selectedChoiceId'] ?? null;
+        $selectedChoicesIds = $data['selectedChoicesIds'] ?? [];
         $userId = $data['userId'] ?? null;
         
-        if (!$questionId || !$selectedChoiceId || !$userId) {
+        if (!$questionId || !$userId) {
             return new JsonResponse([
                 'success' => false,
                 'error' => 'Données manquantes'
@@ -83,30 +88,83 @@ class QuizController extends AbstractController
             ], 404);
         }
         
-        $isCorrect = false;
-        $correctChoiceId = null;
+        // Récupérer toutes les réponses correctes
+        $allCorrectChoiceIds = [];
+        $correctCount = 0;
         
         foreach ($question->getChoix() as $choice) {
             if ($choice->isEstCorrect()) {
-                $correctChoiceId = $choice->getId();
-            }
-            
-            if ($choice->getId() == $selectedChoiceId && $choice->isEstCorrect()) {
-                $isCorrect = true;
+                $allCorrectChoiceIds[] = $choice->getId();
+                $correctCount++;
             }
         }
         
-        $score = $isCorrect ? $question->getNoteMax() : 0;
+        // Appliquer la logique de notation
+        $score = $this->calculateScore(
+            $selectedChoicesIds,
+            $allCorrectChoiceIds,
+            $question->getNoteMax(),
+            $correctCount
+        );
         
         return new JsonResponse([
             'success' => true,
-            'isCorrect' => $isCorrect,
             'score' => $score,
             'maxScore' => $question->getNoteMax(),
-            'correctChoiceId' => $correctChoiceId,
-            'userId' => $userId,
-            'questionId' => $questionId,
-            'message' => $isCorrect ? 'Bonne réponse !' : 'Mauvaise réponse.'
+            'correctChoiceIds' => $allCorrectChoiceIds,
+            'selectedChoiceIds' => $selectedChoicesIds,
+            'correctCount' => $correctCount,
+            'isCorrect' => $score > 0,
+            'message' => $score > 0 ? 'Bonne réponse !' : 'Mauvaise réponse.'
         ]);
+    }
+    
+    /**
+     * Calcule le score selon votre logique
+     */
+    private function calculateScore(
+        array $selectedChoices, 
+        array $correctChoices, 
+        int $maxScore, 
+        int $correctCount
+    ): int {
+        // Cas 1: Aucune réponse cochée
+        if (empty($selectedChoices)) {
+            return 0;
+        }
+        
+        // Convertir en entiers pour la comparaison
+        $selectedChoices = array_map('intval', $selectedChoices);
+        $correctChoices = array_map('intval', $correctChoices);
+        
+        // Identifier les bonnes et mauvaises réponses sélectionnées
+        $correctSelected = array_intersect($selectedChoices, $correctChoices);
+        $incorrectSelected = array_diff($selectedChoices, $correctChoices);
+        
+        // Cas 2: Une réponse fausse cochée (même si une bonne réponse est cochée)
+        if (!empty($incorrectSelected)) {
+            return 0;
+        }
+        
+        // Cas 3: Question à choix multiples, utilisateur n'en coche qu'une seule
+        if ($correctCount > 1 && count($selectedChoices) < count($correctChoices)) {
+            return 0;
+        }
+        
+        // Cas 5: EXACTEMENT toutes les bonnes réponses cochées et aucune mauvaise
+        if (count($selectedChoices) === count($correctChoices) && 
+            count($correctSelected) === count($correctChoices) && 
+            empty($incorrectSelected)) {
+            return $maxScore;
+        }
+        
+        // Si c'est une question à choix unique (une seule bonne réponse)
+        if ($correctCount === 1 && count($selectedChoices) === 1 && 
+            in_array($selectedChoices[0], $correctChoices)) {
+            return $maxScore;
+        }
+        
+        // Par défaut, 0
+        return 0;
     }
 }

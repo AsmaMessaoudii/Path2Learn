@@ -4,11 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Question;
 use App\Form\QuestionType;
+use App\Repository\QuestionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 
 class AdminController extends AbstractController
 {
@@ -56,8 +61,13 @@ class AdminController extends AbstractController
                 }
             }
         }
+        
 
-        $questions = $entityManager->getRepository(Question::class)->findAll();
+        // Tri par défaut : alphabétique croissant
+        $questions = $entityManager->getRepository(Question::class)->findBy(
+            [],
+            ['titre' => 'ASC']
+        );
 
         return $this->render('admin/quiz_admin.html.twig', [
             'questions' => $questions,
@@ -65,7 +75,30 @@ class AdminController extends AbstractController
             'editMode' => false,
         ]);
     }
+    
 
+    #[Route('/admin/quiz/search', name: 'quiz_search_ajax', methods: ['GET'])]
+    public function searchQuestionsAjax(
+        Request $request,
+        QuestionRepository $questionRepository
+    ): JsonResponse
+    {
+        $searchTerm = $request->query->get('search', '');
+        $searchType = $request->query->get('type', 'titre');
+        $sortOrder = $request->query->get('sort', 'asc');
+        $sortBy = $request->query->get('sortBy', 'titre');
+        
+        $questions = $questionRepository->searchByCriteria($searchTerm, $searchType, $sortBy, $sortOrder);
+        
+        $html = $this->renderView('admin/_question_list.html.twig', [
+            'questions' => $questions
+        ]);
+        
+        return new JsonResponse([
+            'html' => $html,
+            'count' => count($questions)
+        ]);
+    }
     #[Route('/admin/question/{id}/edit', name: 'edit_question', methods: ['GET', 'POST'])]
     public function editQuestion(
         Question $question,
@@ -96,7 +129,10 @@ class AdminController extends AbstractController
             }
         }
 
-        $questions = $entityManager->getRepository(Question::class)->findAll();
+        $questions = $entityManager->getRepository(Question::class)->findBy(
+            [],
+            ['titre' => 'ASC']
+        );
 
         return $this->render('admin/quiz_admin.html.twig', [
             'questions' => $questions,
@@ -129,4 +165,99 @@ class AdminController extends AbstractController
 
         return $this->redirectToRoute('quiz_admin');
     }
+    #[Route('/admin/quiz/pdf', name: 'quiz_pdf')]
+public function exportQuizPdf(EntityManagerInterface $entityManager): Response
+{
+    $questions = $entityManager->getRepository(Question::class)->findAll();
+
+    // Configuration Dompdf
+    $options = new Options();
+    $options->set('defaultFont', 'DejaVu Sans');
+    $options->setIsRemoteEnabled(true);
+
+    $dompdf = new Dompdf($options);
+
+    // HTML depuis Twig
+    $html = $this->renderView('admin/quiz_pdf.html.twig', [
+        'questions' => $questions
+    ]);
+
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+
+    // Téléchargement
+    return new Response(
+        $dompdf->output(),
+        200,
+        [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="questions_quiz.pdf"',
+        ]
+    );
+}
+#[Route('/admin/stats/questions', name: 'questions_stats', methods: ['GET'])]
+public function questionsStats(
+    QuestionRepository $questionRepository
+): Response
+{
+    $stats = $questionRepository->getCorrectAnswersStats();
+    
+    // Calculer les pourcentages et les totaux globaux
+    $totalQuestions = count($stats);
+    $totalChoix = 0;
+    $totalBonnesReponses = 0;
+    
+    foreach ($stats as &$stat) {
+        $stat['pourcentage'] = $stat['totalChoix'] > 0 
+            ? round(($stat['bonnesReponses'] / $stat['totalChoix']) * 100, 1)
+            : 0;
+        
+        $totalChoix += $stat['totalChoix'];
+        $totalBonnesReponses += $stat['bonnesReponses'];
+    }
+    
+    $pourcentageGlobal = $totalChoix > 0 
+        ? round(($totalBonnesReponses / $totalChoix) * 100, 1)
+        : 0;
+    
+    return $this->render('admin/stats_questions.html.twig', [
+        'stats' => $stats,
+        'totalQuestions' => $totalQuestions,
+        'totalChoix' => $totalChoix,
+        'totalBonnesReponses' => $totalBonnesReponses,
+        'pourcentageGlobal' => $pourcentageGlobal
+    ]);
+}
+
+#[Route('/admin/stats/question/{id}', name: 'question_detail_stats', methods: ['GET'])]
+public function questionDetailStats(
+    int $id,
+    QuestionRepository $questionRepository
+): Response
+{
+    $stat = $questionRepository->getQuestionStats($id);
+    
+    if (!$stat) {
+        throw $this->createNotFoundException('Question non trouvée');
+    }
+    
+    // Calculer les pourcentages
+    $stat['pourcentageBonnes'] = $stat['totalChoix'] > 0 
+        ? round(($stat['bonnesReponses'] / $stat['totalChoix']) * 100, 1)
+        : 0;
+    
+    $stat['pourcentageMauvaises'] = $stat['totalChoix'] > 0 
+        ? round(($stat['mauvaisesReponses'] / $stat['totalChoix']) * 100, 1)
+        : 0;
+    
+    return $this->render('admin/stats_question_detail.html.twig', [
+        'stat' => $stat
+    ]);
+}
+
+
+
+    
+    
 }

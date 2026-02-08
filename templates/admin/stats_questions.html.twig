@@ -1,0 +1,682 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistiques des Questions{% endblock %}
+
+{% block body %}
+<div class="d-flex">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar vh-100 sticky-top bg-dark">
+        <div class="p-4 h-100 d-flex flex-column">
+            <h5 class="text-white mb-4">
+                <i class="bi bi-bar-chart-line-fill me-2"></i> Statistiques
+            </h5>
+
+            <div class="list-group list-group-flush flex-grow-1">
+                <a class="list-group-item" href="{{ path('quiz_admin') }}">
+                    <i class="bi bi-patch-question me-2"></i>Questions
+                </a>
+                
+                <a class="list-group-item mt-3" href="{{ path('admin_dashboard') }}">
+                    ⬅ Retour Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="flex-grow-1 p-4" style="background:#f4f6f9;">
+
+        <h4 class="mb-4">
+            <i class="bi bi-bar-chart-line me-2"></i>
+            Statistiques des Questions
+        </h4>
+
+        {# ================= FLASH MESSAGES ================= #}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle me-2"></i>{{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+        
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>{{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+
+        {# ================= RÉSULTATS DE RECHERCHE ================= #}
+        <div id="searchResultsInfo" class="alert alert-info d-none">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="bi bi-funnel me-2"></i>
+                    <span id="resultsText"></span>
+                    <span class="ms-2 text-muted" id="sortText"></span>
+                </div>
+                <div>
+                    <span id="resultsCount" class="badge bg-primary me-2"></span>
+                    <button type="button" id="clearSort" class="btn btn-sm btn-outline-secondary d-none">
+                        <i class="bi bi-arrow-clockwise"></i> Réinitialiser
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARTES DE RÉSUMÉ -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center py-3">
+                        <div class="d-flex flex-column align-items-center">
+                            <span class="display-6 text-primary">{{ totalQuestions }}</span>
+                            <small class="text-muted">Questions totales</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center py-3">
+                        <div class="d-flex flex-column align-items-center">
+                            <span class="display-6 text-success">{{ totalBonnesReponses }}</span>
+                            <small class="text-muted">Bonnes réponses</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center py-3">
+                        <div class="d-flex flex-column align-items-center">
+                            <span class="display-6 text-info">{{ totalChoix }}</span>
+                            <small class="text-muted">Choix totaux</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center py-3">
+                        <div class="d-flex flex-column align-items-center">
+                            <span class="display-6 fw-bold 
+                                {% if pourcentageGlobal >= 70 %}text-success
+                                {% elseif pourcentageGlobal >= 40 %}text-warning
+                                {% else %}text-danger{% endif %}">
+                                {{ pourcentageGlobal }}%
+                            </span>
+                            <small class="text-muted">Taux de réussite</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RÉPARTITION VISUELLE -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-pie-chart me-2"></i>
+                            Répartition globale
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row align-items-center h-100">
+                            <div class="col-md-6">
+                                <div id="chartLegend" class="d-flex flex-column gap-2">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-success me-2" style="width: 20px; height: 20px;"></span>
+                                        <small>Bonnes réponses : {{ totalBonnesReponses }}</small>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-danger me-2" style="width: 20px; height: 20px;"></span>
+                                        <small>Mauvaises réponses : {{ totalChoix - totalBonnesReponses }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <canvas id="globalRepartitionChart" width="150" height="150"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+         
+        </div>
+
+        {# ================= STATISTIQUES PAR QUESTION ================= #}
+        <div id="statsContainer">
+            {% if stats|length > 0 %}
+                {% for stat in stats %}
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+
+                            <!-- HEADER -->
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="mb-1">{{ stat.titre }}</h5>
+                                    <small class="text-muted">
+                                        📊 ID: {{ stat.id }}
+                                    </small>
+                                </div>
+
+                                <!-- INDICATEUR DE PERFORMANCE -->
+                                <div class="text-end">
+                                    <div class="fw-bold fs-5 {% if stat.pourcentage >= 70 %}text-success{% elseif stat.pourcentage >= 40 %}text-warning{% else %}text-danger{% endif %}">
+                                        {{ stat.pourcentage }}%
+                                    </div>
+                                    <small class="text-muted">Taux de réussite</small>
+                                </div>
+                            </div>
+
+                            <!-- STATISTIQUES -->
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="me-3">
+                                            <span class="badge bg-info rounded-pill px-3 py-2">
+                                                {{ stat.totalChoix }} choix
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted">Total des choix</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="me-3">
+                                            <span class="badge bg-success rounded-pill px-3 py-2">
+                                                {{ stat.bonnesReponses }} bonnes
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted">Réponses correctes</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="me-3">
+                                            <span class="badge bg-danger rounded-pill px-3 py-2">
+                                                {{ stat.totalChoix - stat.bonnesReponses }} mauvaises
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted">Réponses incorrectes</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- BARRE DE PROGRESSION -->
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <small class="text-muted">Progression du taux de réussite</small>
+                                    <small class="fw-bold {% if stat.pourcentage >= 70 %}text-success{% elseif stat.pourcentage >= 40 %}text-warning{% else %}text-danger{% endif %}">
+                                        {{ stat.pourcentage }}%
+                                    </small>
+                                </div>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar 
+                                        {% if stat.pourcentage >= 70 %}bg-success
+                                        {% elseif stat.pourcentage >= 40 %}bg-warning
+                                        {% else %}bg-danger{% endif %}" 
+                                        role="progressbar" 
+                                        style="width: {{ stat.pourcentage }}%;"
+                                        aria-valuenow="{{ stat.pourcentage }}" 
+                                        aria-valuemin="0" 
+                                        aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ACTIONS -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    {% if stat.pourcentage >= 70 %}
+                                        <span class="badge bg-success me-2">
+                                            <i class="bi bi-check-circle me-1"></i>Excellent
+                                        </span>
+                                    {% elseif stat.pourcentage >= 40 %}
+                                        <span class="badge bg-warning me-2">
+                                            <i class="bi bi-exclamation-circle me-1"></i>Moyen
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-danger me-2">
+                                            <i class="bi bi-x-circle me-1"></i>Faible
+                                        </span>
+                                    {% endif %}
+                                    
+                                    {% if stat.totalChoix == 0 %}
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-info-circle me-1"></i>Sans choix
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ path('question_detail_stats', {'id': stat.id}) }}" 
+                                       class="btn btn-outline-primary" title="Détails statistiques">
+                                        <i class="bi bi-bar-chart-line"></i>
+                                    </a>
+                                    <a href="{{ path('edit_question', {'id': stat.id}) }}"
+                                       class="btn btn-outline-success" title="Modifier">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{{ path('quiz_admin') }}#question-{{ stat.id }}" 
+                                       class="btn btn-outline-info" title="Voir dans la liste">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>Aucune donnée statistique disponible.
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- LÉGENDE ET INFORMATIONS -->
+        <div class="card border-0 shadow-sm mt-4">
+            <div class="card-body p-3">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center gap-3">
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Légende des performances :
+                            </small>
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle me-1"></i>Excellent (≥ 70%)
+                            </span>
+                            <span class="badge bg-warning">
+                                <i class="bi bi-exclamation-circle me-1"></i>Moyen (40-69%)
+                            </span>
+                            <span class="badge bg-danger">
+                                <i class="bi bi-x-circle me-1"></i>Faible (≤ 39%)
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <small class="text-muted">
+                            <i class="bi bi-funnel me-1"></i>
+                            {{ stats|length }} question{{ stats|length > 1 ? 's' : '' }} affichée{{ stats|length > 1 ? 's' : '' }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // ================= GRAPHIQUES =================
+    
+    // 1. Graphique camembert pour la répartition globale
+    const globalCtx = document.getElementById('globalRepartitionChart').getContext('2d');
+    const bonnesGlobales = {{ totalBonnesReponses }};
+    const mauvaisesGlobales = {{ totalChoix - totalBonnesReponses }};
+    
+    new Chart(globalCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Bonnes réponses', 'Mauvaises réponses'],
+            datasets: [{
+                data: [bonnesGlobales, mauvaisesGlobales],
+                backgroundColor: [
+                    '#28a745',
+                    '#dc3545'
+                ],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            const total = bonnesGlobales + mauvaisesGlobales;
+                            const percentage = Math.round((context.parsed / total) * 100);
+                            label += context.parsed + ' (' + percentage + '%)';
+                            return label;
+                        }
+                    }
+                }
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true,
+                duration: 1500
+            }
+        }
+    });
+    
+    // 2. Graphique en barres pour la répartition par performance
+    const stats = {{ stats|json_encode|raw }};
+    
+    // Compter les questions par catégorie de performance
+    let excellentCount = 0;
+    let moyenCount = 0;
+    let faibleCount = 0;
+    
+    stats.forEach(stat => {
+        if (stat.pourcentage >= 70) {
+            excellentCount++;
+        } else if (stat.pourcentage >= 40) {
+            moyenCount++;
+        } else {
+            faibleCount++;
+        }
+    });
+    
+    const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+    new Chart(performanceCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Excellent', 'Moyen', 'Faible'],
+            datasets: [{
+                label: 'Nombre de questions',
+                data: [excellentCount, moyenCount, faibleCount],
+                backgroundColor: [
+                    'rgba(40, 167, 69, 0.8)',
+                    'rgba(255, 193, 7, 0.8)',
+                    'rgba(220, 53, 69, 0.8)'
+                ],
+                borderColor: [
+                    '#28a745',
+                    '#ffc107',
+                    '#dc3545'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = excellentCount + moyenCount + faibleCount;
+                            const percentage = Math.round((context.parsed.y / total) * 100);
+                            return context.dataset.label + ': ' + context.parsed.y + ' (' + percentage + '%)';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        callback: function(value) {
+                            if (Number.isInteger(value)) {
+                                return value;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    // ================= RECHERCHE ET TRI AJAX =================
+    const searchInput = document.getElementById('searchInput');
+    const filterPerformance = document.getElementById('filterPerformance');
+    const searchBtn = document.getElementById('searchBtn');
+    const clearSearch = document.getElementById('clearSearch');
+    const sortBy = document.getElementById('sortBy');
+    const sortAsc = document.getElementById('sortAsc');
+    const sortDesc = document.getElementById('sortDesc');
+    const applySort = document.getElementById('applySort');
+    const clearSort = document.getElementById('clearSort');
+    const statsContainer = document.getElementById('statsContainer');
+    const searchResultsInfo = document.getElementById('searchResultsInfo');
+    const resultsText = document.getElementById('resultsText');
+    const sortText = document.getElementById('sortText');
+    const resultsCount = document.getElementById('resultsCount');
+    const exportStatsBtn = document.getElementById('exportStats');
+    
+    let searchTimeout;
+    let currentSortBy = 'titre';
+    let currentSortOrder = 'asc';
+    
+    // Fonction pour effectuer la recherche avec tri
+    function performSearch() {
+        const searchTerm = searchInput.value.trim();
+        const performanceFilter = filterPerformance.value;
+        
+        // Afficher l'indicateur de chargement
+        statsContainer.innerHTML = `
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+                <p class="mt-3 text-muted">Chargement des statistiques...</p>
+            </div>
+        `;
+        
+        // Préparer les paramètres de tri
+        const sortOrder = document.querySelector('input[name="sortOrder"]:checked').value;
+        const sortByValue = sortBy.value;
+        
+        // Mettre à jour les variables globales
+        currentSortBy = sortByValue;
+        currentSortOrder = sortOrder;
+        
+        // Requête Ajax avec tri
+        fetch(`/admin/stats/search?search=${encodeURIComponent(searchTerm)}&filter=${performanceFilter}&sort=${sortOrder}&sortBy=${sortByValue}`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur réseau');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Mettre à jour le contenu
+            statsContainer.innerHTML = data.html;
+            
+            // Afficher/masquer les informations de résultats
+            if (searchTerm !== '' || performanceFilter !== 'all' || sortByValue !== 'titre' || sortOrder !== 'asc') {
+                searchResultsInfo.classList.remove('d-none');
+                clearSort.classList.remove('d-none');
+                
+                // Texte de recherche
+                let searchText = 'Toutes les statistiques';
+                if (searchTerm !== '') {
+                    searchText = `Recherche: "${searchTerm}"`;
+                }
+                
+                // Texte de filtre
+                let filterText = '';
+                if (performanceFilter !== 'all') {
+                    const filterLabels = {
+                        'excellent': 'Performance: Excellent',
+                        'moyen': 'Performance: Moyen',
+                        'faible': 'Performance: Faible',
+                        'no_choices': 'Sans choix'
+                    };
+                    filterText = filterLabels[performanceFilter] || '';
+                }
+                
+                resultsText.textContent = searchText + (filterText ? ` • ${filterText}` : '');
+                
+                // Texte de tri
+                const sortByText = getSortByText(sortByValue);
+                const sortOrderText = sortOrder === 'asc' ? 'croissant' : 'décroissant';
+                sortText.textContent = `• Tri: ${sortByText} (${sortOrderText})`;
+                
+                resultsCount.textContent = `${data.count} question${data.count !== 1 ? 's' : ''}`;
+            } else {
+                searchResultsInfo.classList.add('d-none');
+                clearSort.classList.add('d-none');
+            }
+            
+            // Réanimer les barres de progression
+            animateProgressBars();
+        })
+        .catch(error => {
+            console.error('Erreur lors de la recherche:', error);
+            statsContainer.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Une erreur est survenue lors de la recherche. Veuillez réessayer.
+                </div>
+            `;
+            searchResultsInfo.classList.add('d-none');
+        });
+    }
+    
+    // Texte descriptif pour le type de tri
+    function getSortByText(sortBy) {
+        const sorts = {
+            'titre': 'Titre alphabétique',
+            'taux_reussite': 'Taux de réussite',
+            'bonnes_reponses': 'Bonnes réponses',
+            'total_choix': 'Total des choix'
+        };
+        return sorts[sortBy] || sortBy;
+    }
+    
+    // Recherche au clic sur le bouton
+    searchBtn.addEventListener('click', function() {
+        clearTimeout(searchTimeout);
+        performSearch();
+    });
+    
+    // Recherche à la saisie (avec délai de 800ms)
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(performSearch, 800);
+    });
+    
+    // Recherche avec Enter
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            clearTimeout(searchTimeout);
+            performSearch();
+        }
+    });
+    
+    // Effacer la recherche
+    clearSearch.addEventListener('click', function() {
+        searchInput.value = '';
+        filterPerformance.value = 'all';
+        sortBy.value = 'titre';
+        sortAsc.checked = true;
+        searchResultsInfo.classList.add('d-none');
+        clearSort.classList.add('d-none');
+        
+        // Recharger toutes les statistiques
+        location.reload();
+    });
+    
+    // Appliquer le tri
+    applySort.addEventListener('click', function() {
+        clearTimeout(searchTimeout);
+        performSearch();
+    });
+    
+    // Réinitialiser le tri
+    clearSort.addEventListener('click', function() {
+        sortBy.value = 'titre';
+        sortAsc.checked = true;
+        clearTimeout(searchTimeout);
+        performSearch();
+    });
+    
+    // Changer le type de filtre
+    filterPerformance.addEventListener('change', function() {
+        if (searchInput.value.trim() !== '' || this.value !== 'all' || sortBy.value !== 'titre') {
+            clearTimeout(searchTimeout);
+            performSearch();
+        }
+    });
+    
+    // Changer l'ordre de tri avec les boutons radio
+    document.querySelectorAll('input[name="sortOrder"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (searchInput.value.trim() !== '' || filterPerformance.value !== 'all' || sortBy.value !== 'titre') {
+                clearTimeout(searchTimeout);
+                performSearch();
+            }
+        });
+    });
+    
+    // Changer le type de tri
+    sortBy.addEventListener('change', function() {
+        if (searchInput.value.trim() !== '' || filterPerformance.value !== 'all' || this.value !== 'titre') {
+            clearTimeout(searchTimeout);
+            performSearch();
+        }
+    });
+    
+    // Export des statistiques
+    if (exportStatsBtn) {
+        exportStatsBtn.addEventListener('click', function() {
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Génération...';
+            
+            // Simuler la génération du PDF
+            setTimeout(() => {
+                // Ici vous pourriez faire un appel AJAX pour générer le PDF
+                alert('Fonction d\'export PDF à implémenter');
+                this.innerHTML = '<i class="bi bi-file-earmark-pdf-fill me-2"></i>Exporter les statistiques';
+            }, 1000);
+        });
+    }
+    
+    // Fonction pour animer les barres de progression
+    function animateProgressBars() {
+        const progressBars = document.querySelectorAll('.progress-bar');
+        progressBars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.transition = 'width 1.2s ease-in-out';
+                bar.style.width = width;
+            }, 200);
+        });
+    }
+    
+    // Animation initiale des barres de progression
+    animateProgressBars();
+});
+</script>
+{% endblock %}

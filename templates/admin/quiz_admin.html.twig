@@ -14,6 +14,9 @@
 
             <div class="list-group list-group-flush flex-grow-1">
                 <a class="list-group-item active" href="#">Questions</a>
+                 <a class="list-group-item" href="{{ path('questions_stats') }}">
+        <i class="bi bi-bar-chart-line me-2"></i>Statistiques
+    </a>
                 <a class="list-group-item mt-3" href="{{ path('admin_dashboard') }}">
                     ⬅ Retour Dashboard
                 </a>
@@ -25,6 +28,95 @@
     <div class="flex-grow-1 p-4" style="background:#f4f6f9;">
 
         <h4 class="mb-4">Questions & Choix</h4>
+        
+
+        {# ================= BARRE DE RECHERCHE ET TRI ================= #}
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-3">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" 
+                                   id="searchInput" 
+                                   class="form-control border-start-0" 
+                                   placeholder="Rechercher une question..."
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <select id="searchType" class="form-select">
+                            <option value="titre">Par titre</option>
+                            <option value="duree">Par durée</option>
+                            <option value="noteMax">Par note max</option>
+                            <option value="description">Par description</option>
+                            <option value="utilisateur">Par utilisateur</option>
+                        </select>
+                    </div>
+                    
+                    
+                    <div class="col-md-3">
+                        <button type="button" 
+                                id="searchBtn" 
+                                class="btn btn-primary w-100">
+                            <i class="bi bi-search me-2"></i>Rechercher
+                        </button>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <button type="button" 
+                                id="clearSearch" 
+                                class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-x-circle me-2"></i>Effacer
+                        </button>
+                    </div>
+                </div>
+                
+                
+                {# ================= OPTIONS DE TRI ================= #}
+                <div class="row align-items-center">
+                    <div class="col-md-4">
+                        <div class="d-flex align-items-center">
+                            <span class="me-2 text-muted">
+                                <i class="bi bi-sort-down"></i> Trier par:
+                            </span>
+                            <select id="sortBy" class="form-select form-select-sm">
+                                <option value="titre">Titre</option>
+                                <option value="duree">Durée</option>
+                                <option value="noteMax">Note max</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <input type="radio" class="btn-check" name="sortOrder" id="sortAsc" value="asc" checked>
+                            <label class="btn btn-outline-primary" for="sortAsc">
+                                <i class="bi bi-sort-alpha-down"></i> A-Z
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="sortOrder" id="sortDesc" value="desc">
+                            <label class="btn btn-outline-primary" for="sortDesc">
+                                <i class="bi bi-sort-alpha-up"></i> Z-A
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <button type="button" 
+                                id="applySort" 
+                                class="btn btn-primary btn-sm w-100">
+                            <i class="bi bi-check-circle me-1"></i> Appliquer le tri
+                        </button>
+                    </div>
+                </div>
+                
+               
+            </div>
+        </div>
 
         {# ================= FLASH MESSAGES ================= #}
         {% for message in app.flashes('success') %}
@@ -41,89 +133,117 @@
             </div>
         {% endfor %}
 
-        {# ================= QUESTIONS ================= #}
-        {% for question in questions %}
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-body">
-
-                    <!-- HEADER -->
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div>
-                            <h5 class="mb-1">{{ question.titre }}</h5>
-                            <small class="text-muted">
-                                ⏱ {{ question.duree }} min · 🎯 {{ question.noteMax }} pts
-                                {% if question.user %} · 👤 {{ question.user.username }}{% endif %}
-                            </small>
-                        </div>
-
-                        <!-- ACTIONS QUESTION -->
-                        <div class="btn-group btn-group-sm">
-                            <a href="{{ path('edit_question', {'id': question.id}) }}"
-                               class="btn btn-outline-success" title="Modifier">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-
-                            <form method="post"
-                                  action="{{ path('delete_question', {'id': question.id}) }}"
-                                  onsubmit="return confirm('Supprimer cette question ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete_question_' ~ question.id) }}">
-                                <button class="btn btn-outline-danger" title="Supprimer">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- DESCRIPTION -->
-                    <p class="text-secondary mb-3">{{ question.description }}</p>
-
-                    <!-- CHOIX -->
-                    <ul class="list-group list-group-flush mb-3">
-                        {% for choix in question.choix %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-
-                                <div>
-                                    {{ choix.contenu }}
-                                    {% if choix.estCorrect %}
-                                        <span class="badge bg-success ms-2">Correct</span>
-                                    {% else %}
-                                        <span class="badge bg-light text-muted ms-2">Incorrect</span>
-                                    {% endif %}
-                                </div>
-
-                                <!-- ACTIONS CHOIX -->
-                                <div class="d-flex gap-2">
-                                    <a href="{{ path('edit_choix', {'id': choix.id}) }}"
-                                       class="text-success" title="Modifier">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-
-                                    <form method="post"
-                                          action="{{ path('delete_choix', {'id': choix.id}) }}"
-                                          onsubmit="return confirm('Supprimer ce choix ?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_choix_' ~ choix.id) }}">
-                                        <button class="btn btn-link text-danger p-0" title="Supprimer">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </li>
-                        {% else %}
-                            <li class="list-group-item text-muted px-0">Aucun choix ajouté</li>
-                        {% endfor %}
-                    </ul>
-
-                    <!-- AJOUT CHOIX -->
-                    <a href="{{ path('add_choix', {'questionId': question.id}) }}"
-                       class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-plus-circle"></i> Ajouter un choix
-                    </a>
-
+        {# ================= RÉSULTATS DE RECHERCHE ================= #}
+        <div id="searchResultsInfo" class="alert alert-info d-none">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="bi bi-funnel me-2"></i>
+                    <span id="resultsText"></span>
+                    <span class="ms-2 text-muted" id="sortText"></span>
+                </div>
+                <div>
+                    <span id="resultsCount" class="badge bg-primary me-2"></span>
+                    <button type="button" id="clearSort" class="btn btn-sm btn-outline-secondary d-none">
+                        <i class="bi bi-arrow-clockwise"></i> Réinitialiser
+                    </button>
                 </div>
             </div>
-        {% else %}
-            <p class="text-muted">Aucune question disponible.</p>
-        {% endfor %}
+        </div>
+        <div class="d-flex justify-content-end mb-3">
+    <a href="{{ path('quiz_pdf') }}" class="btn btn-danger">
+        <i class="bi bi-file-earmark-pdf-fill me-2"></i>
+        Exporter en PDF
+    </a>
+</div>
+
+
+        {# ================= QUESTIONS ================= #}
+        <div id="questionsContainer">
+            {% for question in questions %}
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+
+                        <!-- HEADER -->
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <h5 class="mb-1">{{ question.titre }}</h5>
+                                <small class="text-muted">
+                                    ⏱ {{ question.duree }} min · 🎯 {{ question.noteMax }} pts
+                                    {% if question.user %} · 👤 {{ question.user.username }}{% endif %}
+                                </small>
+                            </div>
+
+                            <!-- ACTIONS QUESTION -->
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ path('edit_question', {'id': question.id}) }}"
+                                   class="btn btn-outline-success" title="Modifier">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <form method="post"
+                                      action="{{ path('delete_question', {'id': question.id}) }}"
+                                      onsubmit="return confirm('Supprimer cette question ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_question_' ~ question.id) }}">
+                                    <button class="btn btn-outline-danger" title="Supprimer">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- DESCRIPTION -->
+                        <p class="text-secondary mb-3">{{ question.description }}</p>
+
+                        <!-- CHOIX -->
+                        <ul class="list-group list-group-flush mb-3">
+                            {% for choix in question.choix %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+
+                                    <div>
+                                        {{ choix.contenu }}
+                                        {% if choix.estCorrect %}
+                                            <span class="badge bg-success ms-2">Correct</span>
+                                        {% else %}
+                                            <span class="badge bg-light text-muted ms-2">Incorrect</span>
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- ACTIONS CHOIX -->
+                                    <div class="d-flex gap-2">
+                                        <a href="{{ path('edit_choix', {'id': choix.id}) }}"
+                                           class="text-success" title="Modifier">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+                                        <form method="post"
+                                              action="{{ path('delete_choix', {'id': choix.id}) }}"
+                                              onsubmit="return confirm('Supprimer ce choix ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_choix_' ~ choix.id) }}">
+                                            <button class="btn btn-link text-danger p-0" title="Supprimer">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </li>
+                            {% else %}
+                                <li class="list-group-item text-muted px-0">Aucun choix ajouté</li>
+                            {% endfor %}
+                        </ul>
+
+                        <!-- AJOUT CHOIX -->
+                        <a href="{{ path('add_choix', {'questionId': question.id}) }}"
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-plus-circle"></i> Ajouter un choix
+                        </a>
+
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>Aucune question disponible.
+                </div>
+            {% endfor %}
+        </div>
 
         {# ================= FORMULAIRE QUESTION ================= #}
         <div class="card border-0 shadow-sm mt-5">
@@ -204,119 +324,319 @@
 {% block javascripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Validation en temps réel
-    const form = document.getElementById('question_form');
+    // ================= RECHERCHE ET TRI AJAX =================
+    const searchInput = document.getElementById('searchInput');
+    const searchType = document.getElementById('searchType');
+    const searchBtn = document.getElementById('searchBtn');
+    const clearSearch = document.getElementById('clearSearch');
+    const sortBy = document.getElementById('sortBy');
+    const sortAsc = document.getElementById('sortAsc');
+    const sortDesc = document.getElementById('sortDesc');
+    const applySort = document.getElementById('applySort');
+    const clearSort = document.getElementById('clearSort');
+    const questionsContainer = document.getElementById('questionsContainer');
+    const searchResultsInfo = document.getElementById('searchResultsInfo');
+    const resultsText = document.getElementById('resultsText');
+    const sortText = document.getElementById('sortText');
+    const resultsCount = document.getElementById('resultsCount');
     
-    if (form) {
-        // Validation à la soumission
-        form.addEventListener('submit', function(event) {
-            let isValid = true;
-            const requiredFields = form.querySelectorAll('[required]');
+    let searchTimeout;
+    let currentSortBy = 'titre';
+    let currentSortOrder = 'asc';
+    
+    // Fonction pour effectuer la recherche avec tri
+    function performSearch() {
+        const searchTerm = searchInput.value.trim();
+        const type = searchType.value;
+        
+        // Afficher l'indicateur de chargement
+        questionsContainer.innerHTML = `
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+                <p class="mt-3 text-muted">Chargement des questions...</p>
+            </div>
+        `;
+        
+        // Préparer les paramètres de tri
+        const sortOrder = document.querySelector('input[name="sortOrder"]:checked').value;
+        const sortByValue = sortBy.value;
+        
+        // Mettre à jour les variables globales
+        currentSortBy = sortByValue;
+        currentSortOrder = sortOrder;
+        
+        // Requête Ajax avec tri
+        fetch(`/admin/quiz/search?search=${encodeURIComponent(searchTerm)}&type=${type}&sort=${sortOrder}&sortBy=${sortByValue}`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur réseau');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Mettre à jour le contenu
+            questionsContainer.innerHTML = data.html;
             
-            requiredFields.forEach(field => {
-                if (!field.value.trim()) {
-                    field.classList.add('is-invalid');
-                    const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
-                    if (errorDiv) {
-                        errorDiv.textContent = 'Ce champ est obligatoire';
-                    }
-                    isValid = false;
+            // Afficher/masquer les informations de résultats
+            if (searchTerm !== '' || sortByValue !== 'titre' || sortOrder !== 'asc') {
+                searchResultsInfo.classList.remove('d-none');
+                clearSort.classList.remove('d-none');
+                
+                // Texte de recherche
+                if (searchTerm !== '') {
+                    const typeText = getSearchTypeText(type);
+                    resultsText.textContent = `Résultats pour "${searchTerm}" (${typeText})`;
                 } else {
-                    field.classList.remove('is-invalid');
-                    const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
-                    if (errorDiv) {
-                        errorDiv.textContent = '';
-                    }
+                    resultsText.textContent = `Toutes les questions`;
                 }
-            });
+                
+                // Texte de tri
+                const sortByText = getSortByText(sortByValue);
+                const sortOrderText = sortOrder === 'asc' ? 'croissant' : 'décroissant';
+                sortText.textContent = `• Tri: ${sortByText} (${sortOrderText})`;
+                
+                resultsCount.textContent = `${data.count} question${data.count !== 1 ? 's' : ''}`;
+            } else {
+                searchResultsInfo.classList.add('d-none');
+                clearSort.classList.add('d-none');
+            }
             
-            // Validation pour les nombres positifs
-            const numberFields = form.querySelectorAll('input[type="number"]');
-            numberFields.forEach(field => {
-                if (field.value.trim()) {
-                    const value = parseInt(field.value);
-                    if (isNaN(value) || value <= 0) {
+            // Réattacher les événements de validation
+            initializeValidation();
+        })
+        .catch(error => {
+            console.error('Erreur lors de la recherche:', error);
+            questionsContainer.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Une erreur est survenue lors de la recherche. Veuillez réessayer.
+                </div>
+            `;
+            searchResultsInfo.classList.add('d-none');
+        });
+    }
+    
+    // Texte descriptif pour le type de recherche
+    function getSearchTypeText(type) {
+        const types = {
+            'titre': 'titre',
+            'duree': 'durée',
+            'noteMax': 'note maximale',
+            'description': 'description',
+            'utilisateur': 'utilisateur'
+        };
+        return types[type] || type;
+    }
+    
+    // Texte descriptif pour le type de tri
+    function getSortByText(sortBy) {
+        const sorts = {
+            'titre': 'Titre alphabétique',
+            'duree': 'Durée',
+            'noteMax': 'Note maximale'
+        };
+        return sorts[sortBy] || sortBy;
+    }
+    
+    // Recherche au clic sur le bouton
+    searchBtn.addEventListener('click', function() {
+        clearTimeout(searchTimeout);
+        performSearch();
+    });
+    
+    // Recherche à la saisie (avec délai de 800ms)
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(performSearch, 800);
+    });
+    
+    // Recherche avec Enter
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            clearTimeout(searchTimeout);
+            performSearch();
+        }
+    });
+    
+    // Effacer la recherche
+    clearSearch.addEventListener('click', function() {
+        searchInput.value = '';
+        searchType.value = 'titre';
+        sortBy.value = 'titre';
+        sortAsc.checked = true;
+        searchResultsInfo.classList.add('d-none');
+        clearSort.classList.add('d-none');
+        
+        // Recharger toutes les questions
+        location.reload();
+    });
+    
+    // Appliquer le tri
+    applySort.addEventListener('click', function() {
+        clearTimeout(searchTimeout);
+        performSearch();
+    });
+    
+    // Réinitialiser le tri
+    clearSort.addEventListener('click', function() {
+        sortBy.value = 'titre';
+        sortAsc.checked = true;
+        clearTimeout(searchTimeout);
+        performSearch();
+    });
+    
+    // Changer le type de recherche
+    searchType.addEventListener('change', function() {
+        if (searchInput.value.trim() !== '' || sortBy.value !== 'titre') {
+            clearTimeout(searchTimeout);
+            performSearch();
+        }
+    });
+    
+    // Changer l'ordre de tri avec les boutons radio
+    document.querySelectorAll('input[name="sortOrder"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (searchInput.value.trim() !== '' || sortBy.value !== 'titre') {
+                clearTimeout(searchTimeout);
+                performSearch();
+            }
+        });
+    });
+    
+    // Changer le type de tri
+    sortBy.addEventListener('change', function() {
+        if (searchInput.value.trim() !== '' || this.value !== 'titre') {
+            clearTimeout(searchTimeout);
+            performSearch();
+        }
+    });
+
+    // ================= VALIDATION DU FORMULAIRE =================
+    function initializeValidation() {
+        const form = document.getElementById('question_form');
+        
+        if (form) {
+            // Validation à la soumission
+            form.addEventListener('submit', function(event) {
+                let isValid = true;
+                const requiredFields = form.querySelectorAll('[required]');
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
                         field.classList.add('is-invalid');
                         const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
                         if (errorDiv) {
-                            errorDiv.textContent = 'Veuillez entrer un nombre positif';
+                            errorDiv.textContent = 'Ce champ est obligatoire';
                         }
                         isValid = false;
+                    } else {
+                        field.classList.remove('is-invalid');
+                        const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                        if (errorDiv) {
+                            errorDiv.textContent = '';
+                        }
                     }
-                }
-            });
-            
-            if (!isValid) {
-                event.preventDefault();
-                event.stopPropagation();
+                });
                 
-                // Scroll vers la première erreur
-                const firstError = form.querySelector('.is-invalid');
-                if (firstError) {
-                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    firstError.focus();
-                }
-            }
-        });
-        
-        // Validation en temps réel
-        form.querySelectorAll('input, select, textarea').forEach(field => {
-            field.addEventListener('blur', function() {
-                validateField(this);
-            });
-            
-            field.addEventListener('input', function() {
-                // Effacer l'erreur quand l'utilisateur commence à taper
-                if (this.classList.contains('is-invalid')) {
-                    this.classList.remove('is-invalid');
-                    const errorDiv = this.closest('.mb-3')?.querySelector('.text-danger');
-                    if (errorDiv) {
-                        errorDiv.textContent = '';
+                // Validation pour les nombres positifs
+                const numberFields = form.querySelectorAll('input[type="number"]');
+                numberFields.forEach(field => {
+                    if (field.value.trim()) {
+                        const value = parseInt(field.value);
+                        if (isNaN(value) || value <= 0) {
+                            field.classList.add('is-invalid');
+                            const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                            if (errorDiv) {
+                                errorDiv.textContent = 'Veuillez entrer un nombre positif';
+                            }
+                            isValid = false;
+                        }
+                    }
+                });
+                
+                if (!isValid) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    
+                    // Scroll vers la première erreur
+                    const firstError = form.querySelector('.is-invalid');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        firstError.focus();
                     }
                 }
             });
-        });
-    }
-    
-    function validateField(field) {
-        if (field.hasAttribute('required') && !field.value.trim()) {
-            field.classList.add('is-invalid');
-            const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
-            if (errorDiv) {
-                errorDiv.textContent = 'Ce champ est obligatoire';
-            }
-            return false;
+            
+            // Validation en temps réel
+            form.querySelectorAll('input, select, textarea').forEach(field => {
+                field.addEventListener('blur', function() {
+                    validateField(this);
+                });
+                
+                field.addEventListener('input', function() {
+                    // Effacer l'erreur quand l'utilisateur commence à taper
+                    if (this.classList.contains('is-invalid')) {
+                        this.classList.remove('is-invalid');
+                        const errorDiv = this.closest('.mb-3')?.querySelector('.text-danger');
+                        if (errorDiv) {
+                            errorDiv.textContent = '';
+                        }
+                    }
+                });
+            });
         }
         
-        // Validation nombre
-        if (field.type === 'number' && field.value.trim()) {
-            const value = parseInt(field.value);
-            if (isNaN(value) || value <= 0) {
+        function validateField(field) {
+            if (field.hasAttribute('required') && !field.value.trim()) {
                 field.classList.add('is-invalid');
                 const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
                 if (errorDiv) {
-                    errorDiv.textContent = 'Veuillez entrer un nombre positif';
+                    errorDiv.textContent = 'Ce champ est obligatoire';
                 }
                 return false;
             }
+            
+            // Validation nombre
+            if (field.type === 'number' && field.value.trim()) {
+                const value = parseInt(field.value);
+                if (isNaN(value) || value <= 0) {
+                    field.classList.add('is-invalid');
+                    const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                    if (errorDiv) {
+                        errorDiv.textContent = 'Veuillez entrer un nombre positif';
+                    }
+                    return false;
+                }
+            }
+            
+            // Si tout est valide
+            field.classList.remove('is-invalid');
+            const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+            if (errorDiv) {
+                errorDiv.textContent = '';
+            }
+            return true;
         }
         
-        // Si tout est valide
-        field.classList.remove('is-invalid');
-        const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
-        if (errorDiv) {
-            errorDiv.textContent = '';
-        }
-        return true;
+        // Initialiser les champs avec des classes d'erreur si nécessaire
+        document.querySelectorAll('.text-danger:not(:empty)').forEach(errorDiv => {
+            const input = errorDiv.closest('.mb-3')?.querySelector('input, select, textarea');
+            if (input) {
+                input.classList.add('is-invalid');
+            }
+        });
     }
     
-    // Initialiser les champs avec des classes d'erreur si nécessaire
-    document.querySelectorAll('.text-danger:not(:empty)').forEach(errorDiv => {
-        const input = errorDiv.closest('.mb-3')?.querySelector('input, select, textarea');
-        if (input) {
-            input.classList.add('is-invalid');
-        }
-    });
+    // Initialiser la validation au chargement
+    initializeValidation();
 });
 </script>
 {% endblock %}
