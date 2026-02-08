@@ -30,12 +30,5 @@ public function adminDashboard(): Response
 {
     return $this->render('dashboard_admin/index.html.twig');
 }
-
-
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
 }
 

@@ -4,11 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
-    "content-hash": "eb7c30d2c80fe1a7bb14fc0ac629da13",
-=======
     "content-hash": "62cc9b94a8d68ed791685feb6f2bc292",
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
     "packages": [
         {
             "name": "composer/semver",
@@ -1423,8 +1419,6 @@
             "time": "2025-03-06T22:45:56+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "jms/metadata",
             "version": "2.9.0",
             "source": {
@@ -1489,7 +1483,6 @@
             "time": "2025-11-30T20:12:26+00:00"
         },
         {
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
             "name": "knplabs/knp-snappy",
             "version": "v1.5.1",
             "source": {
@@ -8471,8 +8464,6 @@
             "time": "2026-01-23T21:00:41+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "vich/uploader-bundle",
             "version": "v2.9.1",
             "source": {
@@ -8581,7 +8572,6 @@
             "time": "2025-12-10T08:23:38+00:00"
         },
         {
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
             "name": "webmozart/assert",
             "version": "2.1.2",
             "source": {

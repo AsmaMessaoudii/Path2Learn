@@ -7,10 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-<<<<<<< HEAD
-=======
 use Symfony\Component\Validator\Constraints as Assert;
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
 
 #[ORM\Entity(repositoryClass: CoursRepository::class)]
 class Cours
@@ -21,32 +18,6 @@ class Cours
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-<<<<<<< HEAD
-    private ?string $titre = null;
-
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $description = null;
-
-    #[ORM\Column(length: 50)]
-    private ?string $niveau = null;
-
-    #[ORM\Column(length: 50)]
-    private ?string $matiere = null;
-
-    #[ORM\Column]
-    private ?int $duree = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $dateCreation = null;
-
-    #[ORM\Column(length: 100)]
-    private ?string $emailProf = null;
-
-    #[ORM\Column(length: 20)]
-    private ?string $statut = null;
-
-    #[ORM\ManyToOne(inversedBy: 'cours')]
-=======
     #[Assert\NotBlank(message: "Le titre du cours est obligatoire")]
     #[Assert\Length(
         min: 5,
@@ -119,16 +90,11 @@ class Cours
     private ?string $statut = null;
 
     #[ORM\ManyToOne(inversedBy: 'cours')]
-   // #[Assert\NotNull(message: "L'utilisateur est obligatoire")]
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
     private ?User $user = null;
 
     /**
      * @var Collection<int, RessourcePedagogique>
      */
-<<<<<<< HEAD
-    #[ORM\OneToMany(targetEntity: RessourcePedagogique::class, mappedBy: 'cours')]
-=======
     #[ORM\OneToMany(
         targetEntity: RessourcePedagogique::class,
         mappedBy: 'cours',
@@ -136,16 +102,12 @@ class Cours
         orphanRemoval: true
     )]
     #[Assert\Valid]
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
     private Collection $ressourcePedagogiques;
 
     public function __construct()
     {
         $this->ressourcePedagogiques = new ArrayCollection();
-<<<<<<< HEAD
-=======
         $this->dateCreation = new \DateTime();
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
     }
 
     public function getId(): ?int
@@ -161,10 +123,6 @@ class Cours
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
         return $this;
     }
 
@@ -176,10 +134,6 @@ class Cours
     public function setDescription(string $description): static
     {
         $this->description = $description;
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
         return $this;
     }
 
@@ -191,10 +145,6 @@ class Cours
     public function setNiveau(string $niveau): static
     {
         $this->niveau = $niveau;
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
         return $this;
     }
 
@@ -206,10 +156,6 @@ class Cours
     public function setMatiere(string $matiere): static
     {
         $this->matiere = $matiere;
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
         return $this;
     }
 
@@ -221,10 +167,6 @@ class Cours
     public function setDuree(int $duree): static
     {
         $this->duree = $duree;
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
         return $this;
     }
 
@@ -236,10 +178,6 @@ class Cours
     public function setDateCreation(\DateTime $dateCreation): static
     {
         $this->dateCreation = $dateCreation;
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
         return $this;
     }
 
@@ -251,10 +189,6 @@ class Cours
     public function setEmailProf(string $emailProf): static
     {
         $this->emailProf = $emailProf;
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
         return $this;
     }
 
@@ -266,10 +200,6 @@ class Cours
     public function setStatut(string $statut): static
     {
         $this->statut = $statut;
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
         return $this;
     }
 
@@ -281,10 +211,6 @@ class Cours
     public function setUser(?User $user): static
     {
         $this->user = $user;
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
         return $this;
     }
 
@@ -302,35 +228,21 @@ class Cours
             $this->ressourcePedagogiques->add($ressourcePedagogique);
             $ressourcePedagogique->setCours($this);
         }
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
         return $this;
     }
 
     public function removeRessourcePedagogique(RessourcePedagogique $ressourcePedagogique): static
     {
         if ($this->ressourcePedagogiques->removeElement($ressourcePedagogique)) {
-<<<<<<< HEAD
-            // set the owning side to null (unless already changed)
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
             if ($ressourcePedagogique->getCours() === $this) {
                 $ressourcePedagogique->setCours(null);
             }
         }
-<<<<<<< HEAD
+        return $this;
+    }
 
-        return $this;
-    }
-}
-=======
-        return $this;
-    }
     public function __toString(): string
     {
         return $this->titre ?? 'Nouveau cours';
     }
 }
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37

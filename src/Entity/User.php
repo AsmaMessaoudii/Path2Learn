@@ -314,12 +314,8 @@ class User
 
         return $this;
     }
-<<<<<<< HEAD
-      public function getUsername(): string
+    public function getUsername(): string
     {
         return $this->prenom . ' ' . $this->nom;
     }
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
 }

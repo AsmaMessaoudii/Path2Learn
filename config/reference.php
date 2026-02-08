@@ -1341,15 +1341,9 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *             lifetime?: int|Param, // Default: 31536000
  *             path?: scalar|Param|null, // Default: "/"
  *             domain?: scalar|Param|null, // Default: null
-<<<<<<< HEAD
- *             secure?: true|false|"auto"|Param, // Default: false
- *             httponly?: bool|Param, // Default: true
- *             samesite?: null|"lax"|"strict"|"none"|Param, // Default: null
-=======
  *             secure?: true|false|"auto"|Param, // Default: null
  *             httponly?: bool|Param, // Default: true
  *             samesite?: null|"lax"|"strict"|"none"|Param, // Default: "lax"
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
  *             always_remember_me?: bool|Param, // Default: false
  *             remember_me_parameter?: scalar|Param|null, // Default: "_remember_me"
  *         },
@@ -1533,8 +1527,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         env?: list<scalar|Param|null>,
  *     },
  * }
-<<<<<<< HEAD
-=======
  * @psalm-type VichUploaderConfig = array{
  *     default_filename_attribute_suffix?: scalar|Param|null, // Default: "_name"
  *     db_driver: scalar|Param|null,
@@ -1573,7 +1565,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         db_driver?: scalar|Param|null, // Default: null
  *     }>,
  * }
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1588,10 +1579,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     security?: SecurityConfig,
  *     monolog?: MonologConfig,
  *     knp_snappy?: KnpSnappyConfig,
-<<<<<<< HEAD
-=======
  *     vich_uploader?: VichUploaderConfig,
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1609,10 +1597,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         monolog?: MonologConfig,
  *         maker?: MakerConfig,
  *         knp_snappy?: KnpSnappyConfig,
-<<<<<<< HEAD
-=======
  *         vich_uploader?: VichUploaderConfig,
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1628,10 +1613,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
  *         knp_snappy?: KnpSnappyConfig,
-<<<<<<< HEAD
-=======
  *         vich_uploader?: VichUploaderConfig,
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1648,10 +1630,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
  *         knp_snappy?: KnpSnappyConfig,
-<<<<<<< HEAD
-=======
  *         vich_uploader?: VichUploaderConfig,
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

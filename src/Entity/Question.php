@@ -7,10 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-<<<<<<< HEAD
 use Symfony\Component\Validator\Constraints as Assert;
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
 
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
 class Question
@@ -21,7 +18,6 @@ class Question
     private ?int $id = null;
 
     #[ORM\Column(length: 150)]
-<<<<<<< HEAD
     #[Assert\NotBlank(message: "Le titre est requis")]
     #[Assert\Length(
         min: 5,
@@ -37,18 +33,12 @@ class Question
         min: 10,
         minMessage: "La description doit contenir au moins {{ limit }} caractères"
     )]
-=======
-    private ?string $titre = null;
-
-    #[ORM\Column(type: Types::TEXT)]
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $dateCreation = null;
 
     #[ORM\Column]
-<<<<<<< HEAD
     #[Assert\NotBlank(message: "La durée est requise")]
     #[Assert\Positive(message: "La durée doit être positive")]
     #[Assert\Range(
@@ -66,11 +56,6 @@ class Question
         max: 100,
         notInRangeMessage: "La note doit être entre {{ min }} et {{ max }} points"
     )]
-=======
-    private ?int $duree = null;
-
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 0)]
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
     private ?string $noteMax = null;
 
     #[ORM\ManyToOne(inversedBy: 'question')]
@@ -79,11 +64,7 @@ class Question
     /**
      * @var Collection<int, Choix>
      */
-<<<<<<< HEAD
     #[ORM\OneToMany(mappedBy: 'question', targetEntity: Choix::class, cascade: ['remove'], orphanRemoval: true)]
-=======
-    #[ORM\OneToMany(targetEntity: Choix::class, mappedBy: 'question')]
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
     private Collection $choix;
 
     public function __construct()
@@ -91,10 +72,6 @@ class Question
         $this->choix = new ArrayCollection();
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
     public function getId(): ?int
     {
         return $this->id;
@@ -129,16 +106,9 @@ class Question
         return $this->dateCreation;
     }
 
-<<<<<<< HEAD
-      public function setDateCreation(\DateTime $dateCreation): self
-    {
-        $this->dateCreation = $dateCreation;
-=======
     public function setDateCreation(\DateTime $dateCreation): static
     {
         $this->dateCreation = $dateCreation;
-
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
         return $this;
     }
 

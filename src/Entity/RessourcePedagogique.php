@@ -5,17 +5,12 @@ namespace App\Entity;
 use App\Repository\RessourcePedagogiqueRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-<<<<<<< HEAD
-
-#[ORM\Entity(repositoryClass: RessourcePedagogiqueRepository::class)]
-=======
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: RessourcePedagogiqueRepository::class)]
-#[Vich\Uploadable]  // Ajout pour gérer les uploads
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+#[Vich\Uploadable]
 class RessourcePedagogique
 {
     #[ORM\Id]
@@ -24,22 +19,6 @@ class RessourcePedagogique
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-<<<<<<< HEAD
-    private ?string $titre = null;
-
-    #[ORM\Column(length: 50)]
-    private ?string $type = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $url = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $dateAjout = null;
-
-    #[ORM\ManyToOne(inversedBy: 'ressourcePedagogiques')]
-    private ?Cours $cours = null;
-
-=======
     #[Assert\NotBlank(message: "Le titre de la ressource est obligatoire")]
     #[Assert\Length(
         min: 3,
@@ -108,7 +87,6 @@ class RessourcePedagogique
         $this->dateAjout = new \DateTime();
     }
 
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
     public function getId(): ?int
     {
         return $this->id;
@@ -122,10 +100,6 @@ class RessourcePedagogique
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
         return $this;
     }
 
@@ -137,10 +111,6 @@ class RessourcePedagogique
     public function setType(string $type): static
     {
         $this->type = $type;
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
         return $this;
     }
 
@@ -149,16 +119,6 @@ class RessourcePedagogique
         return $this->url;
     }
 
-<<<<<<< HEAD
-    public function setUrl(string $url): static
-    {
-        $this->url = $url;
-
-        return $this;
-    }
-
-    public function getDateAjout(): ?\DateTime
-=======
     public function setUrl(?string $url): static
     {
         $this->url = $url;
@@ -193,17 +153,10 @@ class RessourcePedagogique
     }
 
     public function getDateAjout(): ?\DateTimeInterface
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
     {
         return $this->dateAjout;
     }
 
-<<<<<<< HEAD
-    public function setDateAjout(\DateTime $dateAjout): static
-    {
-        $this->dateAjout = $dateAjout;
-
-=======
     public function setDateAjout(\DateTimeInterface $dateAjout): static
     {
         $this->dateAjout = $dateAjout;
@@ -218,7 +171,6 @@ class RessourcePedagogique
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
         return $this;
     }
 
@@ -230,12 +182,6 @@ class RessourcePedagogique
     public function setCours(?Cours $cours): static
     {
         $this->cours = $cours;
-<<<<<<< HEAD
-
-        return $this;
-    }
-}
-=======
         return $this;
     }
 
@@ -407,4 +353,3 @@ public function fileExists(string $uploadDirectory): bool
     return file_exists($filePath);
 }
 }
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
