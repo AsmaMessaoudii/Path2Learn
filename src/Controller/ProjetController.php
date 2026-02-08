@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Portfolio;
 use App\Entity\Projet;
 use App\Form\ProjetType;
+use App\Repository\PortfolioRepository;
 
 final class ProjetController extends AbstractController
 {
@@ -29,6 +30,12 @@ public function showFront(Projet $projet): Response
             'projet' => $projet,
         ]);
     }
+
+
+
+
+ 
+
 
 
 
