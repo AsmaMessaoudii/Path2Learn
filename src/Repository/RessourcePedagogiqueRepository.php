@@ -16,7 +16,16 @@ class RessourcePedagogiqueRepository extends ServiceEntityRepository
         parent::__construct($registry, RessourcePedagogique::class);
     }
 
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
+>>>>>>> origin/main
     //    /**
     //     * @return RessourcePedagogique[] Returns an array of RessourcePedagogique objects
     //     */
@@ -41,8 +50,15 @@ class RessourcePedagogiqueRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+<<<<<<< HEAD
 
 
+=======
+}
+<<<<<<< HEAD
+=======
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
     public function findAllSorted(string $sortBy = 'titre', string $direction = 'ASC'): array
     {
         $validSorts = ['titre', 'type', 'dateAjout'];
@@ -79,4 +95,13 @@ class RessourcePedagogiqueRepository extends ServiceEntityRepository
             ->getResult();
     }
 }
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main

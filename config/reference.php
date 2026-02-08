@@ -1527,6 +1527,15 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         env?: list<scalar|Param|null>,
  *     },
  * }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
  * @psalm-type VichUploaderConfig = array{
  *     default_filename_attribute_suffix?: scalar|Param|null, // Default: "_name"
  *     db_driver: scalar|Param|null,
@@ -1565,6 +1574,15 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         db_driver?: scalar|Param|null, // Default: null
  *     }>,
  * }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1579,7 +1597,21 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     security?: SecurityConfig,
  *     monolog?: MonologConfig,
  *     knp_snappy?: KnpSnappyConfig,
+<<<<<<< HEAD
  *     vich_uploader?: VichUploaderConfig,
+=======
+<<<<<<< HEAD
+ *     vich_uploader?: VichUploaderConfig,
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ *     vich_uploader?: VichUploaderConfig,
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1597,7 +1629,21 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         monolog?: MonologConfig,
  *         maker?: MakerConfig,
  *         knp_snappy?: KnpSnappyConfig,
+<<<<<<< HEAD
  *         vich_uploader?: VichUploaderConfig,
+=======
+<<<<<<< HEAD
+ *         vich_uploader?: VichUploaderConfig,
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ *         vich_uploader?: VichUploaderConfig,
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1613,7 +1659,21 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
  *         knp_snappy?: KnpSnappyConfig,
+<<<<<<< HEAD
  *         vich_uploader?: VichUploaderConfig,
+=======
+<<<<<<< HEAD
+ *         vich_uploader?: VichUploaderConfig,
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ *         vich_uploader?: VichUploaderConfig,
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1630,7 +1690,21 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         security?: SecurityConfig,
  *         monolog?: MonologConfig,
  *         knp_snappy?: KnpSnappyConfig,
+<<<<<<< HEAD
  *         vich_uploader?: VichUploaderConfig,
+=======
+<<<<<<< HEAD
+ *         vich_uploader?: VichUploaderConfig,
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+ *         vich_uploader?: VichUploaderConfig,
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

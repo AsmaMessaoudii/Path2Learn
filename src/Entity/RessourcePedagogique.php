@@ -5,12 +5,36 @@ namespace App\Entity;
 use App\Repository\RessourcePedagogiqueRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+#[ORM\Entity(repositoryClass: RessourcePedagogiqueRepository::class)]
+=======
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: RessourcePedagogiqueRepository::class)]
+<<<<<<< HEAD
 #[Vich\Uploadable]
+=======
+<<<<<<< HEAD
+#[Vich\Uploadable]
+=======
+#[Vich\Uploadable]  // Ajout pour gérer les uploads
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+#[ORM\Entity(repositoryClass: RessourcePedagogiqueRepository::class)]
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
 class RessourcePedagogique
 {
     #[ORM\Id]
@@ -19,6 +43,32 @@ class RessourcePedagogique
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
+    private ?string $titre = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $type = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $url = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTime $dateAjout = null;
+
+    #[ORM\ManyToOne(inversedBy: 'ressourcePedagogiques')]
+    private ?Cours $cours = null;
+
+<<<<<<< HEAD
+=======
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
     #[Assert\NotBlank(message: "Le titre de la ressource est obligatoire")]
     #[Assert\Length(
         min: 3,
@@ -85,6 +135,15 @@ class RessourcePedagogique
         $this->dateAjout = new \DateTime();
     }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
     public function getId(): ?int
     {
         return $this->id;
@@ -98,6 +157,20 @@ class RessourcePedagogique
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
         return $this;
     }
 
@@ -109,6 +182,20 @@ class RessourcePedagogique
     public function setType(string $type): static
     {
         $this->type = $type;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
         return $this;
     }
 
@@ -117,6 +204,26 @@ class RessourcePedagogique
         return $this->url;
     }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
+    public function setUrl(string $url): static
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    public function getDateAjout(): ?\DateTime
+<<<<<<< HEAD
+=======
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
     public function setUrl(?string $url): static
     {
         $this->url = $url;
@@ -151,10 +258,35 @@ class RessourcePedagogique
     }
 
     public function getDateAjout(): ?\DateTimeInterface
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
     {
         return $this->dateAjout;
     }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
+    public function setDateAjout(\DateTime $dateAjout): static
+    {
+        $this->dateAjout = $dateAjout;
+
+<<<<<<< HEAD
+=======
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
     public function setDateAjout(\DateTimeInterface $dateAjout): static
     {
         $this->dateAjout = $dateAjout;
@@ -169,6 +301,15 @@ class RessourcePedagogique
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
         return $this;
     }
 
@@ -180,6 +321,22 @@ class RessourcePedagogique
     public function setCours(?Cours $cours): static
     {
         $this->cours = $cours;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
+
+        return $this;
+    }
+}
+<<<<<<< HEAD
+=======
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
         return $this;
     }
 
@@ -333,4 +490,79 @@ class RessourcePedagogique
     {
         return $this->titre ?? 'Nouvelle ressource';
     }
+<<<<<<< HEAD
 }
+=======
+    // Ajoutez cette méthode dans votre entity RessourcePedagogique
+// Méthode pour obtenir l'icône selon le type de fichier
+public function getFileIcon(): string
+{
+    if ($this->fileName) {
+        $extension = strtolower(pathinfo($this->fileName, PATHINFO_EXTENSION));
+        
+        // Images
+        if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'])) {
+            return 'bi-file-earmark-image';
+        }
+        
+        // PDF
+        if ($extension === 'pdf') {
+            return 'bi-file-earmark-pdf';
+        }
+        
+        // Vidéos
+        if (in_array($extension, ['mp4', 'mov', 'avi', 'mkv', 'webm', 'wmv', 'flv'])) {
+            return 'bi-file-earmark-play';
+        }
+        
+        // Audio
+        if (in_array($extension, ['mp3', 'wav', 'ogg', 'm4a', 'flac'])) {
+            return 'bi-file-earmark-music';
+        }
+        
+        // Documents Word
+        if (in_array($extension, ['doc', 'docx'])) {
+            return 'bi-file-earmark-word';
+        }
+        
+        // Documents Excel
+        if (in_array($extension, ['xls', 'xlsx', 'csv'])) {
+            return 'bi-file-earmark-excel';
+        }
+        
+        // PowerPoint
+        if (in_array($extension, ['ppt', 'pptx'])) {
+            return 'bi-file-earmark-ppt';
+        }
+        
+        // Texte
+        if (in_array($extension, ['txt', 'rtf', 'md'])) {
+            return 'bi-file-earmark-text';
+        }
+        
+        // Archive
+        if (in_array($extension, ['zip', 'rar', '7z', 'tar', 'gz'])) {
+            return 'bi-file-earmark-zip';
+        }
+    }
+    
+    // Par défaut pour les liens ou autres types
+    return 'bi-file-earmark';
+}
+public function fileExists(string $uploadDirectory): bool
+{
+    if (!$this->fileName) {
+        return false;
+    }
+    
+    $filePath = $uploadDirectory . '/' . $this->fileName;
+    return file_exists($filePath);
+}
+}
+<<<<<<< HEAD
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main

@@ -7,7 +7,22 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+<<<<<<< HEAD
 use Symfony\Component\Validator\Constraints as Assert;
+=======
+<<<<<<< HEAD
+use Symfony\Component\Validator\Constraints as Assert;
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+use Symfony\Component\Validator\Constraints as Assert;
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+use Symfony\Component\Validator\Constraints as Assert;
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
 
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
 class Question
@@ -18,6 +33,16 @@ class Question
     private ?int $id = null;
 
     #[ORM\Column(length: 150)]
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
     #[Assert\NotBlank(message: "Le titre est requis")]
     #[Assert\Length(
         min: 5,
@@ -33,12 +58,36 @@ class Question
         min: 10,
         minMessage: "La description doit contenir au moins {{ limit }} caractères"
     )]
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+    private ?string $titre = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
     private ?string $description = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateCreation = null;
 
     #[ORM\Column]
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
     #[Assert\NotBlank(message: "La durée est requise")]
     #[Assert\Positive(message: "La durée doit être positive")]
     #[Assert\Range(
@@ -56,12 +105,45 @@ class Question
         max: 100,
         notInRangeMessage: "La note doit être entre {{ min }} et {{ max }} points"
     )]
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+    private ?int $duree = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 0)]
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
     private ?string $noteMax = null;
 
     #[ORM\ManyToOne(inversedBy: 'question')]
     private ?User $user = null;
 
+<<<<<<< HEAD
     #[ORM\OneToMany(mappedBy: 'question', targetEntity: Choix::class, cascade: ['remove'], orphanRemoval: true)]
+=======
+    /**
+     * @var Collection<int, Choix>
+     */
+<<<<<<< HEAD
+    #[ORM\OneToMany(mappedBy: 'question', targetEntity: Choix::class, cascade: ['remove'], orphanRemoval: true)]
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+    #[ORM\OneToMany(mappedBy: 'question', targetEntity: Choix::class, cascade: ['remove'], orphanRemoval: true)]
+=======
+    #[ORM\OneToMany(targetEntity: Choix::class, mappedBy: 'question')]
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+    #[ORM\OneToMany(mappedBy: 'question', targetEntity: Choix::class, cascade: ['remove'], orphanRemoval: true)]
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
     private Collection $choix;
 
     public function __construct()
@@ -70,6 +152,20 @@ class Question
         $this->dateCreation = new \DateTime();
     }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
     public function getId(): ?int
     {
         return $this->id;
@@ -102,9 +198,34 @@ class Question
         return $this->dateCreation;
     }
 
+<<<<<<< HEAD
     public function setDateCreation(\DateTimeInterface $dateCreation): static
     {
         $this->dateCreation = $dateCreation;
+=======
+<<<<<<< HEAD
+    public function setDateCreation(\DateTime $dateCreation): static
+    {
+        $this->dateCreation = $dateCreation;
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+      public function setDateCreation(\DateTime $dateCreation): self
+    {
+        $this->dateCreation = $dateCreation;
+=======
+    public function setDateCreation(\DateTime $dateCreation): static
+    {
+        $this->dateCreation = $dateCreation;
+
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+      public function setDateCreation(\DateTime $dateCreation): self
+    {
+        $this->dateCreation = $dateCreation;
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
         return $this;
     }
 

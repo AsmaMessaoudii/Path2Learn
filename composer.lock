@@ -4,7 +4,23 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "content-hash": "eb7c30d2c80fe1a7bb14fc0ac629da13",
+=======
+<<<<<<< HEAD
+    "content-hash": "62cc9b94a8d68ed791685feb6f2bc292",
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+    "content-hash": "eb7c30d2c80fe1a7bb14fc0ac629da13",
+=======
+    "content-hash": "62cc9b94a8d68ed791685feb6f2bc292",
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+    "content-hash": "eb7c30d2c80fe1a7bb14fc0ac629da13",
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
     "packages": [
         {
             "name": "composer/semver",
@@ -1419,6 +1435,15 @@
             "time": "2025-03-06T22:45:56+00:00"
         },
         {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
             "name": "jms/metadata",
             "version": "2.9.0",
             "source": {
@@ -1483,6 +1508,15 @@
             "time": "2025-11-30T20:12:26+00:00"
         },
         {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
+>>>>>>> origin/main
             "name": "knplabs/knp-snappy",
             "version": "v1.5.1",
             "source": {
