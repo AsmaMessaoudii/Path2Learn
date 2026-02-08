@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Export des Ressources Pédagogiques</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; }
+        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .title { font-size: 24px; font-weight: bold; color: #333; }
+        .subtitle { font-size: 14px; color: #666; }
+        .table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .table th { background-color: #f8f9fa; border: 1px solid #dee2e6; padding: 8px; text-align: left; }
+        .table td { border: 1px solid #dee2e6; padding: 8px; }
+        .badge { padding: 3px 8px; border-radius: 4px; font-size: 11px; }
+        .badge-info { background-color: #17a2b8; color: white; }
+        .footer { margin-top: 50px; text-align: center; color: #666; font-size: 10px; }
+        .url { font-size: 10px; color: #0066cc; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">Liste des Ressources Pédagogiques</div>
+        <div class="subtitle">Export généré le {{ date_export|date('d/m/Y H:i') }}</div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Titre</th>
+                <th>Type</th>
+                <th>Cours associé</th>
+                <th>Date d'ajout</th>
+                <th>URL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ressource in ressourcesList %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ ressource.titre }}</td>
+                <td>
+                    <span class="badge badge-info">
+                        {{ ressource.type }}
+                    </span>
+                </td>
+                <td>
+                    {% if ressource.cours %}
+                        {{ ressource.cours.titre }}
+                    {% else %}
+                        <span style="color: #999;">Aucun cours</span>
+                    {% endif %}
+                </td>
+                <td>{{ ressource.dateAjout|date('d/m/Y') }}</td>
+                <td class="url">{{ ressource.url|slice(0, 50) }}{% if ressource.url|length > 50 %}...{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>Total : {{ ressourcesList|length }} ressources</p>
+        <p>Document généré automatiquement par le système de gestion</p>
+    </div>
+</body>
+</html>

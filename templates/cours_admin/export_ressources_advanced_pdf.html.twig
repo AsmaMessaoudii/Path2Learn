@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Export des Ressources Pédagogiques</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            text-align: left;
+            font-weight: bold;
+        }
+        .table td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+        }
+        .badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            display: inline-block;
+        }
+        .badge-pdf {
+            background-color: #dc3545;
+            color: white;
+        }
+        .badge-lien {
+            background-color: #28a745;
+            color: white;
+        }
+        .badge-video {
+            background-color: #007bff;
+            color: white;
+        }
+        .badge-document {
+            background-color: #6c757d;
+            color: white;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #666;
+            font-size: 10px;
+        }
+        .url {
+            font-size: 10px;
+            color: #0066cc;
+            word-break: break-all;
+        }
+        .description {
+            font-size: 11px;
+            color: #555;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">Liste des Ressources Pédagogiques</div>
+        <div class="subtitle">Export généré le {{ date_export|date('d/m/Y H:i') }}</div>
+    </div>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Titre</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Cours associé</th>
+                <th>Date d'ajout</th>
+                <th>URL/Lien</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for ressource in ressources %}  <!-- Changé de ressourcesList à ressources -->
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ ressource.titre }}</td>
+            <td>
+                <span class="badge badge-{{ ressource.type|lower }}">
+                    {{ ressource.type }}
+                </span>
+            </td>
+            <td class="description">{{ ressource.description|default('') }}</td>
+            <td>{{ ressource.cours ? ressource.cours.titre : 'Non associé' }}</td>
+            <td>{{ ressource.dateAjout|date('d/m/Y') }}</td>
+            <td class="url">{{ ressource.url|default('') }}</td>
+        </tr>
+    {% endfor %}
+</tbody>
+
+<!-- Et dans le footer aussi : -->
+<div class="footer">
+    <p>Total : {{ ressources|length }} ressources</p>  <!-- Changé ici -->
+    <p>Document généré automatiquement par le système de gestion académique</p>
+</div>
+    </table>
+    
+</body>
+</html>

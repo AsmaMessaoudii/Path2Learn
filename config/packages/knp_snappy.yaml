@@ -2,8 +2,16 @@ knp_snappy:
     pdf:
         enabled: true
         binary: '%env(WKHTMLTOPDF_PATH)%'
+<<<<<<< HEAD
         options: []
     image:
         enabled: true
         binary: '%env(WKHTMLTOIMAGE_PATH)%'
         options: []
+=======
+        options:
+            encoding: 'utf-8'
+    image:
+        enabled: true
+        binary: '%env(WKHTMLTOIMAGE_PATH)%'
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37

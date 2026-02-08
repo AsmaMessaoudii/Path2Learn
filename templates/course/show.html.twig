@@ -1,0 +1,1475 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ course.titre }} - Détails{% endblock %}
+
+{% block body %}
+<!-- Macro pour afficher les fichiers -->
+   {% macro displayFile(resource, course = null) %}
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                <!-- File icon -->
+                <div class="me-3">
+                    {% if resource.fileName %}
+                        {% set extension = resource.fileName|lower|split('.')|last %}
+                        {% if extension == 'pdf' %}
+                            <i class="fas fa-file-pdf text-danger fa-2x"></i>
+                        {% elseif extension in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'] %}
+                            <i class="fas fa-image text-success fa-2x"></i>
+                        {% elseif extension in ['mp4', 'mov', 'avi', 'mkv', 'webm', 'wmv', 'flv', 'm4v'] %}
+                            <i class="fas fa-video text-primary fa-2x"></i>
+                        {% elseif extension in ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'aac'] %}
+                            <i class="fas fa-music text-warning fa-2x"></i>
+                        {% elseif extension in ['doc', 'docx'] %}
+                            <i class="fas fa-file-word text-info fa-2x"></i>
+                        {% elseif extension in ['xls', 'xlsx', 'csv'] %}
+                            <i class="fas fa-file-excel text-success fa-2x"></i>
+                        {% elseif extension in ['ppt', 'pptx'] %}
+                            <i class="fas fa-file-powerpoint text-danger fa-2x"></i>
+                        {% elseif extension in ['zip', 'rar', '7z', 'tar', 'gz'] %}
+                            <i class="fas fa-file-archive text-secondary fa-2x"></i>
+                        {% elseif extension in ['txt', 'md', 'rtf'] %}
+                            <i class="fas fa-file-alt text-muted fa-2x"></i>
+                        {% else %}
+                            <i class="fas fa-file text-muted fa-2x"></i>
+                        {% endif %}
+                    {% elseif resource.url %}
+                        <i class="fas fa-link text-secondary fa-2x"></i>
+                    {% else %}
+                        <i class="fas fa-file text-muted fa-2x"></i>
+                    {% endif %}
+                </div>
+                
+                <!-- File info -->
+                <div class="flex-grow-1">
+                    <h6 class="mb-1">
+                        {% if resource.fileName %}
+                            {% set extension = resource.fileName|lower|split('.')|last %}
+                            {% if extension in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'] %}
+                                <!-- Image - Afficher en modal -->
+                                <a href="#" 
+                                   onclick="openImageViewer('{{ asset('uploads/ressources/' ~ resource.fileName) }}', '{{ resource.titre|default(resource.fileName) }}'); return false;"
+                                   class="text-decoration-none text-dark">
+                                    <i class="fas fa-expand me-1"></i>
+                                    {{ resource.titre|default(resource.fileName) }}
+                                </a>
+                            {% elseif extension in ['mp4', 'mov', 'avi', 'mkv', 'webm', 'wmv', 'flv', 'm4v'] %}
+                                <!-- Vidéo - Afficher en modal -->
+                                <a href="#" 
+                                   onclick="openVideoViewer('{{ asset('uploads/ressources/' ~ resource.fileName) }}', '{{ resource.titre|default(resource.fileName) }}'); return false;"
+                                   class="text-decoration-none text-dark">
+                                    <i class="fas fa-play-circle me-1"></i>
+                                    {{ resource.titre|default(resource.fileName) }}
+                                </a>
+                            {% elseif extension in ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'aac'] %}
+                                <!-- Audio - Afficher en modal -->
+                                <a href="#" 
+                                   onclick="openAudioViewer('{{ asset('uploads/ressources/' ~ resource.fileName) }}', '{{ resource.titre|default(resource.fileName) }}'); return false;"
+                                   class="text-decoration-none text-dark">
+                                    <i class="fas fa-volume-up me-1"></i>
+                                    {{ resource.titre|default(resource.fileName) }}
+                                </a>
+                            {% else %}
+                                <!-- Autres fichiers - Téléchargement direct -->
+                                <a href="{{ asset('uploads/ressources/' ~ resource.fileName) }}" 
+                                   target="_blank" 
+                                   class="text-decoration-none text-dark">
+                                    {{ resource.titre|default(resource.fileName) }}
+                                </a>
+                            {% endif %}
+                        {% elseif resource.url %}
+                            <a href="{{ resource.url }}" 
+                               target="_blank" 
+                               class="text-decoration-none text-dark">
+                                <i class="fas fa-external-link-alt me-1"></i>
+                                {{ resource.titre|default(resource.url) }}
+                            </a>
+                        {% else %}
+                            {{ resource.titre|default('Ressource') }}
+                        {% endif %}
+                    </h6>
+                    
+                    <!-- Metadata -->
+                    <div class="small text-muted">
+                        <span class="me-3">
+                            <i class="fas fa-tag me-1"></i>
+                            {{ resource.type|default('Fichier') }}
+                        </span>
+                        
+                        {% if resource.dateAjout %}
+                            <span class="me-3">
+                                <i class="far fa-calendar me-1"></i>
+                                {{ resource.dateAjout|date('d/m/Y') }}
+                            </span>
+                        {% endif %}
+                        
+                        <!-- File size - Utilisez la méthode de l'entité -->
+                        {% if resource.fileName %}
+                       
+
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Actions -->
+                <div class="ms-3 d-flex gap-2">
+                    {% if resource.fileName %}
+                        {% set extension = resource.fileName|lower|split('.')|last %}
+                        {% if extension in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'] %}
+                            <button class="btn btn-sm btn-outline-success" 
+                                    onclick="openImageViewer('{{ asset('uploads/ressources/' ~ resource.fileName) }}', '{{ resource.titre|default(resource.fileName) }}')"
+                                    title="Voir l'image">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        {% elseif extension in ['mp4', 'mov', 'avi', 'mkv', 'webm', 'wmv', 'flv', 'm4v'] %}
+                            
+                        {% elseif extension in ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'aac'] %}
+                           
+                        {% endif %}
+                        
+                        <a href="{{ asset('uploads/ressources/' ~ resource.fileName) }}" 
+                           target="_blank" 
+                           class="btn btn-sm btn-outline-secondary"
+                           title="Ouvrir">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        
+                        <a href="{{ asset('uploads/ressources/' ~ resource.fileName) }}" 
+                           download
+                           class="btn btn-sm btn-outline-dark"
+                           title="Télécharger">
+                            <i class="fas fa-download"></i>
+                        </a>
+                    {% elseif resource.url %}
+                        <a href="{{ resource.url }}" 
+                           target="_blank" 
+                           class="btn btn-sm btn-outline-primary"
+                           title="Ouvrir le lien">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    {% endif %}
+                    
+                    {% if course %}
+                        <a href="{{ path('single_ressource_pdf', {'id': course.id, 'ressourceId': resource.id}) }}" 
+                           target="_blank" 
+                           class="btn btn-sm btn-outline-danger"
+                           title="Exporter en PDF">
+                            <i class="fas fa-file-pdf"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Aperçu pour les images -->
+            {% if resource.fileName %}
+                {% set extension = resource.fileName|lower|split('.')|last %}
+                {% if extension in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'] %}
+                    <div class="mt-3 text-center">
+                        <img src="{{ asset('uploads/ressources/' ~ resource.fileName) }}" 
+                             class="img-thumbnail preview-image" 
+                             style="max-height: 200px; cursor: pointer;"
+                             onclick="openImageViewer('{{ asset('uploads/ressources/' ~ resource.fileName) }}', '{{ resource.titre|default(resource.fileName) }}')"
+                             alt="Aperçu de {{ resource.titre }}"
+                             title="Cliquez pour agrandir">
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+{% endmacro %}
+
+<!-- Navigation header -->
+<header class="navbar-light navbar-sticky header-static">
+    <nav class="navbar navbar-expand-xl">
+        <div class="container-fluid px-3 px-xl-5">
+            <a class="navbar-brand" href="{{ path('home') }}">
+                <img class="light-mode-item navbar-brand-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 250px;">
+                <img class="dark-mode-item navbar-brand-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 250px;">
+            </a>
+
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-animation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+
+            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+                <ul class="navbar-nav navbar-nav-scroll me-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Services</a>
+                        <ul class="dropdown-menu" aria-labelledby="demoMenu">
+                            <li><a class="dropdown-item active" href="{{ path('home') }}">Portfolio</a></li>
+                            <li><a class="dropdown-item" href="#">Événements</a></li>
+                            <li><a class="dropdown-item" href="#">Certification</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
+                        <ul class="dropdown-menu" aria-labelledby="pagesMenu">
+                            <li><a class="dropdown-item" href="{{ path('app_courses') }}">QUIZ</a></li>
+                            <li><a class="dropdown-item" href="#">Ressources</a></li>
+                            <li><a class="dropdown-item" href="#">Projets</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
+                        <ul class="dropdown-menu" aria-labelledby="accounntMenu">
+                            <li><a class="dropdown-item" href="{{ path('instructor') }}"><i class="fas fa-user-tie fa-fw me-1"></i>Enseignants</a></li>
+                            <li><a class="dropdown-item" href="{{ path('student_dashboard') }}"><i class="fas fa-user-graduate fa-fw me-1"></i>Étudiants</a></li>
+                            <li><a class="dropdown-item" href="{{ path('admin_dashboard') }}"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+                    <div class="nav-item w-100">
+                        <form class="position-relative">
+                            <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
+                            <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+                                <i class="fas fa-search fs-6 "></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropdown ms-1 ms-lg-0">
+                <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                </a>
+                <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+                    <li><a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Gradient Header -->
+<div class="bg-gradient-primary py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="badge bg-white text-primary px-3 py-2">
+                        <i class="fas fa-book me-1"></i>{{ course.matiere|default('Général') }}
+                    </span>
+                    <span class="badge bg-white text-success px-3 py-2">
+                        <i class="fas fa-graduation-cap me-1"></i>{{ course.niveau|default('Tous niveaux') }}
+                    </span>
+                    <span class="badge bg-{% if course.statut == 'publié' %}success{% elseif course.statut == 'brouillon' %}warning{% else %}secondary{% endif %} px-3 py-2">
+                        {{ course.statut|capitalize }}
+                    </span>
+                </div>
+                
+                <h1 class="text-white mb-4">{{ course.titre }}</h1>
+                
+                <div class="d-flex align-items-center">
+                    <div class="me-4">
+                        <i class="fas fa-user-circle text-white me-2"></i>
+                        <span class="text-white">{{ course.emailProf|default('Formateur Path2Learn') }}</span>
+                    </div>
+                    <div class="vr bg-white-50"></div>
+                    <div class="mx-4">
+                        <i class="far fa-calendar text-white me-2"></i>
+                        <span class="text-white">{{ course.dateCreation|date('d/m/Y') }}</span>
+                    </div>
+                    <div class="vr bg-white-50"></div>
+                    <div class="ms-4">
+                        {% set rating = attribute(course, 'rating') is defined ? course.rating : 4.5 %}
+                        {% for i in 1..5 %}
+                            <i class="fas fa-star{% if i <= rating|round %} text-warning{% else %} text-white-50{% endif %}"></i>
+                        {% endfor %}
+                        <span class="text-white ms-1">{{ rating }}/5</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                {% if course.prix is defined and course.prix > 0 %}
+                    <div class="display-4 fw-bold text-white">{{ course.prix }}€</div>
+                    <p class="text-white-50 mb-4">Prix du cours</p>
+                {% endif %}
+                
+                <div class="d-grid gap-2">
+                    {% if app.user %}
+                        <button class="btn btn-light btn-lg">
+                            <i class="fas fa-rocket me-2"></i>Commencer l'apprentissage
+                        </button>
+                    {% else %}
+                       
+                            <i class="fas fa-user-plus me-2"></i>S'inscrire gratuitement
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container py-5">
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-lg-8">
+            <!-- Course Overview Cards -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                                    <i class="fas fa-clock text-primary fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="mb-0">{{ course.duree|default(0) }}min</h3>
+                                    <p class="text-muted mb-0">Durée totale</p>
+                                </div>
+                            </div>
+                            <p class="text-muted small mb-0">Temps estimé pour compléter le cours</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-success bg-opacity-10 p-3 rounded-circle me-3">
+                                    <i class="fas fa-download text-success fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="mb-0">{{ resources|length }}</h3>
+                                    <p class="text-muted mb-0">Ressources</p>
+                                </div>
+                            </div>
+                            <p class="text-muted small mb-0">Documents et fichiers disponibles</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="bg-warning bg-opacity-10 p-3 rounded-circle me-3">
+                                    <i class="fas fa-star text-warning fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h3 class="mb-0">{{ attribute(course, 'rating') is defined ? course.rating : '4.5' }}</h3>
+                                    <p class="text-muted mb-0">Évaluation</p>
+                                </div>
+                            </div>
+                            <p class="text-muted small mb-0">Note moyenne du cours</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Description -->
+            <div class="card border-0 shadow-sm mb-5">
+                <div class="card-header bg-white border-0 py-4">
+                    <h3 class="mb-0">
+                        <i class="fas fa-info-circle text-primary me-2"></i>
+                        À propos de ce cours
+                    </h3>
+                </div>
+                <div class="card-body p-4 pt-0">
+                    <div class="lead mb-4">{{ course.description|default('Description non disponible')|nl2br }}</div>
+                    
+                    {% if course.objectifs is defined and course.objectifs %}
+                        <div class="mb-4">
+                            <h5 class="mb-3">
+                                <i class="fas fa-bullseye text-success me-2"></i>
+                                Objectifs d'apprentissage
+                            </h5>
+                            <div class="row g-3">
+                                {% for objectif in course.objectifs|split('\n') %}
+                                    {% if objectif|trim %}
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-start">
+                                                <i class="fas fa-check-circle text-success mt-1 me-3"></i>
+                                                <span>{{ objectif }}</span>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if course.prerequis is defined and course.prerequis %}
+                        <div class="alert alert-light border">
+                            <h6 class="alert-heading mb-3">
+                                <i class="fas fa-exclamation-circle text-warning me-2"></i>
+                                Prérequis recommandés
+                            </h6>
+                            <p class="mb-0">{{ course.prerequis }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Multimedia Gallery Section -->
+            {% set images = resources|filter(r => r.fileName and r.fileName|lower|split('.')|last in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff']) %}
+            {% set videos = resources|filter(r => r.fileName and r.fileName|lower|split('.')|last in ['mp4', 'mov', 'avi', 'mkv', 'webm', 'wmv', 'flv', 'm4v']) %}
+            {% set audios = resources|filter(r => r.fileName and r.fileName|lower|split('.')|last in ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'aac']) %}
+            {% set documents = resources|filter(r => r.fileName and r.fileName|lower|split('.')|last in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx']) %}
+            {% set otherFiles = resources|filter(r => r.fileName and r.fileName|lower|split('.')|last not in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff', 'mp4', 'mov', 'avi', 'mkv', 'webm', 'wmv', 'flv', 'm4v', 'mp3', 'wav', 'ogg', 'm4a', 'flac', 'aac', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx']) %}
+            {% set links = resources|filter(r => r.url) %}
+
+            <!-- Gallery Navigation -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h4 class="mb-4">
+                        <i class="fas fa-images text-primary me-2"></i>
+                        Galerie multimédia
+                    </h4>
+                    
+                    <div class="row">
+                        <!-- Images Counter -->
+                        <div class="col-md-2 col-6 mb-3">
+                            <a href="#imagesSection" class="text-decoration-none">
+                                <div class="text-center p-3 rounded-3 bg-light hover-shadow">
+                                    <i class="fas fa-image fa-2x text-success mb-2"></i>
+                                    <h5 class="mb-1">{{ images|length }}</h5>
+                                    <small class="text-muted">Images</small>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <!-- Videos Counter -->
+                        <div class="col-md-2 col-6 mb-3">
+                            <a href="#videosSection" class="text-decoration-none">
+                                <div class="text-center p-3 rounded-3 bg-light hover-shadow">
+                                    <i class="fas fa-video fa-2x text-primary mb-2"></i>
+                                    <h5 class="mb-1">{{ videos|length }}</h5>
+                                    <small class="text-muted">Vidéos</small>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <!-- Audios Counter -->
+                        <div class="col-md-2 col-6 mb-3">
+                            <a href="#audiosSection" class="text-decoration-none">
+                                <div class="text-center p-3 rounded-3 bg-light hover-shadow">
+                                    <i class="fas fa-music fa-2x text-warning mb-2"></i>
+                                    <h5 class="mb-1">{{ audios|length }}</h5>
+                                    <small class="text-muted">Audio</small>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <!-- Documents Counter -->
+                        <div class="col-md-2 col-6 mb-3">
+                            <a href="#documentsSection" class="text-decoration-none">
+                                <div class="text-center p-3 rounded-3 bg-light hover-shadow">
+                                    <i class="fas fa-file-pdf fa-2x text-danger mb-2"></i>
+                                    <h5 class="mb-1">{{ documents|length }}</h5>
+                                    <small class="text-muted">Documents</small>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <!-- Other Files Counter -->
+                        <div class="col-md-2 col-6 mb-3">
+                            <a href="#otherFilesSection" class="text-decoration-none">
+                                <div class="text-center p-3 rounded-3 bg-light hover-shadow">
+                                    <i class="fas fa-file-alt fa-2x text-secondary mb-2"></i>
+                                    <h5 class="mb-1">{{ otherFiles|length }}</h5>
+                                    <small class="text-muted">Autres</small>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <!-- Links Counter -->
+                        <div class="col-md-2 col-6 mb-3">
+                            <a href="#linksSection" class="text-decoration-none">
+                                <div class="text-center p-3 rounded-3 bg-light hover-shadow">
+                                    <i class="fas fa-link fa-2x text-info mb-2"></i>
+                                    <h5 class="mb-1">{{ links|length }}</h5>
+                                    <small class="text-muted">Liens</small>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Images Section -->
+            {% if images|length > 0 %}
+                <div class="card border-0 shadow-sm mb-5" id="imagesSection">
+                    <div class="card-header bg-white border-0 py-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-0">
+                                    <i class="fas fa-image text-success me-2"></i>
+                                    Galerie d'images
+                                </h3>
+                                <p class="text-muted mb-0 mt-2">{{ images|length }} image(s) disponible(s)</p>
+                            </div>
+                            <button class="btn btn-outline-success" onclick="openAllImages()">
+                                <i class="fas fa-expand-arrows-alt me-2"></i>Voir toutes les images
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            {% for resource in images|slice(0, 6) %}
+                                <div class="col-md-4 col-sm-6">
+                                    <div class="card border-0 shadow-sm h-100">
+                                        <div class="card-img-top position-relative" style="height: 200px; overflow: hidden;">
+                                            <img src="{{ asset('uploads/ressources/' ~ resource.fileName) }}" 
+                                                 class="w-100 h-100 object-fit-cover"
+                                                 style="cursor: pointer;"
+                                                 onclick="openImageViewer('{{ asset('uploads/ressources/' ~ resource.fileName) }}', '{{ resource.titre|default(resource.fileName) }}')"
+                                                 alt="{{ resource.titre }}">
+                                            <div class="position-absolute bottom-0 start-0 end-0 p-3 bg-dark bg-opacity-50 text-white">
+                                                <small>{{ resource.titre|default(resource.fileName)|slice(0, 30) }}{% if resource.titre|length > 30 %}...{% endif %}</small>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <button class="btn btn-sm btn-outline-success" 
+                                                        onclick="openImageViewer('{{ asset('uploads/ressources/' ~ resource.fileName) }}', '{{ resource.titre|default(resource.fileName) }}')">
+                                                    <i class="fas fa-expand me-1"></i>Voir
+                                                </button>
+                                                <a href="{{ asset('uploads/ressources/' ~ resource.fileName) }}" 
+                                                   download
+                                                   class="btn btn-sm btn-outline-dark">
+                                                    <i class="fas fa-download me-1"></i>Télécharger
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        {% if images|length > 6 %}
+                            <div class="text-center mt-4">
+                                <button class="btn btn-outline-success" onclick="openAllImages()">
+                                    <i class="fas fa-eye me-2"></i>Voir les {{ images|length - 6 }} autres images
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Videos Section -->
+            {% if videos|length > 0 %}
+                <div class="card border-0 shadow-sm mb-5" id="videosSection">
+                    <div class="card-header bg-white border-0 py-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-0">
+                                    <i class="fas fa-video text-primary me-2"></i>
+                                    Vidéos
+                                </h3>
+                                <p class="text-muted mb-0 mt-2">{{ videos|length }} vidéo(s) disponible(s)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-4">
+                            {% for resource in videos %}
+                                <div class="col-lg-6">
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-3">
+                                                <i class="fas fa-video text-primary me-2"></i>
+                                                {{ resource.titre|default(resource.fileName) }}
+                                            </h5>
+                                            
+                                            <div class="ratio ratio-16x9 mb-3">
+                                                <video controls class="rounded" style="background: #000;">
+                                                    <source src="{{ asset('uploads/ressources/' ~ resource.fileName) }}" type="video/{{ resource.fileName|split('.')|last }}">
+                                                    Votre navigateur ne supporte pas la lecture de vidéos.
+                                                </video>
+                                            </div>
+                                            
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="text-muted small">
+                                                    <i class="fas fa-calendar me-1"></i>
+                                                    {{ resource.dateAjout|date('d/m/Y') }}
+                                                </div>
+                                                <div>
+                                                    <button class="btn btn-sm btn-outline-primary" 
+                                                            onclick="openVideoViewer('{{ asset('uploads/ressources/' ~ resource.fileName) }}', '{{ resource.titre|default(resource.fileName) }}')">
+                                                        <i class="fas fa-expand me-1"></i>Plein écran
+                                                    </button>
+                                                    <a href="{{ asset('uploads/ressources/' ~ resource.fileName) }}" 
+                                                       download
+                                                       class="btn btn-sm btn-outline-dark">
+                                                        <i class="fas fa-download me-1"></i>Télécharger
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Audio Section -->
+            {% if audios|length > 0 %}
+                <div class="card border-0 shadow-sm mb-5" id="audiosSection">
+                    <div class="card-header bg-white border-0 py-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-0">
+                                    <i class="fas fa-music text-warning me-2"></i>
+                                    Fichiers audio
+                                </h3>
+                                <p class="text-muted mb-0 mt-2">{{ audios|length }} fichier(s) audio disponible(s)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            {% for resource in audios %}
+                                <div class="col-12">
+                                    <div class="card border-0 shadow-sm">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-3">
+                                                    <i class="fas fa-music fa-2x text-warning"></i>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mb-1">{{ resource.titre|default(resource.fileName) }}</h6>
+                                                    <div class="audio-player mt-3">
+                                                        <audio controls class="w-100">
+                                                            <source src="{{ asset('uploads/ressources/' ~ resource.fileName) }}" type="audio/{{ resource.fileName|split('.')|last }}">
+                                                            Votre navigateur ne supporte pas la lecture audio.
+                                                        </audio>
+                                                    </div>
+                                                </div>
+                                                <div class="ms-3">
+                                                    <a href="{{ asset('uploads/ressources/' ~ resource.fileName) }}" 
+                                                       download
+                                                       class="btn btn-sm btn-outline-dark">
+                                                        <i class="fas fa-download"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Resources Section (Documents & Other Files) -->
+            <div class="card border-0 shadow-sm mb-5">
+                <div class="card-header bg-white border-0 py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">
+                                <i class="fas fa-folder-open text-primary me-2"></i>
+                                Ressources pédagogiques
+                            </h3>
+                            <p class="text-muted mb-0 mt-2">Explorez les différents supports d'apprentissage</p>
+                        </div>
+                        <div>
+                            <a href="{{ path('course_ressources_pdf', {'id': course.id}) }}" 
+                               class="btn btn-danger" 
+                               target="_blank">
+                                <i class="fas fa-file-pdf me-2"></i>Télécharger toutes
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    {% if resources|length > 0 %}
+                        <!-- Filtres par type -->
+                        <div class="mb-4">
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <button class="btn btn-sm btn-outline-primary filter-btn active" data-filter="all">
+                                    <i class="fas fa-th me-1"></i>Tous ({{ resources|length }})
+                                </button>
+                                
+                                {% if documents|length > 0 %}
+                                    <button class="btn btn-sm btn-outline-danger filter-btn" data-filter="document">
+                                        <i class="fas fa-file-pdf me-1"></i>Documents ({{ documents|length }})
+                                    </button>
+                                {% endif %}
+                                
+                                {% if images|length > 0 %}
+                                    <button class="btn btn-sm btn-outline-success filter-btn" data-filter="image">
+                                        <i class="fas fa-image me-1"></i>Images ({{ images|length }})
+                                    </button>
+                                {% endif %}
+                                
+                                {% if videos|length > 0 %}
+                                    <button class="btn btn-sm btn-outline-primary filter-btn" data-filter="video">
+                                        <i class="fas fa-video me-1"></i>Vidéos ({{ videos|length }})
+                                    </button>
+                                {% endif %}
+                                
+                                {% if audios|length > 0 %}
+                                    <button class="btn btn-sm btn-outline-warning filter-btn" data-filter="audio">
+                                        <i class="fas fa-music me-1"></i>Audio ({{ audios|length }})
+                                    </button>
+                                {% endif %}
+                                
+                                {% if otherFiles|length > 0 %}
+                                    <button class="btn btn-sm btn-outline-secondary filter-btn" data-filter="other">
+                                        <i class="fas fa-file me-1"></i>Autres ({{ otherFiles|length }})
+                                    </button>
+                                {% endif %}
+                                
+                                {% if links|length > 0 %}
+                                    <button class="btn btn-sm btn-outline-info filter-btn" data-filter="link">
+                                        <i class="fas fa-link me-1"></i>Liens ({{ links|length }})
+                                    </button>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Barre de recherche -->
+                            <div class="mb-4">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0">
+                                        <i class="fas fa-search"></i>
+                                    </span>
+                                    <input type="text" class="form-control border-start-0" 
+                                           id="resourceSearch" 
+                                           placeholder="Rechercher dans les ressources...">
+                                    <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Liste des ressources -->
+                        <div id="resourcesList">
+                            {% for resource in resources %}
+                                {% set extension = resource.fileName ? resource.fileName|lower|split('.')|last : '' %}
+                                {% set type = '' %}
+                                
+                                {% if extension in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'] %}
+                                    {% set type = 'image' %}
+                                {% elseif extension in ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'] %}
+                                    {% set type = 'document' %}
+                                {% elseif extension in ['mp4', 'mov', 'avi', 'mkv', 'webm', 'wmv', 'flv', 'm4v'] %}
+                                    {% set type = 'video' %}
+                                {% elseif extension in ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'aac'] %}
+                                    {% set type = 'audio' %}
+                                {% elseif extension not in ['', 'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff', 'pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'mp4', 'mov', 'avi', 'mkv', 'webm', 'wmv', 'flv', 'm4v', 'mp3', 'wav', 'ogg', 'm4a', 'flac', 'aac'] %}
+                                    {% set type = 'other' %}
+                                {% elseif resource.url %}
+                                    {% set type = 'link' %}
+                                {% else %}
+                                    {% set type = 'other' %}
+                                {% endif %}
+                                
+                                <div class="resource-item mb-4" data-type="{{ type }}" data-title="{{ resource.titre|lower }}">
+                                    {{ _self.displayFile(resource, course) }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Message si pas de résultats -->
+                        <div id="noResults" class="text-center py-5 d-none">
+                            <div class="mb-4">
+                                <i class="fas fa-search fa-4x text-muted"></i>
+                            </div>
+                            <h4 class="text-muted mb-3">Aucun résultat trouvé</h4>
+                            <p class="text-muted">Essayez avec d'autres termes de recherche</p>
+                        </div>
+                        
+                    {% else %}
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="fas fa-inbox fa-4x text-muted"></i>
+                            </div>
+                            <h4 class="text-muted mb-3">Aucune ressource disponible</h4>
+                            <p class="text-muted">Les ressources seront ajoutées prochainement</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-4">
+            <!-- Quick Actions -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="mb-4">
+                        <i class="fas fa-bolt text-warning me-2"></i>
+                        Actions rapides
+                    </h5>
+                    <div class="d-grid gap-2">
+                        {% if app.user %}
+                            <button class="btn btn-primary">
+                                <i class="fas fa-bookmark me-2"></i>Ajouter aux favoris
+                            </button>
+                        {% endif %}
+                        <button class="btn btn-outline-primary" onclick="window.print()">
+                            <i class="fas fa-print me-2"></i>Imprimer cette page
+                        </button>
+                        <button class="btn btn-outline-secondary" id="shareBtn">
+                            <i class="fas fa-share-alt me-2"></i>Partager ce cours
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Features -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="mb-4">
+                        <i class="fas fa-gift text-primary me-2"></i>
+                        Ce que vous obtenez
+                    </h5>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-3"></i>
+                            <span>Accès à vie au contenu</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-3"></i>
+                            <span>Certificat de complétion</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-3"></i>
+                            <span>Support pédagogique</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-3"></i>
+                            <span>Accès mobile et tablette</span>
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-3"></i>
+                            <span>Mises à jour gratuites</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Instructor Info -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <div class="bg-primary bg-opacity-10 d-inline-flex p-4 rounded-circle mb-3">
+                            <i class="fas fa-user-tie text-primary fa-3x"></i>
+                        </div>
+                        <h5>{{ course.emailProf|default('Formateur Path2Learn') }}</h5>
+                        <p class="text-muted mb-3">Instructeur certifié</p>
+                        <div class="d-flex justify-content-center gap-3 mb-3">
+                            <div class="text-center">
+                                {% set course_count = ((course.id|default(0) % 15) + 5) %}
+                                <div class="h4 mb-0">{{ course_count }}</div>
+                                <small class="text-muted">Cours</small>
+                            </div>
+                            <div class="vr"></div>
+                            <div class="text-center">
+                                {% set student_count = ((course.id|default(0) % 900) + 100) %}
+                                <div class="h4 mb-0">{{ student_count }}+</div>
+                                <small class="text-muted">Étudiants</small>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-primary w-100">
+                        <i class="fas fa-eye me-2"></i>Voir le profil complet
+                    </button>
+                </div>
+            </div>
+
+            <!-- Export PDF Section -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="mb-4">
+                        <i class="fas fa-download text-danger me-2"></i>
+                        Exporter en PDF
+                    </h5>
+                    <div class="d-grid gap-2">
+                        <a href="{{ path('course_pdf', {'id': course.id}) }}" 
+                           class="btn btn-outline-danger" 
+                           target="_blank">
+                            <i class="fas fa-graduation-cap me-2"></i>Fiche du cours
+                        </a>
+                        <a href="{{ path('course_ressources_pdf', {'id': course.id}) }}" 
+                           class="btn btn-outline-primary" 
+                           target="_blank">
+                            <i class="fas fa-book me-2"></i>Toutes les ressources
+                        </a>
+                        {% if resources|length > 0 %}
+                        <div class="mt-3">
+                            <p class="small text-muted mb-2">Ressources individuelles :</p>
+                            <div class="list-group">
+                                {% for resource in resources|slice(0, 3) %}
+                                <a href="{{ path('single_ressource_pdf', {'id': course.id, 'ressourceId': resource.id}) }}" 
+                                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" 
+                                   target="_blank">
+                                    <span>{{ resource.titre|slice(0, 25) }}{% if resource.titre|length > 25 %}...{% endif %}</span>
+                                    <i class="fas fa-file-pdf text-danger"></i>
+                                </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="mb-3">
+                        <i class="fas fa-tags text-info me-2"></i>
+                        Tags du cours
+                    </h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for tag in ['apprentissage', 'éducation', 'formation', 'en ligne', 'compétences', 'développement'] %}
+                            <span class="badge bg-light text-dark px-3 py-2">
+                                <i class="fas fa-hashtag me-1"></i>{{ tag }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer START -->
+<footer class="pt-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-3">
+                <a class="me-0 d-flex align-items-center" href="{{ path('home') }}">
+                    <img class="light-mode-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 200px;">
+                    <img class="dark-mode-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 200px;">
+                </a>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="row g-4">
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Entreprise</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">À propos de nous</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Nous contacter</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Actualités et blogs</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Bibliothèque</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Carrière</a></li>
+                        </ul>
+                    </div>
+                                    
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Communauté</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">Documentation</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Forum</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Plan du site</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Enseignement</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">Devenir formateur</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Guide pratique</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Termes et conditions</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <h5 class="mb-2 mb-md-4">Contact</h5>
+                <p class="mb-2">
+                    Numéro gratuit : <span class="h6 fw-light ms-2">+216 20629612</span>
+                    <span class="d-block small">(9:AM to 8:PM IST)</span>
+                </p>
+
+                <p class="mb-0">Email: <span class="h6 fw-light ms-2">example@gmail.com</span></p>
+
+                <div class="row g-2 mt-2">
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-6">
+                        <a href="#"> <img src="{{ asset('assets/images/client/google-play.svg') }}" alt=""> </a>
+                    </div>
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-6">
+                        <a href="#"> <img src="{{ asset('assets/images/client/app-store.svg') }}" alt="app-store"> </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="mt-4 mb-0">
+
+        <div class="py-3">
+            <div class="container px-0">
+                <div class="d-lg-flex justify-content-between align-items-center py-3 text-center text-md-left">
+                    <div class="text-body text-primary-hover"> © 2026 Développé par <a href="https://www.webestica.com/" target="_blank" class="text-body">Path2learn</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Modals pour les visionneuses -->
+<!-- Modal Image Viewer -->
+<div class="modal fade" id="imageViewerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content bg-dark">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-white" id="imageViewerTitle"></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0 text-center">
+                <img id="modalImage" class="img-fluid" style="max-height: 80vh;" alt="">
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <button id="prevImage" class="btn btn-outline-light d-none">
+                    <i class="fas fa-chevron-left me-2"></i>Précédent
+                </button>
+                <a id="downloadImage" href="#" download class="btn btn-primary">
+                    <i class="fas fa-download me-2"></i>Télécharger
+                </a>
+                <button id="nextImage" class="btn btn-outline-light d-none">
+                    <i class="fas fa-chevron-right me-2"></i>Suivant
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Fermer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Video Viewer -->
+<div class="modal fade" id="videoViewerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="videoViewerTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0" style="height: 70vh;">
+                <video id="modalVideo" controls class="w-100 h-100" style="background: #000;"></video>
+            </div>
+            <div class="modal-footer">
+                <a id="downloadVideo" href="#" download class="btn btn-primary">
+                    <i class="fas fa-download me-2"></i>Télécharger
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Fermer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Audio Viewer -->
+<div class="modal fade" id="audioViewerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="audioViewerTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <audio id="modalAudio" controls class="w-100"></audio>
+            </div>
+            <div class="modal-footer">
+                <a id="downloadAudio" href="#" download class="btn btn-primary">
+                    <i class="fas fa-download me-2"></i>Télécharger
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Fermer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+html, body {
+    background-color: #ffffff !important;
+    height: 100%;
+    margin: 0;
+}
+
+.layout-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.page-content {
+    flex: 1;
+    background-color: #ffffff;
+}
+
+.site-footer {
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* Styles pour les prévisualisations d'images */
+.preview-image {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 100%;
+    height: auto;
+}
+
+.preview-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+/* Styles pour les cards de galerie */
+.hover-shadow {
+    transition: all 0.3s ease;
+}
+
+.hover-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* Styles pour les lecteurs audio/vidéo */
+.audio-player audio {
+    outline: none;
+}
+
+.video-thumbnail {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.video-thumbnail::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 1;
+    transition: background 0.3s ease;
+}
+
+.video-thumbnail:hover::before {
+    background: rgba(0,0,0,0.5);
+}
+
+.video-play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    color: white;
+    font-size: 3rem;
+    transition: transform 0.3s ease;
+}
+
+.video-thumbnail:hover .video-play-icon {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* Styles pour la galerie d'images */
+.object-fit-cover {
+    object-fit: cover;
+}
+
+/* Styles pour les modals */
+.modal-content.bg-dark .btn-close {
+    filter: invert(1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .col-md-2 {
+        flex: 0 0 33.333%;
+        max-width: 33.333%;
+    }
+    
+    .preview-image {
+        max-height: 150px;
+    }
+}
+
+/* Animation pour les filtres */
+.resource-item {
+    transition: all 0.3s ease;
+}
+
+.resource-item.hidden {
+    display: none !important;
+}
+
+/* Style pour les badges de compteur */
+.badge-counter {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 0.7rem;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Variables globales
+    let currentImageIndex = 0;
+    let allImages = [];
+    {% set images = resources|filter(r => r.fileName and r.fileName|lower|split('.')|last in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff']) %}
+    {% for resource in images %}
+        allImages.push({
+            url: '{{ asset('uploads/ressources/' ~ resource.fileName) }}',
+            title: '{{ resource.titre|default(resource.fileName)|escape('js') }}',
+            fileName: '{{ resource.fileName|escape('js') }}'
+        });
+    {% endfor %}
+    
+    // Fonction pour formater la taille des fichiers
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    
+    // Récupérer et afficher les tailles de fichiers
+    document.querySelectorAll('.resource-item').forEach(item => {
+        const downloadLink = item.querySelector('a[download]');
+        if (downloadLink) {
+            // On pourrait faire un fetch pour obtenir la taille du fichier
+            // Pour l'instant, on laisse vide ou on utilise une valeur par défaut
+        }
+    });
+    
+    // Visionneuse d'image
+    window.openImageViewer = function(imageUrl, title, fileName = null) {
+        currentImageIndex = allImages.findIndex(img => img.url === imageUrl);
+        
+        const modal = new bootstrap.Modal(document.getElementById('imageViewerModal'));
+        const modalImage = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('imageViewerTitle');
+        const downloadBtn = document.getElementById('downloadImage');
+        const prevBtn = document.getElementById('prevImage');
+        const nextBtn = document.getElementById('nextImage');
+        
+        modalImage.src = imageUrl;
+        modalImage.alt = title;
+        modalTitle.textContent = title;
+        downloadBtn.href = imageUrl;
+        downloadBtn.download = fileName || title;
+        
+        // Gestion des boutons précédent/suivant
+        if (allImages.length > 1) {
+            prevBtn.classList.remove('d-none');
+            nextBtn.classList.remove('d-none');
+            
+            prevBtn.onclick = function() {
+                currentImageIndex = (currentImageIndex - 1 + allImages.length) % allImages.length;
+                const img = allImages[currentImageIndex];
+                modalImage.src = img.url;
+                modalTitle.textContent = img.title;
+                downloadBtn.href = img.url;
+                downloadBtn.download = img.fileName || img.title;
+            };
+            
+            nextBtn.onclick = function() {
+                currentImageIndex = (currentImageIndex + 1) % allImages.length;
+                const img = allImages[currentImageIndex];
+                modalImage.src = img.url;
+                modalTitle.textContent = img.title;
+                downloadBtn.href = img.url;
+                downloadBtn.download = img.fileName || img.title;
+            };
+        } else {
+            prevBtn.classList.add('d-none');
+            nextBtn.classList.add('d-none');
+        }
+        
+        modal.show();
+    };
+    
+    // Visionneuse vidéo
+    window.openVideoViewer = function(videoUrl, title, fileName = null) {
+        const modal = new bootstrap.Modal(document.getElementById('videoViewerModal'));
+        const modalVideo = document.getElementById('modalVideo');
+        const modalTitle = document.getElementById('videoViewerTitle');
+        const downloadBtn = document.getElementById('downloadVideo');
+        
+        modalVideo.src = videoUrl;
+        modalTitle.textContent = title;
+        downloadBtn.href = videoUrl;
+        downloadBtn.download = fileName || title;
+        
+        modal.show();
+    };
+    
+    // Visionneuse audio
+    window.openAudioViewer = function(audioUrl, title, fileName = null) {
+        const modal = new bootstrap.Modal(document.getElementById('audioViewerModal'));
+        const modalAudio = document.getElementById('modalAudio');
+        const modalTitle = document.getElementById('audioViewerTitle');
+        const downloadBtn = document.getElementById('downloadAudio');
+        
+        modalAudio.src = audioUrl;
+        modalTitle.textContent = title;
+        downloadBtn.href = audioUrl;
+        downloadBtn.download = fileName || title;
+        
+        modal.show();
+    };
+    
+    // Ouvrir toutes les images en galerie
+    window.openAllImages = function() {
+        if (allImages.length > 0) {
+            openImageViewer(allImages[0].url, allImages[0].title, allImages[0].fileName);
+        }
+    };
+    
+    // Filtrage des ressources
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const resourceItems = document.querySelectorAll('.resource-item');
+    const noResults = document.getElementById('noResults');
+    
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const filter = this.dataset.filter;
+            
+            // Mettre à jour les boutons actifs
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filtrer les éléments
+            filterResources(filter);
+        });
+    });
+    
+    // Recherche dans les ressources
+    const searchInput = document.getElementById('resourceSearch');
+    const clearSearchBtn = document.getElementById('clearSearch');
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+        filterResources(activeFilter, searchTerm);
+    });
+    
+    clearSearchBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+        filterResources(activeFilter);
+    });
+    
+    function filterResources(filter, searchTerm = '') {
+        let visibleCount = 0;
+        
+        resourceItems.forEach(item => {
+            const type = item.dataset.type;
+            const title = item.dataset.title;
+            
+            let shouldShow = true;
+            
+            // Filtre par type
+            if (filter !== 'all' && type !== filter) {
+                shouldShow = false;
+            }
+            
+            // Filtre par recherche
+            if (searchTerm && !title.includes(searchTerm)) {
+                shouldShow = false;
+            }
+            
+            if (shouldShow) {
+                item.style.display = 'block';
+                visibleCount++;
+                item.classList.remove('hidden');
+            } else {
+                item.style.display = 'none';
+                item.classList.add('hidden');
+            }
+        });
+        
+        // Afficher/masquer le message "pas de résultats"
+        if (visibleCount === 0) {
+            noResults.classList.remove('d-none');
+        } else {
+            noResults.classList.add('d-none');
+        }
+    }
+    
+    // Partage du cours
+    document.getElementById('shareBtn')?.addEventListener('click', function() {
+        const shareUrl = window.location.href;
+        const shareTitle = document.title;
+        
+        if (navigator.share) {
+            navigator.share({
+                title: shareTitle,
+                text: 'Découvrez ce cours intéressant !',
+                url: shareUrl
+            });
+        } else {
+            // Fallback pour les navigateurs qui ne supportent pas l'API de partage
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert('Lien copié dans le presse-papiers !');
+            });
+        }
+    });
+    
+    // Navigation fluide vers les sections
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if (targetId !== '#') {
+                e.preventDefault();
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }
+        });
+    });
+    
+    // Initialisation des tooltips
+    const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltips.forEach(tooltip => {
+        new bootstrap.Tooltip(tooltip);
+    });
+    
+    // Lazy loading pour les images
+    const images = document.querySelectorAll('img[data-src]');
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.remove('lazy');
+                observer.unobserve(img);
+            }
+        });
+    });
+    
+    images.forEach(img => imageObserver.observe(img));
+});
+</script>
+{% endblock %}
