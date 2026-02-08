@@ -1,0 +1,268 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel utilisateur{% endblock %}
+
+{% block body %}
+
+<!-- Page content START -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-dots mb-0">
+                        <li class="breadcrumb-item"><a href="{{ path('home') }}">Accueil</a></li>
+                        <li class="breadcrumb-item"><a href="{{ path('app_user_index') }}">Utilisateurs</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Nouveau</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-10 col-xl-8 mx-auto">
+                <!-- Form Card -->
+                <div class="card shadow">
+                    <!-- Card header -->
+                    <div class="card-header bg-success bg-opacity-10 border-bottom">
+                        <div class="d-sm-flex align-items-center">
+                            <div class="icon-lg bg-success text-white rounded-circle flex-shrink-0">
+                                <i class="bi bi-person-plus-fill"></i>
+                            </div>
+                            <div class="ms-0 ms-sm-3 mt-2 mt-sm-0">
+                                <h4 class="mb-0 text-success">
+                                    <i class="bi bi-person-plus me-2"></i>
+                                    Créer un nouvel utilisateur
+                                </h4>
+                                <p class="mb-0">Remplissez les informations ci-dessous</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card body -->
+                    <div class="card-body p-4">
+                        {{ form_start(form) }}
+                            <div class="row g-4">
+                                <!-- Personal Information Section -->
+                                <div class="col-12">
+                                    <h5 class="mb-3">
+                                        <i class="bi bi-person-badge text-primary me-2"></i>
+                                        Informations personnelles
+                                    </h5>
+                                    <hr class="mb-4">
+                                </div>
+
+                                <!-- Nom -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-person me-1 text-primary"></i>
+                                        Nom <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form_widget(form.nom, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'Entrez le nom'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.nom) }}
+                                </div>
+
+                                <!-- Prénom -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-person me-1 text-primary"></i>
+                                        Prénom <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form_widget(form.prenom, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'Entrez le prénom'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.prenom) }}
+                                </div>
+
+                                <!-- Account Information Section -->
+                                <div class="col-12 mt-5">
+                                    <h5 class="mb-3">
+                                        <i class="bi bi-shield-lock text-success me-2"></i>
+                                        Informations de compte
+                                    </h5>
+                                    <hr class="mb-4">
+                                </div>
+
+                                <!-- Email -->
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-envelope me-1 text-primary"></i>
+                                        Email <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form_widget(form.email, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'exemple@email.com'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.email) }}
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        L'adresse email sera utilisée pour la connexion
+                                    </small>
+                                </div>
+
+                                <!-- Mot de passe -->
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-key me-1 text-primary"></i>
+                                        Mot de passe <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form_widget(form.motDePasse, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': '••••••••'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.motDePasse) }}
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Minimum 8 caractères recommandés
+                                    </small>
+                                </div>
+
+                                <!-- Role & Status Section -->
+                                <div class="col-12 mt-5">
+                                    <h5 class="mb-3">
+                                        <i class="bi bi-gear text-info me-2"></i>
+                                        Permissions et statut
+                                    </h5>
+                                    <hr class="mb-4">
+                                </div>
+
+                                <!-- Rôle -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-person-badge me-1 text-primary"></i>
+                                        Rôle <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form_widget(form.role, {
+                                        'attr': {
+                                            'class': 'form-select'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.role) }}
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Définit les permissions de l'utilisateur
+                                    </small>
+                                </div>
+
+                                <!-- Statut -->
+<div class="col-md-6">
+    <label class="form-label fw-bold">
+        <i class="bi bi-toggle-on me-1 text-primary"></i>
+        Statut <span class="text-danger">*</span>
+    </label>
+    {{ form_widget(form.status, {
+        'attr': {
+            'class': 'form-select'
+        }
+    }) }}
+    {{ form_errors(form.status) }}
+    <small class="text-muted">
+        <i class="bi bi-info-circle me-1"></i>
+        Activé: l'utilisateur peut se connecter
+    </small>
+</div>
+
+                                <!-- Date création -->
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-calendar3 me-1 text-primary"></i>
+                                        Date de création <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form_widget(form.dateCreation, {
+                                        'attr': {
+                                            'class': 'form-control'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.dateCreation) }}
+                                </div>
+
+                                <!-- Info Alert -->
+                                <div class="col-12 mt-4">
+                                    <div class="alert alert-info d-flex align-items-center" role="alert">
+                                        <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+                                        <div>
+                                            <strong>Conseil:</strong> Assurez-vous que toutes les informations sont correctes avant de créer l'utilisateur. Les champs marqués d'une <span class="text-danger">*</span> sont obligatoires.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="d-sm-flex justify-content-between align-items-center mt-5">
+                                <a href="{{ path('app_user_index') }}" class="btn btn-secondary mb-2 mb-sm-0">
+                                    <i class="bi bi-arrow-left me-2"></i>
+                                    Retour à la liste
+                                </a>
+                                <div>
+                                    <button type="reset" class="btn btn-light me-2">
+                                        <i class="bi bi-x-circle me-2"></i>
+                                        Réinitialiser
+                                    </button>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="bi bi-check-circle me-2"></i>
+                                        Créer l'utilisateur
+                                    </button>
+                                </div>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+
+                <!-- Help Card -->
+                <div class="card shadow mt-4">
+                    <div class="card-body">
+                        <h6 class="mb-3">
+                            <i class="bi bi-question-circle text-primary me-2"></i>
+                            Besoin d'aide ?
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="d-flex">
+                                    <i class="bi bi-shield-check text-success me-2 fs-5"></i>
+                                    <div>
+                                        <h6 class="mb-1 small">Admin</h6>
+                                        <p class="mb-0 small text-muted">Accès complet au système</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex">
+                                    <i class="bi bi-person-workspace text-primary me-2 fs-5"></i>
+                                    <div>
+                                        <h6 class="mb-1 small">Enseignant</h6>
+                                        <p class="mb-0 small text-muted">Gestion des cours et étudiants</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex">
+                                    <i class="bi bi-person text-info me-2 fs-5"></i>
+                                    <div>
+                                        <h6 class="mb-1 small">Étudiant</h6>
+                                        <p class="mb-0 small text-muted">Accès aux cours uniquement</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Page content END -->
+
+{% endblock %}

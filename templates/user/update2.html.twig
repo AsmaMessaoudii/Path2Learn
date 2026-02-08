@@ -1,0 +1,155 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon profil{% endblock %}
+
+{% block body %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mx-auto">
+                <!-- Breadcrumb -->
+                <div class="mb-4">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb breadcrumb-dots mb-0">
+                            <li class="breadcrumb-item"><a href="{{ path('home') }}">Accueil</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Modifier mon profil</li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <!-- Update Card -->
+                <div class="card shadow">
+                    <!-- Card header -->
+                    <div class="card-header bg-primary bg-opacity-10 border-bottom">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-lg bg-primary text-white rounded-circle flex-shrink-0">
+                                <i class="bi bi-pencil-square"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h4 class="mb-0 text-primary">
+                                    <i class="bi bi-person-circle me-2"></i>
+                                    Modifier mon profil
+                                </h4>
+                                <p class="mb-0 small">Mettez à jour vos informations</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card body -->
+                    <div class="card-body p-4">
+                        {{ form_start(form) }}
+                            <div class="row g-3">
+                                <!-- Nom -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-person me-1 text-primary"></i>
+                                        {{ form_label(form.nom) }}
+                                    </label>
+                                    {{ form_widget(form.nom, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'Votre nom'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.nom) }}
+                                </div>
+
+                                <!-- Prénom -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-person me-1 text-primary"></i>
+                                        {{ form_label(form.prenom) }}
+                                    </label>
+                                    {{ form_widget(form.prenom, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'Votre prénom'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.prenom) }}
+                                </div>
+
+                                <!-- Email -->
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-envelope me-1 text-primary"></i>
+                                        {{ form_label(form.email) }}
+                                    </label>
+                                    {{ form_widget(form.email, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'votre.email@exemple.com'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.email) }}
+                                </div>
+
+                                <!-- Password -->
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-key me-1 text-primary"></i>
+                                        {{ form_label(form.plainPassword) }}
+                                    </label>
+                                    {{ form_widget(form.plainPassword, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'Laissez vide pour conserver',
+                                            'required': false
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.plainPassword) }}
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Laissez vide pour conserver votre mot de passe actuel
+                                    </small>
+                                </div>
+
+                                <!-- Role -->
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-person-badge me-1 text-primary"></i>
+                                        {{ form_label(form.role) }}
+                                    </label>
+                                    {{ form_widget(form.role, {
+                                        'attr': {
+                                            'class': 'form-select'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.role) }}
+                                </div>
+
+                                <!-- Info Alert -->
+                                <div class="col-12">
+                                    <div class="alert alert-info d-flex align-items-center" role="alert">
+                                        <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+                                        <div>
+                                            <strong>Compte créé le:</strong> {{ user.dateCreation ? user.dateCreation|date('d/m/Y') : 'N/A' }}
+                                            <br>
+                                            <strong>Statut:</strong> 
+                                            <span class="badge bg-success">
+                                                {{ user.status.value == 'enable' ? 'Activé' : 'Désactivé' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    Mettre à jour mon profil
+                                </button>
+                                <a href="{{ path('home') }}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>
+                                    Annuler
+                                </a>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

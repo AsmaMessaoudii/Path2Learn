@@ -1,0 +1,296 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des utilisateurs{% endblock %}
+
+{% block body %}
+
+<!-- Page content START -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-dots mb-0">
+                        <li class="breadcrumb-item"><a href="{{ path('home') }}">Accueil</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Utilisateurs</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card bg-transparent border-0">
+                    <div class="card-body p-0">
+                        <div class="d-sm-flex justify-content-between align-items-center">
+                            <div>
+                                <h1 class="h2 mb-2">
+                                    <i class="bi bi-people-fill text-primary me-2"></i>
+                                    Gestion des utilisateurs
+                                </h1>
+                                <p class="mb-0">Gérez tous vos utilisateurs depuis cette interface</p>
+                            </div>
+                            <a href="{{ path('app_user_new') }}" class="btn btn-success mb-0">
+                                <i class="bi bi-plus-circle me-2"></i>Nouvel utilisateur
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Table Card -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <!-- Card header -->
+                    <div class="card-header border-bottom">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-8">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-table me-2 text-primary"></i>
+                                    Liste des utilisateurs
+                                </h5>
+                            </div>
+                            <div class="col-md-4">
+                                <!-- Search -->
+                                <form class="rounded position-relative">
+                                    <input class="form-control pe-5 bg-transparent" type="search" placeholder="Rechercher..." aria-label="Search">
+                                    <button class="btn bg-transparent px-2 py-0 position-absolute top-50 end-0 translate-middle-y" type="submit">
+                                        <i class="fas fa-search fs-6"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card body -->
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle p-4 mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col" class="border-0">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="checkAll">
+                                            </div>
+                                        </th>
+                                        <th scope="col" class="border-0">ID</th>
+                                        <th scope="col" class="border-0">Utilisateur</th>
+                                        <th scope="col" class="border-0">Email</th>
+                                        <th scope="col" class="border-0">Rôle</th>
+                                        <th scope="col" class="border-0">Statut</th>
+                                        <th scope="col" class="border-0">Date création</th>
+                                        <th scope="col" class="border-0 text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for user in users %}
+                                    <tr>
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h6 class="mb-0 fw-bold">#{{ user.id }}</h6>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <!-- Avatar -->
+                                                <div class="avatar avatar-sm flex-shrink-0 me-2">
+                                                    <div class="avatar-img rounded-circle bg-primary bg-opacity-10 text-primary">
+                                                        <span class="position-absolute top-50 start-50 translate-middle fw-bold">
+                                                            {{ user.prenom|first|upper }}{{ user.nom|first|upper }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <!-- Info -->
+                                                <div>
+                                                    <h6 class="mb-0 fw-normal">{{ user.prenom }} {{ user.nom }}</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a href="mailto:{{ user.email }}" class="text-decoration-none">
+                                                {{ user.email }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            {% if user.role.value == 'admin' %}
+                                                <span class="badge bg-danger bg-opacity-10 text-danger">
+                                                    <i class="bi bi-shield-fill-check me-1"></i>Admin
+                                                </span>
+                                            {% elseif user.role.value == 'teacher' %}
+                                                <span class="badge bg-primary bg-opacity-10 text-primary">
+                                                    <i class="bi bi-person-workspace me-1"></i>Enseignant
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-info bg-opacity-10 text-info">
+                                                    <i class="bi bi-person me-1"></i>Étudiant
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if user.status.value == 'enable' %}
+                                                <span class="badge bg-success bg-opacity-10 text-success">
+                                                    <i class="bi bi-check-circle me-1"></i>Activé
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-warning bg-opacity-10 text-warning">
+                                                    <i class="bi bi-x-circle me-1"></i>Désactivé
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="text-muted">
+                                                <i class="bi bi-calendar3 me-1"></i>
+                                                {{ user.dateCreation ? user.dateCreation|date('d/m/Y') : '' }}
+                                            </span>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="btn-group" role="group">
+                                                <a href="{{ path('app_user_show', {'id': user.id}) }}" 
+                                                   class="btn btn-sm btn-light btn-round me-1"
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top"
+                                                   title="Voir les détails">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="{{ path('app_user_edit', {'id': user.id}) }}" 
+                                                   class="btn btn-sm btn-success-soft btn-round"
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top"
+                                                   title="Modifier">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="8" class="text-center py-5">
+                                            <div class="my-5">
+                                                <i class="bi bi-inbox display-4 text-muted"></i>
+                                                <h5 class="mt-3 text-muted">Aucun utilisateur trouvé</h5>
+                                                <p class="text-muted">Commencez par créer votre premier utilisateur</p>
+                                                <a href="{{ path('app_user_new') }}" class="btn btn-primary-soft">
+                                                    <i class="bi bi-plus-circle me-2"></i>Créer un utilisateur
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Card footer -->
+                    <div class="card-footer border-top pt-3">
+                        <div class="d-sm-flex justify-content-sm-between align-items-sm-center">
+                            <!-- Pagination info -->
+                            <p class="mb-sm-0 text-center text-sm-start">
+                                Affichage de <span class="fw-bold">{{ users|length }}</span> utilisateur(s)
+                            </p>
+                            <!-- Pagination -->
+                            <nav class="mb-sm-0 d-flex justify-content-center" aria-label="navigation">
+                                <ul class="pagination pagination-sm pagination-primary-soft mb-0">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1">Précédent</a>
+                                    </li>
+                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">Suivant</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Page content END -->
+
+<!-- Statistics Section (Optional) -->
+<section class="pt-0">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Total Users -->
+            <div class="col-sm-6 col-xl-3">
+                <div class="card card-body shadow">
+                    <div class="icon-lg bg-success bg-opacity-10 text-success rounded-3 mb-3">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h6>Total Utilisateurs</h6>
+                    <h3 class="mb-0 purecounter">{{ users|length }}</h3>
+                </div>
+            </div>
+
+            <!-- Active Users -->
+            <div class="col-sm-6 col-xl-3">
+                <div class="card card-body shadow">
+                    <div class="icon-lg bg-primary bg-opacity-10 text-primary rounded-3 mb-3">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <h6>Utilisateurs Actifs</h6>
+                    <h3 class="mb-0">
+                        {% set activeCount = 0 %}
+                        {% for user in users %}
+                            {% if user.status.value == 'enable' %}
+                                {% set activeCount = activeCount + 1 %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ activeCount }}
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Teachers -->
+            <div class="col-sm-6 col-xl-3">
+                <div class="card card-body shadow">
+                    <div class="icon-lg bg-warning bg-opacity-10 text-warning rounded-3 mb-3">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h6>Enseignants</h6>
+                    <h3 class="mb-0">
+                        {% set teacherCount = 0 %}
+                        {% for user in users %}
+                            {% if user.role.value == 'teacher' %}
+                                {% set teacherCount = teacherCount + 1 %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ teacherCount }}
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Students -->
+            <div class="col-sm-6 col-xl-3">
+                <div class="card card-body shadow">
+                    <div class="icon-lg bg-info bg-opacity-10 text-info rounded-3 mb-3">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h6>Étudiants</h6>
+                    <h3 class="mb-0">
+                        {% set studentCount = 0 %}
+                        {% for user in users %}
+                            {% if user.role.value == 'student' %}
+                                {% set studentCount = studentCount + 1 %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ studentCount }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
