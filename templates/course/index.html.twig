@@ -60,18 +60,55 @@
                 <!-- Nav Main menu END -->
 
                 <!-- Nav Search START -->
-                <div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
-                    <div class="nav-item w-100">
-                        <form class="position-relative">
-                            <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
-                            <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
-                                <i class="fas fa-search fs-6 "></i>
-                            </button>
-                        </form>
+<div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+    <div class="nav-item w-100">
+        <form method="get" action="{{ path('app_courses') }}" class="position-relative">
+            <input 
+                class="form-control pe-5 bg-transparent" 
+                type="search" 
+                name="q"
+                placeholder="Rechercher un cours, matière, formateur..." 
+                aria-label="Search"
+                value="{{ app.request.query.get('q', '') }}"
+                onfocus="this.placeholder=''" 
+                onblur="this.placeholder='Rechercher un cours, matière, formateur...'"
+            >
+            <button 
+                class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" 
+                type="submit"
+            >
+                <i class="fas fa-search fs-6"></i>
+            </button>
+        </form>
+    </div>
+</div>
+<!-- Nav Search END -->
+            </div>
+			<!-- Section d'affichage des résultats de recherche -->
+{% if searchQuery %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info alert-dismissible fade show mb-0" role="alert">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="fas fa-search me-2"></i>
+                        <strong>Résultats de recherche pour : "{{ searchQuery }}"</strong>
+                        <span class="ms-3 badge bg-primary">
+                            {{ coursesWithResources|length }} cours trouvé(s)
+                        </span>
+                    </div>
+                    <div>
+                        <a href="{{ path('app_courses') }}" class="btn btn-sm btn-outline-dark">
+                            <i class="fas fa-times me-1"></i>Effacer la recherche
+                        </a>
                     </div>
                 </div>
-                <!-- Nav Search END -->
             </div>
+        </div>
+    </div>
+</div>
+{% endif %}
             <!-- Main navbar END -->
 
             <!-- Profile START -->
@@ -175,6 +212,10 @@ Main Banner START -->
 						<path d="M10.717,4.757 L14.440,-0.001 L14.215,6.023 L20.142,4.757 L16.076,9.228 L21.435,12.046 L15.430,12.873 L17.713,18.457 L12.579,15.252 L10.717,20.988 L8.856,15.252 L3.722,18.457 L6.005,12.873 L 0.000,12.046 L5.359,9.228 L1.292,4.757 L7.220,6.023 L6.995,-0.001 L10.717,4.757 Z" />
 					</svg>
 				</figure>
+				<pre>
+
+				
+				</pre>
 				
 				<!-- Title -->
 				<h1 class="mb-3 display-5">Nos Cours</h1>
@@ -199,7 +240,7 @@ Main Banner START -->
                 {% set course = courseData.course %}
                 {% set totalHours = totalHours + (course.duree|default(0)) %}
             {% endfor %}
-            <h5 class="mb-0">{{ totalHours }}h</h5>
+            <h5 class="mb-0">{{ totalHours }}min</h5>
             <p class="mb-0 small">Heures de contenu</p>
         </div>
     </div>
@@ -212,15 +253,41 @@ Main Banner START -->
     </div>
 </div>
 
+        <!-- Section d'export PDF -->
+        <div class="mb-4">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                <span class="text-muted">Export PDF :</span>
+                <a href="{{ path('all_courses_pdf') }}" class="btn btn-sm btn-outline-danger" target="_blank">
+                    <i class="fas fa-file-pdf me-2"></i>Tous les cours
+                </a>
+                {% if coursesWithResources|length > 0 %}
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-download me-2"></i>Exporter
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="exportDropdown">
+                        {% for courseData in coursesWithResources|slice(0, 5) %}
+                        <li>
+                            <a class="dropdown-item" href="{{ path('course_pdf', {'id': courseData.course.id}) }}" target="_blank">
+                                <i class="fas fa-graduation-cap me-2"></i>{{ courseData.course.titre|slice(0, 30) }}{% if courseData.course.titre|length > 30 %}...{% endif %}
+                            </a>
+                        </li>
+                        {% endfor %}
+                        {% if coursesWithResources|length > 5 %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item text-center" href="{{ path('all_courses_pdf') }}" target="_blank">
+                                <i class="fas fa-list me-2"></i>Tous les cours
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
 				<!-- Search -->
-				<div class="col-md-8 col-lg-10 mb-4">
-					<div class="input-group input-group-lg">
-						<input type="text" class="form-control border-2" placeholder="Rechercher un cours, un formateur ou une matière...">
-						<button class="btn btn-primary" type="button">
-							<i class="fas fa-search me-2"></i>Rechercher
-						</button>
-					</div>
-				</div>
+				
 			</div>
 			<!-- Left content END -->
 
@@ -368,7 +435,7 @@ Tabs filter START -->
             </div>
         </div>
         
-        <!-- Card footer -->
+        <!-- Card footer avec boutons PDF -->
         <div class="card-footer pt-0 pb-3 bg-transparent border-0">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
@@ -381,10 +448,31 @@ Tabs filter START -->
                         {% endif %}
                     </span>
                 </div>
-                <!-- Bouton Voir le cours (optionnel puisque toute la carte est cliquable) -->
-                <a href="{{ path('course_show', {'id': course.id}) }}" class="btn btn-sm btn-primary position-relative z-1">
-                    Voir le cours
-                </a>
+                <!-- Boutons d'action -->
+                <div class="hstack gap-2">
+                    <!-- Bouton PDF -->
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-danger dropdown-toggle" type="button" id="pdfDropdown{{ course.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-file-pdf"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="pdfDropdown{{ course.id }}">
+                            <li>
+                                <a class="dropdown-item" href="{{ path('course_pdf', {'id': course.id}) }}" target="_blank">
+                                    <i class="fas fa-graduation-cap me-2"></i>Fiche du cours
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ path('course_ressources_pdf', {'id': course.id}) }}" target="_blank">
+                                    <i class="fas fa-book me-2"></i>Ressources PDF
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- Bouton Voir le cours -->
+                    <a href="{{ path('course_show', {'id': course.id}) }}" class="btn btn-sm btn-primary position-relative z-1">
+                        Voir le cours
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -392,16 +480,37 @@ Tabs filter START -->
 							<!-- Card item END -->
 						{% endfor %}
 					{% else %}
-						<!-- Aucun cours -->
-						<div class="col-12">
-							<div class="text-center py-5">
-								<i class="fas fa-book-open display-4 text-muted mb-3"></i>
-								<h3 class="mb-3">Aucun cours disponible pour le moment</h3>
-								<p class="text-muted mb-4">Nos formateurs préparent de nouveaux contenus passionnants.</p>
-								<a href="{{ path('home') }}" class="btn btn-primary">
-									<i class="fas fa-arrow-left me-2"></i>Retour à l'accueil
-								</a>
-							</div>
+						{% if coursesWithResources|length > 0 %}
+    <!-- Afficher les cours -->
+{% else %}
+    <!-- Aucun cours -->
+    <div class="col-12">
+        <div class="text-center py-5">
+            {% if searchQuery %}
+                <i class="fas fa-search display-4 text-muted mb-3"></i>
+                <h3 class="mb-3">Aucun résultat trouvé</h3>
+                <p class="text-muted mb-4">
+                    Aucun cours ne correspond à votre recherche : <strong>"{{ searchQuery }}"</strong>
+                </p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{{ path('app_courses') }}" class="btn btn-primary">
+                        <i class="fas fa-undo me-2"></i>Afficher tous les cours
+                    </a>
+                    <button type="button" class="btn btn-outline-secondary" onclick="document.querySelector('input[name=\"q\"]').focus()">
+                        <i class="fas fa-edit me-2"></i>Modifier la recherche
+                    </button>
+                </div>
+            {% else %}
+                <i class="fas fa-book-open display-4 text-muted mb-3"></i>
+                <h3 class="mb-3">Aucun cours disponible pour le moment</h3>
+                <p class="text-muted mb-4">Nos formateurs préparent de nouveaux contenus passionnants.</p>
+                <a href="{{ path('home') }}" class="btn btn-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Retour à l'accueil
+                </a>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
 						</div>
 					{% endif %}
 				</div>
@@ -1015,6 +1124,153 @@ html, body {
     color: white;
 }
 
+/* Styles PDF */
+.btn-outline-danger:hover {
+    background: linear-gradient(135deg, #dc3545 0%, #bb2d3b 100%);
+    color: white;
+    border-color: #dc3545;
+}
+
+.badge-pdf {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .hstack.gap-2 {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .hstack.gap-2 .btn {
+        margin-bottom: 5px;
+        width: 100%;
+    }
+}
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialiser les tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Animation pour les boutons PDF
+        const pdfButtons = document.querySelectorAll('.btn-outline-danger');
+        pdfButtons.forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.transition = 'all 0.3s ease';
+                this.style.boxShadow = '0 5px 15px rgba(220, 53, 69, 0.2)';
+            });
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'none';
+            });
+        });
+    });
+    
+    // Fonction pour afficher une notification
+    function showPdfNotification() {
+        const notification = document.createElement('div');
+        notification.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3';
+        notification.style.zIndex = '9999';
+        notification.innerHTML = `
+            <i class="fas fa-check-circle me-2"></i>
+            PDF généré avec succès ! Il s'ouvre dans un nouvel onglet.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 150);
+        }, 3000);
+    }
+    
+    // Ajouter des écouteurs d'événements aux liens PDF
+    document.querySelectorAll('a[href*="pdf"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Ouvrir dans un nouvel onglet par défaut
+            if (!this.target || this.target === '_self') {
+                e.preventDefault();
+                window.open(this.href, '_blank');
+                showPdfNotification();
+            }
+        });
+    });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Focus sur la barre de recherche si on a des résultats
+    const searchInput = document.querySelector('input[name="q"]');
+    const searchQuery = "{{ searchQuery }}";
+    
+    if (searchQuery && searchInput) {
+        // Sélectionner le texte dans la barre de recherche
+        searchInput.focus();
+        searchInput.select();
+        
+        // Ajouter une classe pour styliser
+        searchInput.classList.add('search-active');
+    }
+    
+    // Ajouter un événement pour effacer facilement
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            this.value = '';
+            this.form.submit();
+        }
+    });
+    
+    // Recherche intelligente avec suggestions (optionnel)
+    let searchTimeout;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        
+        // Si plus de 3 caractères, on pourrait faire des suggestions
+        if (this.value.length >= 3) {
+            searchTimeout = setTimeout(() => {
+                // Ici, vous pourriez faire un appel AJAX pour des suggestions
+                console.log('Recherche en cours :', this.value);
+            }, 500);
+        }
+    });
+    
+    // Message de recherche vide
+    const searchForm = searchInput.closest('form');
+    searchForm.addEventListener('submit', function(e) {
+        if (!searchInput.value.trim()) {
+            e.preventDefault();
+            searchInput.focus();
+            searchInput.classList.add('is-invalid');
+            
+            setTimeout(() => {
+                searchInput.classList.remove('is-invalid');
+            }, 2000);
+        }
+    });
+    
+    // Pour les résultats, on peut ajouter une surbrillance visuelle
+    function highlightSearchTerms() {
+        const query = searchQuery.toLowerCase();
+        if (!query) return;
+        
+        // Cibler les éléments à surligner
+        document.querySelectorAll('.card-title, .text-muted').forEach(element => {
+            const text = element.textContent || element.innerText;
+            if (text.toLowerCase().includes(query)) {
+                element.classList.add('search-highlight');
+            }
+        });
+    }
+    
+    highlightSearchTerms();
+});
+</script>
 
 {% endblock %}

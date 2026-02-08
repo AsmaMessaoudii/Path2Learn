@@ -9,6 +9,8 @@ use App\Form\RessourcePedagogiqueType;
 use App\Repository\CoursRepository;
 use App\Repository\RessourcePedagogiqueRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,8 +26,22 @@ class CoursAdminController extends AbstractController
         CoursRepository $coursRepository,
         RessourcePedagogiqueRepository $ressourceRepository
     ): Response {
-        // Initialisation des variables
-        $coursList = $coursRepository->findAll();
+        // Récupérer les paramètres de tri depuis l'URL
+        $sortBy = $request->query->get('sortBy', 'titre');
+        $direction = $request->query->get('direction', 'ASC');
+        
+        // Valider les paramètres de tri
+        $allowedSortFields = ['titre', 'matiere', 'niveau', 'duree', 'statut', 'dateCreation'];
+        if (!in_array($sortBy, $allowedSortFields)) {
+            $sortBy = 'titre';
+        }
+        
+        if (!in_array(strtoupper($direction), ['ASC', 'DESC'])) {
+            $direction = 'ASC';
+        }
+        
+        // Récupérer les cours triés
+        $coursList = $coursRepository->findAllSorted($sortBy, $direction);
         $ressourcesList = $ressourceRepository->findAll();
         
         // ========== GESTION DU FORMULAIRE COURS ==========
@@ -113,7 +129,9 @@ class CoursAdminController extends AbstractController
             'editForm' => null,
             'selectedRessource' => null,
             'editRessourceForm' => null,
-            'active_tab' => 'cours', // AJOUTÉ ICI
+            'active_tab' => 'cours',
+            'current_sort' => ['field' => $sortBy, 'direction' => $direction],
+            'searchTerm' => $request->query->get('q', ''),
         ]);
     }
 
@@ -121,9 +139,23 @@ class CoursAdminController extends AbstractController
     public function view(
         Cours $cours,
         CoursRepository $coursRepository,
-        RessourcePedagogiqueRepository $ressourceRepository
+        RessourcePedagogiqueRepository $ressourceRepository,
+        Request $request
     ): Response {
-        $coursList = $coursRepository->findAll();
+        $sortBy = $request->query->get('sortBy', 'titre');
+        $direction = $request->query->get('direction', 'ASC');
+        
+        // Valider les paramètres de tri
+        $allowedSortFields = ['titre', 'matiere', 'niveau', 'duree', 'statut', 'dateCreation'];
+        if (!in_array($sortBy, $allowedSortFields)) {
+            $sortBy = 'titre';
+        }
+        
+        if (!in_array(strtoupper($direction), ['ASC', 'DESC'])) {
+            $direction = 'ASC';
+        }
+        
+        $coursList = $coursRepository->findAllSorted($sortBy, $direction);
         $ressourcesList = $ressourceRepository->findAll();
 
         // Créer des formulaires vides
@@ -148,7 +180,8 @@ class CoursAdminController extends AbstractController
             'editForm' => null,
             'selectedRessource' => null,
             'editRessourceForm' => null,
-            'active_tab' => 'cours', // AJOUTÉ ICI
+            'active_tab' => 'cours',
+            'current_sort' => ['field' => $sortBy, 'direction' => $direction],
         ]);
     }
 
@@ -160,6 +193,19 @@ class CoursAdminController extends AbstractController
         CoursRepository $coursRepository,
         RessourcePedagogiqueRepository $ressourceRepository
     ): Response {
+        $sortBy = $request->query->get('sortBy', 'titre');
+        $direction = $request->query->get('direction', 'ASC');
+        
+        // Valider les paramètres de tri
+        $allowedSortFields = ['titre', 'matiere', 'niveau', 'duree', 'statut', 'dateCreation'];
+        if (!in_array($sortBy, $allowedSortFields)) {
+            $sortBy = 'titre';
+        }
+        
+        if (!in_array(strtoupper($direction), ['ASC', 'DESC'])) {
+            $direction = 'ASC';
+        }
+        
         $editForm = $this->createForm(CoursType::class, $cours, [
             'csrf_protection' => true,
             'csrf_field_name' => '_token_edit_cours',
@@ -183,7 +229,7 @@ class CoursAdminController extends AbstractController
             }
         }
 
-        $coursList = $coursRepository->findAll();
+        $coursList = $coursRepository->findAllSorted($sortBy, $direction);
         $ressourcesList = $ressourceRepository->findAll();
 
         // Créer des formulaires vides
@@ -208,7 +254,8 @@ class CoursAdminController extends AbstractController
             'formRessource' => $formRessource->createView(),
             'selectedRessource' => null,
             'editRessourceForm' => null,
-            'active_tab' => 'cours', // AJOUTÉ ICI
+            'active_tab' => 'cours',
+            'current_sort' => ['field' => $sortBy, 'direction' => $direction],
         ]);
     }
 
@@ -235,7 +282,206 @@ class CoursAdminController extends AbstractController
         return $this->redirectToRoute('admin_cours_index');
     }
 
-    // ========== RESSOURCES ==========
-    // SUPPRIMEZ CES MÉTHODES OU DÉPLACEZ-LES DANS RessourceAdminController
-    // Elles sont en conflit avec les routes de RessourceAdminController
+    #[Route('/statistiques', name: 'admin_cours_statistiques', methods: ['GET'])]
+    public function statistiques(CoursRepository $coursRepository): Response
+    {
+        $statistics = $coursRepository->getStatisticsByStatus();
+        
+        return $this->render('cours_admin/_statistiques.html.twig', [
+            'statistics' => $statistics,
+        ]);
+    }
+
+    #[Route('/tri/{sortBy}/{direction}', name: 'admin_cours_tri', methods: ['GET'])]
+    public function tri(
+        Request $request, // AJOUT IMPORTANT : ajouter Request $request
+        string $sortBy = 'titre',
+        string $direction = 'ASC',
+        CoursRepository $coursRepository,
+        RessourcePedagogiqueRepository $ressourceRepository
+    ): Response {
+        // Log pour déboguer
+        \error_log("Tri appelé - Méthode: " . $request->getMethod() . " - URL: " . $request->getRequestUri());
+        
+        // Valider les paramètres de tri
+        $allowedSortFields = ['titre', 'matiere', 'niveau', 'duree', 'statut', 'dateCreation'];
+        if (!in_array($sortBy, $allowedSortFields)) {
+            $sortBy = 'titre';
+        }
+        
+        $direction = strtoupper($direction);
+        if (!in_array($direction, ['ASC', 'DESC'])) {
+            $direction = 'ASC';
+        }
+        
+        // Récupérer les données triées
+        $coursList = $coursRepository->findAllSorted($sortBy, $direction);
+        $ressourcesList = $ressourceRepository->findAll();
+        
+        // Créer des formulaires vides pour le rendu
+        $formCours = $this->createForm(CoursType::class, new Cours(), [
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token_cours',
+            'csrf_token_id'   => 'cours_item',
+        ]);
+        
+        $formRessource = $this->createForm(RessourcePedagogiqueType::class, new RessourcePedagogique(), [
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token_ressource',
+            'csrf_token_id'   => 'ressource_item',
+        ]);
+    
+        return $this->render('cours_admin/index_cours.html.twig', [
+            'formCours' => $formCours->createView(),
+            'formRessource' => $formRessource->createView(),
+            'coursList' => $coursList,
+            'ressourcesList' => $ressourcesList,
+            'selectedCours' => null,
+            'editForm' => null,
+            'selectedRessource' => null,
+            'editRessourceForm' => null,
+            'active_tab' => 'cours',
+            'current_sort' => ['field' => $sortBy, 'direction' => $direction],
+            'searchTerm' => $request->query->get('q', ''),
+        ]);
+    }
+    #[Route('/recherche', name: 'admin_cours_recherche', methods: ['GET'])]
+    public function recherche(
+        Request $request,
+        CoursRepository $coursRepository,
+        RessourcePedagogiqueRepository $ressourceRepository
+    ): Response {
+        $searchTerm = $request->query->get('q', '');
+        $sortBy = $request->query->get('sortBy', 'titre');
+        $direction = $request->query->get('direction', 'ASC');
+        
+        $coursList = [];
+        $ressourcesList = [];
+
+        if (!empty($searchTerm)) {
+            $coursList = $coursRepository->search($searchTerm);
+            $ressourcesList = $ressourceRepository->search($searchTerm);
+        } else {
+            $coursList = $coursRepository->findAllSorted($sortBy, $direction);
+            $ressourcesList = $ressourceRepository->findAll();
+        }
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('cours_admin/_recherche_results.html.twig', [
+                'coursList' => $coursList,
+                'ressourcesList' => $ressourcesList,
+                'searchTerm' => $searchTerm,
+                'active_tab' => 'cours',
+                'current_sort' => ['field' => $sortBy, 'direction' => $direction],
+            ]);
+        }
+
+        // Créer des formulaires vides
+        $formCours = $this->createForm(CoursType::class, new Cours(), [
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token_cours',
+            'csrf_token_id'   => 'cours_item',
+        ]);
+        
+        $formRessource = $this->createForm(RessourcePedagogiqueType::class, new RessourcePedagogique(), [
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token_ressource',
+            'csrf_token_id'   => 'ressource_item',
+        ]);
+
+        return $this->render('cours_admin/index_cours.html.twig', [
+            'formCours' => $formCours->createView(),
+            'formRessource' => $formRessource->createView(),
+            'coursList' => $coursList,
+            'ressourcesList' => $ressourcesList,
+            'selectedCours' => null,
+            'editForm' => null,
+            'selectedRessource' => null,
+            'editRessourceForm' => null,
+            'active_tab' => 'cours',
+            'searchTerm' => $searchTerm,
+            'current_sort' => ['field' => $sortBy, 'direction' => $direction],
+        ]);
+    }
+    
+    #[Route('/export-pdf', name: 'admin_cours_export_pdf', methods: ['GET'])]
+    public function exportPdf(
+        CoursRepository $coursRepository
+    ): Response {
+        $coursList = $coursRepository->findAll();
+        
+        // Configure Dompdf
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+        $pdfOptions->set('isHtml5ParserEnabled', true);
+        $pdfOptions->set('isRemoteEnabled', true);
+        
+        // Instantiate Dompdf
+        $dompdf = new Dompdf($pdfOptions);
+        
+        // Retrieve the HTML
+        $html = $this->renderView('cours_admin/export_pdf.html.twig', [
+            'coursList' => $coursList,
+            'date_export' => new \DateTime(),
+        ]);
+        
+        // Load HTML
+        $dompdf->loadHtml($html);
+        
+        // Setup paper
+        $dompdf->setPaper('A4', 'portrait');
+        
+        // Render
+        $dompdf->render();
+        
+        // Output
+        return new Response(
+            $dompdf->output(),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="cours_export_' . date('Y-m-d') . '.pdf"',
+            ]
+        );
+    }
+    
+    #[Route('/export/pdf/{id}', name: 'admin_cours_export_pdf_single', methods: ['GET'])]
+    public function exportPdfSingle(
+        Cours $cours,
+        CoursRepository $coursRepository
+    ): Response {
+        // Configure Dompdf
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+        $pdfOptions->set('isHtml5ParserEnabled', true);
+        $pdfOptions->set('isRemoteEnabled', true);
+        
+        // Instantiate Dompdf
+        $dompdf = new Dompdf($pdfOptions);
+        
+        // Retrieve the HTML
+        $html = $this->renderView('cours_admin/export_single_cours_pdf.html.twig', [
+            'cours' => $cours,
+            'date_export' => new \DateTime(),
+        ]);
+        
+        // Load HTML
+        $dompdf->loadHtml($html);
+        
+        // Setup paper
+        $dompdf->setPaper('A4', 'portrait');
+        
+        // Render
+        $dompdf->render();
+        
+        // Output
+        return new Response(
+            $dompdf->output(),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="cours_' . $cours->getId() . '_' . date('Y-m-d') . '.pdf"',
+            ]
+        );
+    }
 }

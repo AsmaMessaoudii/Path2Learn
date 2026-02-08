@@ -1,0 +1,9 @@
+knp_snappy:
+    pdf:
+        enabled: true
+        binary: '%env(WKHTMLTOPDF_PATH)%'
+        options:
+            encoding: 'utf-8'
+    image:
+        enabled: true
+        binary: '%env(WKHTMLTOIMAGE_PATH)%'

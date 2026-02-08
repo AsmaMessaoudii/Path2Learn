@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .footer {
+            text-align: center;
+            font-size: 8px;
+            color: #999;
+            border-top: 1px solid #ddd;
+            padding-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="footer">
+        Document généré le {{ date_export|date('d/m/Y H:i') }} | 
+        © Système de Gestion Académique | 
+        Page <span class="pageNumber"></span> sur <span class="totalPages"></span>
+    </div>
+</body>
+</html>
