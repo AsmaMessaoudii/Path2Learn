@@ -1,0 +1,233 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier utilisateur{% endblock %}
+
+{% block body %}
+
+<!-- Page content START -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-dots mb-0">
+                        <li class="breadcrumb-item"><a href="{{ path('home') }}">Accueil</a></li>
+                        <li class="breadcrumb-item"><a href="{{ path('app_user_index') }}">Utilisateurs</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Modifier</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-10 col-xl-8 mx-auto">
+                <!-- Form Card -->
+                <div class="card shadow">
+                    <!-- Card header -->
+                    <div class="card-header bg-primary bg-opacity-10 border-bottom">
+                        <div class="d-sm-flex align-items-center">
+                            <div class="icon-lg bg-primary text-white rounded-circle flex-shrink-0">
+                                <i class="bi bi-pencil-square"></i>
+                            </div>
+                            <div class="ms-0 ms-sm-3 mt-2 mt-sm-0">
+                                <h4 class="mb-0 text-primary">
+                                    <i class="bi bi-pencil-square me-2"></i>
+                                    Modifier l'utilisateur
+                                </h4>
+                                <p class="mb-0">Mettez à jour les informations de l'utilisateur</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card body -->
+                    <div class="card-body p-4">
+                        {{ form_start(form) }}
+                            <div class="row g-4">
+                                <!-- Personal Information Section -->
+                                <div class="col-12">
+                                    <h5 class="mb-3">
+                                        <i class="bi bi-person-badge text-primary me-2"></i>
+                                        Informations personnelles
+                                    </h5>
+                                    <hr class="mb-4">
+                                </div>
+
+                                <!-- Nom -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-person me-1 text-primary"></i>
+                                        Nom <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form_widget(form.nom, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'Entrez le nom'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.nom) }}
+                                </div>
+
+                                <!-- Prénom -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-person me-1 text-primary"></i>
+                                        Prénom <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form_widget(form.prenom, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'Entrez le prénom'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.prenom) }}
+                                </div>
+
+                                <!-- Account Information Section -->
+                                <div class="col-12 mt-5">
+                                    <h5 class="mb-3">
+                                        <i class="bi bi-shield-lock text-success me-2"></i>
+                                        Informations de compte
+                                    </h5>
+                                    <hr class="mb-4">
+                                </div>
+
+                                <!-- Email -->
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-envelope me-1 text-primary"></i>
+                                        Email <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form_widget(form.email, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'exemple@email.com'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.email) }}
+                                </div>
+
+                                <!-- Mot de passe -->
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-key me-1 text-primary"></i>
+                                        Mot de passe
+                                    </label>
+                                    {{ form_widget(form.motDePasse, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': '••••••••'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.motDePasse) }}
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Laissez vide pour conserver le mot de passe actuel
+                                    </small>
+                                </div>
+
+                                <!-- Role & Status Section -->
+                                <div class="col-12 mt-5">
+                                    <h5 class="mb-3">
+                                        <i class="bi bi-gear text-info me-2"></i>
+                                        Permissions et statut
+                                    </h5>
+                                    <hr class="mb-4">
+                                </div>
+
+                                <!-- Rôle -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-person-badge me-1 text-primary"></i>
+                                        Rôle <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form_widget(form.role, {
+                                        'attr': {
+                                            'class': 'form-select'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.role) }}
+                                </div>
+
+                               <!-- Statut -->
+<div class="col-md-6">
+    <label class="form-label fw-bold">
+        <i class="bi bi-toggle-on me-1 text-primary"></i>
+        Statut <span class="text-danger">*</span>
+    </label>
+    {{ form_widget(form.status, {
+        'attr': {
+            'class': 'form-select'
+        }
+    }) }}
+    {{ form_errors(form.status) }}
+</div>
+                                <!-- Date création -->
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-calendar3 me-1 text-primary"></i>
+                                        Date de création <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form_widget(form.dateCreation, {
+                                        'attr': {
+                                            'class': 'form-control'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.dateCreation) }}
+                                </div>
+
+                                <!-- Warning Alert -->
+                                <div class="col-12 mt-4">
+                                    <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                        <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                                        <div>
+                                            <strong>Attention:</strong> Les modifications apportées prendront effet immédiatement. Assurez-vous de vérifier toutes les informations avant de sauvegarder.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="d-sm-flex justify-content-between align-items-center mt-5">
+                                <a href="{{ path('app_user_index') }}" class="btn btn-secondary mb-2 mb-sm-0">
+                                    <i class="bi bi-arrow-left me-2"></i>
+                                    Retour à la liste
+                                </a>
+                                <div>
+                                    <a href="{{ path('app_user_show', {'id': form.vars.value.id}) }}" class="btn btn-light me-2">
+                                        <i class="bi bi-eye me-2"></i>
+                                        Voir
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-check-circle me-2"></i>
+                                        Mettre à jour
+                                    </button>
+                                </div>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+
+                <!-- Delete Section -->
+                <div class="card shadow mt-4">
+                    <div class="card-header bg-danger bg-opacity-10 border-bottom">
+                        <h5 class="mb-0 text-danger">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            Supprimer cet utilisateur
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-danger mb-3" role="alert">
+                            <i class="bi bi-shield-exclamation me-2"></i>
+                            <strong>Action irréversible!</strong> Cette action supprimera définitivement l'utilisateur et toutes ses données associées.
+                        </div>
+                        {{ include('user/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Page content END -->
+
+{% endblock %}

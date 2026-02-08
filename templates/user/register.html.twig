@@ -1,0 +1,147 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mx-auto">
+                <!-- Registration Card -->
+                <div class="card shadow">
+                    <!-- Card header -->
+                    <div class="card-header bg-success bg-opacity-10 border-bottom">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-lg bg-success text-white rounded-circle flex-shrink-0">
+                                <i class="bi bi-person-plus-fill"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h4 class="mb-0 text-success">
+                                    <i class="bi bi-person-plus me-2"></i>
+                                    Créer un compte
+                                </h4>
+                                <p class="mb-0 small">Rejoignez notre plateforme éducative</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card body -->
+                    <div class="card-body p-4">
+                        {{ form_start(form) }}
+                            <div class="row g-3">
+                                <!-- Nom -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-person me-1 text-primary"></i>
+                                        {{ form_label(form.nom) }}
+                                    </label>
+                                    {{ form_widget(form.nom, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'Votre nom'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.nom) }}
+                                </div>
+
+                                <!-- Prénom -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-person me-1 text-primary"></i>
+                                        {{ form_label(form.prenom) }}
+                                    </label>
+                                    {{ form_widget(form.prenom, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'Votre prénom'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.prenom) }}
+                                </div>
+
+                                <!-- Email -->
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-envelope me-1 text-primary"></i>
+                                        {{ form_label(form.email) }}
+                                    </label>
+                                    {{ form_widget(form.email, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': 'votre.email@exemple.com'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.email) }}
+                                </div>
+
+                                <!-- Password -->
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-key me-1 text-primary"></i>
+                                        {{ form_label(form.plainPassword) }}
+                                    </label>
+                                    {{ form_widget(form.plainPassword, {
+                                        'attr': {
+                                            'class': 'form-control',
+                                            'placeholder': '••••••••'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.plainPassword) }}
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Min. 5 caractères, 1 majuscule, 1 minuscule
+                                    </small>
+                                </div>
+
+                                <!-- Role -->
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-person-badge me-1 text-primary"></i>
+                                        {{ form_label(form.role) }}
+                                    </label>
+                                    {{ form_widget(form.role, {
+                                        'attr': {
+                                            'class': 'form-select'
+                                        }
+                                    }) }}
+                                    {{ form_errors(form.role) }}
+                                </div>
+
+                                <!-- Info Alert -->
+                                <div class="col-12">
+                                    <div class="alert alert-info d-flex align-items-center" role="alert">
+                                        <i class="bi bi-shield-check fs-4 me-3"></i>
+                                        <div>
+                                            <strong>Compte sécurisé:</strong> Votre mot de passe sera chiffré et votre compte activé automatiquement.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    Créer mon compte
+                                </button>
+                                <a href="{{ path('home') }}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>
+                                    Retour à l'accueil
+                                </a>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+
+                <!-- Login Link -->
+                <div class="text-center mt-3">
+                    <p class="mb-0">
+                        Vous avez déjà un compte? 
+                        <a href="#" class="text-decoration-none fw-bold">Connectez-vous</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
