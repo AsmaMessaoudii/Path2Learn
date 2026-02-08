@@ -16,6 +16,13 @@ class QuestionRepository extends ServiceEntityRepository
         parent::__construct($registry, Question::class);
     }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
     /**
      * Recherche des questions selon différents critères avec tri
      */
@@ -117,5 +124,33 @@ class QuestionRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+<<<<<<< HEAD
+=======
+    
+<<<<<<< HEAD
+}
+=======
+    //    /**
+    //     * @return Question[] Returns an array of Question objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('q')
+    //            ->andWhere('q.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('q.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
 
 }
+<<<<<<< HEAD
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+}
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc

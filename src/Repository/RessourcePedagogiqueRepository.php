@@ -16,6 +16,40 @@ class RessourcePedagogiqueRepository extends ServiceEntityRepository
         parent::__construct($registry, RessourcePedagogique::class);
     }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
+    //    /**
+    //     * @return RessourcePedagogique[] Returns an array of RessourcePedagogique objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('r')
+    //            ->andWhere('r.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('r.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?RessourcePedagogique
+    //    {
+    //        return $this->createQueryBuilder('r')
+    //            ->andWhere('r.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
+}
+<<<<<<< HEAD
+=======
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
     public function findAllSorted(string $sortBy = 'titre', string $direction = 'ASC'): array
     {
         $validSorts = ['titre', 'type', 'dateAjout'];
@@ -52,3 +86,9 @@ class RessourcePedagogiqueRepository extends ServiceEntityRepository
             ->getResult();
     }
 }
+<<<<<<< HEAD
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc

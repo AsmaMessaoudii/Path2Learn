@@ -2,9 +2,30 @@ knp_snappy:
     pdf:
         enabled: true
         binary: '%env(WKHTMLTOPDF_PATH)%'
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
+        options: []
+    image:
+        enabled: true
+        binary: '%env(WKHTMLTOIMAGE_PATH)%'
+<<<<<<< HEAD
+        options: []
+=======
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
         options:
             encoding: 'utf-8'
     image:
         enabled: true
         binary: '%env(WKHTMLTOIMAGE_PATH)%'
+<<<<<<< HEAD
         options: []
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+        options: []
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc

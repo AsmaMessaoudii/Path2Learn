@@ -5,12 +5,29 @@ namespace App\Entity;
 use App\Repository\RessourcePedagogiqueRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+#[ORM\Entity(repositoryClass: RessourcePedagogiqueRepository::class)]
+=======
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: RessourcePedagogiqueRepository::class)]
+<<<<<<< HEAD
 #[Vich\Uploadable]
+=======
+#[Vich\Uploadable]  // Ajout pour gérer les uploads
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+#[ORM\Entity(repositoryClass: RessourcePedagogiqueRepository::class)]
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
 class RessourcePedagogique
 {
     #[ORM\Id]
@@ -19,6 +36,29 @@ class RessourcePedagogique
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
+    private ?string $titre = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $type = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $url = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTime $dateAjout = null;
+
+    #[ORM\ManyToOne(inversedBy: 'ressourcePedagogiques')]
+    private ?Cours $cours = null;
+
+<<<<<<< HEAD
+=======
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
     #[Assert\NotBlank(message: "Le titre de la ressource est obligatoire")]
     #[Assert\Length(
         min: 3,
@@ -87,6 +127,12 @@ class RessourcePedagogique
         $this->dateAjout = new \DateTime();
     }
 
+<<<<<<< HEAD
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
     public function getId(): ?int
     {
         return $this->id;
@@ -100,6 +146,17 @@ class RessourcePedagogique
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
         return $this;
     }
 
@@ -111,6 +168,17 @@ class RessourcePedagogique
     public function setType(string $type): static
     {
         $this->type = $type;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
         return $this;
     }
 
@@ -119,6 +187,23 @@ class RessourcePedagogique
         return $this->url;
     }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
+    public function setUrl(string $url): static
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    public function getDateAjout(): ?\DateTime
+<<<<<<< HEAD
+=======
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
     public function setUrl(?string $url): static
     {
         $this->url = $url;
@@ -153,10 +238,29 @@ class RessourcePedagogique
     }
 
     public function getDateAjout(): ?\DateTimeInterface
+<<<<<<< HEAD
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
     {
         return $this->dateAjout;
     }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
+    public function setDateAjout(\DateTime $dateAjout): static
+    {
+        $this->dateAjout = $dateAjout;
+
+<<<<<<< HEAD
+=======
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
     public function setDateAjout(\DateTimeInterface $dateAjout): static
     {
         $this->dateAjout = $dateAjout;
@@ -171,6 +275,12 @@ class RessourcePedagogique
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+<<<<<<< HEAD
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
         return $this;
     }
 
@@ -182,6 +292,19 @@ class RessourcePedagogique
     public function setCours(?Cours $cours): static
     {
         $this->cours = $cours;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestionquiz
+
+        return $this;
+    }
+}
+<<<<<<< HEAD
+=======
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
         return $this;
     }
 
@@ -353,3 +476,9 @@ public function fileExists(string $uploadDirectory): bool
     return file_exists($filePath);
 }
 }
+<<<<<<< HEAD
+=======
+>>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
+=======
+>>>>>>> gestionquiz
+>>>>>>> 69dc488ab7d7f905f62c0b521f445bd5cc7ca6fc
