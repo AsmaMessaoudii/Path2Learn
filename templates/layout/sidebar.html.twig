@@ -1,0 +1,62 @@
+<nav class="sidebar bg-dark vh-100 sticky-top d-none d-xl-block">
+    <div class="p-4 flex-column h-100 d-flex">
+
+        <!-- Logo -->
+        <a class="d-block text-center mb-4" href="{{ path('home') }}">
+            <img src="{{ asset('images/logo-light.png') }}" alt="logo" style="height: 100px;">
+        </a>
+
+        <!-- Menu -->
+        <div class="list-group list-group-dark list-group-borderless flex-grow-1">
+
+            <!-- Principal -->
+            <small class="text-uppercase text-muted fw-bold mb-2"
+                   style="font-size: 0.7rem; letter-spacing: 1px;">
+                Principal
+            </small>
+
+            <a class="list-group-item {{ app.request.get('_route') == 'admin_dashboard' ? 'active' : '' }}"
+               href="{{ path('admin_dashboard') }}">
+                <i class="bi bi-grid-1x2 me-2"></i> Dashboard
+            </a>
+
+            <!-- Gestion Académique -->
+            <small class="text-uppercase text-muted fw-bold mt-4 mb-2"
+                   style="font-size: 0.7rem; letter-spacing: 1px;">
+                Gestion Académique
+            </small>
+
+            <a class="list-group-item" href="#">
+                <i class="bi bi-journal-bookmark-fill me-2"></i> Cours & Ressources
+            </a>
+
+            <a class="list-group-item" href="#">
+                <i class="bi bi-patch-question me-2"></i> Quiz & Évaluations
+            </a>
+
+            <a class="list-group-item {{ app.request.get('_route') starts with 'admin_evenement' ? 'active' : '' }}" href="{{ path('admin_evenement_list') }}">
+                <i class="bi bi-calendar3 me-2"></i> Événements
+            </a>
+
+            <a class="list-group-item" href="#">
+                <i class="bi bi-folder2-open me-2"></i> Projets & Portfolio
+            </a>
+
+            <!-- Paramètres -->
+            <small class="text-uppercase text-muted fw-bold mt-4 mb-2"
+                   style="font-size: 0.7rem; letter-spacing: 1px;">
+                Paramètres
+            </small>
+
+            <a class="list-group-item" href="{{ path('home') }}">
+                <i class="bi bi-gear-fill me-2"></i> Settings
+            </a>
+
+            <a class="list-group-item text-danger bg-danger-soft-hover mt-2"
+               href="{{ path('home') }}">
+                <i class="bi bi-power me-2"></i> Sign Out
+            </a>
+
+        </div>
+    </div>
+</nav>
