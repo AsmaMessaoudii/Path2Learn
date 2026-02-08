@@ -5,22 +5,12 @@ namespace App\Entity;
 use App\Repository\RessourcePedagogiqueRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-#[ORM\Entity(repositoryClass: RessourcePedagogiqueRepository::class)]
-=======
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: RessourcePedagogiqueRepository::class)]
-#[Vich\Uploadable]  // Ajout pour gérer les uploads
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
-
-#[ORM\Entity(repositoryClass: RessourcePedagogiqueRepository::class)]
->>>>>>> gestionquiz
+#[Vich\Uploadable]
 class RessourcePedagogique
 {
     #[ORM\Id]
@@ -29,26 +19,6 @@ class RessourcePedagogique
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> gestionquiz
-    private ?string $titre = null;
-
-    #[ORM\Column(length: 50)]
-    private ?string $type = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $url = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $dateAjout = null;
-
-    #[ORM\ManyToOne(inversedBy: 'ressourcePedagogiques')]
-    private ?Cours $cours = null;
-
-<<<<<<< HEAD
-=======
     #[Assert\NotBlank(message: "Le titre de la ressource est obligatoire")]
     #[Assert\Length(
         min: 3,
@@ -69,11 +39,10 @@ class RessourcePedagogique
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255, maxMessage: "L'URL ne peut pas dépasser {{ limit }} caractères")]
     private ?string $url = null;
-    // NOUVEAU : Champ pour stocker le nom du fichier
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $fileName = null;
 
-    // NOUVEAU : Champ Vich pour l'upload
     #[Vich\UploadableField(mapping: 'ressource_file', fileNameProperty: 'fileName')]
     #[Assert\File(
         maxSize: '10M',
@@ -104,7 +73,6 @@ class RessourcePedagogique
     #[Assert\NotNull(message: "La date d'ajout est obligatoire")]
     private ?\DateTimeInterface $dateAjout = null;
 
-    // NOUVEAU : Date de mise à jour pour VichUploader
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
@@ -117,9 +85,6 @@ class RessourcePedagogique
         $this->dateAjout = new \DateTime();
     }
 
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
->>>>>>> gestionquiz
     public function getId(): ?int
     {
         return $this->id;
@@ -133,14 +98,6 @@ class RessourcePedagogique
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
-
->>>>>>> gestionquiz
         return $this;
     }
 
@@ -152,14 +109,6 @@ class RessourcePedagogique
     public function setType(string $type): static
     {
         $this->type = $type;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
-
->>>>>>> gestionquiz
         return $this;
     }
 
@@ -168,20 +117,6 @@ class RessourcePedagogique
         return $this->url;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> gestionquiz
-    public function setUrl(string $url): static
-    {
-        $this->url = $url;
-
-        return $this;
-    }
-
-    public function getDateAjout(): ?\DateTime
-<<<<<<< HEAD
-=======
     public function setUrl(?string $url): static
     {
         $this->url = $url;
@@ -216,23 +151,10 @@ class RessourcePedagogique
     }
 
     public function getDateAjout(): ?\DateTimeInterface
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
->>>>>>> gestionquiz
     {
         return $this->dateAjout;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> gestionquiz
-    public function setDateAjout(\DateTime $dateAjout): static
-    {
-        $this->dateAjout = $dateAjout;
-
-<<<<<<< HEAD
-=======
     public function setDateAjout(\DateTimeInterface $dateAjout): static
     {
         $this->dateAjout = $dateAjout;
@@ -247,9 +169,6 @@ class RessourcePedagogique
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
->>>>>>> gestionquiz
         return $this;
     }
 
@@ -261,20 +180,9 @@ class RessourcePedagogique
     public function setCours(?Cours $cours): static
     {
         $this->cours = $cours;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> gestionquiz
-
-        return $this;
-    }
-}
-<<<<<<< HEAD
-=======
         return $this;
     }
 
-    // Méthode pour obtenir l'URL complète du fichier
     public function getFileUrl(): ?string
     {
         if (!$this->fileName) {
@@ -284,7 +192,6 @@ class RessourcePedagogique
         return '/uploads/ressources/' . $this->fileName;
     }
 
-    // Méthode pour obtenir le type MIME du fichier
     public function getMimeType(): ?string
     {
         if ($this->file instanceof File) {
@@ -324,27 +231,23 @@ class RessourcePedagogique
         return $mimeTypes[strtolower($extension)] ?? 'application/octet-stream';
     }
 
-    // Méthode pour vérifier si c'est une image
     public function isImage(): bool
     {
         $mimeType = $this->getMimeType();
         return $mimeType && str_starts_with($mimeType, 'image/');
     }
 
-    // Méthode pour vérifier si c'est une vidéo
     public function isVideo(): bool
     {
         $mimeType = $this->getMimeType();
         return $mimeType && str_starts_with($mimeType, 'video/');
     }
 
-    // Méthode pour vérifier si c'est un PDF
     public function isPdf(): bool
     {
         return $this->getMimeType() === 'application/pdf';
     }
 
-    // Méthode pour obtenir l'URL à afficher (fichier uploadé ou URL externe)
     public function getDisplayUrl(): string
     {
         if ($this->fileName) {
@@ -354,7 +257,6 @@ class RessourcePedagogique
         return $this->url ?? '';
     }
 
-    // Méthode pour obtenir le type d'affichage
     public function getDisplayType(): string
     {
         if ($this->fileName) {
@@ -372,76 +274,63 @@ class RessourcePedagogique
         return $this->type ?? '';
     }
 
+    public function getFileIcon(): string
+    {
+        if ($this->fileName) {
+            $extension = strtolower(pathinfo($this->fileName, PATHINFO_EXTENSION));
+            
+            if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'])) {
+                return 'bi-file-earmark-image';
+            }
+            
+            if ($extension === 'pdf') {
+                return 'bi-file-earmark-pdf';
+            }
+            
+            if (in_array($extension, ['mp4', 'mov', 'avi', 'mkv', 'webm', 'wmv', 'flv'])) {
+                return 'bi-file-earmark-play';
+            }
+            
+            if (in_array($extension, ['mp3', 'wav', 'ogg', 'm4a', 'flac'])) {
+                return 'bi-file-earmark-music';
+            }
+            
+            if (in_array($extension, ['doc', 'docx'])) {
+                return 'bi-file-earmark-word';
+            }
+            
+            if (in_array($extension, ['xls', 'xlsx', 'csv'])) {
+                return 'bi-file-earmark-excel';
+            }
+            
+            if (in_array($extension, ['ppt', 'pptx'])) {
+                return 'bi-file-earmark-ppt';
+            }
+            
+            if (in_array($extension, ['txt', 'rtf', 'md'])) {
+                return 'bi-file-earmark-text';
+            }
+            
+            if (in_array($extension, ['zip', 'rar', '7z', 'tar', 'gz'])) {
+                return 'bi-file-earmark-zip';
+            }
+        }
+        
+        return 'bi-file-earmark';
+    }
+
+    public function fileExists(string $uploadDirectory): bool
+    {
+        if (!$this->fileName) {
+            return false;
+        }
+        
+        $filePath = $uploadDirectory . '/' . $this->fileName;
+        return file_exists($filePath);
+    }
+
     public function __toString(): string
     {
         return $this->titre ?? 'Nouvelle ressource';
     }
-    // Ajoutez cette méthode dans votre entity RessourcePedagogique
-// Méthode pour obtenir l'icône selon le type de fichier
-public function getFileIcon(): string
-{
-    if ($this->fileName) {
-        $extension = strtolower(pathinfo($this->fileName, PATHINFO_EXTENSION));
-        
-        // Images
-        if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'])) {
-            return 'bi-file-earmark-image';
-        }
-        
-        // PDF
-        if ($extension === 'pdf') {
-            return 'bi-file-earmark-pdf';
-        }
-        
-        // Vidéos
-        if (in_array($extension, ['mp4', 'mov', 'avi', 'mkv', 'webm', 'wmv', 'flv'])) {
-            return 'bi-file-earmark-play';
-        }
-        
-        // Audio
-        if (in_array($extension, ['mp3', 'wav', 'ogg', 'm4a', 'flac'])) {
-            return 'bi-file-earmark-music';
-        }
-        
-        // Documents Word
-        if (in_array($extension, ['doc', 'docx'])) {
-            return 'bi-file-earmark-word';
-        }
-        
-        // Documents Excel
-        if (in_array($extension, ['xls', 'xlsx', 'csv'])) {
-            return 'bi-file-earmark-excel';
-        }
-        
-        // PowerPoint
-        if (in_array($extension, ['ppt', 'pptx'])) {
-            return 'bi-file-earmark-ppt';
-        }
-        
-        // Texte
-        if (in_array($extension, ['txt', 'rtf', 'md'])) {
-            return 'bi-file-earmark-text';
-        }
-        
-        // Archive
-        if (in_array($extension, ['zip', 'rar', '7z', 'tar', 'gz'])) {
-            return 'bi-file-earmark-zip';
-        }
-    }
-    
-    // Par défaut pour les liens ou autres types
-    return 'bi-file-earmark';
 }
-public function fileExists(string $uploadDirectory): bool
-{
-    if (!$this->fileName) {
-        return false;
-    }
-    
-    $filePath = $uploadDirectory . '/' . $this->fileName;
-    return file_exists($filePath);
-}
-}
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
->>>>>>> gestionquiz

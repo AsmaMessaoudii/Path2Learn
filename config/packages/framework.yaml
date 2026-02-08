@@ -3,22 +3,18 @@ framework:
     secret: '%env(APP_SECRET)%'
 
     # Note that the session will be started ONLY if you read or write from it.
-<<<<<<< HEAD
-    session: true
-=======
     csrf_protection:
         enabled: true
-        
+
     session:
         handler_id: null
         cookie_secure: auto
         cookie_samesite: lax
-        
+
     form:
         csrf_protection:
             enabled: true
             field_name: '_token'
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
 
     #esi: true
     #fragments: true
@@ -27,8 +23,4 @@ when@test:
     framework:
         test: true
         session:
-<<<<<<< HEAD
             storage_factory_id: session.storage.factory.mock_file
-=======
-            storage_factory_id: session.storage.factory.mock_file
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37

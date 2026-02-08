@@ -6,9 +6,7 @@ use App\Entity\Question;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Question>
- */
+
 class QuestionRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,10 +14,7 @@ class QuestionRepository extends ServiceEntityRepository
         parent::__construct($registry, Question::class);
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> gestionquiz
+
     /**
      * Recherche des questions selon différents critères avec tri
      */
@@ -122,9 +117,9 @@ class QuestionRepository extends ServiceEntityRepository
     }
 
     
-<<<<<<< HEAD
+
 }
-=======
+
     //    /**
     //     * @return Question[] Returns an array of Question objects
     //     */
@@ -149,8 +144,5 @@ class QuestionRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-}
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
-}
->>>>>>> gestionquiz
+
+

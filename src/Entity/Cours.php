@@ -7,13 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 use Symfony\Component\Validator\Constraints as Assert;
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
->>>>>>> gestionquiz
 
 #[ORM\Entity(repositoryClass: CoursRepository::class)]
 class Cours
@@ -24,36 +18,6 @@ class Cours
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> gestionquiz
-    private ?string $titre = null;
-
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $description = null;
-
-    #[ORM\Column(length: 50)]
-    private ?string $niveau = null;
-
-    #[ORM\Column(length: 50)]
-    private ?string $matiere = null;
-
-    #[ORM\Column]
-    private ?int $duree = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $dateCreation = null;
-
-    #[ORM\Column(length: 100)]
-    private ?string $emailProf = null;
-
-    #[ORM\Column(length: 20)]
-    private ?string $statut = null;
-
-    #[ORM\ManyToOne(inversedBy: 'cours')]
-<<<<<<< HEAD
-=======
     #[Assert\NotBlank(message: "Le titre du cours est obligatoire")]
     #[Assert\Length(
         min: 5,
@@ -106,7 +70,7 @@ class Cours
         value: "today",
         message: "La date de création ne peut pas être dans le futur"
     )]
-    private ?\DateTime $dateCreation = null;
+    private ?\DateTimeInterface $dateCreation = null;
 
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank(message: "L'email du professeur est obligatoire")]
@@ -126,19 +90,8 @@ class Cours
     private ?string $statut = null;
 
     #[ORM\ManyToOne(inversedBy: 'cours')]
-   // #[Assert\NotNull(message: "L'utilisateur est obligatoire")]
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
->>>>>>> gestionquiz
     private ?User $user = null;
 
-    /**
-     * @var Collection<int, RessourcePedagogique>
-     */
-<<<<<<< HEAD
-<<<<<<< HEAD
-    #[ORM\OneToMany(targetEntity: RessourcePedagogique::class, mappedBy: 'cours')]
-=======
     #[ORM\OneToMany(
         targetEntity: RessourcePedagogique::class,
         mappedBy: 'cours',
@@ -146,22 +99,12 @@ class Cours
         orphanRemoval: true
     )]
     #[Assert\Valid]
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
-    #[ORM\OneToMany(targetEntity: RessourcePedagogique::class, mappedBy: 'cours')]
->>>>>>> gestionquiz
     private Collection $ressourcePedagogiques;
 
     public function __construct()
     {
         $this->ressourcePedagogiques = new ArrayCollection();
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
         $this->dateCreation = new \DateTime();
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
->>>>>>> gestionquiz
     }
 
     public function getId(): ?int
@@ -177,14 +120,6 @@ class Cours
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
-
->>>>>>> gestionquiz
         return $this;
     }
 
@@ -196,14 +131,6 @@ class Cours
     public function setDescription(string $description): static
     {
         $this->description = $description;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
-
->>>>>>> gestionquiz
         return $this;
     }
 
@@ -215,14 +142,6 @@ class Cours
     public function setNiveau(string $niveau): static
     {
         $this->niveau = $niveau;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
-
->>>>>>> gestionquiz
         return $this;
     }
 
@@ -234,14 +153,6 @@ class Cours
     public function setMatiere(string $matiere): static
     {
         $this->matiere = $matiere;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
-
->>>>>>> gestionquiz
         return $this;
     }
 
@@ -253,33 +164,17 @@ class Cours
     public function setDuree(int $duree): static
     {
         $this->duree = $duree;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
-
->>>>>>> gestionquiz
         return $this;
     }
 
-    public function getDateCreation(): ?\DateTime
+    public function getDateCreation(): ?\DateTimeInterface
     {
         return $this->dateCreation;
     }
 
-    public function setDateCreation(\DateTime $dateCreation): static
+    public function setDateCreation(\DateTimeInterface $dateCreation): static
     {
         $this->dateCreation = $dateCreation;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
-
->>>>>>> gestionquiz
         return $this;
     }
 
@@ -291,14 +186,6 @@ class Cours
     public function setEmailProf(string $emailProf): static
     {
         $this->emailProf = $emailProf;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
-
->>>>>>> gestionquiz
         return $this;
     }
 
@@ -310,14 +197,6 @@ class Cours
     public function setStatut(string $statut): static
     {
         $this->statut = $statut;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
-
->>>>>>> gestionquiz
         return $this;
     }
 
@@ -329,14 +208,6 @@ class Cours
     public function setUser(?User $user): static
     {
         $this->user = $user;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
-
->>>>>>> gestionquiz
         return $this;
     }
 
@@ -354,49 +225,21 @@ class Cours
             $this->ressourcePedagogiques->add($ressourcePedagogique);
             $ressourcePedagogique->setCours($this);
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
-
->>>>>>> gestionquiz
         return $this;
     }
 
     public function removeRessourcePedagogique(RessourcePedagogique $ressourcePedagogique): static
     {
         if ($this->ressourcePedagogiques->removeElement($ressourcePedagogique)) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-            // set the owning side to null (unless already changed)
-=======
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
-            // set the owning side to null (unless already changed)
->>>>>>> gestionquiz
             if ($ressourcePedagogique->getCours() === $this) {
                 $ressourcePedagogique->setCours(null);
             }
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> gestionquiz
+        return $this;
+    }
 
-        return $this;
-    }
-}
-<<<<<<< HEAD
-=======
-        return $this;
-    }
     public function __toString(): string
     {
         return $this->titre ?? 'Nouveau cours';
     }
 }
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
->>>>>>> gestionquiz

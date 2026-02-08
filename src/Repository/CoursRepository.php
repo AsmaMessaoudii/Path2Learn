@@ -16,10 +16,7 @@ class CoursRepository extends ServiceEntityRepository
         parent::__construct($registry, Cours::class);
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> gestionquiz
+
     //    /**
     //     * @return Cours[] Returns an array of Cours objects
     //     */
@@ -44,9 +41,8 @@ class CoursRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-}
-<<<<<<< HEAD
-=======
+
+
     public function getStatisticsByStatus(): array
     {
         $query = $this->createQueryBuilder('c')
@@ -223,6 +219,4 @@ public function searchPublishedCourses(string $searchTerm): array
         ->getResult();
 }
 }
->>>>>>> 5863369a9829258019d3ee98bf198f1ba6905b37
-=======
->>>>>>> gestionquiz
+
