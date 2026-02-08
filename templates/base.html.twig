@@ -54,6 +54,12 @@
     </head>
     
     <body>
+        <!-- Page Loader -->
+        <div class="page-loader" id="pageLoader">
+            <div class="spinner"></div>
+        </div>
+        
+        <!-- Main Content -->
         {% block body %}{% endblock %}
         
         {% block javascripts %}
@@ -67,6 +73,7 @@
             
             <!-- Template Functions -->
             <script src="{{ asset('assets/js/functions.js') }}"></script>
+            {% block importmap %}{% endblock %}
         {% endblock %}
     </body>
 </html>

@@ -26,12 +26,8 @@ class HomeController extends AbstractController
         return $this->render('dashboard_student/index.html.twig');
     }
     #[Route('/admin/dashboard', name: 'admin_dashboard')]
-public function adminDashboard(): Response
-{
-    return $this->render('dashboard_admin/index.html.twig');
+    public function adminDashboard(): Response
+    {
+        return $this->render('dashboard_admin/index.html.twig');
+    }
 }
-
-
-
-}
-

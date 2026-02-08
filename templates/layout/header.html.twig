@@ -52,8 +52,8 @@
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
 						<ul class="dropdown-menu" aria-labelledby="pagesMenu">
-							<li> <a class="dropdown-item" href="#">Cours</a></li>
-							<li> <a class="dropdown-item" href="#">ressources</a></li>
+							<li> <a class="dropdown-item" href="{{ path('app_courses') }}">Cours</a></li>
+							<li> <a class="dropdown-item" href="{{ path('app_courses') }}">ressources</a></li>
 							<li class="dropdown-submenu dropend">
 								<a class="dropdown-item dropdown-toggle" href="#">Authentication</a>
 								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
@@ -62,7 +62,7 @@
 								</ul>
 							</li>
 							<li> <a class="dropdown-item" href="#">projets</a></li>
-                            <li> <a class="dropdown-item" href="#">QUIZ</a></li>
+                            <li> <a class="dropdown-item" href="{{ path('quiz') }}">QUIZ</a></li>
 						</ul>
 					</li>
 
@@ -72,16 +72,22 @@
 							<li class="dropdown-submenu dropend">
 								<a class="dropdown-item dropdown-toggle" href="#"><i class="fas fa-user-tie fa-fw me-1"></i>enseignants</a>
 								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-									<li><a class="dropdown-item" href="#">Dashboard</a></li>
+									<li><a class="dropdown-item" href="{{ path('instructor') }}">Dashboard</a></li>
+									<li><a class="dropdown-item" href="{{ path('admin_cours_index') }}">Cours & Ressources</a></li>
+									<li><a class="dropdown-item" href="{{ path('quiz_admin') }}">Quiz</a></li>
+									<li><a class="dropdown-item" href="{{ path('admin_evenement_list') }}">Événements</a></li>
 								</ul>
 							</li>
 							<li class="dropdown-submenu dropend">
 								<a class="dropdown-item dropdown-toggle" href="#"><i class="fas fa-user-graduate fa-fw me-1"></i>etudiants</a>
 								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
-									<li><a class="dropdown-item" href="#">Dashboard</a></li>
+									<li><a class="dropdown-item" href="{{ path('student_dashboard') }}">Dashboard</a></li>
+									<li><a class="dropdown-item" href="{{ path('app_courses') }}">Cours</a></li>
+									<li><a class="dropdown-item" href="{{ path('quiz') }}">Quiz</a></li>
+									<li><a class="dropdown-item" href="{{ path('evenement_list') }}">Événements</a></li>
 								</ul>
 							</li>
-							<li><a class="dropdown-item" href="{{ path('admin_evenement_list') }}"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a></li>
+							<li><a class="dropdown-item" href="{{ path('admin_dashboard') }}"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a></li>
 						</ul>
 					</li>
 				</ul>

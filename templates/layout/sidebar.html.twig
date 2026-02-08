@@ -26,11 +26,11 @@
                 Gestion Académique
             </small>
 
-            <a class="list-group-item" href="#">
+            <a class="list-group-item {{ app.request.get('_route') starts with 'admin_cours' or app.request.get('_route') starts with 'admin_ressources' ? 'active' : '' }}" href="{{ path('admin_cours_index') }}">
                 <i class="bi bi-journal-bookmark-fill me-2"></i> Cours & Ressources
             </a>
 
-            <a class="list-group-item" href="#">
+            <a class="list-group-item {{ app.request.get('_route') starts with 'quiz_admin' or app.request.get('_route') == 'quiz' ? 'active' : '' }}" href="{{ path('quiz_admin') }}">
                 <i class="bi bi-patch-question me-2"></i> Quiz & Évaluations
             </a>
 

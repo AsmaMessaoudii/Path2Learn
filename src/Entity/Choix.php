@@ -20,6 +20,7 @@ class Choix
     private ?bool $estCorrect = null;
 
     #[ORM\ManyToOne(inversedBy: 'choix')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Question $question = null;
 
     public function getId(): ?int
