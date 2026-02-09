@@ -1,0 +1,88 @@
+{# templates/admin/_question_list.html.twig #}
+{% if questions is empty %}
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Aucune question trouvée pour votre recherche.
+    </div>
+{% else %}
+    {% for question in questions %}
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+
+                <!-- HEADER -->
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <h5 class="mb-1">{{ question.titre }}</h5>
+                        <small class="text-muted">
+                            ⏱ {{ question.duree }} min · 🎯 {{ question.noteMax }} pts
+                            {% if question.user %} · 👤 {{ question.user.username }}{% endif %}
+                        </small>
+                    </div>
+
+                    <!-- ACTIONS QUESTION -->
+                    <div class="btn-group btn-group-sm">
+                        <a href="{{ path('edit_question', {'id': question.id}) }}"
+                           class="btn btn-outline-success" title="Modifier">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+
+                        <form method="post"
+                              action="{{ path('delete_question', {'id': question.id}) }}"
+                              onsubmit="return confirm('Supprimer cette question ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_question_' ~ question.id) }}">
+                            <button class="btn btn-outline-danger" title="Supprimer">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- DESCRIPTION -->
+                <p class="text-secondary mb-3">{{ question.description }}</p>
+
+                <!-- CHOIX -->
+                <ul class="list-group list-group-flush mb-3">
+                    {% for choix in question.choix %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+
+                            <div>
+                                {{ choix.contenu }}
+                                {% if choix.estCorrect %}
+                                    <span class="badge bg-success ms-2">Correct</span>
+                                {% else %}
+                                    <span class="badge bg-light text-muted ms-2">Incorrect</span>
+                                {% endif %}
+                            </div>
+
+                            <!-- ACTIONS CHOIX -->
+                            <div class="d-flex gap-2">
+                                <a href="{{ path('edit_choix', {'id': choix.id}) }}"
+                                   class="text-success" title="Modifier">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <form method="post"
+                                      action="{{ path('delete_choix', {'id': choix.id}) }}"
+                                      onsubmit="return confirm('Supprimer ce choix ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_choix_' ~ choix.id) }}">
+                                    <button class="btn btn-link text-danger p-0" title="Supprimer">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                    {% else %}
+                        <li class="list-group-item text-muted px-0">Aucun choix ajouté</li>
+                    {% endfor %}
+                </ul>
+
+                <!-- AJOUT CHOIX -->
+                <a href="{{ path('add_choix', {'questionId': question.id}) }}"
+                   class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-plus-circle"></i> Ajouter un choix
+                </a>
+
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
