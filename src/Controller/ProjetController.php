@@ -10,10 +10,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Portfolio;
 use App\Entity\Projet;
 use App\Form\ProjetType;
-use App\Repository\PortfolioRepository;
 use Dompdf\Dompdf;
 use Dompdf\Options;
-use Symfony\Component\Validator\Validator\ValidatorInterface; // AJOUTÉ ICI
 
 final class ProjetController extends AbstractController
 {
@@ -51,10 +49,40 @@ final class ProjetController extends AbstractController
         $form = $this->createForm(ProjetType::class, $project);
         $form->handleRequest($request);
 
+        // Check for validation errors BEFORE isValid()
+        if ($form->isSubmitted() && !$form->isValid()) {
+            // Collect ALL field errors
+            $errors = [];
+            
+            // Check each field individually
+            foreach ($form->all() as $child) {
+                if ($child->isSubmitted() && !$child->isValid()) {
+                    foreach ($child->getErrors() as $error) {
+                        $fieldName = $child->getName();
+                        $label = $child->getConfig()->getOption('label') ?? $fieldName;
+                        
+                        // Store errors by field name
+                        $errors[$fieldName][] = [
+                            'label' => $label,
+                            'message' => $error->getMessage()
+                        ];
+                    }
+                }
+            }
+            
+            // Show ALL error messages
+            foreach ($errors as $fieldErrors) {
+                foreach ($fieldErrors as $error) {
+                    $this->addFlash('error', '<strong>' . $error['label'] . ':</strong> ' . $error['message']);
+                }
+            }
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($project);
             $em->flush();
 
+            $this->addFlash('success', 'Projet créé avec succès !');
             return $this->redirectToRoute('app_portfolio');
         }
 
@@ -65,43 +93,59 @@ final class ProjetController extends AbstractController
     }
 
     #[Route('/home/project/new/{portfolioId}', name: 'front_project_new')]
-public function newFront(
-    int $portfolioId,
-    Request $request,
-    EntityManagerInterface $em
-): Response {
-    $portfolio = $em->getRepository(Portfolio::class)->find($portfolioId);
+    public function newFront(
+        int $portfolioId,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        $portfolio = $em->getRepository(Portfolio::class)->find($portfolioId);
 
-    if (!$portfolio) {
-        $this->addFlash('error', 'Portfolio non trouvé');
-        return $this->redirectToRoute('home_portfolio');
-    }
+        if (!$portfolio) {
+            $this->addFlash('error', 'Portfolio non trouvé');
+            return $this->redirectToRoute('home_portfolio');
+        }
 
-    $project = new Projet();
-    $project->setPortfolio($portfolio);
+        $project = new Projet();
+        $project->setPortfolio($portfolio);
 
-    $form = $this->createForm(ProjetType::class, $project);
-    $form->handleRequest($request);
+        $form = $this->createForm(ProjetType::class, $project);
+        $form->handleRequest($request);
 
-    if ($form->isSubmitted()) {
-        // Le formulaire n'est PAS valide
-        if (!$form->isValid()) {
-            // Récupérer toutes les erreurs
-            $errors = $form->getErrors(true);
+        // Check for ALL validation errors
+        if ($form->isSubmitted() && !$form->isValid()) {
+            // Get ALL errors from ALL fields
+            $allErrors = [];
             
-            if (count($errors) > 0) {
-                foreach ($errors as $error) {
-                    $this->addFlash('error', $error->getMessage());
-                }
-            } else {
-                // Erreurs générales
-                $this->addFlash('error', 'Veuillez corriger les erreurs dans le formulaire.');
+            // Global form errors
+            foreach ($form->getErrors() as $error) {
+                $allErrors[] = $error->getMessage();
             }
-        } else {
-            // Le formulaire EST valide
+            
+            // Field-specific errors
+            foreach ($form->all() as $child) {
+                $fieldErrors = $child->getErrors();
+                if (count($fieldErrors) > 0) {
+                    $fieldName = $child->getName();
+                    $fieldLabel = $child->getConfig()->getOption('label') ?? $fieldName;
+                    
+                    foreach ($fieldErrors as $error) {
+                        $allErrors[] = '<strong>' . $fieldLabel . ':</strong> ' . $error->getMessage();
+                    }
+                }
+            }
+            
+            // Show ALL errors as flash messages
+            foreach ($allErrors as $errorMsg) {
+                $this->addFlash('error', $errorMsg);
+            }
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
             try {
                 // Nettoyage des données
-                $project->sanitize();
+                if (method_exists($project, 'sanitize')) {
+                    $project->sanitize();
+                }
                 
                 // Persistance
                 $em->persist($project);
@@ -113,41 +157,59 @@ public function newFront(
                 $this->addFlash('error', 'Erreur lors de la création du projet: ' . $e->getMessage());
             }
         }
-    }
 
-    return $this->render('home/projet/HomeCreateProject.html.twig', [
-        'form' => $form->createView(),
-        'portfolio' => $portfolio,
-    ]);
-}
+        return $this->render('home/projet/HomeCreateProject.html.twig', [
+            'form' => $form->createView(),
+            'portfolio' => $portfolio,
+        ]);
+    }
 
     #[Route('/home/project/{id}/edit', name: 'front_project_edit')]
     public function editFront(
         Projet $projet,
         Request $request,
-        EntityManagerInterface $em,
-        ValidatorInterface $validator // CORRECT
+        EntityManagerInterface $em
     ): Response {
         $form = $this->createForm(ProjetType::class, $projet);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            $errors = $validator->validate($projet);
+        // Check for ALL validation errors in edit
+        if ($form->isSubmitted() && !$form->isValid()) {
+            // Collect ALL errors
+            $errorMessages = [];
             
-            if (count($errors) === 0 && $form->isValid()) {
-                try {
-                    $projet->sanitize();
-                    $em->flush();
+            // Check each field
+            foreach ($form->all() as $field) {
+                $fieldErrors = $field->getErrors();
+                if (count($fieldErrors) > 0) {
+                    $fieldName = $field->getName();
+                    $fieldLabel = $field->getConfig()->getOption('label') ?? $fieldName;
+                    
+                    foreach ($fieldErrors as $error) {
+                        $errorMessages[] = $fieldLabel . ': ' . $error->getMessage();
+                    }
+                }
+            }
+            
+            // Show ALL errors
+            foreach ($errorMessages as $message) {
+                $this->addFlash('error', $message);
+            }
+        }
 
-                    $this->addFlash('success', 'Projet modifié avec succès !');
-                    return $this->redirectToRoute('front_projet_show', ['id' => $projet->getId()]);
-                } catch (\Exception $e) {
-                    $this->addFlash('error', 'Erreur lors de la modification: ' . $e->getMessage());
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                // Nettoyage des données
+                if (method_exists($projet, 'sanitize')) {
+                    $projet->sanitize();
                 }
-            } else {
-                foreach ($errors as $error) {
-                    $this->addFlash('error', $error->getMessage());
-                }
+                
+                $em->flush();
+
+                $this->addFlash('success', 'Projet modifié avec succès !');
+                return $this->redirectToRoute('front_projet_show', ['id' => $projet->getId()]);
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Erreur lors de la modification: ' . $e->getMessage());
             }
         }
 
@@ -167,9 +229,21 @@ public function newFront(
         $form = $this->createForm(ProjetType::class, $projet);
         $form->handleRequest($request);
 
+        // Check for validation errors
+        if ($form->isSubmitted() && !$form->isValid()) {
+            // Get ALL errors
+            $errors = $form->getErrors(true, false);
+            
+            // Show each error
+            foreach ($errors as $error) {
+                $this->addFlash('error', $error->getMessage());
+            }
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
+            $this->addFlash('success', 'Projet modifié avec succès !');
             return $this->redirectToRoute('app_projet', [
                 'id' => $projet->getId(),
             ]);
@@ -192,8 +266,15 @@ public function newFront(
             'delete-project-' . $projet->getId(),
             $request->request->get('_token')
         )) {
-            $em->remove($projet);
-            $em->flush();
+            try {
+                $em->remove($projet);
+                $em->flush();
+                $this->addFlash('success', 'Projet supprimé avec succès !');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Erreur lors de la suppression: ' . $e->getMessage());
+            }
+        } else {
+            $this->addFlash('error', 'Token CSRF invalide.');
         }
 
         return $this->redirectToRoute('home_portfolio', ['id' => $projet->getPortfolio()->getId()]);
@@ -210,8 +291,15 @@ public function newFront(
             'delete-project-' . $projet->getId(),
             $request->request->get('_token')
         )) {
-            $em->remove($projet);
-            $em->flush();
+            try {
+                $em->remove($projet);
+                $em->flush();
+                $this->addFlash('success', 'Projet supprimé avec succès !');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Erreur lors de la suppression: ' . $e->getMessage());
+            }
+        } else {
+            $this->addFlash('error', 'Token CSRF invalide.');
         }
 
         return $this->redirectToRoute('app_portfolio');
@@ -222,7 +310,7 @@ public function newFront(
     {
         // Increase memory limit for large PDFs
         ini_set('memory_limit', '256M');
-        set_time_limit(300); // 5 minutes timeout
+        set_time_limit(300);
         
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
@@ -244,7 +332,6 @@ public function newFront(
             $date = new \DateTime();
             $filename = 'projet_' . $projet->getId() . '_' . $date->format('Y-m-d') . '.pdf';
             
-            // Force download
             return new Response($dompdf->output(), 200, [
                 'Content-Type' => 'application/pdf',
                 'Content-Disposition' => 'attachment; filename="' . $filename . '"',
@@ -253,7 +340,6 @@ public function newFront(
             ]);
             
         } catch (\Exception $e) {
-            // Log error and show message
             $this->addFlash('error', 'Erreur lors de la génération du PDF: ' . $e->getMessage());
             return $this->redirectToRoute('front_projet_show', ['id' => $projet->getId()]);
         }
@@ -262,11 +348,9 @@ public function newFront(
     #[Route('/projet/{id}/export-pdf', name: 'projet_export_pdf')]
     public function exportPdf(Projet $projet): Response
     {
-        // Increase memory and timeout limits for PDF generation
         ini_set('memory_limit', '256M');
-        set_time_limit(300); // 5 minutes timeout
+        set_time_limit(300);
         
-        // Configuration des options PDF
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
         $pdfOptions->set('isRemoteEnabled', true);
@@ -274,32 +358,21 @@ public function newFront(
         $pdfOptions->set('isPhpEnabled', true);
         $pdfOptions->set('chroot', $this->getParameter('kernel.project_dir'));
         
-        // Instanciation de Dompdf
         $dompdf = new Dompdf($pdfOptions);
         
         try {
-            // Rendu du template Twig en HTML
             $html = $this->renderView('projet/pdf_export.html.twig', [
                 'projet' => $projet,
             ]);
             
-            // Chargement du HTML dans Dompdf
             $dompdf->loadHtml($html);
-            
-            // Configuration de la taille et orientation du papier
             $dompdf->setPaper('A4', 'portrait');
-            
-            // Rendu du PDF
             $dompdf->render();
             
-            // Nom du fichier avec date
             $date = new \DateTime();
             $filename = 'projet_' . $projet->getId() . '_' . $projet->getTitreProjet() . '_' . $date->format('Y-m-d') . '.pdf';
-            
-            // Nettoyage du nom de fichier (enlève les caractères spéciaux)
             $filename = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $filename);
             
-            // Envoi du PDF au navigateur (téléchargement forcé)
             $output = $dompdf->output();
             
             return new Response($output, 200, [
@@ -311,10 +384,8 @@ public function newFront(
             ]);
             
         } catch (\Exception $e) {
-            // Log l'erreur
             error_log('PDF Export Error: ' . $e->getMessage());
             
-            // Retourne une réponse d'erreur
             return new Response(
                 'Erreur lors de la génération du PDF: ' . $e->getMessage(),
                 500,

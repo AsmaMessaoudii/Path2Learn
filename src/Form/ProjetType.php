@@ -177,6 +177,9 @@ class ProjetType extends AbstractType
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'projet_item',
             'validation_groups' => ['Default', 'creation'],
+            'attr' => [
+                'novalidate' => 'novalidate'
+            ]
         ]);
     }
 }

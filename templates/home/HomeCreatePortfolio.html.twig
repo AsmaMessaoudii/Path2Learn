@@ -940,60 +940,77 @@ Trending courses START -->
                     </p>
                 </div>
 
-                <!-- Form body -->
+                 <!-- Form body -->
                 <div class="p-4 p-md-5">
+                    
+                    {# Display flash messages #}
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success alert-dismissible fade show mb-4">
+                            <i class="bi bi-check-circle me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                    
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger alert-dismissible fade show mb-4">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
 
-                    {{ form_start(form) }}
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
 
-    {# Champ titre avec gestion d'erreur #}
-    <div class="mb-4">
-        {{ form_label(form.titre) }}
-        {{ form_widget(form.titre, {
-            'attr': {
-                'class': 'form-control' ~ (form.titre.vars.errors|length > 0 ? ' is-invalid' : '')
-            }
-        }) }}
-        {% if form.titre.vars.errors|length > 0 %}
-            <div class="invalid-feedback d-block">
-                {% for error in form.titre.vars.errors %}
-                    <div>{{ error.message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    </div>
+                    <div class="row">
+                        {# Champ titre #}
+                        <div class="col-md-12 mb-4">
+                            {{ form_label(form.titre, 'Titre du portfolio *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
+                            {{ form_widget(form.titre, {
+                                'attr': {
+                                    'class': 'form-control form-control-lg',
+                                    'placeholder': 'Ex: Portfolio Développeur Web Full-Stack'
+                                }
+                            }) }}
+                            <div class="form-text mt-1">
+                                <i class="bi bi-info-circle me-1"></i> 3 à 150 caractères
+                            </div>
+                            {{ form_errors(form.titre) }}
+                        </div>
 
-    {# Champ description avec gestion d'erreur #}
-    <div class="mb-4">
-        {{ form_label(form.description) }}
-        {{ form_widget(form.description, {
-            'attr': {
-                'class': 'form-control' ~ (form.description.vars.errors|length > 0 ? ' is-invalid' : ''),
-                'rows': 5
-            }
-        }) }}
-        {% if form.description.vars.errors|length > 0 %}
-            <div class="invalid-feedback d-block">
-                {% for error in form.description.vars.errors %}
-                    <div>{{ error.message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    </div>
+                        {# Champ description #}
+                        <div class="col-md-12 mb-4">
+                            {{ form_label(form.description, 'Description *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
+                            {{ form_widget(form.description, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Décrivez votre parcours, vos compétences, vos objectifs...',
+                                    'rows': 6
+                                }
+                            }) }}
+                            <div class="form-text mt-1 d-flex justify-content-between align-items-center">
+                                <span>
+                                    <i class="bi bi-info-circle me-1"></i> 20 à 2000 caractères
+                                </span>
+                                <span class="small text-muted">
+                                    <span id="description-count">0</span>/2000
+                                </span>
+                            </div>
+                            {{ form_errors(form.description) }}
+                        </div>
+                    </div>
 
-    {# Bouton submit #}
-    <button type="submit" class="btn btn-primary">Créer</button>
+                    {# Buttons #}
+                    <div class="d-flex justify-content-between mt-5 pt-3 border-top">
+                        <a href="{{ path('home_portfolio') }}" class="btn btn-outline-secondary px-4">
+                            <i class="bi bi-arrow-left me-2"></i> Annuler
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-check-circle me-2"></i> Créer le portfolio
+                        </button>
+                    </div>
 
-{{ form_end(form) }}
-
-                </div>
-
-            </div>
-
-        </div>
-    </div>
-
-</div>
-
+                    {{ form_end(form) }}
 
 
 
@@ -1163,4 +1180,53 @@ Footer END -->
 <!-- Mirrored from eduport.webestica.com/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 02 Feb 2026 11:04:07 GMT -->
 
 
+
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add Bootstrap validation styling
+    const forms = document.querySelectorAll('.needs-validation');
+    
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            // Add was-validated class for Bootstrap styling
+            form.classList.add('was-validated');
+        }, false);
+    });
+    
+    // Character counter for description
+    const descriptionField = document.querySelector('#{{ form.description.vars.id }}');
+    const descriptionCount = document.querySelector('#description-count');
+    
+    if (descriptionField && descriptionCount) {
+        // Set initial count
+        descriptionCount.textContent = descriptionField.value.length;
+        
+        descriptionField.addEventListener('input', function() {
+            descriptionCount.textContent = this.value.length;
+            
+            // Add warning class when approaching limit
+            if (this.value.length > 2000 * 0.9) {
+                descriptionCount.classList.add('text-warning', 'fw-bold');
+            } else {
+                descriptionCount.classList.remove('text-warning', 'fw-bold');
+            }
+            
+            // Add danger class when over limit
+            if (this.value.length > 2000) {
+                descriptionCount.classList.add('text-danger', 'fw-bold');
+            } else {
+                descriptionCount.classList.remove('text-danger');
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
 {% endblock %}

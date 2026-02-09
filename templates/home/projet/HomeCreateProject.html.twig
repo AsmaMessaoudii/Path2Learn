@@ -6,6 +6,24 @@
 
 {% block body %}
 
+<style>
+.invalid-feedback {
+    display: block !important;
+    color: #dc3545 !important;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545 !important;
+}
+
+.form-control.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+</style>
 
 <!-- Mirrored from eduport.webestica.com/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 02 Feb 2026 11:03:58 GMT -->
 <head>
@@ -925,172 +943,206 @@ Trending courses START -->
 
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-lg-7 col-md-9">
+        <div class="col-lg-8 col-md-10">
             <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
 
                 <!-- Header -->
                 <div class="bg-light text-center py-4 px-3">
-                    <i class="bi bi-folder2-open fs-1 text-primary mb-2 d-block"></i>
-                    <h4 class="fw-bold mb-1">Créer un projet</h4>
+                    <i class="bi bi-plus-circle fs-1 text-primary mb-2 d-block"></i>
+                    <h4 class="fw-bold mb-1">Créer un nouveau projet</h4>
                     <p class="text-muted small mb-0">
-                        Ajoutez un nouveau projet à votre portfolio
+                        Ajoutez un projet au portfolio : <span class="fw-semibold">{{ portfolio.titre }}</span>
                     </p>
                 </div>
-				{# Exemple pour le champ text #}
-
 
                 <!-- Form body -->
                 <div class="p-4 p-md-5">
-
-                    <div class="card-body">
-                    {# Messages flash généraux #}
-                    {% for message in app.flashes('error') %}
-                        <div class="alert alert-danger alert-dismissible fade show">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    {% endfor %}
                     
+                    {# Display ALL flash messages #}
                     {% for message in app.flashes('success') %}
-                        <div class="alert alert-success alert-dismissible fade show">
+                        <div class="alert alert-success alert-dismissible fade show mb-4">
                             <i class="bi bi-check-circle me-2"></i>
-                            {{ message }}
+                            {{ message|raw }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     {% endfor %}
-
-                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
                     
-                        {# Champ Titre #}
-                        <div class="mb-3">
-                            {{ form_label(form.titreProjet, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(form.titreProjet, {'attr': {
-                                'class': 'form-control' ~ (form.titreProjet.vars.errors|length > 0 ? ' is-invalid' : ''),
-                                'placeholder': 'Ex: Mon Super Projet'
-                            }}) }}
-                            {% if form.titreProjet.vars.errors|length > 0 %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.titreProjet.vars.errors %}
-                                        <div>{{ error.message }}</div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger alert-dismissible fade show mb-4">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            {{ message|raw }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
-                        
-                        {# Champ Texte court #}
-                        <div class="mb-3">
-                            {{ form_label(form.text, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(form.text, {'attr': {
-                                'class': 'form-control' ~ (form.text.vars.errors|length > 0 ? ' is-invalid' : ''),
-                                'rows': 3,
-                                'placeholder': 'Description courte (10-255 caractères)'
-                            }}) }}
-                            {% if form.text.vars.errors|length > 0 %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.text.vars.errors %}
-                                        <div>{{ error.message }}</div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
+                    {% endfor %}
+                    
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
+                    
+                    {# Simple error summary #}
+                    {% if not form.vars.valid %}
+                        <div class="alert alert-warning alert-dismissible fade show mb-4">
+                            <i class="bi bi-exclamation-circle me-2"></i>
+                            <strong>Veuillez corriger les erreurs ci-dessous.</strong>
                         </div>
-                        
-                        {# Champ Description #}
-                        <div class="mb-3">
-                            {{ form_label(form.description, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(form.description, {'attr': {
-                                'class': 'form-control' ~ (form.description.vars.errors|length > 0 ? ' is-invalid' : ''),
-                                'rows': 5,
-                                'placeholder': 'Description détaillée (au moins 30 caractères)'
-                            }}) }}
-                            {% if form.description.vars.errors|length > 0 %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.description.vars.errors %}
-                                        <div>{{ error.message }}</div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        {# Champ Technologies #}
-                        <div class="mb-3">
-                            {{ form_label(form.technologies, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(form.technologies, {'attr': {
-                                'class': 'form-control' ~ (form.technologies.vars.errors|length > 0 ? ' is-invalid' : ''),
-                                'placeholder': 'Ex: HTML, CSS, JavaScript, PHP, Symfony'
-                            }}) }}
-                            {% if form.technologies.vars.errors|length > 0 %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.technologies.vars.errors %}
-                                        <div>{{ error.message }}</div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        {# Champ Date #}
-                        <div class="mb-3">
-                            {{ form_label(form.dateRealisation, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(form.dateRealisation, {'attr': {
-                                'class': 'form-control' ~ (form.dateRealisation.vars.errors|length > 0 ? ' is-invalid' : '')
-                            }}) }}
-                            {% if form.dateRealisation.vars.errors|length > 0 %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.dateRealisation.vars.errors %}
-                                        <div>{{ error.message }}</div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        {# Champ Lien #}
-                        <div class="mb-3">
-                            {{ form_label(form.lienDemo, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
-                            {{ form_widget(form.lienDemo, {'attr': {
-                                'class': 'form-control' ~ (form.lienDemo.vars.errors|length > 0 ? ' is-invalid' : ''),
-                                'placeholder': 'https://exemple.com/demo'
-                            }}) }}
-                            {% if form.lienDemo.vars.errors|length > 0 %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.lienDemo.vars.errors %}
-                                        <div>{{ error.message }}</div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        {# Champ Portfolio (caché) #}
-                        {{ form_widget(form.portfolio, {'attr': {'class': 'd-none'}}) }}
-                        
-                        {# Affichage des erreurs générales du formulaire #}
-                        {% if form.vars.errors|length > 0 %}
-                            <div class="alert alert-danger">
-                                <h5 class="alert-heading">Erreurs dans le formulaire :</h5>
-                                <ul class="mb-0">
-                                    {% for error in form.vars.errors %}
-                                        <li>{{ error.message }}</li>
-                                    {% endfor %}
-                                </ul>
+                    {% endif %}
+                    
+                    <div class="row">
+                        {# Titre du projet #}
+                        <div class="col-md-12 mb-4">
+                            {{ form_label(form.titreProjet, 'Titre du projet *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
+                            {{ form_widget(form.titreProjet, {
+                                'attr': {
+                                    'class': 'form-control form-control-lg',
+                                    'placeholder': 'Ex: Application de gestion de projet'
+                                }
+                            }) }}
+                            <div class="form-text mt-1">
+                                <i class="bi bi-info-circle me-1"></i> 3 à 150 caractères
                             </div>
-                        {% endif %}
-                        
-                        {# Boutons #}
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ path('home_portfolio') }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left me-1"></i> Annuler
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle me-1"></i> Créer le projet
-                            </button>
                         </div>
+                        
+                        {# Texte court #}
+                        <div class="col-md-12 mb-4">
+                            {{ form_label(form.text, 'Texte court (résumé) *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
+                            {{ form_widget(form.text, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Description courte du projet',
+                                    'rows': 3
+                                }
+                            }) }}
+                            <div class="form-text mt-1">
+                                <i class="bi bi-info-circle me-1"></i> 10 à 255 caractères
+                            </div>
+                        </div>
+                        
+                        {# Description détaillée #}
+                        <div class="col-md-12 mb-4">
+                            {{ form_label(form.description, 'Description détaillée *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
+                            {{ form_widget(form.description, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Décrivez en détail votre projet...',
+                                    'rows': 6
+                                }
+                            }) }}
+                            <div class="form-text mt-1">
+                                <i class="bi bi-info-circle me-1"></i> 30 à 2000 caractères
+                            </div>
+                        </div>
+                        
+                        {# Technologies #}
+                        <div class="col-md-6 mb-4">
+                            {{ form_label(form.technologies, 'Technologies utilisées *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
+                            {{ form_widget(form.technologies, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Ex: HTML, CSS, JavaScript, PHP, Symfony, MySQL'
+                                }
+                            }) }}
+                            <div class="form-text mt-1">
+                                <i class="bi bi-info-circle me-1"></i> Séparez par des virgules
+                            </div>
+                        </div>
+                        
+                        {# Date de réalisation #}
+                        <div class="col-md-6 mb-4">
+                            {{ form_label(form.dateRealisation, 'Date de réalisation *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
+                            {{ form_widget(form.dateRealisation, {
+                                'attr': {
+                                    'class': 'form-control'
+                                }
+                            }) }}
+                            <div class="form-text mt-1">
+                                <i class="bi bi-info-circle me-1"></i> Ne peut pas être une date future
+                            </div>
+                        </div>
+                        
+                        {# Lien de démonstration #}
+                        <div class="col-md-12 mb-4">
+                            {{ form_label(form.lienDemo, 'Lien de démonstration *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
+                            {{ form_widget(form.lienDemo, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'https://exemple.com/demo'
+                                }
+                            }) }}
+                            <div class="form-text mt-1">
+                                <i class="bi bi-info-circle me-1"></i> Doit commencer par http:// ou https://
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {# Hidden portfolio field #}
+                    {{ form_row(form.portfolio, {'attr': {'class': 'd-none'}}) }}
+                    
+                    {# Buttons #}
+                    <div class="d-flex justify-content-between mt-5 pt-3 border-top">
+                        <a href="{{ path('home_portfolio', {'id': portfolio.id}) }}" class="btn btn-outline-secondary px-4">
+                            <i class="bi bi-arrow-left me-2"></i> Retour
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="bi bi-check-circle me-2"></i> Créer le projet
+                        </button>
+                    </div>
                     
                     {{ form_end(form) }}
-
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add Bootstrap validation styling
+    const forms = document.querySelectorAll('.needs-validation');
+    
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            // Add was-validated class for Bootstrap styling
+            form.classList.add('was-validated');
+        }, false);
+    });
+    
+    // Real-time character counters
+    const textField = document.querySelector('#{{ form.text.vars.id }}');
+    const descriptionField = document.querySelector('#{{ form.description.vars.id }}');
+    
+    function createCounter(field, maxLength) {
+        if (!field) return;
+        
+        const counter = document.createElement('div');
+        counter.className = 'form-text text-end mt-1 small';
+        counter.innerHTML = `<span class="char-count">0</span>/${maxLength}`;
+        field.parentNode.appendChild(counter);
+        
+        const charCount = counter.querySelector('.char-count');
+        charCount.textContent = field.value.length;
+        
+        field.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+            
+            // Add warning class when approaching limit
+            if (this.value.length > maxLength * 0.9) {
+                charCount.classList.add('text-warning', 'fw-bold');
+            } else {
+                charCount.classList.remove('text-warning', 'fw-bold');
+            }
+        });
+    }
+    
+    createCounter(textField, 255);
+    createCounter(descriptionField, 2000);
+});
+</script>
+{% endblock %}
+
 
 
 

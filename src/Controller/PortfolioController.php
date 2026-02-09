@@ -111,27 +111,26 @@ final class PortfolioController extends AbstractController
         $form = $this->createForm(PortfolioType::class, $portfolio);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            if ($form->isValid()) {
-                try {
-                    // Nettoyage des données
-                    if (method_exists($portfolio, 'sanitize')) {
-                        $portfolio->sanitize();
-                    }
-                    
-                    $em->persist($portfolio);
-                    $em->flush();
-
-                    $this->addFlash('success', 'Portfolio créé avec succès !');
-                    return $this->redirectToRoute('home_portfolio');
-                } catch (\Exception $e) {
-                    $this->addFlash('error', 'Erreur lors de la création : ' . $e->getMessage());
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                // Nettoyage des données
+                if (method_exists($portfolio, 'sanitize')) {
+                    $portfolio->sanitize();
                 }
-            } else {
-                // Formulaire invalide - afficher un message d'erreur
-                $this->addFlash('error', 'Veuillez corriger les erreurs dans le formulaire.');
+                
+                $em->persist($portfolio);
+                $em->flush();
+
+                $this->addFlash('success', 'Portfolio créé avec succès !');
+                return $this->redirectToRoute('home_portfolio');
+            } catch (\Exception $e) {
+                // Only show flash for system errors (database, etc.)
+                $this->addFlash('error', 'Erreur lors de la création : ' . $e->getMessage());
             }
         }
+
+        // REMOVED: Don't add flash messages for validation errors
+        // Symfony will show them automatically in the template
 
         return $this->render('home/HomeCreatePortfolio.html.twig', [
             'form' => $form->createView(),
@@ -147,25 +146,23 @@ final class PortfolioController extends AbstractController
         $form = $this->createForm(PortfolioType::class, $portfolio);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            if ($form->isValid()) {
-                try {
-                    if (method_exists($portfolio, 'sanitize')) {
-                        $portfolio->sanitize();
-                    }
-                    
-                    $em->persist($portfolio);
-                    $em->flush();
-
-                    $this->addFlash('success', 'Portfolio créé avec succès !');
-                    return $this->redirectToRoute('app_portfolio');
-                } catch (\Exception $e) {
-                    $this->addFlash('error', 'Erreur : ' . $e->getMessage());
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                if (method_exists($portfolio, 'sanitize')) {
+                    $portfolio->sanitize();
                 }
-            } else {
-                $this->addFlash('error', 'Veuillez corriger les erreurs.');
+                
+                $em->persist($portfolio);
+                $em->flush();
+
+                $this->addFlash('success', 'Portfolio créé avec succès !');
+                return $this->redirectToRoute('app_portfolio');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Erreur : ' . $e->getMessage());
             }
         }
+
+        // REMOVED: Don't add flash messages for validation errors
 
         return $this->render('portfolio/CreatePortfolio.html.twig', [
             'form' => $form->createView(),
@@ -183,23 +180,21 @@ final class PortfolioController extends AbstractController
         $form = $this->createForm(PortfolioType::class, $portfolio);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            if ($form->isValid()) {
-                try {
-                    if (method_exists($portfolio, 'sanitize')) {
-                        $portfolio->sanitize();
-                    }
-                    
-                    $em->flush();
-                    $this->addFlash('success', 'Portfolio modifié avec succès !');
-                    return $this->redirectToRoute('home_portfolio');
-                } catch (\Exception $e) {
-                    $this->addFlash('error', 'Erreur lors de la modification : ' . $e->getMessage());
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                if (method_exists($portfolio, 'sanitize')) {
+                    $portfolio->sanitize();
                 }
-            } else {
-                $this->addFlash('error', 'Veuillez corriger les erreurs.');
+                
+                $em->flush();
+                $this->addFlash('success', 'Portfolio modifié avec succès !');
+                return $this->redirectToRoute('home_portfolio');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Erreur lors de la modification : ' . $e->getMessage());
             }
         }
+
+        // REMOVED: Don't add flash messages for validation errors
 
         return $this->render('home/HomeUpdatePortfolio.html.twig', [
             'form' => $form->createView(),
@@ -218,23 +213,21 @@ final class PortfolioController extends AbstractController
         $form = $this->createForm(PortfolioType::class, $portfolio);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            if ($form->isValid()) {
-                try {
-                    if (method_exists($portfolio, 'sanitize')) {
-                        $portfolio->sanitize();
-                    }
-                    
-                    $em->flush();
-                    $this->addFlash('success', 'Portfolio modifié avec succès !');
-                    return $this->redirectToRoute('app_portfolio');
-                } catch (\Exception $e) {
-                    $this->addFlash('error', 'Erreur : ' . $e->getMessage());
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                if (method_exists($portfolio, 'sanitize')) {
+                    $portfolio->sanitize();
                 }
-            } else {
-                $this->addFlash('error', 'Veuillez corriger les erreurs.');
+                
+                $em->flush();
+                $this->addFlash('success', 'Portfolio modifié avec succès !');
+                return $this->redirectToRoute('app_portfolio');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Erreur : ' . $e->getMessage());
             }
         }
+
+        // REMOVED: Don't add flash messages for validation errors
 
         return $this->render('portfolio/UpdatePortfolio.html.twig', [
             'form' => $form->createView(),
