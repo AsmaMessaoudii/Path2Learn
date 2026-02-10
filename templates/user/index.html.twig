@@ -4,293 +4,300 @@
 
 {% block body %}
 
-<!-- Page content START -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <!-- Breadcrumb -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb breadcrumb-dots mb-0">
-                        <li class="breadcrumb-item"><a href="{{ path('home') }}">Accueil</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Utilisateurs</li>
-                    </ol>
-                </nav>
+<div class="d-flex">
+
+    <!-- ================= Sidebar ================= -->
+    <nav class="sidebar bg-dark vh-100 sticky-top d-none d-xl-block">
+        <div class="p-4 flex-column h-100 d-flex">
+
+            <!-- Logo -->
+            <a class="d-block text-center mb-4" href="{{ path('home') }}">
+                <img src="{{ asset('images/logo-light.png') }}" alt="logo" style="height: 100px;">
+            </a>
+
+            <!-- Menu -->
+            <div class="list-group list-group-dark list-group-borderless flex-grow-1">
+
+                <small class="text-uppercase text-muted fw-bold mb-2"
+                       style="font-size: 0.7rem; letter-spacing: 1px;">
+                    Principal
+                </small>
+
+                <a class="list-group-item {{ app.request.get('_route') == 'admin_dashboard' ? 'active' : '' }}"
+                   href="{{ path('admin_dashboard') }}">
+                    <i class="bi bi-grid-1x2 me-2"></i> Dashboard
+                </a>
+
+                <a class="list-group-item {{ app.request.get('_route') starts with 'app_user' ? 'active' : '' }}"
+                   href="{{ path('app_user_index') }}">
+                    <i class="bi bi-people-fill me-2"></i> Utilisateurs
+                </a>
+
+                <small class="text-uppercase text-muted fw-bold mt-4 mb-2"
+                       style="font-size: 0.7rem; letter-spacing: 1px;">
+                    Gestion Académique
+                </small>
+
+                <a class="list-group-item" href="#">
+                    <i class="bi bi-journal-bookmark-fill me-2"></i> Cours & Ressources
+                </a>
+
+                <a class="list-group-item" href="#">
+                    <i class="bi bi-patch-question me-2"></i> Quiz & Évaluations
+                </a>
+
+                <a class="list-group-item" href="#">
+                    <i class="bi bi-calendar3 me-2"></i> Événements
+                </a>
+
+                <a class="list-group-item" href="#">
+                    <i class="bi bi-folder2-open me-2"></i> Projets & Portfolio
+                </a>
+
+                <small class="text-uppercase text-muted fw-bold mt-4 mb-2"
+                       style="font-size: 0.7rem; letter-spacing: 1px;">
+                    Paramètres
+                </small>
+
+                <a class="list-group-item" href="{{ path('home') }}">
+                    <i class="bi bi-gear-fill me-2"></i> Settings
+                </a>
+
+                <a class="list-group-item text-danger bg-danger-soft-hover mt-2"
+                   href="{{ path('home') }}">
+                    <i class="bi bi-power me-2"></i> Sign Out
+                </a>
+
             </div>
         </div>
+    </nav>
 
-        <!-- Page Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card bg-transparent border-0">
-                    <div class="card-body p-0">
-                        <div class="d-sm-flex justify-content-between align-items-center">
-                            <div>
-                                <h1 class="h2 mb-2">
-                                    <i class="bi bi-people-fill text-primary me-2"></i>
-                                    Gestion des utilisateurs
-                                </h1>
-                                <p class="mb-0">Gérez tous vos utilisateurs depuis cette interface</p>
+    <!-- ================= Main Content ================= -->
+    <div class="flex-grow-1 min-vh-100 d-flex flex-column">
+
+        <!-- ================= Header ================= -->
+        <header class="navbar navbar-expand-xl bg-white border-bottom px-4 sticky-top"
+                style="height: 70px;">
+
+            <div class="container-fluid p-0">
+
+                <!-- Search bar (decorative) -->
+                <div class="d-flex align-items-center flex-grow-1">
+                    <form class="position-relative w-100" style="max-width: 450px;">
+                        <span class="position-absolute top-50 start-0 translate-middle-y ms-3">
+                             <i class="bi bi-search fs-5 text-dark"></i>
+                        </span>
+                        <input class="form-control bg-light border-0 ps-5 py-2"
+                               type="search"
+                               placeholder="Recherche rapide..."
+                               style="border-radius: 12px;">
+                    </form>
+                </div>
+
+                <!-- Profile -->
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link p-0 d-flex align-items-center"
+                           href="#"
+                           data-bs-toggle="dropdown">
+
+                            <div class="text-end me-2 d-none d-sm-block">
+                                <p class="mb-0 small fw-bold text-dark">Admin</p>
+                                <p class="mb-0 smallest text-muted" style="font-size: 10px;">
+                                    Administrateur
+                                </p>
                             </div>
-                            <a href="{{ path('app_user_new') }}" class="btn btn-success mb-0">
-                                <i class="bi bi-plus-circle me-2"></i>Nouvel utilisateur
-                            </a>
+
+                            <img class="rounded-circle border border-2 border-primary"
+                                 src="{{ asset('assets/images/avatar/01.jpg') }}"
+                                 style="width: 40px; height: 40px;">
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                            <li>
+                                <a class="dropdown-item text-danger" href="#">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Déconnexion
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+
+            </div>
+        </header>
+
+        <!-- ================= Main ================= -->
+        <main class="p-4 flex-grow-1" style="background-color: #f0f2f5;">
+
+            <!-- Page Header -->
+            <div class="d-sm-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1">
+                        <i class="bi bi-people-fill text-primary me-2"></i>
+                        Gestion des utilisateurs
+                    </h2>
+                    <p class="text-muted mb-0">
+                        Gérez tous vos utilisateurs depuis cette interface
+                    </p>
+                </div>
+
+                <a href="{{ path('app_user_new') }}" class="btn btn-success">
+                    <i class="bi bi-plus-circle me-2"></i> Nouvel utilisateur
+                </a>
+            </div>
+
+            <!-- Users Table Card -->
+            <div class="card shadow border-0">
+
+                <!-- Header -->
+                <div class="card-header border-bottom bg-white">
+                    <div class="row g-3 align-items-center">
+
+                        <div class="col-md-4">
+                            <h5 class="mb-0">
+                                <i class="bi bi-table me-2 text-primary"></i>
+                                Liste des utilisateurs
+                            </h5>
                         </div>
+
+                        <!-- Search + Sort -->
+                        <div class="col-md-8">
+                            <div class="d-flex justify-content-end gap-2">
+
+                                <input class="form-control w-50"
+                                       type="search"
+                                       id="searchInput"
+                                       placeholder="Rechercher par nom ou email...">
+
+                                <select id="sortSelect" class="form-select w-auto">
+                                    <option value="ASC">A → Z</option>
+                                    <option value="DESC">Z → A</option>
+                                </select>
+
+                                <a href="{{ path('app_user_index') }}" class="btn btn-light">
+                                    Reset
+                                </a>
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Users Table Card -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card shadow">
-                    <!-- Card header -->
-                    <div class="card-header border-bottom">
-                        <div class="row g-3 align-items-center">
-                            <div class="col-md-8">
-                                <h5 class="mb-0">
-                                    <i class="bi bi-table me-2 text-primary"></i>
-                                    Liste des utilisateurs
-                                </h5>
-                            </div>
-                            <div class="col-md-4">
-                                <!-- Search -->
-                                <form class="rounded position-relative">
-                                    <input class="form-control pe-5 bg-transparent" type="search" placeholder="Rechercher..." aria-label="Search">
-                                    <button class="btn bg-transparent px-2 py-0 position-absolute top-50 end-0 translate-middle-y" type="submit">
-                                        <i class="fas fa-search fs-6"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Body -->
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
 
-                    <!-- Card body -->
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle p-4 mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th scope="col" class="border-0">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="checkAll">
-                                            </div>
-                                        </th>
-                                        <th scope="col" class="border-0">ID</th>
-                                        <th scope="col" class="border-0">Utilisateur</th>
-                                        <th scope="col" class="border-0">Email</th>
-                                        <th scope="col" class="border-0">Rôle</th>
-                                        <th scope="col" class="border-0">Statut</th>
-                                        <th scope="col" class="border-0">Date création</th>
-                                        <th scope="col" class="border-0 text-end">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for user in users %}
-                                    <tr>
-                                        <td>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox">
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <h6 class="mb-0 fw-bold">#{{ user.id }}</h6>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <!-- Avatar -->
-                                                <div class="avatar avatar-sm flex-shrink-0 me-2">
-                                                    <div class="avatar-img rounded-circle bg-primary bg-opacity-10 text-primary">
-                                                        <span class="position-absolute top-50 start-50 translate-middle fw-bold">
-                                                            {{ user.prenom|first|upper }}{{ user.nom|first|upper }}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <!-- Info -->
-                                                <div>
-                                                    <h6 class="mb-0 fw-normal">{{ user.prenom }} {{ user.nom }}</h6>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <a href="mailto:{{ user.email }}" class="text-decoration-none">
-                                                {{ user.email }}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            {% if user.role.value == 'admin' %}
-                                                <span class="badge bg-danger bg-opacity-10 text-danger">
-                                                    <i class="bi bi-shield-fill-check me-1"></i>Admin
-                                                </span>
-                                            {% elseif user.role.value == 'teacher' %}
-                                                <span class="badge bg-primary bg-opacity-10 text-primary">
-                                                    <i class="bi bi-person-workspace me-1"></i>Enseignant
-                                                </span>
-                                            {% else %}
-                                                <span class="badge bg-info bg-opacity-10 text-info">
-                                                    <i class="bi bi-person me-1"></i>Étudiant
-                                                </span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if user.status.value == 'enable' %}
-                                                <span class="badge bg-success bg-opacity-10 text-success">
-                                                    <i class="bi bi-check-circle me-1"></i>Activé
-                                                </span>
-                                            {% else %}
-                                                <span class="badge bg-warning bg-opacity-10 text-warning">
-                                                    <i class="bi bi-x-circle me-1"></i>Désactivé
-                                                </span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <span class="text-muted">
-                                                <i class="bi bi-calendar3 me-1"></i>
-                                                {{ user.dateCreation ? user.dateCreation|date('d/m/Y') : '' }}
-                                            </span>
-                                        </td>
-                                        <td class="text-end">
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ path('app_user_show', {'id': user.id}) }}" 
-                                                   class="btn btn-sm btn-light btn-round me-1"
-                                                   data-bs-toggle="tooltip" 
-                                                   data-bs-placement="top"
-                                                   title="Voir les détails">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="{{ path('app_user_edit', {'id': user.id}) }}" 
-                                                   class="btn btn-sm btn-success-soft btn-round"
-                                                   data-bs-toggle="tooltip" 
-                                                   data-bs-placement="top"
-                                                   title="Modifier">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% else %}
-                                    <tr>
-                                        <td colspan="8" class="text-center py-5">
-                                            <div class="my-5">
-                                                <i class="bi bi-inbox display-4 text-muted"></i>
-                                                <h5 class="mt-3 text-muted">Aucun utilisateur trouvé</h5>
-                                                <p class="text-muted">Commencez par créer votre premier utilisateur</p>
-                                                <a href="{{ path('app_user_new') }}" class="btn btn-primary-soft">
-                                                    <i class="bi bi-plus-circle me-2"></i>Créer un utilisateur
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Utilisateur</th>
+                                    <th>Email</th>
+                                    <th>Rôle</th>
+                                    <th>Statut</th>
+                                    <th>Date création</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
 
-                    <!-- Card footer -->
-                    <div class="card-footer border-top pt-3">
-                        <div class="d-sm-flex justify-content-sm-between align-items-sm-center">
-                            <!-- Pagination info -->
-                            <p class="mb-sm-0 text-center text-sm-start">
-                                Affichage de <span class="fw-bold">{{ users|length }}</span> utilisateur(s)
-                            </p>
-                            <!-- Pagination -->
-                            <nav class="mb-sm-0 d-flex justify-content-center" aria-label="navigation">
-                                <ul class="pagination pagination-sm pagination-primary-soft mb-0">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#" tabindex="-1">Précédent</a>
-                                    </li>
-                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#">Suivant</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
+                            <tbody id="usersTable">
+                            {% for user in users %}
+                                <tr>
+                                    <td><strong>#{{ user.id }}</strong></td>
+
+                                    <td>{{ user.prenom }} {{ user.nom }}</td>
+
+                                    <td>{{ user.email }}</td>
+
+                                    <td>
+                                        {% if user.role.value == 'admin' %}
+                                            <span class="badge bg-danger">Admin</span>
+                                        {% elseif user.role.value == 'teacher' %}
+                                            <span class="badge bg-primary">Enseignant</span>
+                                        {% else %}
+                                            <span class="badge bg-info">Étudiant</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {% if user.status.value == 'enable' %}
+                                            <span class="badge bg-success">Activé</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Désactivé</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {{ user.dateCreation ? user.dateCreation|date('d/m/Y') : '' }}
+                                    </td>
+
+                                    <td class="text-end">
+                                        <a href="{{ path('app_user_show', {'id': user.id}) }}"
+                                           class="btn btn-sm btn-light">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+
+                                        <a href="{{ path('app_user_edit', {'id': user.id}) }}"
+                                           class="btn btn-sm btn-success">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-5">
+                                        Aucun utilisateur trouvé
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+
+                        </table>
                     </div>
                 </div>
+
+                <!-- Footer -->
+                <div class="card-footer text-center bg-white">
+                    Total utilisateurs : <strong>{{ users|length }}</strong>
+                </div>
+
             </div>
-        </div>
+
+        </main>
     </div>
-</section>
-<!-- Page content END -->
+</div>
 
-<!-- Statistics Section (Optional) -->
-<section class="pt-0">
-    <div class="container">
-        <div class="row g-4">
-            <!-- Total Users -->
-            <div class="col-sm-6 col-xl-3">
-                <div class="card card-body shadow">
-                    <div class="icon-lg bg-success bg-opacity-10 text-success rounded-3 mb-3">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h6>Total Utilisateurs</h6>
-                    <h3 class="mb-0 purecounter">{{ users|length }}</h3>
-                </div>
-            </div>
+<!-- ✅ Dynamic Search Script -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
-            <!-- Active Users -->
-            <div class="col-sm-6 col-xl-3">
-                <div class="card card-body shadow">
-                    <div class="icon-lg bg-primary bg-opacity-10 text-primary rounded-3 mb-3">
-                        <i class="fas fa-user-check"></i>
-                    </div>
-                    <h6>Utilisateurs Actifs</h6>
-                    <h3 class="mb-0">
-                        {% set activeCount = 0 %}
-                        {% for user in users %}
-                            {% if user.status.value == 'enable' %}
-                                {% set activeCount = activeCount + 1 %}
-                            {% endif %}
-                        {% endfor %}
-                        {{ activeCount }}
-                    </h3>
-                </div>
-            </div>
+    const searchInput = document.getElementById("searchInput");
+    const sortSelect = document.getElementById("sortSelect");
+    const usersTable = document.getElementById("usersTable");
 
-            <!-- Teachers -->
-            <div class="col-sm-6 col-xl-3">
-                <div class="card card-body shadow">
-                    <div class="icon-lg bg-warning bg-opacity-10 text-warning rounded-3 mb-3">
-                        <i class="fas fa-user-tie"></i>
-                    </div>
-                    <h6>Enseignants</h6>
-                    <h3 class="mb-0">
-                        {% set teacherCount = 0 %}
-                        {% for user in users %}
-                            {% if user.role.value == 'teacher' %}
-                                {% set teacherCount = teacherCount + 1 %}
-                            {% endif %}
-                        {% endfor %}
-                        {{ teacherCount }}
-                    </h3>
-                </div>
-            </div>
+    function fetchUsers() {
 
-            <!-- Students -->
-            <div class="col-sm-6 col-xl-3">
-                <div class="card card-body shadow">
-                    <div class="icon-lg bg-info bg-opacity-10 text-info rounded-3 mb-3">
-                        <i class="fas fa-user-graduate"></i>
-                    </div>
-                    <h6>Étudiants</h6>
-                    <h3 class="mb-0">
-                        {% set studentCount = 0 %}
-                        {% for user in users %}
-                            {% if user.role.value == 'student' %}
-                                {% set studentCount = studentCount + 1 %}
-                            {% endif %}
-                        {% endfor %}
-                        {{ studentCount }}
-                    </h3>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+        const query = searchInput.value;
+        const sort = sortSelect.value;
+
+        fetch("{{ path('app_user_search') }}?q=" + query + "&sort=" + sort)
+            .then(response => response.text())
+            .then(html => {
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, "text/html");
+
+                const newBody = doc.querySelector("#usersTable");
+                usersTable.innerHTML = newBody.innerHTML;
+            });
+    }
+
+    searchInput.addEventListener("keyup", fetchUsers);
+    sortSelect.addEventListener("change", fetchUsers);
+
+});
+</script>
 
 {% endblock %}
