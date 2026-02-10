@@ -17,13 +17,43 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 #[Route('/user')]
 final class UserController extends AbstractController
 {
+
+
+
     #[Route(name: 'app_user_index', methods: ['GET'])]
-    public function index(UserRepository $userRepository): Response
+public function index(Request $request, UserRepository $userRepository): Response
+{
+    $search = $request->query->get('q');       // mot recherché
+    $sort = $request->query->get('sort', 'ASC'); // tri par défaut
+
+    $users = $userRepository->searchAndSort($search, $sort);
+
+    return $this->render('user/index.html.twig', [
+        'users' => $users,
+    ]);
+}
+
+    #[Route('/search', name: 'app_user_search', methods: ['GET'])]
+    public function search(Request $request, UserRepository $userRepository): Response
     {
+        $query = $request->query->get('q', '');
+        $sort = $request->query->get('sort', 'ASC');
+
+        $users = $userRepository->searchAndSort($query, $sort);
+
         return $this->render('user/index.html.twig', [
-            'users' => $userRepository->findAll(),
-        ]);
+            'users' => $users,
+            'ajax' => true
+
+            
+        ])
+        
+        ;
     }
+
+
+
+
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response

@@ -27,69 +27,103 @@
 
                     <!-- Card body -->
                     <div class="card-body p-4">
-                        {{ form_start(form) }}
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
                             <div class="row g-3">
                                 <!-- Nom -->
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">
                                         <i class="bi bi-person me-1 text-primary"></i>
-                                        {{ form_label(form.nom) }}
+                                        Nom <span class="text-danger">*</span>
                                     </label>
                                     {{ form_widget(form.nom, {
                                         'attr': {
-                                            'class': 'form-control',
+                                            'class': 'form-control' ~ (form.nom.vars.errors|length > 0 ? ' is-invalid' : ''),
                                             'placeholder': 'Votre nom'
                                         }
                                     }) }}
-                                    {{ form_errors(form.nom) }}
+                                    {% if form.nom.vars.errors|length > 0 %}
+                                        <div class="alert alert-danger mt-2 py-2" role="alert">
+                                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                            {{ form_errors(form.nom) }}
+                                        </div>
+                                    {% endif %}
                                 </div>
 
                                 <!-- Prénom -->
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">
                                         <i class="bi bi-person me-1 text-primary"></i>
-                                        {{ form_label(form.prenom) }}
+                                        Prénom <span class="text-danger">*</span>
                                     </label>
                                     {{ form_widget(form.prenom, {
                                         'attr': {
-                                            'class': 'form-control',
+                                            'class': 'form-control' ~ (form.prenom.vars.errors|length > 0 ? ' is-invalid' : ''),
                                             'placeholder': 'Votre prénom'
                                         }
                                     }) }}
-                                    {{ form_errors(form.prenom) }}
+                                    {% if form.prenom.vars.errors|length > 0 %}
+                                        <div class="alert alert-danger mt-2 py-2" role="alert">
+                                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                            {{ form_errors(form.prenom) }}
+                                        </div>
+                                    {% endif %}
                                 </div>
 
                                 <!-- Email -->
                                 <div class="col-12">
                                     <label class="form-label fw-bold">
                                         <i class="bi bi-envelope me-1 text-primary"></i>
-                                        {{ form_label(form.email) }}
+                                        Email <span class="text-danger">*</span>
                                     </label>
                                     {{ form_widget(form.email, {
                                         'attr': {
-                                            'class': 'form-control',
+                                            'class': 'form-control' ~ (form.email.vars.errors|length > 0 ? ' is-invalid' : ''),
                                             'placeholder': 'votre.email@exemple.com'
                                         }
                                     }) }}
-                                    {{ form_errors(form.email) }}
+                                    {% if form.email.vars.errors|length > 0 %}
+                                        <div class="alert alert-danger mt-2 py-2" role="alert">
+                                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                            <strong>Erreur d'email:</strong>
+                                            <ul class="mb-0 mt-1">
+                                                {% for error in form.email.vars.errors %}
+                                                    <li>{{ error.message }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Utilisez une adresse email valide (ex: nom@domaine.com)
+                                    </small>
                                 </div>
 
                                 <!-- Password -->
                                 <div class="col-12">
                                     <label class="form-label fw-bold">
                                         <i class="bi bi-key me-1 text-primary"></i>
-                                        {{ form_label(form.plainPassword) }}
+                                        Mot de passe <span class="text-danger">*</span>
                                     </label>
                                     {{ form_widget(form.plainPassword, {
                                         'attr': {
-                                            'class': 'form-control',
+                                            'class': 'form-control' ~ (form.plainPassword.vars.errors|length > 0 ? ' is-invalid' : ''),
                                             'placeholder': '••••••••'
                                         }
                                     }) }}
-                                    {{ form_errors(form.plainPassword) }}
-                                    <small class="text-muted">
+                                    {% if form.plainPassword.vars.errors|length > 0 %}
+                                        <div class="alert alert-danger mt-2 py-2" role="alert">
+                                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                            <strong>Erreur(s) de mot de passe:</strong>
+                                            <ul class="mb-0 mt-1">
+                                                {% for error in form.plainPassword.vars.errors %}
+                                                    <li>{{ error.message }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                    <small class="text-muted d-block mt-2">
                                         <i class="bi bi-info-circle me-1"></i>
-                                        Min. 5 caractères, 1 majuscule, 1 minuscule
+                                        Min. 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre
                                     </small>
                                 </div>
 
@@ -97,14 +131,19 @@
                                 <div class="col-12">
                                     <label class="form-label fw-bold">
                                         <i class="bi bi-person-badge me-1 text-primary"></i>
-                                        {{ form_label(form.role) }}
+                                        Rôle <span class="text-danger">*</span>
                                     </label>
                                     {{ form_widget(form.role, {
                                         'attr': {
-                                            'class': 'form-select'
+                                            'class': 'form-select' ~ (form.role.vars.errors|length > 0 ? ' is-invalid' : '')
                                         }
                                     }) }}
-                                    {{ form_errors(form.role) }}
+                                    {% if form.role.vars.errors|length > 0 %}
+                                        <div class="alert alert-danger mt-2 py-2" role="alert">
+                                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                            {{ form_errors(form.role) }}
+                                        </div>
+                                    {% endif %}
                                 </div>
 
                                 <!-- Info Alert -->
@@ -137,7 +176,7 @@
                 <div class="text-center mt-3">
                     <p class="mb-0">
                         Vous avez déjà un compte? 
-                        <a href="#" class="text-decoration-none fw-bold">Connectez-vous</a>
+                        <a href="{{ path('app_login') }}" class="text-decoration-none fw-bold">Connectez-vous</a>
                     </p>
                 </div>
             </div>
