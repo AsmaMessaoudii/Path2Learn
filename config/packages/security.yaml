@@ -19,23 +19,21 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            user_checker: App\Security\UserChecker
 
             form_login:
                 login_path: app_login
                 check_path: app_login
                 username_parameter: email
                 password_parameter: password
-                # Remove default_target_path and use success_handler
-                success_handler: App\Security\LoginSuccessHandler
+                success_handler: App\Security\LoginSuccessHandler  # optional
 
             logout:
                 path: app_logout
                 target: home
 
     access_control:
-       
         - { path: ^/profile, roles: ROLE_USER }
-        
 
 when@test:
     security:
