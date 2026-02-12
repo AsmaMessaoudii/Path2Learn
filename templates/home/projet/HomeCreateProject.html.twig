@@ -941,28 +941,32 @@ Trending courses START -->
 
 
 
+{# File: Projet form template (HomeCreateProject.html.twig or similar) #}
+
+{# ... existing header and HTML ... #}
+
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10">
+        <div class="col-lg-9 col-md-11">
             <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-
+                
                 <!-- Header -->
                 <div class="bg-light text-center py-4 px-3">
-                    <i class="bi bi-plus-circle fs-1 text-primary mb-2 d-block"></i>
-                    <h4 class="fw-bold mb-1">Créer un nouveau projet</h4>
+                    <i class="bi bi-code-square fs-1 text-primary mb-2 d-block"></i>
+                    <h4 class="fw-bold mb-1">Ajouter un nouveau projet</h4>
                     <p class="text-muted small mb-0">
-                        Ajoutez un projet au portfolio : <span class="fw-semibold">{{ portfolio.titre }}</span>
+                        Présentez vos réalisations et compétences
                     </p>
                 </div>
 
                 <!-- Form body -->
                 <div class="p-4 p-md-5">
                     
-                    {# Display ALL flash messages #}
+                    {# Display only success/error flash messages (not validation errors) #}
                     {% for message in app.flashes('success') %}
                         <div class="alert alert-success alert-dismissible fade show mb-4">
                             <i class="bi bi-check-circle me-2"></i>
-                            {{ message|raw }}
+                            {{ message }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     {% endfor %}
@@ -970,23 +974,15 @@ Trending courses START -->
                     {% for message in app.flashes('error') %}
                         <div class="alert alert-danger alert-dismissible fade show mb-4">
                             <i class="bi bi-exclamation-triangle me-2"></i>
-                            {{ message|raw }}
+                            {{ message }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     {% endfor %}
-                    
+
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
-                    
-                    {# Simple error summary #}
-                    {% if not form.vars.valid %}
-                        <div class="alert alert-warning alert-dismissible fade show mb-4">
-                            <i class="bi bi-exclamation-circle me-2"></i>
-                            <strong>Veuillez corriger les erreurs ci-dessous.</strong>
-                        </div>
-                    {% endif %}
-                    
+
                     <div class="row">
-                        {# Titre du projet #}
+                        <!-- Titre du projet -->
                         <div class="col-md-12 mb-4">
                             {{ form_label(form.titreProjet, 'Titre du projet *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
                             {{ form_widget(form.titreProjet, {
@@ -998,24 +994,35 @@ Trending courses START -->
                             <div class="form-text mt-1">
                                 <i class="bi bi-info-circle me-1"></i> 3 à 150 caractères
                             </div>
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.titreProjet) }}
+                            </div>
                         </div>
-                        
-                        {# Texte court #}
+
+                        <!-- Texte court -->
                         <div class="col-md-12 mb-4">
-                            {{ form_label(form.text, 'Texte court (résumé) *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
+                            {{ form_label(form.text, 'Résumé court *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
                             {{ form_widget(form.text, {
                                 'attr': {
                                     'class': 'form-control',
-                                    'placeholder': 'Description courte du projet',
+                                    'placeholder': 'Description courte du projet (10-255 caractères)',
                                     'rows': 3
                                 }
                             }) }}
-                            <div class="form-text mt-1">
-                                <i class="bi bi-info-circle me-1"></i> 10 à 255 caractères
+                            <div class="form-text mt-1 d-flex justify-content-between align-items-center">
+                                <span>
+                                    <i class="bi bi-info-circle me-1"></i> 10 à 255 caractères
+                                </span>
+                                <span class="small text-muted">
+                                    <span id="text-count">0</span>/255
+                                </span>
+                            </div>
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.text) }}
                             </div>
                         </div>
-                        
-                        {# Description détaillée #}
+
+                        <!-- Description détaillée -->
                         <div class="col-md-12 mb-4">
                             {{ form_label(form.description, 'Description détaillée *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
                             {{ form_widget(form.description, {
@@ -1025,13 +1032,21 @@ Trending courses START -->
                                     'rows': 6
                                 }
                             }) }}
-                            <div class="form-text mt-1">
-                                <i class="bi bi-info-circle me-1"></i> 30 à 2000 caractères
+                            <div class="form-text mt-1 d-flex justify-content-between align-items-center">
+                                <span>
+                                    <i class="bi bi-info-circle me-1"></i> 30 à 2000 caractères
+                                </span>
+                                <span class="small text-muted">
+                                    <span id="description-count">0</span>/2000
+                                </span>
+                            </div>
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.description) }}
                             </div>
                         </div>
-                        
-                        {# Technologies #}
-                        <div class="col-md-6 mb-4">
+
+                        <!-- Technologies -->
+                        <div class="col-md-12 mb-4">
                             {{ form_label(form.technologies, 'Technologies utilisées *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
                             {{ form_widget(form.technologies, {
                                 'attr': {
@@ -1042,9 +1057,12 @@ Trending courses START -->
                             <div class="form-text mt-1">
                                 <i class="bi bi-info-circle me-1"></i> Séparez par des virgules
                             </div>
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.technologies) }}
+                            </div>
                         </div>
-                        
-                        {# Date de réalisation #}
+
+                        <!-- Date de réalisation -->
                         <div class="col-md-6 mb-4">
                             {{ form_label(form.dateRealisation, 'Date de réalisation *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
                             {{ form_widget(form.dateRealisation, {
@@ -1053,12 +1071,15 @@ Trending courses START -->
                                 }
                             }) }}
                             <div class="form-text mt-1">
-                                <i class="bi bi-info-circle me-1"></i> Ne peut pas être une date future
+                                <i class="bi bi-info-circle me-1"></i> Ne peut pas être dans le futur
+                            </div>
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.dateRealisation) }}
                             </div>
                         </div>
-                        
-                        {# Lien de démonstration #}
-                        <div class="col-md-12 mb-4">
+
+                        <!-- Lien de démonstration -->
+                        <div class="col-md-6 mb-4">
                             {{ form_label(form.lienDemo, 'Lien de démonstration *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
                             {{ form_widget(form.lienDemo, {
                                 'attr': {
@@ -1067,24 +1088,39 @@ Trending courses START -->
                                 }
                             }) }}
                             <div class="form-text mt-1">
-                                <i class="bi bi-info-circle me-1"></i> Doit commencer par http:// ou https://
+                                <i class="bi bi-info-circle me-1"></i> URL valide (http:// ou https://)
+                            </div>
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.lienDemo) }}
                             </div>
                         </div>
+
+                        <!-- Portfolio associé (if displayed) -->
+                        {% if form.portfolio is defined %}
+                        <div class="col-md-12 mb-4">
+                            {{ form_label(form.portfolio, 'Portfolio associé *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
+                            {{ form_widget(form.portfolio, {
+                                'attr': {
+                                    'class': 'form-select'
+                                }
+                            }) }}
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.portfolio) }}
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
-                    
-                    {# Hidden portfolio field #}
-                    {{ form_row(form.portfolio, {'attr': {'class': 'd-none'}}) }}
-                    
-                    {# Buttons #}
+
+                    <!-- Buttons -->
                     <div class="d-flex justify-content-between mt-5 pt-3 border-top">
                         <a href="{{ path('home_portfolio', {'id': portfolio.id}) }}" class="btn btn-outline-secondary px-4">
-                            <i class="bi bi-arrow-left me-2"></i> Retour
+                            <i class="bi bi-arrow-left me-2"></i> Annuler
                         </a>
                         <button type="submit" class="btn btn-primary px-4">
-                            <i class="bi bi-check-circle me-2"></i> Créer le projet
+                            <i class="bi bi-plus-circle me-2"></i> Créer le projet
                         </button>
                     </div>
-                    
+
                     {{ form_end(form) }}
                 </div>
             </div>
@@ -1110,35 +1146,51 @@ document.addEventListener('DOMContentLoaded', function() {
         }, false);
     });
     
-    // Real-time character counters
+    // Character counter for text field
     const textField = document.querySelector('#{{ form.text.vars.id }}');
-    const descriptionField = document.querySelector('#{{ form.description.vars.id }}');
+    const textCount = document.querySelector('#text-count');
     
-    function createCounter(field, maxLength) {
-        if (!field) return;
-        
-        const counter = document.createElement('div');
-        counter.className = 'form-text text-end mt-1 small';
-        counter.innerHTML = `<span class="char-count">0</span>/${maxLength}`;
-        field.parentNode.appendChild(counter);
-        
-        const charCount = counter.querySelector('.char-count');
-        charCount.textContent = field.value.length;
-        
-        field.addEventListener('input', function() {
-            charCount.textContent = this.value.length;
+    if (textField && textCount) {
+        textCount.textContent = textField.value.length;
+        textField.addEventListener('input', function() {
+            textCount.textContent = this.value.length;
             
-            // Add warning class when approaching limit
-            if (this.value.length > maxLength * 0.9) {
-                charCount.classList.add('text-warning', 'fw-bold');
+            if (this.value.length > 255 * 0.9) {
+                textCount.classList.add('text-warning', 'fw-bold');
             } else {
-                charCount.classList.remove('text-warning', 'fw-bold');
+                textCount.classList.remove('text-warning', 'fw-bold');
+            }
+            
+            if (this.value.length > 255) {
+                textCount.classList.add('text-danger', 'fw-bold');
+            } else {
+                textCount.classList.remove('text-danger');
             }
         });
     }
     
-    createCounter(textField, 255);
-    createCounter(descriptionField, 2000);
+    // Character counter for description field
+    const descriptionField = document.querySelector('#{{ form.description.vars.id }}');
+    const descriptionCount = document.querySelector('#description-count');
+    
+    if (descriptionField && descriptionCount) {
+        descriptionCount.textContent = descriptionField.value.length;
+        descriptionField.addEventListener('input', function() {
+            descriptionCount.textContent = this.value.length;
+            
+            if (this.value.length > 2000 * 0.9) {
+                descriptionCount.classList.add('text-warning', 'fw-bold');
+            } else {
+                descriptionCount.classList.remove('text-warning', 'fw-bold');
+            }
+            
+            if (this.value.length > 2000) {
+                descriptionCount.classList.add('text-danger', 'fw-bold');
+            } else {
+                descriptionCount.classList.remove('text-danger');
+            }
+        });
+    }
 });
 </script>
 {% endblock %}

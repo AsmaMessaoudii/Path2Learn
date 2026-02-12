@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ProjetRepository;
 use App\Entity\Portfolio;
 use App\Entity\Projet;
 use App\Form\ProjetType;
@@ -93,131 +94,84 @@ final class ProjetController extends AbstractController
     }
 
     #[Route('/home/project/new/{portfolioId}', name: 'front_project_new')]
-    public function newFront(
-        int $portfolioId,
-        Request $request,
-        EntityManagerInterface $em
-    ): Response {
-        $portfolio = $em->getRepository(Portfolio::class)->find($portfolioId);
+public function newFront(
+    int $portfolioId,
+    Request $request,
+    EntityManagerInterface $em
+): Response {
+    $portfolio = $em->getRepository(Portfolio::class)->find($portfolioId);
 
-        if (!$portfolio) {
-            $this->addFlash('error', 'Portfolio non trouvé');
-            return $this->redirectToRoute('home_portfolio');
-        }
-
-        $project = new Projet();
-        $project->setPortfolio($portfolio);
-
-        $form = $this->createForm(ProjetType::class, $project);
-        $form->handleRequest($request);
-
-        // Check for ALL validation errors
-        if ($form->isSubmitted() && !$form->isValid()) {
-            // Get ALL errors from ALL fields
-            $allErrors = [];
-            
-            // Global form errors
-            foreach ($form->getErrors() as $error) {
-                $allErrors[] = $error->getMessage();
-            }
-            
-            // Field-specific errors
-            foreach ($form->all() as $child) {
-                $fieldErrors = $child->getErrors();
-                if (count($fieldErrors) > 0) {
-                    $fieldName = $child->getName();
-                    $fieldLabel = $child->getConfig()->getOption('label') ?? $fieldName;
-                    
-                    foreach ($fieldErrors as $error) {
-                        $allErrors[] = '<strong>' . $fieldLabel . ':</strong> ' . $error->getMessage();
-                    }
-                }
-            }
-            
-            // Show ALL errors as flash messages
-            foreach ($allErrors as $errorMsg) {
-                $this->addFlash('error', $errorMsg);
-            }
-        }
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                // Nettoyage des données
-                if (method_exists($project, 'sanitize')) {
-                    $project->sanitize();
-                }
-                
-                // Persistance
-                $em->persist($project);
-                $em->flush();
-
-                $this->addFlash('success', 'Projet créé avec succès !');
-                return $this->redirectToRoute('home_portfolio', ['id' => $portfolioId]);
-            } catch (\Exception $e) {
-                $this->addFlash('error', 'Erreur lors de la création du projet: ' . $e->getMessage());
-            }
-        }
-
-        return $this->render('home/projet/HomeCreateProject.html.twig', [
-            'form' => $form->createView(),
-            'portfolio' => $portfolio,
-        ]);
+    if (!$portfolio) {
+        $this->addFlash('error', 'Portfolio non trouvé');
+        return $this->redirectToRoute('home_portfolio');
     }
+
+    $project = new Projet();
+    $project->setPortfolio($portfolio);
+
+    $form = $this->createForm(ProjetType::class, $project);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        try {
+            // Nettoyage des données
+            if (method_exists($project, 'sanitize')) {
+                $project->sanitize();
+            }
+            
+            // Persistance
+            $em->persist($project);
+            $em->flush();
+
+            $this->addFlash('success', 'Projet créé avec succès !');
+            return $this->redirectToRoute('home_portfolio', ['id' => $portfolioId]);
+        } catch (\Exception $e) {
+            // Only show flash for system errors (database, etc.)
+            $this->addFlash('error', 'Erreur lors de la création du projet: ' . $e->getMessage());
+        }
+    }
+
+    // REMOVED: Don't add flash messages for validation errors
+    // Symfony will show them automatically in the template via form_errors()
+
+    return $this->render('home/projet/HomeCreateProject.html.twig', [
+        'form' => $form->createView(),
+        'portfolio' => $portfolio,
+    ]);
+}
 
     #[Route('/home/project/{id}/edit', name: 'front_project_edit')]
-    public function editFront(
-        Projet $projet,
-        Request $request,
-        EntityManagerInterface $em
-    ): Response {
-        $form = $this->createForm(ProjetType::class, $projet);
-        $form->handleRequest($request);
+public function editFront(
+    Projet $projet,
+    Request $request,
+    EntityManagerInterface $em
+): Response {
+    $form = $this->createForm(ProjetType::class, $projet);
+    $form->handleRequest($request);
 
-        // Check for ALL validation errors in edit
-        if ($form->isSubmitted() && !$form->isValid()) {
-            // Collect ALL errors
-            $errorMessages = [];
-            
-            // Check each field
-            foreach ($form->all() as $field) {
-                $fieldErrors = $field->getErrors();
-                if (count($fieldErrors) > 0) {
-                    $fieldName = $field->getName();
-                    $fieldLabel = $field->getConfig()->getOption('label') ?? $fieldName;
-                    
-                    foreach ($fieldErrors as $error) {
-                        $errorMessages[] = $fieldLabel . ': ' . $error->getMessage();
-                    }
-                }
+    if ($form->isSubmitted() && $form->isValid()) {
+        try {
+            // Nettoyage des données
+            if (method_exists($projet, 'sanitize')) {
+                $projet->sanitize();
             }
             
-            // Show ALL errors
-            foreach ($errorMessages as $message) {
-                $this->addFlash('error', $message);
-            }
+            $em->flush();
+
+            $this->addFlash('success', 'Projet modifié avec succès !');
+            return $this->redirectToRoute('front_projet_show', ['id' => $projet->getId()]);
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Erreur lors de la modification: ' . $e->getMessage());
         }
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                // Nettoyage des données
-                if (method_exists($projet, 'sanitize')) {
-                    $projet->sanitize();
-                }
-                
-                $em->flush();
-
-                $this->addFlash('success', 'Projet modifié avec succès !');
-                return $this->redirectToRoute('front_projet_show', ['id' => $projet->getId()]);
-            } catch (\Exception $e) {
-                $this->addFlash('error', 'Erreur lors de la modification: ' . $e->getMessage());
-            }
-        }
-
-        return $this->render('home/projet/HomeUpdateProject.html.twig', [
-            'form' => $form->createView(),
-            'projet' => $projet,
-        ]);
     }
+
+    // REMOVED: Don't add flash messages for validation errors
+
+    return $this->render('home/projet/HomeUpdateProject.html.twig', [
+        'form' => $form->createView(),
+        'projet' => $projet,
+    ]);
+}
 
     #[Route('/project/{id}/edit', name: 'project_edit')]
     public function edit(
@@ -280,30 +234,139 @@ final class ProjetController extends AbstractController
         return $this->redirectToRoute('home_portfolio', ['id' => $projet->getPortfolio()->getId()]);
     }
 
-    #[Route('/project/{id}/delete', name: 'project_delete', methods: ['POST'])]
-    public function delete(
-        Projet $projet,
-        Request $request,
-        EntityManagerInterface $em
-    ): Response
-    {
-        if ($this->isCsrfTokenValid(
-            'delete-project-' . $projet->getId(),
-            $request->request->get('_token')
-        )) {
+#[Route('/project/{id}/delete', name: 'project_delete', methods: ['POST'])]
+public function delete(
+    Request $request,
+    EntityManagerInterface $em,
+    ProjetRepository $projetRepository,
+    \Symfony\Component\Mailer\MailerInterface $mailer,
+    int $id
+): Response
+{
+    // Find the project by ID
+    $projet = $projetRepository->find($id);
+    
+    if (!$projet) {
+        $this->addFlash('error', 'Projet non trouvé (ID: ' . $id . ')');
+        return $this->redirectToRoute('portfolio_list');
+    }
+    
+    // Get CSRF token from request
+    $submittedToken = $request->request->get('_token');
+    
+    // Check CSRF token
+    if (!$this->isCsrfTokenValid('delete-project-' . $projet->getId(), $submittedToken)) {
+        $this->addFlash('error', 'Token CSRF invalide.');
+        return $this->redirectToRoute('portfolio_list');
+    }
+    
+    // Get form data
+    $studentEmail = $request->request->get('student_email');
+    $studentName = $request->request->get('student_name');
+    $deleteReason = $request->request->get('delete_reason');
+    $deleteDetails = $request->request->get('delete_details');
+    
+    // DEBUG: Log all form data
+    error_log('=== DELETE PROJECT DEBUG ===');
+    error_log('Project ID: ' . $projet->getId());
+    error_log('Project Title: ' . $projet->getTitreProjet());
+    error_log('Student Email: ' . ($studentEmail ?: 'NOT PROVIDED'));
+    error_log('Student Name: ' . ($studentName ?: 'NOT PROVIDED'));
+    error_log('Delete Reason: ' . ($deleteReason ?: 'NOT PROVIDED'));
+    
+    try {
+        // Store portfolio ID for redirect
+        $portfolioId = $projet->getPortfolio()->getId();
+        
+        // Try to send the email first
+        $emailSent = false;
+        $emailErrorMessage = null;
+        
+        if ($studentEmail && !empty($studentEmail)) {
             try {
-                $em->remove($projet);
-                $em->flush();
-                $this->addFlash('success', 'Projet supprimé avec succès !');
-            } catch (\Exception $e) {
-                $this->addFlash('error', 'Erreur lors de la suppression: ' . $e->getMessage());
+                error_log('Attempting to send email to: ' . $studentEmail);
+                
+                $email = (new \Symfony\Component\Mime\Email())
+                    ->from('nonoreply167@gmail.com')
+                    ->to($studentEmail)
+                    ->subject('Suppression de votre projet - Portfolio')
+                    ->html($this->renderView('emails/project_deleted.html.twig', [
+                        'student_name' => $studentName,
+                        'project_title' => $projet->getTitreProjet(),
+                        'reason' => $deleteReason,
+                        'details' => $deleteDetails,
+                        'date' => new \DateTime()
+                    ]));
+                
+                $mailer->send($email);
+                $emailSent = true;
+                error_log('✅ Email sent successfully to: ' . $studentEmail);
+                
+            } catch (\Exception $emailException) {
+                $emailErrorMessage = $emailException->getMessage();
+                error_log('❌ Email failed: ' . $emailErrorMessage);
+                error_log('File: ' . $emailException->getFile() . ':' . $emailException->getLine());
+                error_log('Trace: ' . $emailException->getTraceAsString());
             }
         } else {
-            $this->addFlash('error', 'Token CSRF invalide.');
+            error_log('❌ No student email provided');
+            $emailErrorMessage = 'Aucun email étudiant fourni';
         }
-
-        return $this->redirectToRoute('app_portfolio');
+        
+        // Now delete the project
+        $em->remove($projet);
+        $em->flush();
+        error_log('✅ Project deleted successfully');
+        error_log('=== END DEBUG ===');
+        
+        // Add flash messages based on email status
+        if ($emailSent) {
+            $this->addFlash('success', 'Projet supprimé et email envoyé avec succès !');
+        } elseif ($studentEmail) {
+            $this->addFlash('warning', 'Projet supprimé mais l\'email n\'a pas pu être envoyé. Erreur: ' . $emailErrorMessage);
+        } else {
+            $this->addFlash('success', 'Projet supprimé avec succès !');
+            $this->addFlash('info', 'Aucun email étudiant trouvé pour notification.');
+        }
+        
+    } catch (\Exception $e) {
+        error_log('❌ Delete error: ' . $e->getMessage());
+        $this->addFlash('error', 'Erreur lors de la suppression: ' . $e->getMessage());
     }
+    
+    return $this->redirectToRoute('portfolio_list');
+}
+
+
+
+private function sendDeletionEmail(
+    \Symfony\Component\Mailer\MailerInterface $mailer,
+    string $studentEmail,
+    string $studentName,
+    string $projectTitle,
+    string $reason,
+    ?string $details = null
+): void {
+    $email = (new \Symfony\Component\Mime\Email())
+        ->from('nonoreply167@gmail.com')  // Même email que dans le DSN
+        ->to($studentEmail)
+        ->subject('Suppression de votre projet - Portfolio')
+        ->html($this->renderView('emails/project_deleted.html.twig', [
+            'student_name' => $studentName,
+            'project_title' => $projectTitle,
+            'reason' => $reason,
+            'details' => $details,
+            'date' => new \DateTime()
+        ]));
+    
+    try {
+        $mailer->send($email);
+    } catch (\Exception $e) {
+        // Log l'erreur pour debug
+        error_log('Erreur envoi email: ' . $e->getMessage());
+        throw $e; // Pour voir l'erreur
+    }
+}
 
     #[Route('/home/projet/{id}/export-pdf', name: 'front_projet_export_pdf')]
     public function exportPdfFront(Projet $projet): Response
@@ -393,4 +456,45 @@ final class ProjetController extends AbstractController
             );
         }
     }
+
+
+
+
+
+
+#[Route('/test-email-config', name: 'test_email_config')]
+public function testEmailConfig(\Symfony\Component\Mailer\MailerInterface $mailer): Response
+{
+    try {
+        // Test 1: Check if mailer is configured
+        if (!$mailer) {
+            return new Response('❌ Mailer is not configured properly');
+        }
+        
+        // Test 2: Try to send a test email
+        $email = (new \Symfony\Component\Mime\Email())
+            ->from('nonoreply167@gmail.com')
+            ->to('nonoreply167@gmail.com') // Send to yourself for testing
+            ->subject('Test Email from Portfolio - ' . date('Y-m-d H:i:s'))
+            ->html('<h1>Test Email</h1><p>This is a test email to verify your Symfony mailer configuration.</p>');
+        
+        $mailer->send($email);
+        
+        return new Response('✅ Email sent successfully! Check your inbox.');
+        
+    } catch (\Exception $e) {
+        $error = '❌ Email failed: ' . $e->getMessage() . "\n";
+        $error .= 'File: ' . $e->getFile() . ':' . $e->getLine() . "\n";
+        $error .= 'Trace: ' . $e->getTraceAsString();
+        
+        return new Response('<pre>' . $error . '</pre>');
+    }
 }
+
+}
+
+
+
+
+
+

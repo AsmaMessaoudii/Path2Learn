@@ -59,49 +59,116 @@ final class PortfolioController extends AbstractController
         ]);
     }
 
-    // Admin dashboard avec recherche et tri
-    #[Route('/portfolio', name: 'app_portfolio')]
-    public function index(
-        PortfolioRepository $portfolioRepository, 
-        ProjetRepository $projetRepository,
-        Request $request
+    // Admin - List users for portfolio management (display only)
+    #[Route('/portfolio/list', name: 'portfolio_list')]
+    public function list(
+        Request $request,
+        EntityManagerInterface $em
     ): Response
     {
-        $portfolios = $portfolioRepository->findAll();
-        $portfolio = $portfolios[0] ?? null;
-        
-        // Récupérer les paramètres de recherche et tri
+        // Get query parameters
         $searchTerm = $request->query->get('search', '');
         $sortBy = $request->query->get('sort', 'date_desc');
-        $technologie = $request->query->get('technologie', '');
         
-        // Initialiser les projets
-        $projets = [];
+        // Build query for students (role = 'etudiant')
+        $queryBuilder = $em->createQueryBuilder()
+            ->select('u')
+            ->from('App\Entity\User', 'u')
+            ->where('u.role = :role')
+            ->setParameter('role', 'etudiant');
         
-        if ($portfolio) {
-            // Récupérer les projets avec filtres et tri
-            $projets = $projetRepository->findByFilters(
-                $portfolio->getId(),
-                $searchTerm,
-                $sortBy,
-                $technologie
-            );
+        // Apply search filter if provided
+        if ($searchTerm) {
+            $queryBuilder->andWhere('u.nom LIKE :search OR u.prenom LIKE :search OR u.email LIKE :search')
+                ->setParameter('search', '%' . $searchTerm . '%');
         }
         
-        // Récupérer toutes les technologies distinctes pour le filtre
-        $allTechnologies = $portfolio ? $projetRepository->findDistinctTechnologies($portfolio->getId()) : [];
-
-        return $this->render('portfolio/index.html.twig', [
-            'portfolios' => $portfolios,
-            'portfolio' => $portfolio,
-            'projets' => $projets,
+        // Apply sorting
+        switch ($sortBy) {
+            case 'date_asc':
+                $queryBuilder->orderBy('u.dateCreation', 'ASC');
+                break;
+            case 'nom_asc':
+                $queryBuilder->orderBy('u.nom', 'ASC');
+                break;
+            case 'nom_desc':
+                $queryBuilder->orderBy('u.nom', 'DESC');
+                break;
+            default: // date_desc (most recent first)
+                $queryBuilder->orderBy('u.dateCreation', 'DESC');
+                break;
+        }
+        
+        // Get all results
+        $etudiants = $queryBuilder->getQuery()->getResult();
+        
+        return $this->render('portfolio/list_user.html.twig', [
+            'etudiants' => $etudiants,
             'searchTerm' => $searchTerm,
             'sortBy' => $sortBy,
-            'selectedTechnologie' => $technologie,
-            'allTechnologies' => $allTechnologies,
         ]);
     }
 
+    
+    
+    // View a specific student's portfolio
+#[Route('/portfolio/etudiant/{id}', name: 'view_etudiant_portfolio')]
+public function viewEtudiantPortfolio(
+    int $id,
+    EntityManagerInterface $em,
+    PortfolioRepository $portfolioRepository,
+    ProjetRepository $projetRepository,
+    Request $request
+): Response
+{
+    // Get the student (user) from database
+    $userRepository = $em->getRepository('App\Entity\User');
+    $etudiant = $userRepository->find($id);
+    
+    if (!$etudiant) {
+        throw $this->createNotFoundException('Étudiant non trouvé');
+    }
+    
+    // 🔴 CORRECTION 1: Insensible à la casse
+    if (strtolower($etudiant->getRole()) !== 'etudiant') {
+        $this->addFlash('warning', 'Cet utilisateur (rôle: ' . $etudiant->getRole() . ') n\'est pas un étudiant');
+        return $this->redirectToRoute('portfolio_list');
+    }
+    
+    // Try to find portfolio associated with this student
+    $portfolio = $portfolioRepository->findOneBy(['user' => $etudiant]);
+    
+    // 🔴 CORRECTION 2: Message de debug
+    if (!$portfolio) {
+        $this->addFlash('info', 'Aucun portfolio trouvé pour étudiant ID: ' . $id . ' - ' . $etudiant->getEmail());
+        return $this->redirectToRoute('portfolio_list');
+    }
+    
+    // Get projects for this portfolio with filters
+    $searchTerm = $request->query->get('search', '');
+    $sortBy = $request->query->get('sort', 'date_desc');
+    $technologie = $request->query->get('technologie', '');
+    
+    $projets = $projetRepository->findByFilters(
+        $portfolio->getId(),
+        $searchTerm,
+        $sortBy,
+        $technologie
+    );
+    
+    // Get all technologies for filter
+    $allTechnologies = $projetRepository->findDistinctTechnologies($portfolio->getId());
+    
+    return $this->render('portfolio/view_etudiant_portfolio.html.twig', [
+        'etudiant' => $etudiant,
+        'portfolio' => $portfolio,
+        'projets' => $projets,
+        'searchTerm' => $searchTerm,
+        'sortBy' => $sortBy,
+        'selectedTechnologie' => $technologie,
+        'allTechnologies' => $allTechnologies,
+    ]);
+}
     // Front office - Créer un nouveau portfolio
     #[Route('/home/portfolio/new', name: 'home_portfolio_new')]
     public function newFront(Request $request, EntityManagerInterface $em): Response
@@ -128,9 +195,6 @@ final class PortfolioController extends AbstractController
                 $this->addFlash('error', 'Erreur lors de la création : ' . $e->getMessage());
             }
         }
-
-        // REMOVED: Don't add flash messages for validation errors
-        // Symfony will show them automatically in the template
 
         return $this->render('home/HomeCreatePortfolio.html.twig', [
             'form' => $form->createView(),
@@ -162,8 +226,6 @@ final class PortfolioController extends AbstractController
             }
         }
 
-        // REMOVED: Don't add flash messages for validation errors
-
         return $this->render('portfolio/CreatePortfolio.html.twig', [
             'form' => $form->createView(),
         ]);
@@ -193,8 +255,6 @@ final class PortfolioController extends AbstractController
                 $this->addFlash('error', 'Erreur lors de la modification : ' . $e->getMessage());
             }
         }
-
-        // REMOVED: Don't add flash messages for validation errors
 
         return $this->render('home/HomeUpdatePortfolio.html.twig', [
             'form' => $form->createView(),
@@ -226,8 +286,6 @@ final class PortfolioController extends AbstractController
                 $this->addFlash('error', 'Erreur : ' . $e->getMessage());
             }
         }
-
-        // REMOVED: Don't add flash messages for validation errors
 
         return $this->render('portfolio/UpdatePortfolio.html.twig', [
             'form' => $form->createView(),

@@ -166,13 +166,17 @@
 					</li>
 
 					<!-- Nav item 2 Pages -->
+					
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
 						<ul class="dropdown-menu" aria-labelledby="pagesMenu">
-							<li> <a class="dropdown-item" href="instructor-list.html">ressources</a></li>
-							<li> <a class="dropdown-item" href="instructor-list.html">QUIZ</a></li>
+							<li>
+								<a class="dropdown-item" href="{{ path('app_courses') }}">Cours</a>
+							</li>
+							<li><a class="dropdown-item" href="{{ path('quiz') }}">QUIZ</a></li>
 						</ul>
 					</li>
+					
 
 					<!-- Nav item 3 Account -->
 					<li class="nav-item dropdown">
@@ -338,258 +342,530 @@ Main Banner END -->
 
 <!-- =======================
 Portfolio Section START -->
-<section class="py-5">
-	<div class="container">
-		<div class="row mb-4">
-			<div class="col-12 text-center">
-				<h2 class="fs-1 mb-3">Mon Portfolio</h2>
-				<p class="mb-0">Découvrez mes projets et réalisations</p>
-			</div>
-		</div>
-		
-		{% set portfolio = portfolios|first %}
+<!-- Portfolio Section START -->
+<section class="py-5" style="background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);">
+    <div class="container">
+        <!-- Header with decorative elements -->
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <div class="d-inline-block bg-primary bg-opacity-10 px-4 py-2 rounded-pill mb-3">
+                    <span class="small fw-bold text-primary">
+                        <i class="bi bi-briefcase-fill me-2"></i>MON TRAVAIL
+                    </span>
+                </div>
+                <h2 class="display-5 fw-bold mb-3">
+                    Mon <span class="text-primary">Portfolio</span>
+                </h2>
+                <div class="col-lg-6 mx-auto">
+                    <p class="lead text-muted mb-0">
+                        Découvrez mes projets et réalisations professionnelles
+                    </p>
+                </div>
+                <!-- Decorative line -->
+                <div class="d-flex justify-content-center mt-3">
+                    <div style="width: 80px; height: 4px; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 2px;"></div>
+                </div>
+            </div>
+        </div>
+        
+        {% set portfolio = portfolios|first %}
 
-		<div class="card border-0 shadow-sm p-5">
-			{% if portfolio %}
-				<!-- PORTFOLIO INFO -->
-				<div class="mb-5">
-					<!-- PORTFOLIO HEADER WITH BUTTONS -->
-					<div class="d-flex justify-content-between align-items-center mb-1">
-						<div class="d-flex align-items-center gap-2">
-							<h4 class="fw-bold mb-0">
-								{{ portfolio.titre }}
-							</h4>
+        <!-- Main Portfolio Card -->
+        <div class="row justify-content-center">
+            <div class="col-lg-11">
+                {% if portfolio %}
+                    <!-- Portfolio Header Card -->
+                    <div class="card border-0 shadow-lg rounded-4 mb-4 overflow-hidden">
+                        <div class="row g-0">
+                            <div class="col-md-8">
+                                <div class="card-body p-4 p-xl-5">
+                                    <div class="d-flex flex-wrap align-items-start justify-content-between mb-3">
+                                        <div class="d-flex align-items-center gap-3 mb-3 mb-sm-0">
+                                            <div class="icon-circle bg-primary bg-opacity-10 p-3 rounded-3">
+                                                <i class="bi bi-folder-fill text-primary fs-3"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="fw-bold mb-1">{{ portfolio.titre }}</h3>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <span class="badge bg-light text-dark rounded-pill px-3 py-2">
+                                                        <i class="bi bi-grid me-1"></i>{{ portfolio.projet|length }} projet(s)
+                                                    </span>
+                                                    <span class="small text-muted">
+                                                        <i class="bi bi-calendar3 me-1"></i>Créé le {{ portfolio.dateCreation|date('d/m/Y') }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Action Buttons Group -->
+                                        <div class="d-flex gap-2">
+                                            <!-- EXPORT PDF -->
+                                            <a href="{{ path('home_portfolio_export_pdf', { id: portfolio.id }) }}"
+                                               class="btn btn-outline-danger btn-sm rounded-pill"
+                                               title="Exporter en PDF"
+                                               onclick="this.disabled=true; this.innerHTML='<span class=\"spinner-border spinner-border-sm me-2\"></span>PDF...';">
+                                                <i class="bi bi-file-pdf me-2"></i>PDF
+                                            </a>
 
-							<!-- EXPORT PDF BUTTON - Version icône seulement -->
-							<a href="{{ path('home_portfolio_export_pdf', { id: portfolio.id }) }}"
-							   class="btn btn-sm btn-light text-danger" 
-							   title="Exporter en PDF" onclick="this.disabled=true; this.innerHTML='<i class=\"bi bi-hourglass\"></i>';">
-								<i class="bi bi-file-pdf"></i>
-							</a>
+                                            <!-- EDIT -->
+                                            <a href="{{ path('home_portfolio_edit', { id: portfolio.id }) }}"
+                                               class="btn btn-outline-primary btn-sm rounded-pill"
+                                               title="Modifier">
+                                                <i class="bi bi-pencil-square me-2"></i>Éditer
+                                            </a>
 
-							<!-- EDIT BUTTON -->
-							<a href="{{ path('home_portfolio_edit', { id: portfolio.id }) }}"
-							   class="btn btn-sm btn-light text-secondary"
-							   title="Modifier">
-								<i class="bi bi-pencil"></i>
-							</a>
+                                            <!-- DELETE -->
+                                            <form method="post"
+                                                  action="{{ path('home_portfolio_delete', { id: portfolio.id }) }}"
+                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce portfolio ? Tous les projets associés seront également supprimés.');"
+                                                  class="d-inline">
+                                                <input type="hidden"
+                                                       name="_token"
+                                                       value="{{ csrf_token('delete-portfolio-' ~ portfolio.id) }}">
+                                                <button class="btn btn-outline-danger btn-sm rounded-pill"
+                                                        title="Supprimer">
+                                                    <i class="bi bi-trash3 me-2"></i>Supprimer
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    
+                                    <p class="text-secondary mb-0" style="line-height: 1.8;">
+                                        {{ portfolio.description }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 d-none d-md-block" style="background: linear-gradient(145deg, #99baef, #80deac);">
+                                <div class="d-flex align-items-center justify-content-center h-100 p-4">
+                                    <div class="text-center text-white">
+                                        <i class="bi bi-award fs-1 mb-3"></i>
+                                        <h5 class="fw-bold text-white mb-2">Portfolio Actif</h5>
+                                        <p class="text-white-50 small mb-0">Prêt à être partagé</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-							<!-- DELETE BUTTON -->
-							<form method="post"
-								  action="{{ path('home_portfolio_delete', { id: portfolio.id }) }}"
-								  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce portfolio ?');"
-								  class="d-inline">
-								<input type="hidden"
-									   name="_token"
-									   value="{{ csrf_token('delete-portfolio-' ~ portfolio.id) }}">
-								<button class="btn btn-sm btn-light text-secondary"
-										title="Supprimer">
-									<i class="bi bi-trash"></i>
-								</button>
-							</form>
-						</div>
+                    <!-- Advanced Filters Card -->
+                    <div class="card border-0 shadow-sm rounded-4 mb-4">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-sliders2 text-primary me-2"></i>
+                                <h6 class="fw-bold mb-0">Filtres et recherche</h6>
+                            </div>
+                            
+                            <form method="get" action="{{ path('home_portfolio') }}">
+                                <div class="row g-3 align-items-end">
+                                    <!-- Search -->
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-bold text-secondary mb-1">
+                                            <i class="bi bi-search me-1"></i>Rechercher
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white border-end-0">
+                                                <i class="bi bi-search"></i>
+                                            </span>
+                                            <input type="text" 
+                                                   class="form-control border-start-0 ps-0" 
+                                                   name="search" 
+                                                   placeholder="Titre, description..." 
+                                                   value="{{ searchTerm }}">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Technology Filter -->
+                                    <div class="col-md-3">
+                                        <label class="form-label small fw-bold text-secondary mb-1">
+                                            <i class="bi bi-tags me-1"></i>Technologie
+                                        </label>
+                                        <select class="form-select" name="technologie">
+                                            <option value="">Toutes les technologies</option>
+                                            {% for tech in allTechnologies %}
+                                                <option value="{{ tech }}" 
+                                                        {% if selectedTechnologie == tech %}selected{% endif %}>
+                                                    {{ tech }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Sort -->
+                                    <div class="col-md-3">
+                                        <label class="form-label small fw-bold text-secondary mb-1">
+                                            <i class="bi bi-arrow-up-down me-1"></i>Trier par
+                                        </label>
+                                        <select class="form-select" name="sort">
+                                            <option value="date_desc" {% if sortBy == 'date_desc' %}selected{% endif %}>
+                                                📅 Plus récent
+                                            </option>
+                                            <option value="date_asc" {% if sortBy == 'date_asc' %}selected{% endif %}>
+                                                📅 Plus ancien
+                                            </option>
+                                            <option value="title_asc" {% if sortBy == 'title_asc' %}selected{% endif %}>
+                                                📝 Titre (A-Z)
+                                            </option>
+                                            <option value="title_desc" {% if sortBy == 'title_desc' %}selected{% endif %}>
+                                                📝 Titre (Z-A)
+                                            </option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Buttons -->
+                                    <div class="col-md-2">
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-funnel-fill me-2"></i>Filtrer
+                                            </button>
+                                            <a href="{{ path('home_portfolio') }}" 
+                                               class="btn btn-outline-secondary" 
+                                               title="Réinitialiser">
+                                                <i class="bi bi-arrow-counterclockwise"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            <!-- Search Results Info -->
+                            {% if searchTerm or selectedTechnologie %}
+                            <div class="mt-3 pt-3 border-top">
+                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-2">
+                                            <i class="bi bi-info-circle text-primary small"></i>
+                                        </div>
+                                        <span class="small text-secondary">
+                                            {% set count = projets|length %}
+                                            <strong class="text-dark">{{ count }}</strong> 
+                                            {% if count <= 1 %}projet trouvé{% else %}projets trouvés{% endif %}
+                                            {% if searchTerm %}
+                                                pour "<span class="fw-bold text-primary">{{ searchTerm }}</span>"
+                                            {% endif %}
+                                            {% if selectedTechnologie %}
+                                                avec <span class="badge bg-light text-dark">{{ selectedTechnologie }}</span>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    <a href="{{ path('home_portfolio') }}" class="btn btn-sm btn-light">
+                                        <i class="bi bi-x-lg me-1"></i>Effacer les filtres
+                                    </a>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
 
-						<div class="d-flex align-items-center gap-3">
-							<small class="text-muted">
-								{{ portfolio.projet|length }} projet(s)
-							</small>
-							<small class="text-muted">
-								Créé le {{ portfolio.dateCreation|date('d/m/Y') }}
-							</small>
-						</div>
-					</div>
+                    <!-- Projects Grid -->
+                    {% if projets is empty %}
+                        <div class="card border-0 shadow-sm rounded-4">
+                            <div class="card-body p-5 text-center">
+                                {% if searchTerm or selectedTechnologie %}
+                                    <div class="py-5">
+                                        <div class="position-relative d-inline-block mb-4">
+                                            <i class="bi bi-inbox fs-1 text-muted opacity-50"></i>
+                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
+                                                0
+                                            </span>
+                                        </div>
+                                        <h4 class="fw-bold mb-3">Aucun résultat trouvé</h4>
+                                        <p class="text-secondary col-lg-6 mx-auto mb-4">
+                                            Aucun projet ne correspond à vos critères de recherche. 
+                                            Essayez d'autres mots-clés ou réinitialisez les filtres.
+                                        </p>
+                                        <a href="{{ path('home_portfolio') }}" 
+                                           class="btn btn-outline-primary rounded-pill px-5 py-2">
+                                            <i class="bi bi-arrow-clockwise me-2"></i>Réinitialiser
+                                        </a>
+                                    </div>
+                                {% else %}
+                                    <div class="py-5">
+                                        <div class="mb-4">
+                                            <div class="bg-light rounded-circle d-inline-flex p-4 mb-3">
+                                                <i class="bi bi-folder-plus fs-1 text-primary"></i>
+                                            </div>
+                                            <h4 class="fw-bold mb-3">Aucun projet dans votre portfolio</h4>
+                                            <p class="text-secondary col-lg-8 mx-auto mb-4">
+                                                Commencez à enrichir votre portfolio en ajoutant votre premier projet. 
+                                                C'est le moment de montrer vos compétences !
+                                            </p>
+                                        </div>
+                                        <a href="{{ path('front_project_new', { portfolioId: portfolio.id }) }}"
+                                           class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow-sm hover-scale">
+                                            <i class="bi bi-plus-circle me-2"></i>
+                                            Ajouter un projet
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <!-- Projects Counter -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="d-flex align-items-center">
+                                <span class="bg-primary bg-opacity-10 px-3 py-2 rounded-pill">
+                                    <i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i>
+                                    <strong class="text-dark">{{ projets|length }}</strong> 
+                                    <span class="text-secondary">projet{% if projets|length > 1 %}s{% endif %}</span>
+                                </span>
+                            </div>
+                            <span class="text-secondary small">
+                                <i class="bi bi-arrow-repeat me-1"></i>
+                                {{ colors|default(['#7bb7e0','#8fd6ad','#d49089','#c7a0d7','#e9be79'])|length }} couleurs disponibles
+                            </span>
+                        </div>
 
-					<p class="text-muted mb-0">
-						{{ portfolio.description }}
-					</p>
-				</div>
+                        <!-- Projects Grid -->
+                        <div class="row g-4">
+                            {% set colors = ['#7bb7e0','#8fd6ad','#d49089','#c7a0d7','#e9be79','#b0a0d0','#f7c978','#9bb7d4','#d8a48f','#a8c9c9'] %}
+                            
+                            {% for projet in projets %}
+                                <div class="col-md-6 col-lg-4 col-xl-3">
+                                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-lift">
+                                        <!-- Card Header with Color -->
+                                        <div class="position-relative" 
+                                             style="height: 120px; background: linear-gradient(145deg, {{ colors[loop.index0 % colors|length] }}, {{ colors[loop.index0 % colors|length] }}dd);">
+                                            <div class="position-absolute bottom-0 start-0 p-3">
+                                                <span class="badge bg-white bg-opacity-90 text-dark rounded-pill px-3 py-2">
+                                                    <i class="bi bi-calendar3 me-1"></i>
+                                                    {{ projet.dateRealisation ? projet.dateRealisation|date('M Y') : 'Non daté' }}
+                                                </span>
+                                            </div>
+                                            {% if projet.lienDemo %}
+                                                <div class="position-absolute top-0 end-0 p-3">
+                                                    <span class="badge bg-success text-white rounded-pill px-3 py-2">
+                                                        <i class="bi bi-link-45deg me-1"></i>Démo
+                                                    </span>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <!-- Card Body -->
+                                        <div class="card-body p-4">
+                                            <a href="{{ path('front_projet_show', { id: projet.id }) }}" 
+                                               class="text-decoration-none">
+                                                <h5 class="fw-bold text-dark mb-2 hover-text-primary transition">
+                                                    {{ projet.titreProjet }}
+                                                </h5>
+                                            </a>
+                                            <p class="text-secondary small mb-3" style="line-height: 1.6;">
+                                                {{ projet.description|slice(0, 80) }}{% if projet.description|length > 80 %}...{% endif %}
+                                            </p>
+                                            
+                                            <!-- Technologies -->
+                                            <div class="mb-3">
+                                                {% for tech in projet.technologies|split(',')[:3] %}
+                                                    <span class="badge bg-light text-dark rounded-pill px-2 py-1 me-1 mb-1 border">
+                                                        {{ tech|trim }}
+                                                    </span>
+                                                {% endfor %}
+                                                {% if projet.technologies|split(',')|length > 3 %}
+                                                    <span class="badge bg-light text-secondary rounded-pill px-2 py-1 border">
+                                                        +{{ projet.technologies|split(',')|length - 3 }}
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <!-- Card Footer -->
+                                            <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="bi bi-folder2 text-primary me-1"></i>
+                                                    <small class="text-secondary">Projet #{{ projet.id }}</small>
+                                                </div>
+                                                <a href="{{ path('front_projet_show', { id: projet.id }) }}" 
+                                                   class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                                    Détails
+                                                    <i class="bi bi-arrow-right ms-1"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
 
-				<hr class="mb-4">
+                            <!-- Add Project Card -->
+                            <div class="col-md-6 col-lg-4 col-xl-3">
+                                <a href="{{ path('front_project_new', { portfolioId: portfolio.id }) }}"
+                                   class="text-decoration-none">
+                                    <div class="card h-100 border-2 border-dashed bg-light rounded-4 hover-scale transition"
+                                         style="min-height: 380px;">
+                                        <div class="card-body d-flex flex-column align-items-center justify-content-center p-4">
+                                            <div class="bg-white rounded-circle shadow-sm p-4 mb-3">
+                                                <i class="bi bi-plus-circle fs-1 text-primary"></i>
+                                            </div>
+                                            <h6 class="fw-bold text-dark mb-2">Ajouter un projet</h6>
+                                            <p class="text-secondary small text-center mb-0">
+                                                Créez un nouveau projet et enrichissez votre portfolio
+                                            </p>
+                                            <span class="mt-4 btn btn-outline-primary btn-sm rounded-pill px-4">
+                                                <i class="bi bi-plus-circle me-2"></i>Nouveau projet
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
 
-				<!-- FILTRES ET RECHERCHE -->
-				<div class="row mb-4">
-					<div class="col-md-12">
-						<form method="get" action="{{ path('home_portfolio') }}" class="row g-3">
-							<!-- Barre de recherche -->
-							<div class="col-md-4">
-								<div class="input-group">
-									<span class="input-group-text bg-white">
-										<i class="bi bi-search"></i>
-									</span>
-									<input type="text" 
-										   class="form-control" 
-										   name="search" 
-										   placeholder="Rechercher un projet..." 
-										   value="{{ searchTerm }}">
-								</div>
-							</div>
-							
-							<!-- Filtre par technologie -->
-							<div class="col-md-3">
-								<select class="form-select" name="technologie">
-									<option value="">Toutes les technologies</option>
-									{% for tech in allTechnologies %}
-										<option value="{{ tech }}" 
-												{% if selectedTechnologie == tech %}selected{% endif %}>
-											{{ tech }}
-										</option>
-									{% endfor %}
-								</select>
-							</div>
-							
-							<!-- Tri -->
-							<div class="col-md-3">
-								<select class="form-select" name="sort">
-									<option value="date_desc" {% if sortBy == 'date_desc' %}selected{% endif %}>
-										Date (plus récent)
-									</option>
-									<option value="date_asc" {% if sortBy == 'date_asc' %}selected{% endif %}>
-										Date (plus ancien)
-									</option>
-									<option value="title_asc" {% if sortBy == 'title_asc' %}selected{% endif %}>
-										Titre (A-Z)
-									</option>
-									<option value="title_desc" {% if sortBy == 'title_desc' %}selected{% endif %}>
-										Titre (Z-A)
-									</option>
-								</select>
-							</div>
-							
-							<!-- Boutons -->
-							<div class="col-md-2 d-flex gap-2">
-								<button type="submit" class="btn btn-primary">
-									<i class="bi bi-funnel"></i> Filtrer
-								</button>
-								<a href="{{ path('home_portfolio') }}" class="btn btn-outline-secondary">
-									<i class="bi bi-x-circle"></i>
-								</a>
-							</div>
-						</form>
-						
-						<!-- Résultats de recherche -->
-						{% if searchTerm or selectedTechnologie %}
-						<div class="mt-3">
-							<small class="text-muted">
-								{% set count = projets|length %}
-								{% if count == 0 %}
-									Aucun projet trouvé
-								{% elseif count == 1 %}
-									1 projet trouvé
-								{% else %}
-									{{ count }} projets trouvés
-								{% endif %}
-								
-								{% if searchTerm %}
-									pour "{{ searchTerm }}"
-								{% endif %}
-								
-								{% if selectedTechnologie %}
-									avec la technologie "{{ selectedTechnologie }}"
-								{% endif %}
-							</small>
-						</div>
-						{% endif %}
-					</div>
-				</div>
-
-				<!-- LISTE DES PROJETS -->
-				{% if projets is empty %}
-					<div class="text-center mt-4">
-						{% if searchTerm or selectedTechnologie %}
-							<i class="bi bi-inbox fs-1 text-muted mb-3 d-block"></i>
-							<h5 class="fw-bold">Aucun Projet Trouvé</h5>
-							<p class="text-muted mb-4">
-								Aucun projet ne correspond à vos critères de recherche.
-							</p>
-							<a href="{{ path('home_portfolio') }}" class="btn btn-outline-primary">
-								<i class="bi bi-arrow-clockwise me-2"></i>Réinitialiser les filtres
-							</a>
-						{% else %}
-							<i class="bi bi-folder-plus fs-1 text-muted mb-3 d-block"></i>
-							<h5 class="fw-bold">Aucun Projet</h5>
-							<p class="text-muted mb-4">
-								Commencez par ajouter votre premier projet.
-							</p>
-							<a href="{{ path('front_project_new', { portfolioId: portfolio.id }) }}"
-							   class="btn btn-primary px-4 py-2 rounded-pill">
-								<i class="bi bi-plus-circle me-2"></i>
-								Ajouter un projet
-							</a>
-						{% endif %}
-					</div>
-				{% else %}
-					<div class="row g-4 mt-3">
-						{% set colors = ['#7bb7e0','#8fd6ad','#d49089','#c7a0d7','#e9be79'] %}
-						
-						{% for projet in projets %}
-							<div class="col-md-3">
-								<a href="{{ path('front_projet_show', { id: projet.id }) }}" 
-								   class="text-decoration-none">
-									<div class="card d-flex align-items-center justify-content-center 
-												text-white shadow-sm hover-shadow projet-card"
-										 style="background-color: {{ colors[loop.index0 % colors|length] }};
-												height: 280px;
-												transition: transform 0.3s ease, box-shadow 0.3s ease;">
-										<div class="p-3 text-center">
-											<h6 class="fw-bold text-center mb-2">{{ projet.titreProjet }}</h6>
-											<p class="text-light small text-center mb-2">{{ projet.description|slice(0, 80) }}{% if projet.description|length > 80 %}...{% endif %}</p>
-											<div class="mt-2">
-												{% for tech in projet.technologies|split(',') %}
-													<span class="badge bg-white text-dark bg-opacity-50 me-1 mb-1">
-														{{ tech|trim }}
-													</span>
-												{% endfor %}
-											</div>
-											<small class="text-light d-block mt-2">
-												<i class="bi bi-calendar"></i> {{ projet.dateRealisation ? projet.dateRealisation|date('d/m/Y') : 'Non daté' }}
-											</small>
-											{% if projet.lienDemo %}
-												<small class="text-light d-block mt-1">
-													<i class="bi bi-link-45deg"></i> Démo disponible
-												</small>
-											{% endif %}
-										</div>
-									</div>
-								</a>
-							</div>
-						{% endfor %}
-
-						<!-- ADD NEW PROJECT CARD -->
-						<div class="col-md-3">
-							<a href="{{ path('front_project_new', { portfolioId: portfolio.id }) }}"
-							   class="text-decoration-none">
-								<div class="card d-flex align-items-center justify-content-center 
-											text-dark shadow-sm hover-shadow add-project-card"
-									 style="height: 280px;
-											border: 2px dashed #ced4da;
-											background-color: #f8f9fa;
-											transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;">
-									<div class="p-3 text-center">
-										<i class="bi bi-plus-circle fs-2 mb-2"></i>
-										<span>Ajouter un projet</span>
-									</div>
-								</div>
-							</a>
-						</div>
-					</div>
-				{% endif %}
-			{% else %}
-				<div class="text-center py-4">
-					<i class="bi bi-folder-x fs-1 text-muted mb-3 d-block"></i>
-					<h5 class="fw-bold">Aucun Portfolio</h5>
-					<p class="text-muted mb-4">
-						Il n'y a aucun Portfolio enregistré pour le moment.
-					</p>
-					<a href="{{ path('home_portfolio_new') }}"
-					   class="btn btn-primary px-4 py-2 rounded-pill">
-						<i class="bi bi-plus-circle me-2"></i>
-						Créer votre portfolio
-					</a>
-				</div>
-			{% endif %}
-		</div>
-	</div>
+                        <!-- Pagination (si nécessaire) -->
+                        {% if totalPages is defined and totalPages > 1 %}
+                        <nav class="mt-5">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item {% if currentPage == 1 %}disabled{% endif %}">
+                                    <a class="page-link rounded-start-pill" href="{{ path('home_portfolio', { page: currentPage - 1 }) }}">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </a>
+                                </li>
+                                {% for i in 1..totalPages %}
+                                    <li class="page-item {% if i == currentPage %}active{% endif %}">
+                                        <a class="page-link" href="{{ path('home_portfolio', { page: i }) }}">{{ i }}</a>
+                                    </li>
+                                {% endfor %}
+                                <li class="page-item {% if currentPage == totalPages %}disabled{% endif %}">
+                                    <a class="page-link rounded-end-pill" href="{{ path('home_portfolio', { page: currentPage + 1 }) }}">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <!-- No Portfolio State -->
+                    <div class="card border-0 shadow-lg rounded-4">
+                        <div class="card-body p-5 text-center">
+                            <div class="py-5">
+                                <div class="position-relative d-inline-block mb-5">
+                                    <div class="bg-light rounded-circle p-5">
+                                        <i class="bi bi-folder-x fs-1 text-secondary"></i>
+                                    </div>
+                                    <span class="position-absolute bottom-0 end-0 bg-warning rounded-circle p-2"></span>
+                                </div>
+                                
+                                <h3 class="fw-bold mb-3">Aucun portfolio créé</h3>
+                                <p class="text-secondary col-lg-6 mx-auto mb-4">
+                                    Vous n'avez pas encore de portfolio. Créez-en un pour commencer à présenter vos projets et réalisations.
+                                </p>
+                                
+                                <div class="d-flex gap-3 justify-content-center">
+                                    <a href="{{ path('home_portfolio_new') }}"
+                                       class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow-sm hover-scale">
+                                        <i class="bi bi-plus-circle me-2"></i>
+                                        Créer mon portfolio
+                                    </a>
+                                    <a href="#" class="btn btn-outline-secondary btn-lg rounded-pill px-5 py-3">
+                                        <i class="bi bi-question-circle me-2"></i>
+                                        En savoir plus
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </section>
+
+<!-- Custom Styles -->
+<style>
+/* Custom Animations & Effects */
+.hover-lift {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+}
+
+.hover-scale {
+    transition: all 0.3s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.02);
+}
+
+.hover-text-primary {
+    transition: color 0.3s ease;
+}
+
+.hover-text-primary:hover {
+    color: var(--bs-primary) !important;
+}
+
+.border-dashed {
+    border-style: dashed !important;
+    border-color: #dee2e6 !important;
+}
+
+.transition {
+    transition: all 0.3s ease;
+}
+
+/* Card Gradient Hover Effect */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover .bg-gradient {
+    opacity: 0.9;
+}
+
+/* Custom Scrollbar for Filters */
+.form-select, .form-control {
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .display-5 {
+        font-size: 2.2rem;
+    }
+    
+    .btn-lg {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.9rem;
+    }
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+.btn:disabled {
+    animation: pulse 1.5s infinite;
+}
+
+/* Glass morphism effect */
+.glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Shadow variations */
+.shadow-hover {
+    transition: box-shadow 0.3s ease;
+}
+
+.shadow-hover:hover {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !important;
+}
+</style>
+<!-- Portfolio Section END -->
 <!-- =======================
 Portfolio Section END -->
 

@@ -14,7 +14,7 @@ class HomeController extends AbstractController
         return $this->render('home/index.html.twig');
     }
 
-    #[Route('/instructor', name: 'instructor')]
+    #[Route('/instructor/dashboard', name: 'instructor')]
     public function instructor(): Response
     {
         return $this->render('dashboard_instructor/index.html.twig');

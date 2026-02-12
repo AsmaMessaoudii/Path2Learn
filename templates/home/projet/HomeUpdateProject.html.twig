@@ -20,11 +20,11 @@
                 <!-- Form body -->
                 <div class="p-4 p-md-5">
                     
-                    {# Display ALL flash messages #}
+                    {# Display only success/error flash messages (not validation errors) #}
                     {% for message in app.flashes('success') %}
                         <div class="alert alert-success alert-dismissible fade show mb-4">
                             <i class="bi bi-check-circle me-2"></i>
-                            {{ message|raw }}
+                            {{ message }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     {% endfor %}
@@ -32,20 +32,12 @@
                     {% for message in app.flashes('error') %}
                         <div class="alert alert-danger alert-dismissible fade show mb-4">
                             <i class="bi bi-exclamation-triangle me-2"></i>
-                            {{ message|raw }}
+                            {{ message }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     {% endfor %}
-                    
+
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
-                    
-                    {# Simple error summary #}
-                    {% if not form.vars.valid %}
-                        <div class="alert alert-warning alert-dismissible fade show mb-4">
-                            <i class="bi bi-exclamation-circle me-2"></i>
-                            <strong>Veuillez corriger les erreurs ci-dessous.</strong>
-                        </div>
-                    {% endif %}
                     
                     <div class="row">
                         {# Titre du projet #}
@@ -60,6 +52,9 @@
                             <div class="form-text mt-1">
                                 <i class="bi bi-info-circle me-1"></i> 3 à 150 caractères
                             </div>
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.titreProjet) }}
+                            </div>
                         </div>
                         
                         {# Texte court #}
@@ -72,7 +67,6 @@
                                     'rows': 3
                                 }
                             }) }}
-                            {{ form_errors(form.text) }} {# REMOVED duplicate errors #}
                             <div class="form-text mt-1 d-flex justify-content-between align-items-center">
                                 <span>
                                     <i class="bi bi-info-circle me-1"></i> 10 à 255 caractères
@@ -80,6 +74,9 @@
                                 <span class="small text-muted">
                                     <span id="text-count">{{ projet.text|length }}</span>/255
                                 </span>
+                            </div>
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.text) }}
                             </div>
                         </div>
                         
@@ -93,7 +90,6 @@
                                     'rows': 6
                                 }
                             }) }}
-                            {{ form_errors(form.description) }} {# REMOVED duplicate errors #}
                             <div class="form-text mt-1 d-flex justify-content-between align-items-center">
                                 <span>
                                     <i class="bi bi-info-circle me-1"></i> 30 à 2000 caractères
@@ -101,6 +97,9 @@
                                 <span class="small text-muted">
                                     <span id="description-count">{{ projet.description|length }}</span>/2000
                                 </span>
+                            </div>
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.description) }}
                             </div>
                         </div>
                         
@@ -116,6 +115,9 @@
                             <div class="form-text mt-1">
                                 <i class="bi bi-info-circle me-1"></i> Séparez par des virgules
                             </div>
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.technologies) }}
+                            </div>
                         </div>
                         
                         {# Date de réalisation #}
@@ -128,6 +130,9 @@
                             }) }}
                             <div class="form-text mt-1">
                                 <i class="bi bi-info-circle me-1"></i> Ne peut pas être une date future
+                            </div>
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.dateRealisation) }}
                             </div>
                         </div>
                         
@@ -142,6 +147,9 @@
                             }) }}
                             <div class="form-text mt-1">
                                 <i class="bi bi-info-circle me-1"></i> Doit commencer par http:// ou https://
+                            </div>
+                            <div class="text-danger small mt-1">
+                                {{ form_errors(form.lienDemo) }}
                             </div>
                         </div>
                     </div>
@@ -158,7 +166,6 @@
                             <button type="submit" class="btn btn-primary px-4">
                                 <i class="bi bi-check-circle me-2"></i> Enregistrer
                             </button>
-                            
                         </div>
                     </div>
                     
@@ -187,13 +194,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }, false);
     });
     
-    // Real-time character counters - SIMPLIFIED VERSION
+    // Real-time character counters
     const textField = document.querySelector('#{{ form.text.vars.id }}');
     const descriptionField = document.querySelector('#{{ form.description.vars.id }}');
     const textCount = document.querySelector('#text-count');
     const descriptionCount = document.querySelector('#description-count');
     
     if (textField && textCount) {
+        // Initial update
+        textCount.textContent = textField.value.length;
+        
         textField.addEventListener('input', function() {
             textCount.textContent = this.value.length;
             
@@ -214,6 +224,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     if (descriptionField && descriptionCount) {
+        // Initial update
+        descriptionCount.textContent = descriptionField.value.length;
+        
         descriptionField.addEventListener('input', function() {
             descriptionCount.textContent = this.value.length;
             

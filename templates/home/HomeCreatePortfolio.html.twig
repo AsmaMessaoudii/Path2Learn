@@ -962,7 +962,7 @@ Trending courses START -->
 
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
 
-                    <div class="row">
+                  <div class="row">  
                         {# Champ titre #}
                         <div class="col-md-12 mb-4">
                             {{ form_label(form.titre, 'Titre du portfolio *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
@@ -975,7 +975,9 @@ Trending courses START -->
                             <div class="form-text mt-1">
                                 <i class="bi bi-info-circle me-1"></i> 3 à 150 caractères
                             </div>
-                            {{ form_errors(form.titre) }}
+                            <div class="text-danger small mt-1">
+    						{{ form_errors(form.titre) }}
+						</div>
                         </div>
 
                         {# Champ description #}
@@ -996,7 +998,9 @@ Trending courses START -->
                                     <span id="description-count">0</span>/2000
                                 </span>
                             </div>
-                            {{ form_errors(form.description) }}
+                            <div class="text-danger small mt-1">
+    {{ form_errors(form.description) }}
+</div>
                         </div>
                     </div>
 

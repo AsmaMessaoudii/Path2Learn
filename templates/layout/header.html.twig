@@ -43,9 +43,9 @@
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle active" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">services</a>
 						<ul class="dropdown-menu" aria-labelledby="demoMenu">
-							<li> <a class="dropdown-item" href="{{ path('home') }}">portfolio</a></li>
+							<li> <a class="dropdown-item" href="{{ path('home_portfolio') }}">portfolio</a></li>
 							<li> <a class="dropdown-item" href="{{ path('evenement_list') }}">évennements</a></li>
-							<li> <a class="dropdown-item" href="#">certification</a></li>
+							<li> <a class="dropdown-item" href="{{ path('home') }}">certification</a></li>
 						</ul>
 					</li>
 
@@ -61,7 +61,7 @@
 									<li> <a class="dropdown-item" href="#">Sign Up</a></li>
 								</ul>
 							</li>
-							<li> <a class="dropdown-item" href="#">projets</a></li>
+							<li> <a class="dropdown-item" href="{{ path('home_portfolio') }}">projets</a></li>
                             <li> <a class="dropdown-item" href="{{ path('quiz') }}">QUIZ</a></li>
 						</ul>
 					</li>

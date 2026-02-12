@@ -1,0 +1,255 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Portfolio de {{ etudiant.prenom }} {{ etudiant.nom }}{% endblock %}
+
+{% block body %}
+<div class="d-flex">
+
+    {% include 'layout/sidebar.html.twig' %}
+
+    <div class="flex-grow-1 min-vh-100 d-flex flex-column">
+
+        {% include 'layout/navbar.html.twig' %}
+
+        <main class="p-4 flex-grow-1" style="background-color: #f0f2f5;">
+            <div class="container-fluid">
+
+                <!-- Back button and header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <a href="{{ path('portfolio_list') }}" class="btn btn-outline-secondary btn-sm mb-2">
+                            <i class="bi bi-arrow-left me-1"></i> Retour à la liste
+                        </a>
+                        <h4 class="fw-bold mb-1">Portfolio de {{ etudiant.prenom }} {{ etudiant.nom }}</h4>
+                        <p class="text-muted small">
+                            <i class="bi bi-envelope me-1"></i> {{ etudiant.email }}
+                            <span class="mx-2">•</span>
+                            <i class="bi bi-calendar me-1"></i> Inscrit le {{ etudiant.dateCreation|date('d/m/Y') }}
+                        </p>
+                    </div>
+                    <div>
+                        <span class="badge bg-{{ etudiant.statut == 'actif' ? 'success' : 'danger' }} bg-opacity-10 text-{{ etudiant.statut == 'actif' ? 'success' : 'danger' }} border border-{{ etudiant.statut == 'actif' ? 'success' : 'danger' }} border-opacity-25">
+                            {{ etudiant.statut|capitalize }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Portfolio Info Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 class="card-title">{{ portfolio.titre }}</h5>
+                                <p class="card-text">{{ portfolio.description|default('Aucune description fournie') }}</p>
+                                <div class="d-flex gap-3">
+                                    <div class="text-muted small">
+                                        <i class="bi bi-calendar-event me-1"></i>
+                                        Créé le: {{ portfolio.dateCreation|date('d/m/Y') }}
+                                    </div>
+                                    {% if portfolio.dateMiseAjour %}
+                                    <div class="text-muted small">
+                                        <i class="bi bi-pencil me-1"></i>
+                                        Modifié le: {{ portfolio.dateMiseAjour|date('d/m/Y') }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="d-flex flex-column h-100 justify-content-center">
+                                    <div class="mb-2">
+                                        <span class="badge bg-primary bg-opacity-10 text-primary">
+                                            <i class="bi bi-folder me-1"></i>
+                                            {{ projets|length }} projet(s)
+                                        </span>
+                                    </div>
+                                    <!-- Add PDF export button -->
+                                    <a href="{{ path('portfolio_export_pdf', {'id': portfolio.id}) }}" 
+                                       class="btn btn-outline-danger btn-sm mb-2">
+                                        <i class="bi bi-file-earmark-pdf me-1"></i> Exporter PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search and Filter for Projects -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <form method="get" class="row g-3">
+                            <input type="hidden" name="_route" value="{{ app.request.attributes.get('_route') }}">
+                            <input type="hidden" name="id" value="{{ etudiant.id }}">
+                            
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                    <input type="text" 
+                                           class="form-control border-start-0" 
+                                           name="search" 
+                                           placeholder="Rechercher un projet..." 
+                                           value="{{ searchTerm }}">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <select class="form-select" name="sort">
+                                    <option value="date_desc" {% if sortBy == 'date_desc' %}selected{% endif %}>
+                                        Date (plus récent)
+                                    </option>
+                                    <option value="date_asc" {% if sortBy == 'date_asc' %}selected{% endif %}>
+                                        Date (plus ancien)
+                                    </option>
+                                    <option value="titre_asc" {% if sortBy == 'titre_asc' %}selected{% endif %}>
+                                        Titre (A-Z)
+                                    </option>
+                                    <option value="titre_desc" {% if sortBy == 'titre_desc' %}selected{% endif %}>
+                                        Titre (Z-A)
+                                    </option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <select class="form-select" name="technologie">
+                                    <option value="">Toutes technologies</option>
+                                    {% for tech in allTechnologies %}
+                                        <option value="{{ tech }}" {% if selectedTechnologie == tech %}selected{% endif %}>
+                                            {{ tech }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-filter me-1"></i> Filtrer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Projects List -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        {% if projets|length > 0 %}
+                            <h6 class="card-subtitle mb-3 text-muted">Projets réalisés</h6>
+                            
+                            <div class="row">
+                                {% for projet in projets %}
+                                <div class="col-md-6 col-lg-4 mb-4">
+                                    <!-- Make the entire card clickable -->
+                                    <a href="{{ path('app_projet', {id: projet.id}) }}" 
+                                       class="text-decoration-none text-dark">
+                                        <div class="card h-100 border">
+                                            <div class="card-body">
+                                                <h6 class="card-title text-primary mb-2">
+                                                    {% if projet.nom is defined %}
+                                                        {{ projet.nom }}
+                                                    {% elseif projet.title is defined %}
+                                                        {{ projet.title }}
+                                                    {% elseif projet.titre is defined %}
+                                                        {{ projet.titre }}
+                                                    {% elseif projet.titreProjet is defined %}
+                                                        {{ projet.titreProjet }}
+                                                    {% else %}
+                                                        Projet #{{ loop.index }}
+                                                    {% endif %}
+                                                </h6>
+                                                <p class="card-text small text-muted mb-2">
+                                                    {% if projet.description is defined %}
+                                                        {{ projet.description|slice(0, 100) }}{% if projet.description|length > 100 %}...{% endif %}
+                                                    {% endif %}
+                                                </p>
+                                                
+                                                {% if projet.technologies is defined and projet.technologies %}
+                                                <div class="mb-3">
+                                                    {% for tech in projet.technologies|split(',') %}
+                                                        {% if tech|trim %}
+                                                        <span class="badge bg-secondary bg-opacity-10 text-secondary me-1 mb-1">
+                                                            {{ tech|trim }}
+                                                        </span>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <small class="text-muted">
+                                                        <i class="bi bi-calendar me-1"></i>
+                                                        {% if projet.dateRealisation is defined %}
+                                                            {{ projet.dateRealisation|date('m/Y') }}
+                                                        {% endif %}
+                                                    </small>
+                                                    <span class="btn btn-sm btn-outline-primary">
+                                                        <i class="bi bi-eye me-1"></i> Détails
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <!-- Empty state for no search results -->
+                            {% if searchTerm and projets|length == 0 %}
+                            <div class="text-center py-5">
+                                <i class="bi bi-search display-1 text-muted mb-3"></i>
+                                <h6 class="text-muted">Aucun projet trouvé</h6>
+                                <p class="text-muted small mb-0">
+                                    Aucun projet ne correspond à vos critères de recherche
+                                </p>
+                            </div>
+                            {% endif %}
+                            
+                        {% else %}
+                            <!-- Empty portfolio state -->
+                            <div class="text-center py-5">
+                                <i class="bi bi-inboxes display-1 text-muted mb-3"></i>
+                                <h6 class="text-muted">Aucun projet dans ce portfolio</h6>
+                                <p class="text-muted small mb-0">
+                                    Cet étudiant n'a pas encore ajouté de projets à son portfolio
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+</div>
+
+<style>
+/* Add hover effect for clickable cards */
+.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Make sure the link covers the entire card */
+.text-decoration-none {
+    display: block;
+    height: 100%;
+}
+
+/* Ensure card title stays blue on hover */
+.text-decoration-none:hover .card-title {
+    color: #0d6efd !important;
+    text-decoration: underline;
+}
+
+/* Style for the details button */
+.btn-outline-primary {
+    pointer-events: none; /* Prevent button from interfering with card click */
+}
+</style>
+
+{% endblock %}

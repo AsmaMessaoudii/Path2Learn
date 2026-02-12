@@ -110,6 +110,15 @@ class User
         return $this->email;
     }
 
+    /**
+     * Nom d'affichage pour les templates (prenom + nom, ou email).
+     */
+    public function getUsername(): string
+    {
+        $name = trim(($this->prenom ?? '') . ' ' . ($this->nom ?? ''));
+        return $name !== '' ? $name : ($this->email ?? '');
+    }
+
     public function setEmail(string $email): static
     {
         $this->email = $email;
@@ -314,4 +323,5 @@ class User
 
         return $this;
     }
+
 }

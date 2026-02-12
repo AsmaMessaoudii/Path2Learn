@@ -16,49 +16,21 @@ class PortfolioType extends AbstractType
     {
         $builder
             ->add('titre', TextType::class, [
-                'label' => 'Titre du Portfolio',
+                'label' => 'Titre du portfolio *',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Ex: Portfolio Développeur Web',
+                    'placeholder' => 'Ex: Portfolio Développeur Web Full-Stack',
                     'maxlength' => 150,
-                    'autocomplete' => 'off'
-                ],
-                'constraints' => [
-                    new Assert\NotBlank([
-                        'message' => 'Le titre du portfolio est obligatoire',
-                    ]),
-                    new Assert\Length([
-                        'min' => 3,
-                        'max' => 150,
-                        'minMessage' => 'Le titre doit contenir au moins {{ limit }} caractères',
-                        'maxMessage' => 'Le titre ne peut pas dépasser {{ limit }} caractères',
-                    ]),
-                    new Assert\Regex([
-                        'pattern' => '/^[a-zA-Z0-9À-ÿ\s\-_,.!?()\'"&]+$/u',
-                        'message' => 'Le titre contient des caractères non autorisés',
-                    ]),
                 ],
                 'trim' => true,
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Description',
+                'label' => 'Description *',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Décrivez votre portfolio en détail...',
+                    'placeholder' => 'Décrivez votre parcours, vos compétences, vos objectifs...',
                     'rows' => 6,
                     'maxlength' => 2000,
-                    'autocomplete' => 'off'
-                ],
-                'constraints' => [
-                    new Assert\NotBlank([
-                        'message' => 'La description du portfolio est obligatoire',
-                    ]),
-                    new Assert\Length([
-                        'min' => 20,
-                        'max' => 2000,
-                        'minMessage' => 'La description doit contenir au moins {{ limit }} caractères',
-                        'maxMessage' => 'La description ne peut pas dépasser {{ limit }} caractères',
-                    ]),
                 ],
                 'trim' => true,
             ]);
@@ -71,6 +43,7 @@ class PortfolioType extends AbstractType
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'portfolio_item',
+            'attr' => ['novalidate' => 'novalidate'], 
         ]);
     }
 }

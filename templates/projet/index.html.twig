@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Projet{% endblock %}
+{% block title %}{{ projet.titreProjet }}{% endblock %}
 
 {% block body %}
 <div class="d-flex">
@@ -14,77 +14,146 @@
         <main class="p-4 flex-grow-1" style="background-color: #f0f2f5;">
             <div class="container-fluid">
 
-                <div class="mb-4">
-                    <h4 class="fw-bold mb-1">Détails du projet</h4>
-                </div>
-
-                <div class="card border-0 shadow-sm p-5">
-
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="fw-bold mb-0">
-                            {{ projet.titreProjet }}
-                        </h4>
-
-                        <div class="d-flex gap-2">
-                            
-
-                            <!-- EXPORT PDF -->
-                            <a href="{{ path('projet_export_pdf', { id: projet.id }) }}"
-                               class="btn btn-sm btn-light text-danger export-pdf-btn"
-                               title="Exporter en PDF"
-                               data-id="{{ projet.id }}">
-                                <i class="bi bi-file-pdf"></i>
-                                <span class="spinner-border spinner-border-sm d-none" role="status"></span>
-                            </a>
-
-                            <!-- DELETE PROJECT -->
-                            <form method="post"
-                                  action="{{ path('project_delete', { id: projet.id }) }}"
-                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce projet ?');">
-
-                                <input type="hidden"
-                                       name="_token"
-                                       value="{{ csrf_token('delete-project-' ~ projet.id) }}">
-
-                                <button class="btn btn-sm btn-light text-danger"
-                                        title="Supprimer">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                    {% if projet.description %}
-                    <div class="mb-4">
-                        <h6 class="text-muted fw-semibold">Description</h6>
-                        <p class="text-muted">{{ projet.description }}</p>
-                    </div>
-                    {% endif %}
-
-                    {% if projet.technologies %}
-                    <div class="mb-4">
-                        <h6 class="text-muted fw-semibold">Technologies utilisées</h6>
-                        <p class="text-muted">{{ projet.technologies }}</p>
-                    </div>
-                    {% endif %}
-
-                    {% if projet.lienDemo %}
-                    <div class="mb-4">
-                        <h6 class="text-muted fw-semibold">Lien de démonstration</h6>
-                        <p class="text-muted">
-                            <a href="{{ projet.lienDemo }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
-                                {{ projet.lienDemo }}
-                                <i class="bi bi-box-arrow-up-right ms-1"></i>
-                            </a>
+                <!-- Back button and header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <a href="{{ path('view_etudiant_portfolio', {'id': projet.portfolio.user.id}) }}" class="btn btn-outline-secondary btn-sm mb-2">
+                            <i class="bi bi-arrow-left me-1"></i> Retour au portfolio
+                        </a>
+                        <h4 class="fw-bold mb-1">Détails du projet</h4>
+                        <p class="text-muted small">
+                            <i class="bi bi-calendar me-1"></i>
+                            {% if projet.dateRealisation %}
+                                {{ projet.dateRealisation|date('d/m/Y') }}
+                            {% else %}
+                                Date non spécifiée
+                            {% endif %}
                         </p>
                     </div>
-                    {% endif %}
+                    <div>
+                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25">
+                            <i class="bi bi-folder me-1"></i> Projet
+                        </span>
+                    </div>
+                </div>
 
-                    <a href="{{ path('app_portfolio') }}"
-                       class="btn btn-sm btn-light mt-4">
-                        ← Retour au portfolio
-                    </a>
+                <!-- Project Details Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 class="card-title mb-3">{{ projet.titreProjet }}</h5>
+                                
+                                {% if projet.description %}
+                                <div class="mb-4">
+                                    <h6 class="text-muted fw-semibold mb-2">
+                                        <i class="bi bi-card-text me-2"></i>Description
+                                    </h6>
+                                    <p class="text-muted mb-0">{{ projet.description }}</p>
+                                </div>
+                                {% endif %}
+                                
+                                {% if projet.technologies %}
+                                <div class="mb-4">
+                                    <h6 class="text-muted fw-semibold mb-2">
+                                        <i class="bi bi-tools me-2"></i>Technologies utilisées
+                                    </h6>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        {% for tech in projet.technologies|split(',') %}
+                                            {% if tech|trim %}
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25">
+                                                {{ tech|trim }}
+                                            </span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="card border h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-muted mb-3">
+                                            <i class="bi bi-info-circle me-2"></i>Informations
+                                        </h6>
+                                        
+                                        <div class="mb-3">
+                                            <small class="text-muted d-block mb-1">
+                                                <i class="bi bi-calendar-event me-1"></i> Date de réalisation
+                                            </small>
+                                            <div class="fw-medium">
+                                                {% if projet.dateRealisation %}
+                                                    {{ projet.dateRealisation|date('d/m/Y') }}
+                                                {% else %}
+                                                    <span class="text-muted">Non spécifiée</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        
+                                        {% if projet.lienDemo %}
+                                        <div class="mb-3">
+                                            <small class="text-muted d-block mb-1">
+                                                <i class="bi bi-link-45deg me-1"></i> Lien de démonstration
+                                            </small>
+                                            <a href="{{ projet.lienDemo }}" 
+                                               target="_blank" 
+                                               rel="noopener noreferrer"
+                                               class="text-decoration-none text-primary">
+                                                {{ projet.lienDemo|slice(0, 30) }}{% if projet.lienDemo|length > 30 %}...{% endif %}
+                                                <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                            </a>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <div class="mt-4 pt-3 border-top">
+                                            <div class="d-flex gap-2">
+                                                <!-- PDF Export Button -->
+                                                <a href="{{ path('projet_export_pdf', { id: projet.id }) }}"
+                                                   class="btn btn-outline-danger btn-sm flex-grow-1"
+                                                   title="Exporter en PDF"
+                                                   data-id="{{ projet.id }}">
+                                                    <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                                                </a>
+                                                
+                                                <!-- Delete Button - Triggers Modal -->
+                                                <button type="button"
+                                                        class="btn btn-outline-danger btn-sm delete-project-btn"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteProjectModal"
+                                                        data-project-id="{{ projet.id }}"
+                                                        data-project-title="{{ projet.titreProjet|e('html_attr') }}"
+                                                        data-student-email="{{ projet.portfolio.user.email|default('')|e('html_attr') }}"
+                                                        data-student-name="{{ projet.portfolio.user.prenom|default('')|e('html_attr') }} {{ projet.portfolio.user.nom|default('')|e('html_attr') }}"
+                                                        title="Supprimer ce projet">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Related Projects Card -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title text-muted mb-3">
+                            <i class="bi bi-grid-3x3-gap me-2"></i> Actions rapides
+                        </h6>
+                        <div class="d-flex gap-3">
+                            <a href="{{ path('view_etudiant_portfolio', {'id': projet.portfolio.user.id}) }}" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-arrow-left me-1"></i> Retour au portfolio
+                            </a>
+                            {% if projet.lienDemo %}
+                            <a href="{{ projet.lienDemo }}" target="_blank" class="btn btn-primary btn-sm">
+                                <i class="bi bi-play-circle me-1"></i> Voir la démo
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -93,83 +162,322 @@
     </div>
 </div>
 
-<!-- JavaScript for PDF Export with Loading Indicator -->
+<!-- Delete Project Modal -->
+<div class="modal fade" id="deleteProjectModal" tabindex="-1" aria-labelledby="deleteProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteProjectModalLabel">Supprimer le projet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="deleteProjectForm" method="post" action="{{ path('project_delete', { id: projet.id }) }}">
+                <div class="modal-body">
+                    <p id="deleteConfirmationText" class="mb-3 fw-semibold">
+                        Êtes-vous sûr de vouloir supprimer le projet <strong>"{{ projet.titreProjet }}"</strong> ?
+                    </p>
+                    
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Cette action est irréversible.
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="deleteReason" class="form-label fw-semibold">
+                            <i class="bi bi-exclamation-triangle me-1"></i>
+                            Raison de la suppression <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" id="deleteReason" name="delete_reason" required>
+                            <option value="" selected disabled>Sélectionnez une raison</option>
+                            <option value="Contenu inapproprié">Contenu inapproprié</option>
+                            <option value="Contenu illégal">Contenu illégal</option>
+                            <option value="Violation des droits d'auteur">Violation des droits d'auteur</option>
+                            <option value="Contenu offensant">Contenu offensant</option>
+                            <option value="Information personnelle exposée">Information personnelle exposée</option>
+                            <option value="Contenu trompeur">Contenu trompeur</option>
+                            <option value="Autre raison">Autre raison</option>
+                        </select>
+                        <div class="invalid-feedback" id="reasonError">
+                            Veuillez sélectionner une raison
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="deleteDetails" class="form-label fw-semibold">
+                            <i class="bi bi-chat-text me-1"></i>
+                            Détails supplémentaires (optionnel)
+                        </label>
+                        <textarea class="form-control" id="deleteDetails" name="delete_details" rows="3" 
+                                  placeholder="Ajoutez plus de détails sur la raison de la suppression..."></textarea>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-envelope me-2"></i>
+                        <strong>Notification par email :</strong><br>
+                        Un email sera envoyé à 
+                        <strong>
+                            {{ projet.portfolio.user.prenom|default('') }} 
+                            {{ projet.portfolio.user.nom|default('') }}
+                        </strong> 
+                        ({{ projet.portfolio.user.email|default('non disponible') }}) 
+                        pour l'informer de la suppression.
+                    </div>
+                    
+                    <!-- Hidden fields -->
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete-project-' ~ projet.id) }}">
+                    <input type="hidden" name="student_email" value="{{ projet.portfolio.user.email|default('') }}">
+                    <input type="hidden" name="student_name" value="{{ projet.portfolio.user.prenom|default('') }} {{ projet.portfolio.user.nom|default('') }}">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i> Annuler
+                    </button>
+                    <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="bi bi-trash me-1"></i> Supprimer et envoyer l'email
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const exportPdfBtns = document.querySelectorAll('.export-pdf-btn');
+    // Récupérer les éléments du DOM
+    const deleteModal = document.getElementById('deleteProjectModal');
+    const deleteForm = document.getElementById('deleteProjectForm');
+    const deleteReason = document.getElementById('deleteReason');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
     
-    exportPdfBtns.forEach(btn => {
-        btn.addEventListener('click', function(e) {
+    // Vérifier que le modal existe
+    if (deleteModal) {
+        // Quand le modal est affiché
+        deleteModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            
+            // Extraire les données du bouton
+            const projectId = button.getAttribute('data-project-id');
+            const projectTitle = button.getAttribute('data-project-title');
+            const studentEmail = button.getAttribute('data-student-email');
+            const studentName = button.getAttribute('data-student-name');
+            
+            // Mettre à jour le texte de confirmation
+            document.getElementById('deleteConfirmationText').innerHTML = 
+                `Êtes-vous sûr de vouloir supprimer le projet <strong>"${projectTitle}"</strong> ?`;
+            
+            // Mettre à jour l'action du formulaire (au cas où)
+            deleteForm.action = `/project/${projectId}/delete`;
+            
+            // Réinitialiser le formulaire
+            deleteReason.value = '';
+            document.getElementById('deleteDetails').value = '';
+            deleteReason.classList.remove('is-invalid');
+        });
+    }
+    
+    // Validation du formulaire avant soumission
+    if (deleteForm) {
+        deleteForm.addEventListener('submit', function(e) {
+            // Vérifier si une raison est sélectionnée
+            if (!deleteReason.value) {
+                e.preventDefault();
+                deleteReason.classList.add('is-invalid');
+                return false;
+            }
+            
+            // Désactiver le bouton de confirmation
+            confirmDeleteBtn.disabled = true;
+            confirmDeleteBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Suppression en cours...';
+            
+            // Ajouter un effet de fondu
+            const mainElement = document.querySelector('main');
+            if (mainElement) {
+                mainElement.style.opacity = '0.7';
+                mainElement.style.transition = 'opacity 0.3s ease';
+            }
+            
+            // Fermer le modal
+            const modal = bootstrap.Modal.getInstance(deleteModal);
+            if (modal) {
+                modal.hide();
+            }
+            
+            return true;
+        });
+        
+        // Enlever l'erreur quand l'utilisateur sélectionne une option
+        deleteReason.addEventListener('change', function() {
+            if (this.value) {
+                this.classList.remove('is-invalid');
+            }
+        });
+    }
+    
+    // PDF Export Button
+    const exportPdfBtn = document.querySelector('a[href*="projet_export_pdf"]');
+    if (exportPdfBtn) {
+        exportPdfBtn.addEventListener('click', function(e) {
             e.preventDefault();
             
-            const spinner = this.querySelector('.spinner-border');
-            const icon = this.querySelector('.bi-file-pdf');
-            const originalText = this.innerHTML;
+            const originalContent = this.innerHTML;
+            const url = this.href;
             const projectId = this.getAttribute('data-id');
-            const url = this.getAttribute('href');
             
             // Show loading state
-            if (spinner) {
-                spinner.classList.remove('d-none');
-                icon.classList.add('d-none');
-            }
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Génération du PDF...';
             this.disabled = true;
-            this.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Génération...';
             
-            // Store the response for later use
-            let responseClone;
-            
-            // Fetch PDF
             fetch(url)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error(`Erreur HTTP: ${response.status}`);
+                        throw new Error('Erreur HTTP: ' + response.status);
                     }
-                    // Clone the response to use it later
-                    responseClone = response.clone();
                     return response.blob();
                 })
                 .then(blob => {
-                    // Create download link
                     const downloadUrl = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.style.display = 'none';
                     a.href = downloadUrl;
-                    
-                    // Get filename from Content-Disposition header or create one
-                    const contentDisposition = responseClone.headers.get('Content-Disposition');
-                    let filename = `projet_${projectId}_${new Date().toISOString().split('T')[0]}.pdf`;
-                    
-                    if (contentDisposition) {
-                        const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-                        if (filenameMatch) {
-                            filename = filenameMatch[1];
-                        }
-                    }
-                    
-                    a.download = filename;
+                    a.download = `projet_${projectId}.pdf`;
                     document.body.appendChild(a);
                     a.click();
-                    
-                    // Cleanup
                     window.URL.revokeObjectURL(downloadUrl);
                     document.body.removeChild(a);
                 })
                 .catch(error => {
                     console.error('Erreur:', error);
-                    alert('Erreur lors de l\'export PDF. Veuillez réessayer.\n' + error.message);
+                    alert('Erreur lors de l\'export PDF. Veuillez réessayer.');
                 })
                 .finally(() => {
-                    // Reset button state
-                    if (spinner) {
-                        spinner.classList.add('d-none');
-                        icon.classList.remove('d-none');
-                    }
+                    this.innerHTML = originalContent;
                     this.disabled = false;
-                    this.innerHTML = originalText;
                 });
         });
-    });
+    }
 });
 </script>
+
+<style>
+.delete-project-btn {
+    transition: all 0.2s ease;
+}
+
+.delete-project-btn:hover {
+    background-color: var(--bs-danger) !important;
+    color: white !important;
+    transform: scale(1.05);
+}
+
+main {
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-radius: 12px 12px 0 0;
+    padding: 1.2rem 1.5rem;
+}
+
+.modal-title {
+    color: #dc3545;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 1.2rem 1.5rem;
+}
+
+.form-select, .form-control {
+    border-radius: 8px;
+    border: 1.5px solid #dee2e6;
+    padding: 0.6rem 1rem;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.15);
+}
+
+.is-invalid {
+    border-color: #dc3545 !important;
+}
+
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+.alert-info {
+    background-color: #e7f1ff;
+    color: #0c63e4;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* Animation pour le modal */
+.modal.fade .modal-dialog {
+    transform: scale(0.95);
+    transition: transform 0.2s ease-out;
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .modal-dialog {
+        margin: 1rem;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+}
+</style>
+
 {% endblock %}

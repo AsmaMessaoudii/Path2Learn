@@ -26,20 +26,20 @@
                 Gestion Académique
             </small>
 
-            <a class="list-group-item" href="#">
+            <a class="list-group-item" href="{{ path('admin_cours_index')}}">
                 <i class="bi bi-journal-bookmark-fill me-2"></i> Cours & Ressources
             </a>
 
-            <a class="list-group-item" href="#">
+            <a class="list-group-item" href="{{ path('quiz_admin') }}">
                 <i class="bi bi-patch-question me-2"></i> Quiz & Évaluations
             </a>
 
-            <a class="list-group-item" href="#">
+            <a class="list-group-item" href="{{ path('admin_evenement_list') }}">
                 <i class="bi bi-calendar3 me-2"></i> Événements
             </a>
 
-            <a class="list-group-item {{ app.request.get('_route') == 'app_portfolio' ? 'active' : '' }}"
-   href="{{ path('app_portfolio') }}">
+            <a class="list-group-item {{ app.request.get('_route') == 'portfolio_list' ? 'active' : '' }}"
+   href="{{ path('portfolio_list') }}">
     <i class="bi bi-folder2-open me-2"></i> Projets & Portfolio
 </a>
 

@@ -140,11 +140,12 @@ class Projet
         return $this->dateRealisation;
     }
 
-    public function setDateRealisation(\DateTimeInterface $dateRealisation): static
-    {
-        $this->dateRealisation = $dateRealisation;
-        return $this;
-    }
+    public function setDateRealisation(?\DateTimeInterface $dateRealisation): static
+{
+    $this->dateRealisation = $dateRealisation;
+    return $this;
+}
+
 
     public function getLienDemo(): ?string
     {
@@ -184,4 +185,6 @@ class Projet
         $this->technologies = htmlspecialchars($this->technologies, ENT_QUOTES, 'UTF-8');
         $this->lienDemo = filter_var($this->lienDemo, FILTER_SANITIZE_URL);
     }
+
+    
 }

@@ -941,7 +941,7 @@ Trending courses START -->
                 <!-- Form body -->
                 <div class="p-4 p-md-5">
 
-                    {{ form_start(form) }}
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
                         <div class="mb-4">
                             {{ form_label(form.titre, null, {
@@ -953,7 +953,10 @@ Trending courses START -->
                                     placeholder: 'Titre du portfolio'
                                 }
                             }) }}
-                            {{ form_errors(form.titre) }}
+                            <div class="text-danger small mt-1">  {# ← ADD THIS DIV #}
+                                {{ form_errors(form.titre) }}
+                            </div>  {# ← AND THIS #}
+                        </div>
                         </div>
 
                         <div class="mb-4">
@@ -967,7 +970,9 @@ Trending courses START -->
                                     placeholder: 'Description du portfolio'
                                 }
                             }) }}
-                            {{ form_errors(form.description) }}
+                            <div class="text-danger small mt-1">  {# ← ADD THIS DIV #}
+                                {{ form_errors(form.description) }}
+                            </div>  {# ← AND THIS #}
                         </div>
 
                         <!-- Actions -->
