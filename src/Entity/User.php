@@ -183,6 +183,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return array_unique($roles);
     }
+public function isEnabled(): bool
+{
+    return $this->status === UserStatus::ENABLE;
+}
 
     /**
      * Removes sensitive data from the user.
