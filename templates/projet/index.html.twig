@@ -170,7 +170,11 @@
                 <h5 class="modal-title" id="deleteProjectModalLabel">Supprimer le projet</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="deleteProjectForm" method="post" action="{{ path('project_delete', { id: projet.id }) }}">
+            <!-- ADD data-turbo="false" HERE -->
+            <form id="deleteProjectForm" 
+                  method="post" 
+                  action="{{ path('project_delete', { id: projet.id }) }}"
+                  data-turbo="false">  <!-- This line is important -->
                 <div class="modal-body">
                     <p id="deleteConfirmationText" class="mb-3 fw-semibold">
                         Êtes-vous sûr de vouloir supprimer le projet <strong>"{{ projet.titreProjet }}"</strong> ?
@@ -258,14 +262,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Extraire les données du bouton
             const projectId = button.getAttribute('data-project-id');
             const projectTitle = button.getAttribute('data-project-title');
-            const studentEmail = button.getAttribute('data-student-email');
-            const studentName = button.getAttribute('data-student-name');
             
             // Mettre à jour le texte de confirmation
             document.getElementById('deleteConfirmationText').innerHTML = 
                 `Êtes-vous sûr de vouloir supprimer le projet <strong>"${projectTitle}"</strong> ?`;
             
-            // Mettre à jour l'action du formulaire (au cas où)
+            // Mettre à jour l'action du formulaire
             deleteForm.action = `/project/${projectId}/delete`;
             
             // Réinitialiser le formulaire
@@ -278,11 +280,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Validation du formulaire avant soumission
     if (deleteForm) {
         deleteForm.addEventListener('submit', function(e) {
+            console.log('Form submitting...'); // Debug log
+            
             // Vérifier si une raison est sélectionnée
             if (!deleteReason.value) {
                 e.preventDefault();
                 deleteReason.classList.add('is-invalid');
                 return false;
+            }
+            
+            // Log form data for debugging
+            const formData = new FormData(deleteForm);
+            console.log('Form data:');
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
             }
             
             // Désactiver le bouton de confirmation
