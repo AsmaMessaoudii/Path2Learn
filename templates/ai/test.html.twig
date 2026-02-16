@@ -1,10 +1,16 @@
-
-
+{# templates/ai/test.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Description AI{% endblock %}
 
 {% block body %}
+
+
+
+
+
+
+
 
 <style>
 .invalid-feedback {
@@ -932,237 +938,125 @@ Action box END -->
 Trending courses START -->
 
 
-					
 
 
 
 
 
-
-
-
-{# File: Projet form template (HomeCreateProject.html.twig or similar) #}
-
-{# ... existing header and HTML ... #}
-{# File: Projet form template (HomeCreateProject.html.twig or similar) #}
-
-<main class="p-4 flex-grow-1 d-flex justify-content-center align-items-center"
-      style="background-color: #f0f2f5;">
-
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-9 col-md-11">
-                <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-                    
-                    <!-- Header -->
-                    <div class="bg-light text-center py-4 px-3">
-                        <i class="bi bi-code-square fs-1 text-primary mb-2 d-block"></i>
-                        <h4 class="fw-bold mb-1">Ajouter un nouveau projet</h4>
-                        <p class="text-muted small mb-0">
-                            Présentez vos réalisations et compétences
-                        </p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-robot me-2"></i>
+                        Générateur de description IA
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        L'IA va générer une description professionnelle pour ton projet
                     </div>
 
-                    <!-- Form body -->
-                    <div class="p-4 p-md-5">
-                        
-                        {# Display only success/error flash messages #}
-                        {% for message in app.flashes('success') %}
-                            <div class="alert alert-success alert-dismissible fade show mb-4">
-                                <i class="bi bi-check-circle me-2"></i> {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        {% endfor %}
-                        
-                        {% for message in app.flashes('error') %}
-                            <div class="alert alert-danger alert-dismissible fade show mb-4">
-                                <i class="bi bi-exclamation-triangle me-2"></i> {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        {% endfor %}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Titre du projet</label>
+                        <input type="text" class="form-control" id="title" placeholder="Ex: Application e-commerce">
+                    </div>
 
-                        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Mots-clés</label>
+                        <input type="text" class="form-control" id="keywords" placeholder="Ex: React, Node.js, MongoDB">
+                    </div>
 
-                        <div class="row">
-                            <!-- Titre du projet -->
-                            <div class="col-md-12 mb-4">
-                                {{ form_label(form.titreProjet, 'Titre du projet *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
-                                {{ form_widget(form.titreProjet, {
-                                    'attr': {
-                                        'class': 'form-control form-control-lg',
-                                        'placeholder': 'Ex: Application de gestion de projet',
-                                        'id': 'project_title'
-                                    }
-                                }) }}
-                                <div class="form-text mt-1">
-                                    <i class="bi bi-info-circle me-1"></i> 3 à 150 caractères
-                                </div>
-                                <div class="text-danger small mt-1">
-                                    {{ form_errors(form.titreProjet) }}
-                                </div>
-                            </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Technologies (optionnel)</label>
+                        <input type="text" class="form-control" id="technologies" placeholder="Ex: React, Node.js, Express">
+                    </div>
 
-                            <!-- Texte court -->
-                            <div class="col-md-12 mb-4">
-                                {{ form_label(form.text, 'Résumé court *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
-                                {{ form_widget(form.text, {
-                                    'attr': {
-                                        'class': 'form-control',
-                                        'placeholder': 'Description courte du projet (10-255 caractères)',
-                                        'rows': 3,
-                                        'id': 'project_text'
-                                    }
-                                }) }}
-                                <div class="form-text mt-1 d-flex justify-content-between align-items-center">
-                                    <span><i class="bi bi-info-circle me-1"></i> 10 à 255 caractères</span>
-                                    <span class="small text-muted"><span id="text-count">0</span>/255</span>
-                                </div>
-                                <div class="text-danger small mt-1">
-                                    {{ form_errors(form.text) }}
-                                </div>
-                            </div>
+                    <button class="btn btn-primary w-100" id="generateBtn">
+                        <i class="bi bi-magic me-2"></i>
+                        ✨ Générer description
+                    </button>
 
-                            <!-- Description détaillée + Bouton IA -->
-                            <div class="col-md-12 mb-4">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    {{ form_label(form.description, 'Description détaillée *', {'label_attr': {'class': 'form-label fw-bold mb-0'}}) }}
-                                    
-                                    <!-- SIMPLE AI BUTTON - opens in new tab -->
-                                    <a href="{{ path('ai_test') }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-robot me-1"></i> Assistant IA
-                                    </a>
-                                </div>
-                                
-                                {{ form_widget(form.description, {
-                                    'attr': {
-                                        'class': 'form-control',
-                                        'placeholder': 'Écrivez votre description ou utilisez l\'assistant IA...',
-                                        'rows': 6,
-                                        'id': 'project_description'
-                                    }
-                                }) }}
-                                <div class="form-text mt-1 d-flex justify-content-between align-items-center">
-                                    <span><i class="bi bi-info-circle me-1"></i> 30 à 2000 caractères</span>
-                                    <span class="small text-muted"><span id="description-count">0</span>/2000</span>
-                                </div>
-                                <div class="text-danger small mt-1">
-                                    {{ form_errors(form.description) }}
-                                </div>
-                                <small class="text-muted">
-                                    <i class="bi bi-arrow-up-right-circle me-1"></i> 
-                                    Cliquez sur "Assistant IA" pour générer une description avec l'IA
-                                </small>
-                            </div>
-
-                            <!-- Technologies -->
-                            <div class="col-md-12 mb-4">
-                                {{ form_label(form.technologies, 'Technologies utilisées *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
-                                {{ form_widget(form.technologies, {
-                                    'attr': {
-                                        'class': 'form-control',
-                                        'placeholder': 'Ex: HTML, CSS, JavaScript, PHP, Symfony, MySQL',
-                                        'id': 'project_technologies'
-                                    }
-                                }) }}
-                                <div class="form-text mt-1">
-                                    <i class="bi bi-info-circle me-1"></i> Séparez par des virgules
-                                </div>
-                                <div class="text-danger small mt-1">
-                                    {{ form_errors(form.technologies) }}
-                                </div>
-                            </div>
-
-                            <!-- Date de réalisation -->
-                            <div class="col-md-6 mb-4">
-                                {{ form_label(form.dateRealisation, 'Date de réalisation *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
-                                {{ form_widget(form.dateRealisation, {'attr': {'class': 'form-control'}}) }}
-                                <div class="form-text mt-1">
-                                    <i class="bi bi-info-circle me-1"></i> Ne peut pas être dans le futur
-                                </div>
-                                <div class="text-danger small mt-1">
-                                    {{ form_errors(form.dateRealisation) }}
-                                </div>
-                            </div>
-
-                            <!-- Lien de démonstration -->
-                            <div class="col-md-6 mb-4">
-                                {{ form_label(form.lienDemo, 'Lien de démonstration *', {'label_attr': {'class': 'form-label fw-bold mb-2'}}) }}
-                                {{ form_widget(form.lienDemo, {
-                                    'attr': {
-                                        'class': 'form-control',
-                                        'placeholder': 'https://exemple.com/demo'
-                                    }
-                                }) }}
-                                <div class="form-text mt-1">
-                                    <i class="bi bi-info-circle me-1"></i> URL valide (http:// ou https://)
-                                </div>
-                                <div class="text-danger small mt-1">
-                                    {{ form_errors(form.lienDemo) }}
-                                </div>
-                            </div>
-
-                            {# Portfolio is already assigned in the controller #}
-                            {{ form_widget(form.portfolio, { 'attr': {'class': 'd-none'} }) }}
+                    <div class="text-center mt-3" id="loading" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Chargement...</span>
                         </div>
+                        <p class="mt-2 text-muted">Génération en cours...</p>
+                    </div>
 
-                        <!-- Buttons -->
-                        <div class="d-flex justify-content-between mt-5 pt-3 border-top">
-                            <a href="{{ path('home_portfolio', {'id': portfolio.id}) }}" class="btn btn-outline-secondary px-4">
-                                <i class="bi bi-arrow-left me-2"></i> Annuler
-                            </a>
-                            <button type="submit" class="btn btn-primary px-4">
-                                <i class="bi bi-plus-circle me-2"></i> Créer le projet
-                            </button>
-                        </div>
-
-                        {{ form_end(form) }}
+                    <div class="mt-4" id="result" style="display: none;">
+                        <label class="form-label fw-bold">Description générée :</label>
+                        <textarea class="form-control" rows="8" id="description" readonly></textarea>
+                        <button class="btn btn-success mt-2" id="copyBtn">
+                            <i class="bi bi-clipboard me-2"></i>
+                            Copier
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</main>
+</div>
 
-{% block javascripts %}
-{{ parent() }}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Bootstrap validation styling
-    const forms = document.querySelectorAll('.needs-validation');
-    Array.from(forms).forEach(form => {
-        form.addEventListener('submit', event => {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            form.classList.add('was-validated');
-        }, false);
-    });
+document.getElementById('generateBtn').addEventListener('click', async function() {
+    const title = document.getElementById('title').value;
+    const keywords = document.getElementById('keywords').value;
+    const technologies = document.getElementById('technologies').value;
     
-    // Character counter for text field
-    const textField = document.querySelector('#{{ form.text.vars.id }}');
-    const textCount = document.querySelector('#text-count');
-    
-    if (textField && textCount) {
-        textCount.textContent = textField.value.length;
-        textField.addEventListener('input', function() {
-            textCount.textContent = this.value.length;
-        });
+    if (!title && !keywords) {
+        alert('Veuillez entrer au moins un titre ou des mots-clés');
+        return;
     }
     
-    // Character counter for description field
-    const descriptionField = document.querySelector('#{{ form.description.vars.id }}');
-    const descriptionCount = document.querySelector('#description-count');
+    // Afficher le loading
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('result').style.display = 'none';
     
-    if (descriptionField && descriptionCount) {
-        descriptionCount.textContent = descriptionField.value.length;
-        descriptionField.addEventListener('input', function() {
-            descriptionCount.textContent = this.value.length;
+    try {
+        const response = await fetch('/ai/generate-description', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                title: title,
+                keywords: keywords,
+                technologies: technologies
+            })
         });
+        
+        const data = await response.json();
+        document.getElementById('loading').style.display = 'none';
+        
+        if (data.description) {
+            document.getElementById('description').value = data.description;
+            document.getElementById('result').style.display = 'block';
+        } else if (data.error) {
+            alert('Erreur: ' + data.error);
+        }
+    } catch (error) {
+        document.getElementById('loading').style.display = 'none';
+        alert('Erreur de connexion');
     }
 });
+
+document.getElementById('copyBtn').addEventListener('click', function() {
+    const description = document.getElementById('description');
+    description.select();
+    document.execCommand('copy');
+    
+    // Feedback visuel
+    const btn = this;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-check me-2"></i>Copié!';
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+    }, 2000);
+});
 </script>
-{% endblock %}
 
 
 
@@ -1192,7 +1086,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-</main>
+
+
+
+
+
+
+
+
 
 <!-- **************** MAIN CONTENT END **************** -->
 
@@ -1334,29 +1235,6 @@ Footer END -->
 <
 
 <!-- Mirrored from eduport.webestica.com/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 02 Feb 2026 11:04:07 GMT -->
-
-
-
-
-
-
-
-<script>
-// Validation côté client
-document.addEventListener('DOMContentLoaded', function() {
-    const forms = document.querySelectorAll('.needs-validation');
-    
-    Array.from(forms).forEach(form => {
-        form.addEventListener('submit', event => {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            form.classList.add('was-validated');
-        }, false);
-    });
-});
-</script>
 
 
 
