@@ -18,6 +18,7 @@
 
                     <!-- Card body -->
                     <div class="card-body p-4">
+
                         {% if error %}
                             <div class="alert alert-danger">
                                 {{ error.messageKey|trans(error.messageData, 'security') }}
@@ -25,12 +26,17 @@
                         {% endif %}
 
                         <form action="{{ path('app_login') }}" method="post">
+
                             <!-- Email -->
                             <div class="mb-3">
                                 <label for="email" class="form-label fw-bold">
                                     <i class="bi bi-envelope me-1 text-primary"></i>Email
                                 </label>
-                                <input type="text" id="email" name="email" value="{{ last_username }}" class="form-control" placeholder="Votre email" required autofocus>
+                                <input type="text" id="email" name="email"
+                                       value="{{ last_username }}"
+                                       class="form-control"
+                                       placeholder="Votre email"
+                                       required autofocus>
                             </div>
 
                             <!-- Password -->
@@ -38,7 +44,10 @@
                                 <label for="password" class="form-label fw-bold">
                                     <i class="bi bi-key me-1 text-primary"></i>Mot de passe
                                 </label>
-                                <input type="password" id="password" name="password" class="form-control" placeholder="Votre mot de passe" required>
+                                <input type="password" id="password" name="password"
+                                       class="form-control"
+                                       placeholder="Votre mot de passe"
+                                       required>
                             </div>
 
                             <!-- Buttons -->
@@ -46,14 +55,28 @@
                                 <button type="submit" class="btn btn-primary btn-lg">
                                     <i class="bi bi-box-arrow-in-right me-2"></i>Se connecter
                                 </button>
+
                                 <a href="{{ path('app_user_register') }}" class="btn btn-outline-secondary">
                                     <i class="bi bi-person-plus me-2"></i>S'inscrire
                                 </a>
                             </div>
+
                             <!-- Forgot password link -->
-<p class="mt-3 text-center">
-    <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ?</a>
-</p>
+                            <p class="mt-3 text-center">
+                                <a href="{{ path('app_forgot_password_request') }}">
+                                    Mot de passe oublié ?
+                                </a>
+                            </p>
+
+                            <!-- AI Help Button -->
+                            <div class="text-center mt-2">
+                                <button type="button"
+                                        class="btn btn-outline-primary btn-sm"
+                                        onclick="openChat()">
+                                    🤖 Besoin d’aide ?
+                                </button>
+                            </div>
+
                         </form>
                     </div>
                 </div>
@@ -61,4 +84,99 @@
         </div>
     </div>
 </section>
+
+
+<!-- ================= AI CHAT POPUP ================= -->
+<div id="chatBox" style="
+    display:none;
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    width:330px;
+    background:white;
+    border-radius:15px;
+    box-shadow:0 0 15px rgba(0,0,0,0.25);
+    padding:15px;
+    z-index:9999;
+">
+
+    <h6 class="text-primary mb-2">🤖 Assistant Support</h6>
+
+    <div id="chatMessages" style="
+        height:200px;
+        overflow-y:auto;
+        border:1px solid #ddd;
+        padding:10px;
+        margin-bottom:10px;
+        font-size:14px;
+        border-radius:10px;
+    ">
+        <div><b>Bot:</b> Bonjour 👋 Comment puis-je t’aider ?</div>
+    </div>
+
+    <input id="chatInput"
+           type="text"
+           class="form-control"
+           placeholder="Tape ton message...">
+
+    <button class="btn btn-primary w-100 mt-2" onclick="sendMessage()">
+        Envoyer
+    </button>
+
+    <button class="btn btn-light w-100 mt-1" onclick="closeChat()">
+        Fermer ✖
+    </button>
+</div>
+
+
+<!-- ================= JS CHAT ================= -->
+<script>
+function openChat() {
+    document.getElementById("chatBox").style.display = "block";
+}
+
+function closeChat() {
+    document.getElementById("chatBox").style.display = "none";
+}
+async function sendMessage() {
+
+    let input = document.getElementById("chatInput");
+    let message = input.value.trim();
+
+    if (!message) return;
+
+    let chatMessages = document.getElementById("chatMessages");
+
+    // Show user message
+    chatMessages.innerHTML += `<div><b>Moi:</b> ${message}</div>`;
+    input.value = "";
+
+    try {
+
+        let response = await fetch("{{ path('ai_chat') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message: message })
+        });
+
+        if (!response.ok) {
+            chatMessages.innerHTML += `<div><b>Bot:</b> Erreur serveur 😢</div>`;
+            return;
+        }
+
+        let data = await response.json();
+
+        chatMessages.innerHTML += `<div><b>Bot:</b> ${data.reply}</div>`;
+
+    } catch (e) {
+        chatMessages.innerHTML += `<div><b>Bot:</b> Impossible de contacter l’assistant ❌</div>`;
+    }
+
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+</script>
+
 {% endblock %}

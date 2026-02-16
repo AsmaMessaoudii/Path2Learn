@@ -1,22 +1,21 @@
-# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+# config/services.yaml
 
 parameters:
+    openai_api_key: '%env(GEMINI_API_KEY)%'
 
 services:
-    # Default configuration for all services
     _defaults:
-        autowire: true      # injecte automatiquement les dépendances
-        autoconfigure: true # enregistre automatiquement comme commandes, event subscribers, etc.
-        public: false       # par défaut, tous les services sont privés
+        autowire: true
+        autoconfigure: true
+        public: false
 
-    # Makes classes in src/ available as services
     App\:
         resource: '../src/'
 
-    # Makes controllers services and allows container injection
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    # Add more service definitions if explicit configuration is needed
-    # Last definitions always replace previous ones
+    App\Service\OpenAIService:
+        arguments:
+            $apiKey: '%openai_api_key%'
