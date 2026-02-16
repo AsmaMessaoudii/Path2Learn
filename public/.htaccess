@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Prevent direct access to .env files
+    RewriteRule ^\.env - [F,L]
+
+    # Redirect /index.php to /
+    RewriteCond %{THE_REQUEST} /index\.php [NC]
+    RewriteRule ^index\.php(.*)$ $1 [L,R=301]
+
+    # If the requested filename exists, use it direct
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>

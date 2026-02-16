@@ -1,0 +1,77 @@
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="editModalLabel">
+                    <i class="bi bi-pencil me-2"></i>Modifier le cours
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {{ form_start(editForm, {'attr': {'id': 'editCoursForm', 'action': path('admin_cours_edit', {'id': cours.id})}}) }}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        {{ form_row(editForm.titre, {
+                            'attr': {'class': 'form-control'},
+                            'row_attr': {'class': 'mb-3'}
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(editForm.matiere, {
+                            'attr': {'class': 'form-control'},
+                            'row_attr': {'class': 'mb-3'}
+                        }) }}
+                    </div>
+                    
+                    <div class="col-12">
+                        {{ form_row(editForm.description, {
+                            'attr': {'class': 'form-control', 'rows': 3},
+                            'row_attr': {'class': 'mb-3'}
+                        }) }}
+                    </div>
+                    
+                    <div class="col-md-4">
+                        {{ form_row(editForm.niveau, {
+                            'attr': {'class': 'form-select'},
+                            'row_attr': {'class': 'mb-3'}
+                        }) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(editForm.duree, {
+                            'attr': {'class': 'form-control'},
+                            'row_attr': {'class': 'mb-3'}
+                        }) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(editForm.statut, {
+                            'attr': {'class': 'form-select'},
+                            'row_attr': {'class': 'mb-3'}
+                        }) }}
+                    </div>
+                    
+                    <div class="col-md-6">
+                        {{ form_row(editForm.emailProf, {
+                            'attr': {'class': 'form-control'},
+                            'row_attr': {'class': 'mb-3'}
+                        }) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(editForm.dateCreation, {
+                            'attr': {'class': 'form-control'},
+                            'row_attr': {'class': 'mb-3'}
+                        }) }}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i> Annuler
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-1"></i> Enregistrer
+                </button>
+                {{ form_end(editForm) }}
+            </div>
+        </div>
+    </div>
+</div>

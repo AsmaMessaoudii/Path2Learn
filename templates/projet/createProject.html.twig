@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer Projet{% endblock %}
+
+{% block body %}
+<div class="d-flex">
+
+    <!-- Sidebar -->
+    {% include 'layout/sidebar.html.twig' %}
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 min-vh-100 d-flex flex-column">
+
+        <!-- Navbar -->
+        {% include 'layout/navbar.html.twig' %}
+
+        <!-- ================= Main ================= -->
+        <main class="p-4 flex-grow-1 d-flex justify-content-center align-items-center"
+              style="background-color: #f0f2f5;">
+
+            <div class="container">
+
+                <div class="row justify-content-center">
+
+                    <!-- WIDER COLUMN -->
+                    <div class="col-md-8 col-lg-6">
+
+                        <!-- BIG FORM CARD -->
+                        <div class="card shadow border-0 p-5">
+
+                            <h4 class="fw-bold text-center mb-4">
+                                Créer votre Projet
+                            </h4>
+
+                            {{ form_start(form) }}
+
+                                <div class="mb-3">
+                                    {{ form_label(form.titreProjet, 'Titre du projet') }}
+                                    {{ form_widget(form.titreProjet, { 'attr': {'class': 'form-control'} }) }}
+                                    {{ form_errors(form.titreProjet) }}
+                                </div>
+
+                                <div class="mb-3">
+                                    {{ form_label(form.text, 'Texte') }}
+                                    {{ form_widget(form.text, { 'attr': {'class': 'form-control'} }) }}
+                                    {{ form_errors(form.text) }}
+                                </div>
+
+                                <div class="mb-3">
+                                    {{ form_label(form.description, 'Description') }}
+                                    {{ form_widget(form.description, { 'attr': {'class': 'form-control'} }) }}
+                                    {{ form_errors(form.description) }}
+                                </div>
+
+                                <div class="mb-3">
+                                    {{ form_label(form.technologies, 'Technologies') }}
+                                    {{ form_widget(form.technologies, { 'attr': {'class': 'form-control'} }) }}
+                                    {{ form_errors(form.technologies) }}
+                                </div>
+
+                                <div class="mb-3">
+                                    {{ form_label(form.dateRealisation, 'Date de réalisation') }}
+                                    {{ form_widget(form.dateRealisation, { 'attr': {'class': 'form-control'} }) }}
+                                    {{ form_errors(form.dateRealisation) }}
+                                </div>
+
+                                <div class="mb-3">
+                                    {{ form_label(form.lienDemo, 'Lien de démonstration') }}
+                                    {{ form_widget(form.lienDemo, { 'attr': {'class': 'form-control'} }) }}
+                                    {{ form_errors(form.lienDemo) }}
+                                </div>
+
+                                {# Portfolio is already assigned in the controller, so we can hide this field #}
+                                {{ form_widget(form.portfolio, { 'attr': {'class': 'd-none'} }) }}
+
+                                <div class="d-grid mt-4">
+                                    <button type="submit" class="btn btn-primary btn-lg rounded-pill">
+                                        Créer le projet
+                                    </button>
+                                </div>
+
+                            {{ form_end(form) }}
+
+                        </div>
+                        <!-- END FORM CARD -->
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+</div>
+{% endblock %}

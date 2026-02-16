@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EvenementRepository::class)]
 class Evenement
@@ -17,22 +18,52 @@ class Evenement
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le titre ne doit pas être vide")]
+    #[Assert\Length(min: 5, max: 255, minMessage: "Le titre doit faire au moins 5 caractères", maxMessage: "Le titre ne peut pas dépasser 255 caractères")]
     private ?string $titre = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: "La description ne doit pas être vide")]
+    #[Assert\Length(min: 10, minMessage: "La description doit faire au moins 10 caractères")]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $dateEvent = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank(message: "La date de début est obligatoire")]
+    #[Assert\GreaterThan("today", message: "La date de début doit être dans le futur")]
+    private ?\DateTimeInterface $dateDebut = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTime $heureEvent = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank(message: "La date de fin est obligatoire")]
+    #[Assert\GreaterThan(propertyPath: "dateDebut", message: "La date de fin doit être après la date de début")]
+    private ?\DateTimeInterface $dateFin = null;
 
-    #[ORM\Column(length: 150)]
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le lieu est obligatoire")]
+    #[Assert\Length(min: 3, minMessage: "Le lieu doit contenir au moins 3 caractères")]
     private ?string $lieu = null;
 
+    #[ORM\Column]
+    #[Assert\NotBlank(message: "La capacité maximale est obligatoire")]
+    #[Assert\Positive(message: "La capacité doit être un nombre positif")]
+    #[Assert\Range(min: 1, max: 10000, notInRangeMessage: "La capacité doit être entre 1 et 10000")]
+    private ?int $capaciteMax = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imageUrl = null;
+
     #[ORM\Column(length: 50)]
-    private ?string $typeEvent = null;
+    #[Assert\NotBlank(message: "Le statut est obligatoire")]
+    #[Assert\Choice(choices: ['ouvert', 'complet', 'annulé', 'terminé'], message: "Le statut doit être valide")]
+    private ?string $statut = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $categorie = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateCreation = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $dateModification = null;
 
     #[ORM\ManyToOne(inversedBy: 'evenement')]
     private ?User $user = null;
@@ -40,12 +71,14 @@ class Evenement
     /**
      * @var Collection<int, ParticipationEvent>
      */
-    #[ORM\OneToMany(targetEntity: ParticipationEvent::class, mappedBy: 'evenement')]
+    #[ORM\OneToMany(targetEntity: ParticipationEvent::class, mappedBy: 'evenement', cascade: ['persist', 'remove'])]
     private Collection $participationEvent;
 
     public function __construct()
     {
         $this->participationEvent = new ArrayCollection();
+        $this->dateCreation = new \DateTime();
+        $this->statut = 'ouvert';
     }
 
     public function getId(): ?int
@@ -77,26 +110,26 @@ class Evenement
         return $this;
     }
 
-    public function getDateEvent(): ?\DateTime
+    public function getDateDebut(): ?\DateTimeInterface
     {
-        return $this->dateEvent;
+        return $this->dateDebut;
     }
 
-    public function setDateEvent(\DateTime $dateEvent): static
+    public function setDateDebut(\DateTimeInterface $dateDebut): static
     {
-        $this->dateEvent = $dateEvent;
+        $this->dateDebut = $dateDebut;
 
         return $this;
     }
 
-    public function getHeureEvent(): ?\DateTime
+    public function getDateFin(): ?\DateTimeInterface
     {
-        return $this->heureEvent;
+        return $this->dateFin;
     }
 
-    public function setHeureEvent(\DateTime $heureEvent): static
+    public function setDateFin(\DateTimeInterface $dateFin): static
     {
-        $this->heureEvent = $heureEvent;
+        $this->dateFin = $dateFin;
 
         return $this;
     }
@@ -113,14 +146,74 @@ class Evenement
         return $this;
     }
 
-    public function getTypeEvent(): ?string
+    public function getCapaciteMax(): ?int
     {
-        return $this->typeEvent;
+        return $this->capaciteMax;
     }
 
-    public function setTypeEvent(string $typeEvent): static
+    public function setCapaciteMax(int $capaciteMax): static
     {
-        $this->typeEvent = $typeEvent;
+        $this->capaciteMax = $capaciteMax;
+
+        return $this;
+    }
+
+    public function getImageUrl(): ?string
+    {
+        return $this->imageUrl;
+    }
+
+    public function setImageUrl(?string $imageUrl): static
+    {
+        $this->imageUrl = $imageUrl;
+
+        return $this;
+    }
+
+    public function getStatut(): ?string
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(string $statut): static
+    {
+        $this->statut = $statut;
+
+        return $this;
+    }
+
+    public function getCategorie(): ?string
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?string $categorie): static
+    {
+        $this->categorie = $categorie;
+
+        return $this;
+    }
+
+    public function getDateCreation(): ?\DateTimeInterface
+    {
+        return $this->dateCreation;
+    }
+
+    public function setDateCreation(\DateTimeInterface $dateCreation): static
+    {
+        $this->dateCreation = $dateCreation;
+
+        return $this;
+    }
+
+    public function getDateModification(): ?\DateTimeInterface
+    {
+        return $this->dateModification;
+    }
+
+    public function setDateModification(?\DateTimeInterface $dateModification): static
+    {
+        $this->dateModification = $dateModification;
 
         return $this;
     }
@@ -165,5 +258,29 @@ class Evenement
         }
 
         return $this;
+    }
+
+    // Méthodes métier
+    public function getPlacesDisponibles(): int
+    {
+        return $this->capaciteMax - $this->participationEvent->count();
+    }
+
+    public function isComplet(): bool
+    {
+        return $this->participationEvent->count() >= $this->capaciteMax;
+    }
+
+    public function getTauxRemplissage(): float
+    {
+        if ($this->capaciteMax === 0) {
+            return 0;
+        }
+        return ($this->participationEvent->count() / $this->capaciteMax) * 100;
+    }
+
+    public function isPasse(): bool
+    {
+        return $this->dateFin < new \DateTime();
     }
 }

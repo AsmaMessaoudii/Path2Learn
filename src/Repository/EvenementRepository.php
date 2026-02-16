@@ -16,28 +16,55 @@ class EvenementRepository extends ServiceEntityRepository
         parent::__construct($registry, Evenement::class);
     }
 
-    //    /**
-    //     * @return Evenement[] Returns an array of Evenement objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('e.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return Evenement[]
+     */
+    public function findEventsByFilters(array $filters, int $page = 1, int $limit = 5): array
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->orderBy('e.dateDebut', 'DESC');
 
-    //    public function findOneBySomeField($value): ?Evenement
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if (!empty($filters['q'])) {
+            $qb->andWhere('e.titre LIKE :q OR e.lieu LIKE :q')
+               ->setParameter('q', '%' . $filters['q'] . '%');
+        }
+
+        if (!empty($filters['category'])) {
+            $qb->andWhere('e.categorie = :category')
+               ->setParameter('category', $filters['category']);
+        }
+
+        if (!empty($filters['status'])) {
+            $qb->andWhere('e.statut = :status')
+               ->setParameter('status', $filters['status']);
+        }
+
+        $qb->setFirstResult(($page - 1) * $limit)
+           ->setMaxResults($limit);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function countEventsByFilters(array $filters): int
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->select('COUNT(e.id)');
+
+        if (!empty($filters['q'])) {
+            $qb->andWhere('e.titre LIKE :q OR e.lieu LIKE :q')
+               ->setParameter('q', '%' . $filters['q'] . '%');
+        }
+
+        if (!empty($filters['category'])) {
+            $qb->andWhere('e.categorie = :category')
+               ->setParameter('category', $filters['category']);
+        }
+
+        if (!empty($filters['status'])) {
+            $qb->andWhere('e.statut = :status')
+               ->setParameter('status', $filters['status']);
+        }
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
 }

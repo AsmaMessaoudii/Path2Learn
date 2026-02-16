@@ -1,0 +1,297 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block body %}
+<div class="d-flex">
+
+    {% include 'layout/sidebar.html.twig' %}
+
+    <div class="flex-grow-1 min-vh-100 d-flex flex-column">
+
+        {% include 'layout/navbar.html.twig' %}
+
+        <main class="p-4 flex-grow-1" style="background-color: #f0f2f5;">
+            <div class="container-fluid">
+
+                <!-- Header -->
+                <div class="mb-4">
+                    <h4 class="fw-bold mb-1">Tableau de Bord Administratif</h4>
+                    <p class="text-muted small">Bienvenue sur votre espace de gestion centralisée.</p>
+                </div>
+
+                {% set portfolio = portfolios|first %}
+
+                <!-- PORTFOLIO CARD -->
+                <div class="card border-0 shadow-sm p-5">
+
+                    {% if portfolio %}
+
+                        <!-- PORTFOLIO INFO -->
+                        <div class="mb-5">
+                            <!-- PORTFOLIO HEADER WITH BUTTONS -->
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <div class="d-flex align-items-center gap-2">
+                                    <h4 class="fw-bold mb-0">
+                                        {{ portfolio.titre }}
+                                    </h4>
+<!-- EXPORT PDF BUTTON - Version icône seulement -->
+<a href="{{ path('portfolio_export_pdf', { id: portfolio.id }) }}"
+   class="btn btn-sm btn-light text-danger" 
+   title="Exporter en PDF" onclick="this.disabled=true; this.innerHTML='<i class=\"bi bi-hourglass\"></i>';
+    ">
+    <i class="bi bi-file-pdf"></i>
+</a>
+
+                                    
+
+                                    <!-- DELETE BUTTON -->
+                                    <form method="post"
+                                          action="{{ path('portfolio_delete', { id: portfolio.id }) }}"
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce portfolio ?');"
+                                          class="d-inline">
+                                        <input type="hidden"
+                                               name="_token"
+                                               value="{{ csrf_token('delete-portfolio-' ~ portfolio.id) }}">
+                                        <button class="btn btn-sm btn-light text-secondary"
+                                                title="Supprimer">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <div class="d-flex align-items-center gap-3">
+                                    <small class="text-muted">
+                                        {{ portfolio.projet|length }} projet(s)
+                                    </small>
+                                    <small class="text-muted">
+                                        Créé le {{ portfolio.dateCreation|date('d/m/Y') }}
+                                    </small>
+                                </div>
+                            </div>
+
+                            <p class="text-muted mb-0">
+                                {{ portfolio.description }}
+                            </p>
+                        </div>
+
+                        <hr class="mb-4">
+
+                        <!-- FILTRES ET RECHERCHE -->
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <form method="get" action="{{ path('app_portfolio') }}" class="row g-3">
+                                    <!-- Barre de recherche -->
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white">
+                                                <i class="bi bi-search"></i>
+                                            </span>
+                                            <input type="text" 
+                                                   class="form-control" 
+                                                   name="search" 
+                                                   placeholder="Rechercher un projet..." 
+                                                   value="{{ searchTerm }}">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Filtre par technologie -->
+                                    <div class="col-md-3">
+                                        <select class="form-select" name="technologie">
+                                            <option value="">Toutes les technologies</option>
+                                            {% for tech in allTechnologies %}
+                                                <option value="{{ tech }}" 
+                                                        {% if selectedTechnologie == tech %}selected{% endif %}>
+                                                    {{ tech }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Tri -->
+                                    <div class="col-md-3">
+                                        <select class="form-select" name="sort">
+                                            <option value="date_desc" {% if sortBy == 'date_desc' %}selected{% endif %}>
+                                                Date (plus récent)
+                                            </option>
+                                            <option value="date_asc" {% if sortBy == 'date_asc' %}selected{% endif %}>
+                                                Date (plus ancien)
+                                            </option>
+                                            <option value="title_asc" {% if sortBy == 'title_asc' %}selected{% endif %}>
+                                                Titre (A-Z)
+                                            </option>
+                                            <option value="title_desc" {% if sortBy == 'title_desc' %}selected{% endif %}>
+                                                Titre (Z-A)
+                                            </option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Boutons -->
+                                    <div class="col-md-2 d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-funnel"></i> Filtrer
+                                        </button>
+                                        <a href="{{ path('app_portfolio') }}" class="btn btn-outline-secondary">
+                                            <i class="bi bi-x-circle"></i>
+                                        </a>
+                                    </div>
+                                </form>
+                                
+                                <!-- Résultats de recherche -->
+                                {% if searchTerm or selectedTechnologie %}
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        {% set count = projets|length %}
+                                        {% if count == 0 %}
+                                            Aucun projet trouvé
+                                        {% elseif count == 1 %}
+                                            1 projet trouvé
+                                        {% else %}
+                                            {{ count }} projets trouvés
+                                        {% endif %}
+                                        
+                                        {% if searchTerm %}
+                                            pour "{{ searchTerm }}"
+                                        {% endif %}
+                                        
+                                        {% if selectedTechnologie %}
+                                            avec la technologie "{{ selectedTechnologie }}"
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- LISTE DES PROJETS -->
+                        {% if projets is empty %}
+                            <div class="text-center mt-4">
+                                <i class="bi bi-inbox fs-1 text-muted mb-3"></i>
+                                <h5 class="fw-bold">Aucun Projet</h5>
+                                <p class="text-muted mb-4">
+                                    Aucun projet trouvé dans ce portfolio.
+                                </p>
+                                
+                            </div>
+                        {% else %}
+                            <div class="row g-4 mt-3">
+                                {% set colors = ['#7bb7e0','#8fd6ad','#95fbb9','#c7a0d7','#e9be79'] %}
+                                
+                                {% for projet in projets %}
+                                    <div class="col-md-3">
+                                        <a href="{{ path('app_projet', { id: projet.id }) }}" 
+                                           class="text-decoration-none">
+                                            <div class="card d-flex align-items-center justify-content-center 
+                                                        text-white shadow-sm hover-shadow projet-card"
+                                                 style="background-color: {{ colors[loop.index0 % colors|length] }};
+                                                        height: 280px;">
+                                                <div class="p-3">
+                                                    <h6 class="fw-bold text-center">{{ projet.titreProjet }}</h6>
+                                                    <p class="text-light small text-center mb-1">{{ projet.description|slice(0, 80) }}{% if projet.description|length > 80 %}...{% endif %}</p>
+                                                    <div class="mt-2">
+                                                        {% for tech in projet.technologies|split(',') %}
+                                                            <span class="badge bg-white text-dark bg-opacity-50 me-1 mb-1">
+                                                                {{ tech|trim }}
+                                                            </span>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <small class="text-light d-block mt-2">
+                                                        <i class="bi bi-calendar"></i> {{ projet.dateRealisation ? projet.dateRealisation|date('d/m/Y') : 'Non daté' }}
+                                                    </small>
+                                                    {% if projet.lienDemo %}
+                                                        <small class="text-light d-block mt-1">
+                                                            <i class="bi bi-link-45deg"></i> Démo disponible
+                                                        </small>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                {% endfor %}
+
+                                
+                            </div>
+                        {% endif %}
+
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-folder-x fs-1 text-muted mb-3"></i>
+                            <h5 class="fw-bold">Aucun Portfolio</h5>
+                            <p class="text-muted mb-4">
+                                Il n'y a aucun Portfolio enregistré pour le moment.
+                            </p>
+                            
+                        </div>
+                    {% endif %}
+
+                </div>
+                <!-- END PORTFOLIO CARD -->
+
+            </div>
+        </main>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block styles %}
+<style>
+.projet-card {
+    border-radius: 12px; 
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.projet-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2) !important;
+}
+
+.add-project-card {
+    border-radius: 12px;
+    border: 2px dashed #ced4da;
+    color: #495057;
+    background-color: #f8f9fa;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+    cursor: pointer;
+}
+
+.add-project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15) !important;
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.hover-shadow {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.badge {
+    font-size: 0.7em;
+    padding: 0.25em 0.5em;
+}
+
+.btn-light {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+.btn-light:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+.btn-light.text-danger:hover {
+    color: #dc3545 !important;
+    background-color: #f8d7da;
+}
+
+.btn-light.text-secondary:hover {
+    color: #6c757d !important;
+    background-color: #e2e3e5;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,1728 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Cours et Ressources{% endblock %}
+
+{% block body %}
+<div class="d-flex" style="height: 100vh; overflow: hidden;">
+
+    <!-- ===== Sidebar ===== -->
+    <nav class="sidebar bg-dark" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 250px;
+        min-height: 100vh;
+        overflow-y: auto;
+        z-index: 1000;
+    ">
+        <div class="p-4 h-100 d-flex flex-column">
+            <h5 class="text-white mb-4">
+                <i class="bi bi-mortarboard-fill me-2"></i> Gestion Académique
+            </h5>
+
+            <div class="list-group list-group-borderless flex-grow-1">
+                <a class="list-group-item list-group-item-action text-white {{ active_tab == 'cours' ? 'active' : '' }}" href="{{ path('admin_cours_index') }}">
+                    <i class="bi bi-journal-text me-2"></i> Cours
+                </a>
+
+                <a class="list-group-item list-group-item-action text-white {{ active_tab == 'ressources' ? 'active' : '' }}" href="{{ path('admin_ressources_index') }}">
+                    <i class="bi bi-folder-symlink me-2"></i> Ressources pédagogiques
+                </a>
+
+                <a class="list-group-item mt-3 list-group-item-action text-white" href="{{ path('admin_dashboard') }}">
+                    <i class="bi bi-arrow-left me-2"></i> Retour Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== Main Content ===== -->
+    <div class="flex-grow-1" style="margin-left: 250px; overflow-y: auto; height: 100vh;">
+        <main class="p-4" style="background:#f0f2f5; min-height: 100vh;">
+
+            <div class="mb-4">
+                <h4 class="fw-bold">Gestion des Cours et Ressources</h4>
+                <p class="text-muted small">
+                    Ajouter, modifier et gérer les cours et ressources pédagogiques
+                </p>
+            </div>
+
+            <!-- ===== Flash Messages ===== -->
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>{{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+            
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>{{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+
+            <!-- ===== Tabs ===== -->
+            <ul class="nav nav-pills mb-4" id="main-tabs">
+                <li class="nav-item">
+                    <a class="nav-link {{ active_tab == 'cours' ? 'active' : '' }}" href="{{ path('admin_cours_index') }}" id="nav-cours-link">
+                        📘 Cours ({{ coursList|length }})
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ active_tab == 'ressources' ? 'active' : '' }}" href="{{ path('admin_ressources_index') }}" id="nav-ressources-link">
+                        📂 Ressources pédagogiques ({{ ressourcesList|length }})
+                    </a>
+                </li>
+            </ul>
+
+            <!-- ===== Barre d'outils (Recherche, Tri, Export) ===== -->
+            <div class="row mb-4" id="search-toolbar">
+                <div class="col-md-8">
+                    <!-- Barre de recherche -->
+                    <div class="input-group">
+                        <input type="text" id="searchInput" class="form-control" 
+                               placeholder="Rechercher dans les {{ active_tab == 'cours' ? 'cours' : 'ressources' }}..." 
+                               value="{{ searchTerm|default('') }}">
+                        <button class="btn btn-outline-primary" type="button" id="searchButton">
+                            <i class="bi bi-search"></i>
+                        </button>
+                        <a href="{{ active_tab == 'cours' ? path('admin_cours_index') : path('admin_ressources_index') }}" 
+                           class="btn btn-outline-secondary" id="resetSearch" title="Réinitialiser la recherche">
+                            <i class="bi bi-x-circle"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex justify-content-end">
+                        <!-- Menu de tri -->
+                        <div class="dropdown me-2">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" 
+                                    id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-sort-down"></i> 
+                                {% if current_sort.field == 'titre' and current_sort.direction == 'ASC' %}
+                                    Titre (A-Z)
+                                {% elseif current_sort.field == 'titre' and current_sort.direction == 'DESC' %}
+                                    Titre (Z-A)
+                                {% elseif current_sort.field == 'matiere' %}
+                                    Matière
+                                {% elseif current_sort.field == 'niveau' and current_sort.direction == 'ASC' %}
+                                    Niveau (↑)
+                                {% elseif current_sort.field == 'niveau' and current_sort.direction == 'DESC' %}
+                                    Niveau (↓)
+                                {% elseif current_sort.field == 'duree' and current_sort.direction == 'ASC' %}
+                                    Durée (court → long)
+                                {% elseif current_sort.field == 'duree' and current_sort.direction == 'DESC' %}
+                                    Durée (long → court)
+                                {% elseif current_sort.field == 'statut' %}
+                                    Statut
+                                {% elseif current_sort.field == 'dateCreation' and current_sort.direction == 'DESC' %}
+                                    Date (récent)
+                                {% elseif current_sort.field == 'dateCreation' and current_sort.direction == 'ASC' %}
+                                    Date (ancien)
+                                {% else %}
+                                    Trier
+                                {% endif %}
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                                {% if active_tab == 'cours' %}
+                                    <!-- Tri par Titre -->
+                                    <li>
+                                        <a class="dropdown-item sort-link" href="{{ path('admin_cours_tri', {
+                                            'sortBy': 'titre', 
+                                            'direction': current_sort.field == 'titre' and current_sort.direction == 'ASC' ? 'DESC' : 'ASC'
+                                        }) }}">
+                                            <i class="bi bi-sort-alpha-{{ current_sort.field == 'titre' and current_sort.direction == 'ASC' ? 'up' : 'down' }}"></i> 
+                                            Titre {{ current_sort.field == 'titre' and current_sort.direction == 'ASC' ? '(Z-A)' : '(A-Z)' }}
+                                        </a>
+                                    </li>
+                                    
+                                    <!-- Tri par Matière -->
+                                    <li>
+                                        <a class="dropdown-item sort-link" href="{{ path('admin_cours_tri', {
+                                            'sortBy': 'matiere', 
+                                            'direction': current_sort.field == 'matiere' and current_sort.direction == 'ASC' ? 'DESC' : 'ASC'
+                                        }) }}">
+                                            <i class="bi bi-book"></i> 
+                                            Matière {{ current_sort.field == 'matiere' and current_sort.direction == 'ASC' ? '(Z-A)' : '(A-Z)' }}
+                                        </a>
+                                    </li>
+                                    
+                                    <!-- Tri par Niveau -->
+                                    <li>
+                                        <a class="dropdown-item sort-link" href="{{ path('admin_cours_tri', {
+                                            'sortBy': 'niveau', 
+                                            'direction': current_sort.field == 'niveau' and current_sort.direction == 'ASC' ? 'DESC' : 'ASC'
+                                        }) }}">
+                                            <i class="bi bi-arrow-{{ current_sort.field == 'niveau' and current_sort.direction == 'ASC' ? 'down' : 'up' }}"></i> 
+                                            Niveau {{ current_sort.field == 'niveau' and current_sort.direction == 'ASC' ? '(Avancé → Débutant)' : '(Débutant → Avancé)' }}
+                                        </a>
+                                    </li>
+                                    
+                                    <!-- Tri par Durée -->
+                                    <li>
+                                        <a class="dropdown-item sort-link" href="{{ path('admin_cours_tri', {
+                                            'sortBy': 'duree', 
+                                            'direction': current_sort.field == 'duree' and current_sort.direction == 'ASC' ? 'DESC' : 'ASC'
+                                        }) }}">
+                                            <i class="bi bi-clock"></i> 
+                                            Durée {{ current_sort.field == 'duree' and current_sort.direction == 'ASC' ? '(long → court)' : '(court → long)' }}
+                                        </a>
+                                    </li>
+                                    
+                                    <li><hr class="dropdown-divider"></li>
+                                    
+                                    <!-- Tri par Date -->
+                                    <li>
+                                        <a class="dropdown-item sort-link" href="{{ path('admin_cours_tri', {
+                                            'sortBy': 'dateCreation', 
+                                            'direction': current_sort.field == 'dateCreation' and current_sort.direction == 'DESC' ? 'ASC' : 'DESC'
+                                        }) }}">
+                                            <i class="bi bi-calendar-{{ current_sort.field == 'dateCreation' and current_sort.direction == 'DESC' ? 'minus' : 'event' }}"></i> 
+                                            Date {{ current_sort.field == 'dateCreation' and current_sort.direction == 'DESC' ? '(ancien → récent)' : '(récent → ancien)' }}
+                                        </a>
+                                    </li>
+                                    
+                                    <!-- Tri par Statut -->
+                                    <li>
+                                        <a class="dropdown-item sort-link" href="{{ path('admin_cours_tri', {
+                                            'sortBy': 'statut', 
+                                            'direction': current_sort.field == 'statut' and current_sort.direction == 'ASC' ? 'DESC' : 'ASC'
+                                        }) }}">
+                                            <i class="bi bi-flag"></i> 
+                                            Statut {{ current_sort.field == 'statut' and current_sort.direction == 'ASC' ? '(Z-A)' : '(A-Z)' }}
+                                        </a>
+                                    </li>
+                                    
+                                {% else %}
+                                    <!-- Options pour les ressources -->
+                                    <li><a class="dropdown-item sort-link" href="{{ path('admin_ressources_tri', {'sortBy': 'titre', 'direction': 'ASC'}) }}">
+                                        <i class="bi bi-sort-alpha-down"></i> Titre (A-Z)
+                                    </a></li>
+                                    <li><a class="dropdown-item sort-link" href="{{ path('admin_ressources_tri', {'sortBy': 'titre', 'direction': 'DESC'}) }}">
+                                        <i class="bi bi-sort-alpha-up"></i> Titre (Z-A)
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item sort-link" href="{{ path('admin_ressources_tri', {'sortBy': 'dateAjout', 'direction': 'DESC'}) }}">
+                                        <i class="bi bi-calendar-event"></i> Date récente
+                                    </a></li>
+                                    <li><a class="dropdown-item sort-link" href="{{ path('admin_ressources_tri', {'sortBy': 'dateAjout', 'direction': 'ASC'}) }}">
+                                        <i class="bi bi-calendar"></i> Date ancienne
+                                    </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item sort-link" href="{{ path('admin_ressources_tri', {'sortBy': 'type', 'direction': 'ASC'}) }}">
+                                        <i class="bi bi-tag"></i> Type (A-Z)
+                                    </a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        
+                        <!-- Bouton Export PDF -->
+                        <a href="{{ active_tab == 'cours' ? path('admin_cours_export_pdf') : path('admin_ressources_export_pdf') }}" 
+                           class="btn btn-danger">
+                            <i class="bi bi-file-earmark-pdf"></i> Export PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== Conteneur pour le contenu principal ===== -->
+            <div id="content-container">
+                <div class="tab-content">
+
+                    <!-- ================= COURS ================= -->
+                    {% if active_tab == 'cours' %}
+                    <div class="tab-pane fade show active" id="cours-tab">
+
+                        <!-- Modal pour View -->
+                        {% if selectedCours is not null and editForm is null %}
+                            <div class="modal-backdrop fade show" id="modalBackdrop"></div>
+                            <div class="modal fade show d-block" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="false" data-bs-backdrop="static">
+                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-primary text-white">
+                                            <h5 class="modal-title" id="viewModalLabel">
+                                                <i class="bi bi-eye me-2"></i>Détails du cours
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" onclick="window.location.href='{{ path('admin_cours_index') }}'"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <p><strong>Titre :</strong> {{ selectedCours.titre }}</p>
+                                                    <p><strong>Matière :</strong> {{ selectedCours.matiere }}</p>
+                                                    <p><strong>Niveau :</strong> <span class="badge bg-info">{{ selectedCours.niveau }}</span></p>
+                                                    <p><strong>Durée :</strong> {{ selectedCours.duree }} minutes</p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p><strong>Statut :</strong> 
+                                                        {% if selectedCours.statut == 'publié' %}
+                                                            <span class="badge bg-success">Publié</span>
+                                                        {% elseif selectedCours.statut == 'brouillon' %}
+                                                            <span class="badge bg-warning">Brouillon</span>
+                                                        {% else %}
+                                                            <span class="badge bg-secondary">Archivé</span>
+                                                        {% endif %}
+                                                    </p>
+                                                    <p><strong>Date création :</strong> {{ selectedCours.dateCreation|date('d/m/Y') }}</p>
+                                                    <p><strong>Email professeur :</strong> {{ selectedCours.emailProf }}</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mt-3">
+                                                <h6>Description :</h6>
+                                                <div class="border rounded p-3 bg-light">
+                                                    {{ selectedCours.description|nl2br }}
+                                                </div>
+                                            </div>
+                                            
+                                            {% if selectedCours.ressourcePedagogiques|length > 0 %}
+                                                <div class="mt-4">
+                                                    <h6>Ressources associées :</h6>
+                                                    <div class="list-group mt-2">
+                                                        {% for ressource in selectedCours.ressourcePedagogiques %}
+                                                            <div class="list-group-item">
+                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                    <div>
+                                                                        <h6 class="mb-1">{{ ressource.titre }}</h6>
+                                                                        <small class="text-muted">
+                                                                            <span class="badge bg-info">{{ ressource.type }}</span>
+                                                                            - {{ ressource.dateAjout|date('d/m/Y') }}
+                                                                        </small>
+                                                                    </div>
+                                                                    {% if ressource.url %}
+                                                                        <a href="{{ ressource.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                                            <i class="bi bi-download"></i>
+                                                                        </a>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ path('admin_cours_index') }}'">
+                                                <i class="bi bi-x-circle me-1"></i> Fermer
+                                            </button>
+                                            <a href="{{ path('admin_cours_export_pdf_single', {'id': selectedCours.id}) }}" class="btn btn-danger" title="Télécharger PDF">
+                                                <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                                            </a>
+                                            <a href="{{ path('admin_cours_edit', {'id': selectedCours.id}) }}" class="btn btn-warning">
+                                                <i class="bi bi-pencil me-1"></i> Modifier
+                                            </a>
+                                            <form method="post" action="{{ path('admin_cours_delete', {'id': selectedCours.id}) }}" class="d-inline"
+                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ? Toutes les ressources associées seront également supprimées.');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete_cours_' ~ selectedCours.id) }}">
+                                                <button type="submit" class="btn btn-danger">
+                                                    <i class="bi bi-trash me-1"></i> Supprimer
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Formulaire d'édition de cours -->
+                        {% if editForm is not null %}
+                            <div class="modal-backdrop fade show" id="modalBackdrop"></div>
+                            <div class="modal fade show d-block" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="false" data-bs-backdrop="static">
+                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-warning text-white">
+                                            <h5 class="modal-title" id="editModalLabel">
+                                                <i class="bi bi-pencil me-2"></i>Modifier le cours
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" onclick="window.location.href='{{ selectedCours ? path('admin_cours_view', {'id': selectedCours.id}) : path('admin_cours_index') }}'"></button>
+                                        </div>
+                                        {{ form_start(editForm, {'attr': {'id': 'edit_cours_form', 'novalidate': 'novalidate'}}) }}
+                                        <input type="hidden" name="form_name" value="{{ editForm.vars.name }}">
+                                        
+                                        <div class="modal-body">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        {{ form_label(editForm.titre, "Titre *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                        {{ form_widget(editForm.titre, {'attr': {'class': 'form-control'}}) }}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form_errors(editForm.titre) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        {{ form_label(editForm.matiere, "Matière *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                        {{ form_widget(editForm.matiere, {'attr': {'class': 'form-control'}}) }}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form_errors(editForm.matiere) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-12">
+                                                    <div class="mb-3">
+                                                        {{ form_label(editForm.description, "Description *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                        {{ form_widget(editForm.description, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form_errors(editForm.description) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-4">
+                                                    <div class="mb-3">
+                                                        {{ form_label(editForm.niveau, "Niveau *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                        {{ form_widget(editForm.niveau, {'attr': {'class': 'form-select'}}) }}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form_errors(editForm.niveau) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="mb-3">
+                                                        {{ form_label(editForm.duree, "Durée (minutes) *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                        {{ form_widget(editForm.duree, {'attr': {'class': 'form-control'}}) }}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form_errors(editForm.duree) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="mb-3">
+                                                        {{ form_label(editForm.statut, "Statut *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                        {{ form_widget(editForm.statut, {'attr': {'class': 'form-select'}}) }}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form_errors(editForm.statut) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        {{ form_label(editForm.emailProf, "Email professeur *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                        {{ form_widget(editForm.emailProf, {'attr': {'class': 'form-control'}}) }}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form_errors(editForm.emailProf) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        {{ form_label(editForm.dateCreation, "Date création *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                        {{ form_widget(editForm.dateCreation, {'attr': {'class': 'form-control'}}) }}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form_errors(editForm.dateCreation) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a href="{{ selectedCours ? path('admin_cours_view', {'id': selectedCours.id}) : path('admin_cours_index') }}" class="btn btn-secondary">
+                                                <i class="bi bi-x-circle me-1"></i> Annuler
+                                            </a>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-check-circle me-1"></i> Enregistrer
+                                            </button>
+                                        </div>
+                                        {{ form_end(editForm) }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Formulaire d'ajout de cours -->
+                        {% if selectedCours is null and editForm is null %}
+                            <div class="card border-0 shadow-sm mb-4">
+                                <div class="card-header bg-white fw-bold">
+                                    <i class="bi bi-plus-circle me-2"></i> Ajouter un cours
+                                </div>
+
+                                <div class="card-body">
+                                    {% if formCours is not null %}
+                                        {{ form_start(formCours, {'attr': {'id': 'cours_form', 'novalidate': 'novalidate'}}) }}
+                                        <input type="hidden" name="form_name" value="{{ formCours.vars.name }}">
+                                        
+                                        <div class="row g-3">
+                                            <!-- Ligne 1 : Titre et Matière -->
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    {{ form_label(formCours.titre, "Titre *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(formCours.titre, {'attr': {'class': 'form-control'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(formCours.titre) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    {{ form_label(formCours.matiere, "Matière *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(formCours.matiere, {'attr': {'class': 'form-control'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(formCours.matiere) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Ligne 2 : Description complète -->
+                                            <div class="col-12">
+                                                <div class="mb-3">
+                                                    {{ form_label(formCours.description, "Description *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(formCours.description, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(formCours.description) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Ligne 3 : Niveau, Durée, Statut -->
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    {{ form_label(formCours.niveau, "Niveau *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(formCours.niveau, {'attr': {'class': 'form-select'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(formCours.niveau) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    {{ form_label(formCours.duree, "Durée (minutes) *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(formCours.duree, {'attr': {'class': 'form-control'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(formCours.duree) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    {{ form_label(formCours.statut, "Statut *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(formCours.statut, {'attr': {'class': 'form-select'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(formCours.statut) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Ligne 4 : Email prof et Date création -->
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    {{ form_label(formCours.emailProf, "Email professeur *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(formCours.emailProf, {'attr': {'class': 'form-control'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(formCours.emailProf) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    {{ form_label(formCours.dateCreation, "Date création *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                    {{ form_widget(formCours.dateCreation, {'attr': {'class': 'form-control'}}) }}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form_errors(formCours.dateCreation) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Boutons d'action -->
+                                        <div class="col-12 d-flex justify-content-between mt-3">
+                                            <button type="button" class="btn btn-outline-secondary" onclick="resetForm('cours_form')">
+                                                <i class="bi bi-x-circle me-1"></i> Annuler
+                                            </button>
+                                            <div>
+                                                <button type="submit" class="btn btn-primary px-4">
+                                                    <i class="bi bi-plus-circle me-1"></i> Ajouter le cours
+                                                </button>
+                                            </div>
+                                        </div>
+                                        {{ form_end(formCours) }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Liste des cours existants -->
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center">
+                                <span>Liste des cours ({{ coursList|length }})</span>
+                                <span class="text-muted small">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Cliquez sur les en-têtes pour trier
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                {% if coursList is empty %}
+                                    <div class="text-center py-4 text-muted">
+                                        <i class="bi bi-journal-x display-4"></i>
+                                        <p class="mt-2">Aucun cours pour le moment</p>
+                                    </div>
+                                {% else %}
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <!-- Titre avec tri -->
+                                                    <th>
+                                                        <a href="{{ path('admin_cours_tri', {'sortBy': 'titre', 'direction': current_sort.field == 'titre' and current_sort.direction == 'ASC' ? 'DESC' : 'ASC'}) }}" class="text-decoration-none d-flex align-items-center">
+                                                            <span>Titre</span>
+                                                            {% if current_sort.field == 'titre' %}
+                                                                <i class="bi bi-sort-{{ current_sort.direction == 'ASC' ? 'down' : 'up' }} ms-1"></i>
+                                                            {% else %}
+                                                                <i class="bi bi-sort ms-1 text-muted"></i>
+                                                            {% endif %}
+                                                        </a>
+                                                    </th>
+                                                    
+                                                    <!-- Matière avec tri -->
+                                                    <th>
+                                                        <a href="{{ path('admin_cours_tri', {'sortBy': 'matiere', 'direction': current_sort.field == 'matiere' and current_sort.direction == 'ASC' ? 'DESC' : 'ASC'}) }}" 
+                                                        class="text-decoration-none d-flex align-items-center">
+                                                            <span>Matière</span>
+                                                            {% if current_sort.field == 'matiere' %}
+                                                                <i class="bi bi-sort-{{ current_sort.direction == 'ASC' ? 'down' : 'up' }} ms-1"></i>
+                                                            {% else %}
+                                                                <i class="bi bi-sort ms-1 text-muted"></i>
+                                                            {% endif %}
+                                                        </a>
+                                                    </th>
+                                                    
+                                                    <!-- Niveau avec tri -->
+                                                    <th>
+                                                        <a href="{{ path('admin_cours_tri', {'sortBy': 'niveau', 'direction': current_sort.field == 'niveau' and current_sort.direction == 'ASC' ? 'DESC' : 'ASC'}) }}" 
+                                                        class="text-decoration-none d-flex align-items-center">
+                                                            <span>Niveau</span>
+                                                            {% if current_sort.field == 'niveau' %}
+                                                                <i class="bi bi-sort-{{ current_sort.direction == 'ASC' ? 'down' : 'up' }} ms-1"></i>
+                                                            {% else %}
+                                                                <i class="bi bi-sort ms-1 text-muted"></i>
+                                                            {% endif %}
+                                                        </a>
+                                                    </th>
+                                                    
+                                                    <!-- Durée avec tri -->
+                                                    <th>
+                                                        <a href="{{ path('admin_cours_tri', {'sortBy': 'duree', 'direction': current_sort.field == 'duree' and current_sort.direction == 'ASC' ? 'DESC' : 'ASC'}) }}" 
+                                                        class="text-decoration-none d-flex align-items-center">
+                                                            <span>Durée</span>
+                                                            {% if current_sort.field == 'duree' %}
+                                                                <i class="bi bi-sort-{{ current_sort.direction == 'ASC' ? 'down' : 'up' }} ms-1"></i>
+                                                            {% else %}
+                                                                <i class="bi bi-sort ms-1 text-muted"></i>
+                                                            {% endif %}
+                                                        </a>
+                                                    </th>
+                                                    
+                                                    <!-- Statut avec tri -->
+                                                    <th>
+                                                        <a href="{{ path('admin_cours_tri', {'sortBy': 'statut', 'direction': current_sort.field == 'statut' and current_sort.direction == 'ASC' ? 'DESC' : 'ASC'}) }}" 
+                                                        class="text-decoration-none d-flex align-items-center">
+                                                            <span>Statut</span>
+                                                            {% if current_sort.field == 'statut' %}
+                                                                <i class="bi bi-sort-{{ current_sort.direction == 'ASC' ? 'down' : 'up' }} ms-1"></i>
+                                                            {% else %}
+                                                                <i class="bi bi-sort ms-1 text-muted"></i>
+                                                            {% endif %}
+                                                        </a>
+                                                    </th>
+                                                    
+                                                    <!-- Date avec tri -->
+                                                    <th>
+                                                        <a href="{{ path('admin_cours_tri', {'sortBy': 'dateCreation', 'direction': current_sort.field == 'dateCreation' and current_sort.direction == 'ASC' ? 'DESC' : 'ASC'}) }}" 
+                                                        class="text-decoration-none d-flex align-items-center">
+                                                            <span>Date création</span>
+                                                            {% if current_sort.field == 'dateCreation' %}
+                                                                <i class="bi bi-sort-{{ current_sort.direction == 'ASC' ? 'down' : 'up' }} ms-1"></i>
+                                                            {% else %}
+                                                                <i class="bi bi-sort ms-1 text-muted"></i>
+                                                            {% endif %}
+                                                        </a>
+                                                    </th>
+                                                    
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for cours in coursList %}
+                                                    <tr>
+                                                        <td>{{ cours.titre }}</td>
+                                                        <td>{{ cours.matiere }}</td>
+                                                        <td>
+                                                            <span class="badge bg-info">{{ cours.niveau }}</span>
+                                                        </td>
+                                                        <td>{{ cours.duree }} min</td>
+                                                        <td>
+                                                            {% if cours.statut == 'publié' %}
+                                                                <span class="badge bg-success">Publié</span>
+                                                            {% elseif cours.statut == 'brouillon' %}
+                                                                <span class="badge bg-warning">Brouillon</span>
+                                                            {% else %}
+                                                                <span class="badge bg-secondary">Archivé</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ cours.dateCreation|date('d/m/Y') }}</td>
+                                                        <td>
+                                                            <div class="btn-group btn-group-sm">
+                                                                <a href="{{ path('admin_cours_view', {'id': cours.id}) }}" class="btn btn-outline-primary" title="Voir détails">
+                                                                    <i class="bi bi-eye"></i>
+                                                                </a>
+                                                                <a href="{{ path('admin_cours_edit', {'id': cours.id}) }}" class="btn btn-outline-secondary" title="Modifier">
+                                                                    <i class="bi bi-pencil"></i>
+                                                                </a>
+                                                                <a href="{{ path('admin_cours_export_pdf_single', {'id': cours.id}) }}" class="btn btn-outline-danger" title="Télécharger PDF">
+                                                                    <i class="bi bi-file-earmark-pdf"></i>
+                                                                </a>
+                                                                <form method="post" action="{{ path('admin_cours_delete', {'id': cours.id}) }}" class="d-inline" 
+                                                                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ? Toutes les ressources associées seront également supprimées.');">
+                                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_cours_' ~ cours.id) }}">
+                                                                    <button type="submit" class="btn btn-outline-danger" title="Supprimer">
+                                                                        <i class="bi bi-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                    {% endif %}
+                    
+                    <!-- ===== Section Statistiques (uniquement pour les cours) ===== -->
+                    {% if active_tab == 'cours' %}
+                        <div id="statistics-container">
+                            {{ render(path('admin_cours_statistiques')) }}
+                        </div>
+                    {% endif %}
+
+                    <!-- ================= RESSOURCES ================= -->
+                    {% if active_tab == 'ressources' %}
+                    <div class="tab-pane fade show active" id="ressources-tab">
+
+                        <!-- Formulaire d'ajout de ressource -->
+                        {% if selectedRessource is null and editRessourceForm is null %}
+                            <div class="card border-0 shadow-sm mb-4">
+                                <div class="card-header bg-white fw-bold">
+                                    <i class="bi bi-plus-circle me-2"></i> Ajouter une ressource pédagogique
+                                </div>
+                                <div class="card-body">
+                                    {{ form_start(formRessource, {'attr': {'id': 'ressource_form', 'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
+                                    <input type="hidden" name="form_name" value="{{ formRessource.vars.name }}">
+                                    
+                                    <div class="row g-3">
+                                        <!-- Titre et Type -->
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form_label(formRessource.titre) }}
+                                                {{ form_widget(formRessource.titre) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formRessource.titre) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form_label(formRessource.type) }}
+                                                {{ form_widget(formRessource.type) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formRessource.type) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Fichier upload -->
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form_label(formRessource.file) }}
+                                                {{ form_widget(formRessource.file) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formRessource.file) }}
+                                                </div>
+                                                <!-- Aperçu du fichier -->
+                                                <div id="file-preview" class="mt-2"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- URL -->
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form_label(formRessource.url) }}
+                                                {{ form_widget(formRessource.url) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formRessource.url) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Cours et Date -->
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form_label(formRessource.cours) }}
+                                                {{ form_widget(formRessource.cours) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formRessource.cours) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                {{ form_label(formRessource.dateAjout) }}
+                                                {{ form_widget(formRessource.dateAjout) }}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form_errors(formRessource.dateAjout) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Boutons -->
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="resetForm('ressource_form')">
+                                            <i class="bi bi-x-circle me-1"></i> Annuler
+                                        </button>
+                                        <button type="submit" class="btn btn-primary px-4">
+                                            <i class="bi bi-plus-circle me-1"></i> Ajouter la ressource
+                                        </button>
+                                    </div>
+                                    {{ form_end(formRessource) }}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Modal pour VIEW Ressource -->
+                        {% if selectedRessource is defined and selectedRessource is not null and editRessourceForm is null %}
+                            <div class="modal-backdrop fade show" id="modalBackdropRessource"></div>
+                            <div class="modal fade show d-block" id="viewRessourceModal" tabindex="-1" aria-labelledby="viewRessourceModalLabel" aria-hidden="false" data-bs-backdrop="static">
+                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-primary text-white">
+                                            <h5 class="modal-title" id="viewRessourceModalLabel">
+                                                <i class="bi bi-eye me-2"></i>Détails de la ressource
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" onclick="window.location.href='{{ path('admin_ressources_index') }}'"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- CARTE PRINCIPALE DU CONTENU VISUEL -->
+                                            <div class="card mb-4 border-0 shadow-sm">
+                                                <div class="card-body p-4">
+                                                    {% if selectedRessource.fileName %}
+                                                        <!-- AFFICHAGE DU FICHIER -->
+                                                        <div class="text-center mb-4">
+                                                            {% if selectedRessource.isImage %}
+                                                                <!-- Image -->
+                                                                <div class="mb-3">
+                                                                    <img src="{{ asset('uploads/ressources/' ~ selectedRessource.fileName) }}" 
+                                                                         alt="{{ selectedRessource.titre }}" 
+                                                                         class="img-fluid rounded shadow" 
+                                                                         style="max-height: 300px;">
+                                                                    <div class="mt-2">
+                                                                        <span class="badge bg-success">
+                                                                            <i class="bi bi-image me-1"></i> Image
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            {% elseif selectedRessource.isVideo %}
+                                                                <!-- Vidéo -->
+                                                                <div class="mb-3">
+                                                                    <div class="bg-dark rounded p-4 text-center">
+                                                                        <video controls class="w-100" style="max-height: 300px;">
+                                                                            <source src="{{ asset('uploads/ressources/' ~ selectedRessource.fileName) }}" 
+                                                                                    type="{{ selectedRessource.getMimeType() }}">
+                                                                            Votre navigateur ne supporte pas la lecture de vidéos.
+                                                                        </video>
+                                                                        <div class="mt-2">
+                                                                            <span class="badge bg-primary">
+                                                                                <i class="bi bi-play-circle me-1"></i> Vidéo
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            {% elseif selectedRessource.isPdf %}
+                                                                <!-- PDF -->
+                                                                <div class="mb-3">
+                                                                    <div class="bg-danger text-white rounded p-5 text-center">
+                                                                        <i class="bi bi-file-earmark-pdf display-4"></i>
+                                                                        <h5 class="mt-3">{{ selectedRessource.fileName }}</h5>
+                                                                        <div class="mt-2">
+                                                                            <span class="badge bg-light text-dark">
+                                                                                <i class="bi bi-file-earmark-pdf me-1"></i> Document PDF
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            {% else %}
+                                                                <!-- Autres fichiers -->
+                                                                <div class="mb-3">
+                                                                    <div class="bg-secondary text-white rounded p-5 text-center">
+                                                                        <i class="bi bi-file-earmark display-4"></i>
+                                                                        <h5 class="mt-3">{{ selectedRessource.fileName }}</h5>
+                                                                        <div class="mt-2">
+                                                                            <span class="badge bg-info">
+                                                                                <i class="bi bi-file-earmark me-1"></i> Fichier
+                                                                            </span>
+                                                                            <span class="badge bg-light text-dark ms-1">
+                                                                                {{ selectedRessource.getMimeType()|default('Type inconnu') }}
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            {% endif %}
+                                                            
+                                                            <!-- Actions pour le fichier -->
+                                                            <div class="d-flex justify-content-center gap-2 mt-3">
+                                                                <a href="{{ asset('uploads/ressources/' ~ selectedRessource.fileName) }}" 
+                                                                   target="_blank" 
+                                                                   class="btn btn-primary">
+                                                                    <i class="bi bi-eye me-1"></i> Visualiser
+                                                                </a>
+                                                                <a href="{{ path('admin_ressources_download', {'id': selectedRessource.id}) }}" 
+                                                                   class="btn btn-success">
+                                                                    <i class="bi bi-download me-1"></i> Télécharger
+                                                                </a>
+                                                                <a href="{{ path('admin_ressources_export_pdf_single', {'id': selectedRessource.id}) }}" 
+                                                                   class="btn btn-danger">
+                                                                    <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                    {% elseif selectedRessource.url %}
+                                                        <!-- AFFICHAGE DU LIEN -->
+                                                        <div class="text-center mb-4">
+                                                            <div class="bg-info text-white rounded p-5">
+                                                                <i class="bi bi-link-45deg display-4"></i>
+                                                                <h4 class="mt-3">Lien externe</h4>
+                                                                
+                                                                <div class="mt-4">
+                                                                    <div class="input-group mb-3">
+                                                                        <input type="text" 
+                                                                               class="form-control" 
+                                                                               value="{{ selectedRessource.url }}" 
+                                                                               readonly
+                                                                               id="url-display">
+                                                                        <button class="btn btn-outline-light" 
+                                                                                type="button" 
+                                                                                onclick="copyToClipboard('url-display')">
+                                                                            <i class="bi bi-clipboard"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                    
+                                                                    <div class="mt-3">
+                                                                        {% if selectedRessource.url|lower starts with 'https://' %}
+                                                                            <span class="badge bg-success me-2">
+                                                                                <i class="bi bi-shield-check me-1"></i> HTTPS sécurisé
+                                                                            </span>
+                                                                        {% else %}
+                                                                            <span class="badge bg-warning text-dark me-2">
+                                                                                <i class="bi bi-shield-exclamation me-1"></i> HTTP non sécurisé
+                                                                            </span>
+                                                                        {% endif %}
+                                                                        <span class="badge bg-light text-dark">
+                                                                            <i class="bi bi-box-arrow-up-right me-1"></i> Lien externe
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <!-- Actions pour le lien -->
+                                                            <div class="d-flex justify-content-center gap-2 mt-3">
+                                                                <a href="{{ selectedRessource.url }}" 
+                                                                   target="_blank" 
+                                                                   class="btn btn-primary">
+                                                                    <i class="bi bi-box-arrow-up-right me-1"></i> Ouvrir le lien
+                                                                </a>
+                                                                <button class="btn btn-outline-secondary" 
+                                                                        onclick="copyToClipboard('url-display')">
+                                                                    <i class="bi bi-clipboard me-1"></i> Copier l'URL
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    {% else %}
+                                                        <!-- AUCUN CONTENU -->
+                                                        <div class="text-center mb-4">
+                                                            <div class="bg-light rounded p-5">
+                                                                <i class="bi bi-file-x display-4 text-muted"></i>
+                                                                <h4 class="mt-3 text-muted">Aucun contenu</h4>
+                                                                <p class="text-muted">Cette ressource ne contient ni fichier ni lien.</p>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- INFORMATIONS DÉTAILLÉES -->
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="card h-100">
+                                                        <div class="card-header bg-light">
+                                                            <i class="bi bi-info-circle me-2"></i> Informations
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <p><strong>Titre :</strong> {{ selectedRessource.titre }}</p>
+                                                            <p><strong>Type :</strong> 
+                                                                <span class="badge bg-info">{{ selectedRessource.type }}</span>
+                                                            </p>
+                                                            <p><strong>Date d'ajout :</strong> {{ selectedRessource.dateAjout|date('d/m/Y H:i') }}</p>
+                                                            {% if selectedRessource.updatedAt %}
+                                                                <p><strong>Dernière modification :</strong> {{ selectedRessource.updatedAt|date('d/m/Y H:i') }}</p>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-6">
+                                                    <div class="card h-100">
+                                                        <div class="card-header bg-light">
+                                                            <i class="bi bi-journal-text me-2"></i> Cours associé
+                                                        </div>
+                                                        <div class="card-body">
+                                                            {% if selectedRessource.cours %}
+                                                                <div class="d-flex align-items-center">
+                                                                    <div class="me-3">
+                                                                        <div class="bg-success text-white rounded p-3 text-center" style="width: 70px; height: 70px;">
+                                                                            <i class="bi bi-journal-text fs-4"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div>
+                                                                        <h5 class="mb-1">{{ selectedRessource.cours.titre }}</h5>
+                                                                        <p class="text-muted mb-1">
+                                                                            <i class="bi bi-book me-1"></i> {{ selectedRessource.cours.matiere }}
+                                                                        </p>
+                                                                        <p class="text-muted mb-0">
+                                                                            <i class="bi bi-flag me-1"></i> 
+                                                                            {% if selectedRessource.cours.statut == 'publié' %}
+                                                                                <span class="badge bg-success">Publié</span>
+                                                                            {% elseif selectedRessource.cours.statut == 'brouillon' %}
+                                                                                <span class="badge bg-warning">Brouillon</span>
+                                                                            {% else %}
+                                                                                <span class="badge bg-secondary">Archivé</span>
+                                                                            {% endif %}
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            {% else %}
+                                                                <div class="text-center text-muted py-3">
+                                                                    <i class="bi bi-journal-x display-4"></i>
+                                                                    <p class="mt-2">Aucun cours associé</p>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" onclick="window.location.href='{{ path('admin_ressources_index') }}'">
+                                                <i class="bi bi-x-circle me-1"></i> Fermer
+                                            </button>
+                                            <a href="{{ path('admin_ressources_edit', {'id': selectedRessource.id}) }}" class="btn btn-warning">
+                                                <i class="bi bi-pencil me-1"></i> Modifier
+                                            </a>
+                                            <form method="post" action="{{ path('admin_ressources_delete', {'id': selectedRessource.id}) }}" class="d-inline"
+                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette ressource ?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete_ressource_' ~ selectedRessource.id) }}">
+                                                <button type="submit" class="btn btn-danger">
+                                                    <i class="bi bi-trash me-1"></i> Supprimer
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Formulaire d'édition de ressource (VISUEL) -->
+                        {% if editRessourceForm is defined and editRessourceForm is not null %}
+                            <div class="modal-backdrop fade show" id="modalBackdropRessource"></div>
+                            <div class="modal fade show d-block" id="editRessourceModal" tabindex="-1" aria-labelledby="editRessourceModalLabel" aria-hidden="false" data-bs-backdrop="static">
+                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-warning text-white">
+                                            <h5 class="modal-title" id="editRessourceModalLabel">
+                                                <i class="bi bi-pencil me-2"></i>Modifier la ressource
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" onclick="window.location.href='{{ selectedRessource ? path('admin_ressources_view', {'id': selectedRessource.id}) : path('admin_ressources_index') }}'"></button>
+                                        </div>
+                                        {{ form_start(editRessourceForm, {'attr': {'id': 'edit_ressource_form', 'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
+                                        <input type="hidden" name="form_name" value="{{ editRessourceForm.vars.name }}">
+                                        
+                                        <div class="modal-body">
+                                            <!-- AFFICHAGE VISUEL DU CONTENU EXISTANT -->
+                                            {% if selectedRessource and (selectedRessource.fileName or selectedRessource.url) %}
+                                                <div class="card mb-4">
+                                                    <div class="card-header bg-light">
+                                                        <i class="bi bi-folder me-2"></i> Contenu actuel
+                                                    </div>
+                                                    <div class="card-body">
+                                                        {% if selectedRessource.fileName %}
+                                                            <!-- Fichier actuel -->
+                                                            <div class="d-flex align-items-center mb-3">
+                                                                <div class="me-3">
+                                                                    {% if selectedRessource.isImage %}
+                                                                        <img src="{{ asset('uploads/ressources/' ~ selectedRessource.fileName) }}" 
+                                                                             alt="{{ selectedRessource.titre }}" 
+                                                                             class="img-thumbnail" 
+                                                                             style="max-height: 100px; max-width: 100px;">
+                                                                    {% elseif selectedRessource.isPdf %}
+                                                                        <div class="bg-danger text-white rounded p-3 text-center" style="width: 100px; height: 100px;">
+                                                                            <i class="bi bi-file-earmark-pdf fs-1"></i>
+                                                                        </div>
+                                                                    {% elseif selectedRessource.isVideo %}
+                                                                        <div class="bg-primary text-white rounded p-3 text-center" style="width: 100px; height: 100px;">
+                                                                            <i class="bi bi-play-circle fs-1"></i>
+                                                                        </div>
+                                                                    {% else %}
+                                                                        <div class="bg-secondary text-white rounded p-3 text-center" style="width: 100px; height: 100px;">
+                                                                            <i class="bi bi-file-earmark fs-1"></i>
+                                                                        </div>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="flex-grow-1">
+                                                                    <h6 class="mb-1">{{ selectedRessource.fileName }}</h6>
+                                                                    <small class="text-muted d-block">
+                                                                        Type: {{ selectedRessource.getDisplayType() }}
+                                                                        {% if selectedRessource.getMimeType %}
+                                                                            | {{ selectedRessource.getMimeType() }}
+                                                                        {% endif %}
+                                                                    </small>
+                                                                    <div class="mt-2">
+                                                                        <a href="{{ asset('uploads/ressources/' ~ selectedRessource.fileName) }}" 
+                                                                           target="_blank" 
+                                                                           class="btn btn-sm btn-outline-primary">
+                                                                            <i class="bi bi-eye me-1"></i> Voir
+                                                                        </a>
+                                                                        <a href="{{ path('admin_ressources_download', {'id': selectedRessource.id}) }}" 
+                                                                           class="btn btn-sm btn-outline-success">
+                                                                            <i class="bi bi-download me-1"></i> Télécharger
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                        
+                                                        {% if selectedRessource.url %}
+                                                            <!-- Lien actuel -->
+                                                            <div class="d-flex align-items-center mt-3">
+                                                                <div class="me-3">
+                                                                    <div class="bg-info text-white rounded p-3 text-center" style="width: 80px; height: 80px;">
+                                                                        <i class="bi bi-link fs-3"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="flex-grow-1">
+                                                                    <h6 class="mb-1">Lien actuel</h6>
+                                                                    <a href="{{ selectedRessource.url }}" target="_blank" class="text-break">
+                                                                        {{ selectedRessource.url|slice(0, 50) }}{% if selectedRessource.url|length > 50 %}...{% endif %}
+                                                                    </a>
+                                                                    <br>
+                                                                    <small class="text-muted">
+                                                                        {% if selectedRessource.url|lower starts with 'https://' %}
+                                                                            <span class="badge bg-success">HTTPS sécurisé</span>
+                                                                        {% else %}
+                                                                            <span class="badge bg-warning">HTTP non sécurisé</span>
+                                                                        {% endif %}
+                                                                    </small>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                        
+                                                        <!-- Options de suppression -->
+                                                        <div class="mt-3 border-top pt-3">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="checkbox" name="remove_file" id="remove_file">
+                                                                <label class="form-check-label text-danger" for="remove_file">
+                                                                    <i class="bi bi-trash me-1"></i> Supprimer le fichier actuel
+                                                                </label>
+                                                            </div>
+                                                            {% if selectedRessource.url %}
+                                                                <div class="form-check mt-2">
+                                                                    <input class="form-check-input" type="checkbox" name="remove_url" id="remove_url">
+                                                                    <label class="form-check-label text-danger" for="remove_url">
+                                                                        <i class="bi bi-trash me-1"></i> Supprimer le lien actuel
+                                                                    </label>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            
+                                            <!-- FORMULAIRE D'ÉDITION -->
+                                            <div class="row g-3">
+                                                <!-- Titre et Type -->
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        {{ form_label(editRessourceForm.titre, "Titre *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                        {{ form_widget(editRessourceForm.titre, {'attr': {'class': 'form-control'}}) }}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form_errors(editRessourceForm.titre) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        {{ form_label(editRessourceForm.type, "Type *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                        {{ form_widget(editRessourceForm.type, {'attr': {'class': 'form-select', 'onchange': 'toggleFileUploadEdit(this.value)'}}) }}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form_errors(editRessourceForm.type) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Champ Fichier -->
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        {{ form_label(editRessourceForm.file, "Nouveau fichier", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                        {{ form_widget(editRessourceForm.file, {'attr': {
+                                                            'class': 'form-control',
+                                                            'accept': '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif,.webp,.mp4,.mov,.mp3,.wav,.txt',
+                                                            'onchange': 'previewFileEdit(this)'
+                                                        }}) }}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form_errors(editRessourceForm.file) }}
+                                                        </div>
+                                                        <!-- Prévisualisation -->
+                                                        <div id="file-preview-edit" class="mt-2"></div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Champ URL -->
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        {{ form_label(editRessourceForm.url, "Nouvelle URL", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                        {{ form_widget(editRessourceForm.url, {'attr': {
+                                                            'class': 'form-control',
+                                                            'placeholder': 'https://exemple.com/nouvelle-ressource'
+                                                        }}) }}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form_errors(editRessourceForm.url) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Cours et Date -->
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        {{ form_label(editRessourceForm.cours, "Cours associé *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                        {{ form_widget(editRessourceForm.cours, {'attr': {'class': 'form-select'}}) }}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form_errors(editRessourceForm.cours) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        {{ form_label(editRessourceForm.dateAjout, "Date d'ajout *", {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                                                        {{ form_widget(editRessourceForm.dateAjout, {'attr': {'class': 'form-control'}}) }}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form_errors(editRessourceForm.dateAjout) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Conseils -->
+                                            <div class="alert alert-info mt-3">
+                                                <i class="bi bi-lightbulb me-2"></i>
+                                                <strong>Conseil :</strong> 
+                                                <ul class="mb-0 mt-1">
+                                                    <li>Laissez vide pour conserver le contenu existant</li>
+                                                    <li>Cochez "Supprimer" pour retirer le contenu actuel</li>
+                                                    <li>Ajoutez un nouveau fichier/URL pour remplacer</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a href="{{ selectedRessource ? path('admin_ressources_view', {'id': selectedRessource.id}) : path('admin_ressources_index') }}" class="btn btn-secondary">
+                                                <i class="bi bi-x-circle me-1"></i> Annuler
+                                            </a>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-check-circle me-1"></i> Enregistrer les modifications
+                                            </button>
+                                        </div>
+                                        {{ form_end(editRessourceForm) }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Liste des ressources -->
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white fw-bold">
+                                Ressources existantes ({{ ressourcesList|length }})
+                            </div>
+                            <div class="card-body">
+                                {% if ressourcesList is empty %}
+                                    <div class="text-center py-4 text-muted">
+                                        <i class="bi bi-folder-x display-4"></i>
+                                        <p class="mt-2">Aucune ressource pour le moment</p>
+                                        <p class="small">Ajoutez votre première ressource pédagogique ci-dessus</p>
+                                    </div>
+                                {% else %}
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        <a href="{{ path('admin_ressources_tri', {'sortBy': 'titre', 'direction': current_sort.field == 'titre' and current_sort.direction == 'ASC' ? 'DESC' : 'ASC'}) }}" class="text-decoration-none">
+                                                            Titre 
+                                                            {% if current_sort.field == 'titre' %}
+                                                                <i class="bi bi-sort-{{ current_sort.direction == 'ASC' ? 'down' : 'up' }}"></i>
+                                                            {% endif %}
+                                                        </a>
+                                                    </th>
+                                                    <th>
+                                                        <a href="{{ path('admin_ressources_tri', {'sortBy': 'type', 'direction': current_sort.field == 'type' and current_sort.direction == 'ASC' ? 'DESC' : 'ASC'}) }}" class="text-decoration-none">
+                                                            Type
+                                                            {% if current_sort.field == 'type' %}
+                                                                <i class="bi bi-sort-{{ current_sort.direction == 'ASC' ? 'down' : 'up' }}"></i>
+                                                            {% endif %}
+                                                        </a>
+                                                    </th>
+                                                    <th>Cours associé</th>
+                                                    <th>
+                                                        <a href="{{ path('admin_ressources_tri', {'sortBy': 'dateAjout', 'direction': current_sort.field == 'dateAjout' and current_sort.direction == 'ASC' ? 'DESC' : 'ASC'}) }}" class="text-decoration-none">
+                                                            Date d'ajout
+                                                            {% if current_sort.field == 'dateAjout' %}
+                                                                <i class="bi bi-sort-{{ current_sort.direction == 'ASC' ? 'down' : 'up' }}"></i>
+                                                            {% endif %}
+                                                        </a>
+                                                    </th>
+                                                    <th>Fichier/URL</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for ressource in ressourcesList %}
+                                                    <tr>
+                                                        <td>{{ ressource.titre }}</td>
+                                                        <td>
+                                                            <span class="badge bg-info">{{ ressource.type }}</span>
+                                                        </td>
+                                                        <td>
+                                                            {% if ressource.cours %}
+                                                                {{ ressource.cours.titre }}
+                                                            {% else %}
+                                                                <span class="text-muted">Aucun cours</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ ressource.dateAjout|date('d/m/Y') }}</td>
+                                                        <td>
+                                                            {% if ressource.fileName %}
+                                                                <!-- Fichier uploadé -->
+                                                                <a href="{{ asset('uploads/ressources/' ~ ressource.fileName) }}" 
+                                                                   target="_blank" 
+                                                                   class="text-decoration-none d-flex align-items-center" 
+                                                                   title="Télécharger {{ ressource.fileName }}">
+                                                                    <i class="bi {{ ressource.getFileIcon }} me-2"></i>
+                                                                    <div>
+                                                                        <span class="d-block">{{ ressource.fileName|slice(0, 20) }}{% if ressource.fileName|length > 20 %}...{% endif %}</span>
+                                                                        <small class="text-muted">
+                                                                            {% if ressource.isImage %}Image{% elseif ressource.isVideo %}Vidéo{% elseif ressource.isPdf %}PDF{% else %}Fichier{% endif %}
+                                                                        </small>
+                                                                    </div>
+                                                                </a>
+                                                            {% elseif ressource.url %}
+                                                                <!-- Lien externe -->
+                                                                <a href="{{ ressource.url }}" target="_blank" class="text-decoration-none d-flex align-items-center" title="{{ ressource.url }}">
+                                                                    <i class="bi bi-link-45deg me-2"></i>
+                                                                    <div>
+                                                                        <span class="d-block">Lien externe</span>
+                                                                        <small class="text-muted">
+                                                                            {{ ressource.url|replace({'https://': '', 'http://': ''})|slice(0, 25) }}{% if ressource.url|length > 25 %}...{% endif %}
+                                                                        </small>
+                                                                    </div>
+                                                                </a>
+                                                            {% else %}
+                                                                <span class="text-muted">
+                                                                    <i class="bi bi-file-x"></i> Aucun fichier/lien
+                                                                </span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>
+                                                            <div class="btn-group btn-group-sm">
+                                                                <a href="{{ path('admin_ressources_view', {'id': ressource.id}) }}" class="btn btn-outline-primary" title="Voir détails">
+                                                                    <i class="bi bi-eye"></i>
+                                                                </a>
+                                                                <a href="{{ path('admin_ressources_edit', {'id': ressource.id}) }}" class="btn btn-outline-secondary" title="Modifier">
+                                                                    <i class="bi bi-pencil"></i>
+                                                                </a>
+                                                                <a href="{{ path('admin_ressources_export_pdf_single', {'id': ressource.id}) }}" class="btn btn-outline-danger" title="Télécharger PDF">
+                                                                    <i class="bi bi-file-earmark-pdf"></i>
+                                                                </a>
+                                                                <form method="post" action="{{ path('admin_ressources_delete', {'id': ressource.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette ressource ?');">
+                                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_ressource_' ~ ressource.id) }}">
+                                                                    <button type="submit" class="btn btn-outline-danger" title="Supprimer">
+                                                                        <i class="bi bi-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                    {% endif %}
+                    <!-- Fin du tab-pane Ressources -->
+
+                </div>
+                <!-- Fin du tab-content -->
+            </div>
+            <!-- Fin du content-container -->
+
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log('Page chargée - Gestion des cours et ressources');
+        
+        // Définir la date du jour par défaut
+        const today = new Date().toISOString().split('T')[0];
+        const dateInputs = document.querySelectorAll('input[type="date"]');
+        dateInputs.forEach(input => {
+            if (!input.value) {
+                input.value = today;
+            }
+        });
+        
+        // Fonction pour réinitialiser un formulaire
+        window.resetForm = function(formId) {
+            const form = document.getElementById(formId);
+            if (form) {
+                form.reset();
+                
+                // Réinitialiser les selects
+                const selects = form.querySelectorAll('select');
+                selects.forEach(select => {
+                    select.selectedIndex = 0;
+                });
+                
+                // Réinitialiser la date
+                const dateInputs = form.querySelectorAll('input[type="date"]');
+                dateInputs.forEach(input => {
+                    input.value = today;
+                });
+                
+                // Effacer les erreurs
+                const errors = form.querySelectorAll('.text-danger');
+                errors.forEach(error => {
+                    error.innerHTML = '';
+                });
+                
+                // Réinitialiser les champs invalides
+                const invalidFields = form.querySelectorAll('.is-invalid');
+                invalidFields.forEach(field => {
+                    field.classList.remove('is-invalid');
+                });
+                
+                console.log('Formulaire ' + formId + ' réinitialisé');
+            } else {
+                console.error('Formulaire ' + formId + ' non trouvé');
+            }
+        };
+        
+        // Validation en temps réel
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(event) {
+                console.log('Form submission for: ' + form.id);
+                
+                let isValid = true;
+                const requiredFields = form.querySelectorAll('[required]');
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        field.classList.add('is-invalid');
+                        const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                        if (errorDiv) {
+                            errorDiv.textContent = 'Ce champ est obligatoire';
+                        }
+                        isValid = false;
+                    } else {
+                        field.classList.remove('is-invalid');
+                        const errorDiv = field.closest('.mb-3')?.querySelector('.text-danger');
+                        if (errorDiv) {
+                            errorDiv.textContent = '';
+                        }
+                    }
+                });
+                
+                if (!isValid) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    
+                    // Afficher un message général
+                    const existingAlert = form.querySelector('.alert-danger');
+                    if (!existingAlert) {
+                        const alert = document.createElement('div');
+                        alert.className = 'alert alert-danger mt-3';
+                        alert.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Veuillez corriger les erreurs dans le formulaire';
+                        form.prepend(alert);
+                        
+                        setTimeout(() => {
+                            alert.remove();
+                        }, 5000);
+                    }
+                    
+                    // Scroll vers la première erreur
+                    const firstError = form.querySelector('.is-invalid');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        firstError.focus();
+                    }
+                }
+            });
+        });
+        
+        // Fermer les modals avec Escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const activeModal = document.querySelector('.modal.show');
+                if (activeModal) {
+                    const closeBtn = activeModal.querySelector('.btn-close');
+                    if (closeBtn) {
+                        closeBtn.click();
+                    }
+                }
+            }
+        });
+        
+        // Recherche AJAX
+        document.getElementById('searchButton')?.addEventListener('click', performSearch);
+        document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+        
+        document.getElementById('resetSearch')?.addEventListener('click', function() {
+            document.getElementById('searchInput').value = '';
+            performSearch();
+        });
+        
+        // Fonction pour copier l'URL
+        window.copyToClipboard = function(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.select();
+                element.setSelectionRange(0, 99999); // Pour mobile
+                navigator.clipboard.writeText(element.value)
+                    .then(() => {
+                        const originalText = element.value;
+                        element.value = 'Copié !';
+                        setTimeout(() => {
+                            element.value = originalText;
+                        }, 1500);
+                    })
+                    .catch(err => {
+                        console.error('Erreur lors de la copie : ', err);
+                    });
+            }
+        };
+    });
+    
+    function performSearch() {
+        const searchTerm = document.getElementById('searchInput').value;
+        const activeTab = document.querySelector('.nav-link.active').textContent.includes('Cours') ? 'cours' : 'ressources';
+        
+        // Afficher l'indicateur de chargement
+        const contentContainer = document.getElementById('content-container');
+        if (contentContainer) {
+            contentContainer.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Recherche en cours...</p></div>';
+        }
+        
+        // Effectuer la requête AJAX
+        fetch(`/admin/${activeTab}/recherche?q=${encodeURIComponent(searchTerm)}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(html => {
+            // Mettre à jour seulement la partie du contenu
+            const contentContainer = document.getElementById('content-container');
+            if (contentContainer) {
+                contentContainer.innerHTML = html;
+                
+                // Réinitialiser les événements
+                initializeEventListeners();
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la recherche:', error);
+            const contentContainer = document.getElementById('content-container');
+            if (contentContainer) {
+                contentContainer.innerHTML = '<div class="alert alert-danger">Erreur lors de la recherche. Veuillez réessayer ou recharger la page.</div>';
+            }
+        });
+    }
+    
+    // Fonction pour réinitialiser les événements après AJAX
+    function initializeEventListeners() {
+        // Réattacher les événements de recherche
+        document.getElementById('searchButton')?.addEventListener('click', performSearch);
+        document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') performSearch();
+        });
+        document.getElementById('resetSearch')?.addEventListener('click', function() {
+            document.getElementById('searchInput').value = '';
+            performSearch();
+        });
+    }
+    
+    // Gestion de l'upload de fichiers
+    function toggleFileUploadEdit(selectedType) {
+        const urlField = document.querySelector('#edit_ressource_form input[name*="[url]"]');
+        const fileField = document.querySelector('#edit_ressource_form input[name*="[file]"]');
+        
+        if (urlField && fileField) {
+            if (selectedType === 'Lien') {
+                urlField.required = true;
+                fileField.required = false;
+            } else if (selectedType === 'Exercice') {
+                urlField.required = false;
+                fileField.required = false;
+            } else {
+                urlField.required = false;
+                fileField.required = false;
+            }
+        }
+    }
+    
+    function previewFileEdit(input) {
+        const preview = document.getElementById('file-preview-edit');
+        if (!preview) return;
+        
+        preview.innerHTML = '';
+        
+        const file = input.files[0];
+        if (!file) return;
+        
+        // Afficher les informations du fichier
+        const fileInfo = document.createElement('div');
+        fileInfo.className = 'alert alert-info p-2';
+        fileInfo.innerHTML = `
+            <i class="bi bi-info-circle me-2"></i>
+            <strong>${file.name}</strong> (${(file.size / 1024 / 1024).toFixed(2)} MB)
+            <br><small class="text-muted">Type: ${file.type}</small>
+        `;
+        preview.appendChild(fileInfo);
+        
+        // Prévisualisation d'image
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'img-thumbnail mt-2';
+                img.style.maxHeight = '150px';
+                img.style.maxWidth = '100%';
+                preview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Prévisualisation pour vidéo
+        if (file.type.startsWith('video/')) {
+            const videoIcon = document.createElement('div');
+            videoIcon.className = 'text-center mt-2';
+            videoIcon.innerHTML = '<i class="bi bi-play-circle fs-1 text-primary"></i><br><small>Fichier vidéo détecté</small>';
+            preview.appendChild(videoIcon);
+        }
+        
+        // Prévisualisation pour PDF
+        if (file.type === 'application/pdf') {
+            const pdfIcon = document.createElement('div');
+            pdfIcon.className = 'text-center mt-2';
+            pdfIcon.innerHTML = '<i class="bi bi-file-earmark-pdf fs-1 text-danger"></i><br><small>Fichier PDF détecté</small>';
+            preview.appendChild(pdfIcon);
+        }
+    }
+    
+    // Initialiser la fonction de toggle au chargement
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelectEdit = document.querySelector('#edit_ressource_form select[name*="[type]"]');
+        if (typeSelectEdit) {
+            toggleFileUploadEdit(typeSelectEdit.value);
+            typeSelectEdit.addEventListener('change', function() {
+                toggleFileUploadEdit(this.value);
+            });
+        }
+        
+        // Prévisualisation pour le formulaire d'ajout
+        const fileInput = document.getElementById('ressource_pedagogique_file');
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const preview = document.getElementById('file-preview');
+                if (!preview) return;
+                
+                preview.innerHTML = '';
+                
+                const file = this.files[0];
+                if (!file) return;
+                
+                // Afficher les informations du fichier
+                const fileInfo = document.createElement('div');
+                fileInfo.className = 'alert alert-info';
+                fileInfo.innerHTML = `
+                    <i class="bi bi-info-circle"></i>
+                    <strong>${file.name}</strong> (${(file.size / 1024 / 1024).toFixed(2)} MB)
+                    <br><small>Type: ${file.type}</small>
+                `;
+                preview.appendChild(fileInfo);
+                
+                // Prévisualisation pour les images
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'img-thumbnail mt-2';
+                        img.style.maxHeight = '200px';
+                        preview.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                }
+                
+                // Prévisualisation pour les vidéos
+                if (file.type.startsWith('video/')) {
+                    const videoInfo = document.createElement('div');
+                    videoInfo.className = 'alert alert-secondary mt-2';
+                    videoInfo.innerHTML = '<i class="bi bi-play-circle"></i> Fichier vidéo détecté';
+                    preview.appendChild(videoInfo);
+                }
+                
+                // Prévisualisation pour les PDF
+                if (file.type === 'application/pdf') {
+                    const pdfInfo = document.createElement('div');
+                    pdfInfo.className = 'alert alert-danger mt-2';
+                    pdfInfo.innerHTML = '<i class="bi bi-file-earmark-pdf"></i> Fichier PDF détecté';
+                    preview.appendChild(pdfInfo);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

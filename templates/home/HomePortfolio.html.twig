@@ -1,0 +1,1088 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+
+<!-- Mirrored from eduport.webestica.com/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 02 Feb 2026 11:03:58 GMT -->
+<head>
+	<title>Education and Course Theme</title>
+
+	<!-- Meta Tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="Webestica.com">
+	<meta name="description" content="Eduport- LMS, Education and Course Theme">
+
+	<!-- Dark mode -->
+	<script>
+		const storedTheme = localStorage.getItem('theme')
+ 
+		const getPreferredTheme = () => {
+			if (storedTheme) {
+				return storedTheme
+			}
+			return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'light'
+		}
+
+		const setTheme = function (theme) {
+			if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+				document.documentElement.setAttribute('data-bs-theme', 'dark')
+			} else {
+				document.documentElement.setAttribute('data-bs-theme', theme)
+			}
+		}
+
+		setTheme(getPreferredTheme())
+
+		window.addEventListener('DOMContentLoaded', () => {
+		    var el = document.querySelector('.theme-icon-active');
+			if(el != 'undefined' && el != null) {
+				const showActiveTheme = theme => {
+				const activeThemeIcon = document.querySelector('.theme-icon-active use')
+				const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
+				const svgOfActiveBtn = btnToActive.querySelector('.mode-switch use').getAttribute('href')
+
+				document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
+					element.classList.remove('active')
+				})
+
+				btnToActive.classList.add('active')
+				activeThemeIcon.setAttribute('href', svgOfActiveBtn)
+			}
+
+			window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+				if (storedTheme !== 'light' || storedTheme !== 'dark') {
+					setTheme(getPreferredTheme())
+				}
+			})
+
+			showActiveTheme(getPreferredTheme())
+
+			document.querySelectorAll('[data-bs-theme-value]')
+				.forEach(toggle => {
+					toggle.addEventListener('click', () => {
+						const theme = toggle.getAttribute('data-bs-theme-value')
+						localStorage.setItem('theme', theme)
+						setTheme(theme)
+						showActiveTheme(theme)
+					})
+				})
+
+			}
+		})
+		
+	</script>
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="assets/images/favicon.ico">
+
+	<!-- Google Font -->
+	<link rel="preconnect" href="https://fonts.googleapis.com/">
+	<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&amp;family=Roboto:wght@400;500;700&amp;display=swap">
+
+	<!-- Plugins CSS -->
+	<link rel="stylesheet" type="text/css" href="assets/vendor/font-awesome/css/all.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/vendor/bootstrap-icons/bootstrap-icons.css">
+	<link rel="stylesheet" type="text/css" href="assets/vendor/tiny-slider/tiny-slider.css">
+	<link rel="stylesheet" type="text/css" href="assets/vendor/glightbox/css/glightbox.css">
+
+	<!-- Theme CSS -->
+	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-7N7LGGGWT1"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'G-7N7LGGGWT1');
+	</script>
+
+</head>
+
+<body>
+
+<!-- Header START -->
+<header class="navbar-light navbar-sticky header-static">
+	<!-- Nav START -->
+	<nav class="navbar navbar-expand-xl">
+		<div class="container-fluid px-3 px-xl-5">
+	<!-- Logo START -->
+<a class="navbar-brand" href="{{ path('home') }}">
+    <img class="light-mode-item navbar-brand-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 250px;">
+    <img class="dark-mode-item navbar-brand-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 250px;">
+</a>
+<!-- Logo END -->
+
+			<!-- Responsive navbar toggler -->
+			<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-animation">
+					<span></span>
+					<span></span>
+					<span></span>
+				</span>
+			</button>
+
+			<!-- Main navbar START -->
+			<div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+
+				<!-- Nav category menu START -->
+				<ul class="navbar-nav navbar-nav-scroll me-auto">
+					<!-- Nav item 1 Demos -->
+					<li class="nav-item dropdown dropdown-menu-shadow-stacked">
+						<a class="nav-link bg-primary bg-opacity-10 rounded-3 text-primary px-3 py-3 py-xl-0" href="#" id="categoryMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="bi bi-ui-radios-grid me-2"></i><span>Category</span></a>
+						<ul class="dropdown-menu" aria-labelledby="categoryMenu">
+							<li> <a class="dropdown-item" href="#">Development</a></li>
+							<li> <a class="dropdown-item" href="#">Design</a></li>
+							<li> <a class="dropdown-item" href="#">Marketing</a></li>
+							<li> <a class="dropdown-item" href="#">Music</a></li>
+							<li> <a class="dropdown-item" href="#">Lifestyle</a></li>
+							<li> <a class="dropdown-item" href="#">IT & software</a></li>
+							<li> <a class="dropdown-item" href="#">Personal development</a></li>
+							<li> <a class="dropdown-item" href="#">Health & fitness</a></li>
+							<li> <a class="dropdown-item" href="#">Teaching</a></li>
+							<li> <a class="dropdown-item" href="#">Social science</a></li>
+							<li> <a class="dropdown-item" href="#">Math & logic</a></li>
+							<li> <hr class="dropdown-divider"></li>
+							<li> <a class="dropdown-item bg-primary text-primary bg-opacity-10 rounded-2 mb-0" href="#">View all categories</a></li>
+						</ul>
+					</li>
+				</ul>
+				<!-- Nav category menu END -->
+
+				<!-- Nav Main menu START -->
+				<ul class="navbar-nav navbar-nav-scroll me-auto">
+					<!-- Nav item 1 Demos -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle active" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">services</a>
+						<ul class="dropdown-menu" aria-labelledby="demoMenu">
+							<li><a class="dropdown-item active" href="{{ path('home_portfolio') }}">portfolio</a></li>
+							<li> <a class="dropdown-item" href="index-2.html">évennements</a></li>
+							<li> <a class="dropdown-item" href="index-3.html">certification</a></li>
+						</ul>
+					</li>
+
+					<!-- Nav item 2 Pages -->
+					
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
+						<ul class="dropdown-menu" aria-labelledby="pagesMenu">
+							<li>
+								<a class="dropdown-item" href="{{ path('app_courses') }}">Cours</a>
+							</li>
+							<li><a class="dropdown-item" href="{{ path('quiz') }}">QUIZ</a></li>
+						</ul>
+					</li>
+					
+
+					<!-- Nav item 3 Account -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
+						<ul class="dropdown-menu" aria-labelledby="accounntMenu">
+							<li>
+								<a class="dropdown-item" href="{{ path('instructor') }}">
+									<i class="fas fa-user-tie fa-fw me-1"></i>enseignants
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="{{ path('student_dashboard') }}">
+									<i class="fas fa-user-graduate fa-fw me-1"></i>etudiants
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="{{ path('admin_dashboard') }}">
+									<i class="fas fa-user-cog fa-fw me-1"></i>Admin
+								</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<!-- Nav Main menu END -->
+
+				<!-- Nav Search START -->
+				<div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+					<div class="nav-item w-100">
+						<form class="position-relative">
+							<input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
+							<button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+								<i class="fas fa-search fs-6 "></i>
+							</button>
+						</form>
+					</div>
+				</div>
+				<!-- Nav Search END -->
+			</div>
+			<!-- Main navbar END -->
+
+			<!-- Profile START -->
+			<div class="dropdown ms-1 ms-lg-0">
+				<a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+					<img class="avatar-img rounded-circle" src="assets/images/avatar/01.jpg" alt="avatar">
+				</a>
+				<ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+					<!-- Profile info -->
+					<li class="px-3 mb-3">
+						<div class="d-flex align-items-center">
+							<!-- Avatar -->
+							<div class="avatar me-3">
+								<img class="avatar-img rounded-circle shadow" src="assets/images/avatar/01.jpg" alt="avatar">
+							</div>
+							<div>
+								<a class="h6" href="#">Lori Ferguson</a>
+								<p class="small m-0">example@gmail.com</p>
+							</div>
+						</div>
+					</li>
+					<li> <hr class="dropdown-divider"></li>
+					<!-- Links -->
+					<li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+					<li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+					<li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+					<li><a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+				</ul>
+			</div>
+			<!-- Profile START -->
+		</div>
+	</nav>
+	<!-- Nav END -->
+</header>
+<!-- Header END -->
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+	
+<!-- =======================
+Main Banner START -->
+<section class="position-relative overflow-hidden pt-5 pt-lg-3">
+	<!-- SVG START -->
+	<figure class="position-absolute top-50 start-0 translate-middle-y ms-n7 d-none d-xxl-block">
+		<svg class="rotate-74 fill-danger opacity-1">
+			<circle cx="180.4" cy="15.5" r="7.7" />
+			<!-- ... (garder le reste du SVG existant) ... -->
+		</svg>
+	</figure>
+	<!-- SVG END -->
+
+	<!-- SVG START -->
+	<span class="position-absolute top-50 end-0 translate-middle-y mt-5 me-n5 d-none d-xxl-inline-flex">
+		<svg class="fill-warning rotate-186 opacity-8">
+			<!-- ... (garder le reste du SVG existant) ... -->
+		</svg>
+	</span>
+	<!-- SVG END -->
+
+	<!-- SVG START -->
+	<figure class="position-absolute top-0 start-0 ms-5">
+		<svg class="fill-orange opacity-4" width="29px" height="29px">
+			<path d="M29.004,14.502 C29.004,22.512 22.511,29.004 14.502,29.004 C6.492,29.004 -0.001,22.512 -0.001,14.502 C-0.001,6.492 6.492,-0.001 14.502,-0.001 C22.511,-0.001 29.004,6.492 29.004,14.502 Z"></path>
+		</svg>
+	</figure>
+	<!-- SVG END -->
+
+	<!-- Content START -->
+	<div class="container">
+		<!-- Title -->
+		<div class="row align-items-center g-5">
+			<!-- Right content START -->
+			<div class="col-lg-7 col-xl-6 text-center position-relative">
+				<!-- SVG decoration -->
+				<figure class="position-absolute bottom-0 start-50 translate-middle-x mb-n5 z-index-9">
+					<svg width="686px" height="298px" viewBox="0 0 686 298">
+					<path class="fill-body" d="M60.9,0L0.1,0C0,0,0,0,0,0.1c1.5,5,0,249.5,11.5,297.9c0,0,649.1,16.1,669-4.6c0,0,0,0,0,0c0.2-0.4,1.2-177.2,4.2-293.3 c0,0,0-0.1-0.1-0.1l-72.9,0c0,0-0.1,0-0.1,0c-0.8,3-43.3,162.3-105.9,209.1c0,0-111.4,87.2-309.9-6C195.9,203.1,66.1,143.2,60.9,0 C61,0,60.9,0,60.9,0z"/>
+					</svg>
+				</figure>
+				
+				<!-- Icon logos START -->
+				<div class="p-2 bg-white shadow rounded-3 position-absolute top-50 start-0 translate-middle-y mt-n7 d-none d-sm-block">
+					<img src="assets/images/client/science.svg" alt="Icon">
+				</div>
+				<div class="p-2 bg-white shadow rounded-3 position-absolute top-0 end-0 me-5">
+					<img src="assets/images/client/angular.html" alt="Icon">
+				</div>
+				<!-- Icon logos END -->
+
+				<!-- Active student --> 
+				<div class="p-3 bg-success d-inline-block rounded-4 shadow-lg position-absolute top-50 end-0 translate-middle-y mt-n7 z-index-1 d-none d-md-block" style="background:url(assets/images/pattern/01.png) no-repeat center center; background-size:cover;">
+					<!-- Avatar group -->
+					<ul class="avatar-group mb-0">
+						<li class="avatar avatar-sm">
+							<img class="avatar-img rounded-circle border-white" src="assets/images/avatar/01.jpg" alt="avatar">
+						</li>
+						<li class="avatar avatar-sm">
+							<img class="avatar-img rounded-circle border-white" src="assets/images/avatar/02.jpg" alt="avatar">
+						</li>
+						<li class="avatar avatar-sm">
+							<img class="avatar-img rounded-circle border-white" src="assets/images/avatar/03.jpg" alt="avatar">
+						</li>
+						<li class="avatar avatar-sm">
+							<img class="avatar-img rounded-circle border-white" src="assets/images/avatar/04.jpg" alt="avatar">
+						</li>
+						<li class="avatar avatar-sm">
+							<div class="avatar-img rounded-circle border-white bg-primary">
+								<span class="text-white position-absolute top-50 start-50 translate-middle small">1K+</span>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<!-- Image -->
+				<div class="position-relative ms-sm-4">
+					<img src="assets/images/element/07.jpg" alt="">
+				</div>
+			</div>
+			<!-- Right content END -->
+		</div>
+	</div>
+	<!-- Content END -->
+</section>
+<!-- =======================
+Main Banner END -->
+
+<!-- =======================
+Portfolio Section START -->
+<!-- Portfolio Section START -->
+<section class="py-5" style="background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);">
+    <div class="container">
+        <!-- Header with decorative elements -->
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <div class="d-inline-block bg-primary bg-opacity-10 px-4 py-2 rounded-pill mb-3">
+                    <span class="small fw-bold text-primary">
+                        <i class="bi bi-briefcase-fill me-2"></i>MON TRAVAIL
+                    </span>
+                </div>
+                <h2 class="display-5 fw-bold mb-3">
+                    Mon <span class="text-primary">Portfolio</span>
+                </h2>
+                <div class="col-lg-6 mx-auto">
+                    <p class="lead text-muted mb-0">
+                        Découvrez mes projets et réalisations professionnelles
+                    </p>
+                </div>
+                <!-- Decorative line -->
+                <div class="d-flex justify-content-center mt-3">
+                    <div style="width: 80px; height: 4px; background: linear-gradient(90deg, #5188ee, #61daaa); border-radius: 2px;"></div>
+                </div>
+            </div>
+        </div>
+        
+        {% set portfolio = portfolios|first %}
+
+        <!-- Main Portfolio Card -->
+        <div class="row justify-content-center">
+            <div class="col-lg-11">
+                {% if portfolio %}
+                    <!-- Portfolio Header Card -->
+                    <div class="card border-0 shadow-lg rounded-4 mb-4 overflow-hidden">
+                        <div class="row g-0">
+                            <div class="col-md-8">
+                                <div class="card-body p-4 p-xl-5">
+                                    <div class="d-flex flex-wrap align-items-start justify-content-between mb-3">
+                                        <div class="d-flex align-items-center gap-3 mb-3 mb-sm-0">
+                                            <div class="icon-circle bg-primary bg-opacity-10 p-3 rounded-3">
+                                                <i class="bi bi-folder-fill text-primary fs-3"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="fw-bold mb-1">{{ portfolio.titre }}</h3>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <span class="badge bg-light text-dark rounded-pill px-3 py-2">
+                                                        <i class="bi bi-grid me-1"></i>{{ portfolio.projet|length }} projet(s)
+                                                    </span>
+                                                    <span class="small text-muted">
+                                                        <i class="bi bi-calendar3 me-1"></i>Créé le {{ portfolio.dateCreation|date('d/m/Y') }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Action Buttons Group -->
+                                        <div class="d-flex gap-2">
+                                            <!-- EXPORT PDF -->
+                                            <a href="{{ path('home_portfolio_export_pdf', { id: portfolio.id }) }}"
+                                               class="btn btn-outline-danger btn-sm rounded-pill"
+                                               title="Exporter en PDF"
+                                               onclick="this.disabled=true; this.innerHTML='<span class=\"spinner-border spinner-border-sm me-2\"></span>PDF...';">
+                                                <i class="bi bi-file-pdf me-2"></i>PDF
+                                            </a>
+
+                                            <!-- EDIT -->
+                                            <a href="{{ path('home_portfolio_edit', { id: portfolio.id }) }}"
+                                               class="btn btn-outline-primary btn-sm rounded-pill"
+                                               title="Modifier">
+                                                <i class="bi bi-pencil-square me-2"></i>Éditer
+                                            </a>
+
+                                            <!-- DELETE -->
+                                            <form method="post"
+                                                  action="{{ path('home_portfolio_delete', { id: portfolio.id }) }}"
+                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce portfolio ? Tous les projets associés seront également supprimés.');"
+                                                  class="d-inline">
+                                                <input type="hidden"
+                                                       name="_token"
+                                                       value="{{ csrf_token('delete-portfolio-' ~ portfolio.id) }}">
+                                                <button class="btn btn-outline-danger btn-sm rounded-pill"
+                                                        title="Supprimer">
+                                                    <i class="bi bi-trash3 me-2"></i>Supprimer
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    
+                                    <p class="text-secondary mb-0" style="line-height: 1.8;">
+                                        {{ portfolio.description }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 d-none d-md-block" style="background: linear-gradient(145deg, #99baef, #80deac);">
+                                <div class="d-flex align-items-center justify-content-center h-100 p-4">
+                                    <div class="text-center text-white">
+                                        <i class="bi bi-award fs-1 mb-3"></i>
+                                        <h5 class="fw-bold text-white mb-2">Portfolio Actif</h5>
+                                        <p class="text-white-50 small mb-0">Prêt à être partagé</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Filters Card -->
+                    <div class="card border-0 shadow-sm rounded-4 mb-4">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-sliders2 text-primary me-2"></i>
+                                <h6 class="fw-bold mb-0">Filtres et recherche</h6>
+                            </div>
+                            
+                            <form method="get" action="{{ path('home_portfolio') }}">
+                                <div class="row g-3 align-items-end">
+                                    <!-- Search -->
+                                    <div class="col-md-4">
+                                        <label class="form-label small fw-bold text-secondary mb-1">
+                                            <i class="bi bi-search me-1"></i>Rechercher
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white border-end-0">
+                                                <i class="bi bi-search"></i>
+                                            </span>
+                                            <input type="text" 
+                                                   class="form-control border-start-0 ps-0" 
+                                                   name="search" 
+                                                   placeholder="Titre, description..." 
+                                                   value="{{ searchTerm }}">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Technology Filter -->
+                                    <div class="col-md-3">
+                                        <label class="form-label small fw-bold text-secondary mb-1">
+                                            <i class="bi bi-tags me-1"></i>Technologie
+                                        </label>
+                                        <select class="form-select" name="technologie">
+                                            <option value="">Toutes les technologies</option>
+                                            {% for tech in allTechnologies %}
+                                                <option value="{{ tech }}" 
+                                                        {% if selectedTechnologie == tech %}selected{% endif %}>
+                                                    {{ tech }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Sort -->
+                                    <div class="col-md-3">
+                                        <label class="form-label small fw-bold text-secondary mb-1">
+                                            <i class="bi bi-arrow-up-down me-1"></i>Trier par
+                                        </label>
+                                        <select class="form-select" name="sort">
+                                            <option value="date_desc" {% if sortBy == 'date_desc' %}selected{% endif %}>
+                                                📅 Plus récent
+                                            </option>
+                                            <option value="date_asc" {% if sortBy == 'date_asc' %}selected{% endif %}>
+                                                📅 Plus ancien
+                                            </option>
+                                            <option value="title_asc" {% if sortBy == 'title_asc' %}selected{% endif %}>
+                                                📝 Titre (A-Z)
+                                            </option>
+                                            <option value="title_desc" {% if sortBy == 'title_desc' %}selected{% endif %}>
+                                                📝 Titre (Z-A)
+                                            </option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Buttons -->
+                                    <div class="col-md-2">
+                                        <div class="d-grid gap-2">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-funnel-fill me-2"></i>Filtrer
+                                            </button>
+                                            <a href="{{ path('home_portfolio') }}" 
+                                               class="btn btn-outline-secondary" 
+                                               title="Réinitialiser">
+                                                <i class="bi bi-arrow-counterclockwise"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            <!-- Search Results Info -->
+                            {% if searchTerm or selectedTechnologie %}
+                            <div class="mt-3 pt-3 border-top">
+                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-2">
+                                            <i class="bi bi-info-circle text-primary small"></i>
+                                        </div>
+                                        <span class="small text-secondary">
+                                            {% set count = projets|length %}
+                                            <strong class="text-dark">{{ count }}</strong> 
+                                            {% if count <= 1 %}projet trouvé{% else %}projets trouvés{% endif %}
+                                            {% if searchTerm %}
+                                                pour "<span class="fw-bold text-primary">{{ searchTerm }}</span>"
+                                            {% endif %}
+                                            {% if selectedTechnologie %}
+                                                avec <span class="badge bg-light text-dark">{{ selectedTechnologie }}</span>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    <a href="{{ path('home_portfolio') }}" class="btn btn-sm btn-light">
+                                        <i class="bi bi-x-lg me-1"></i>Effacer les filtres
+                                    </a>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Projects Grid -->
+                    {% if projets is empty %}
+                        <div class="card border-0 shadow-sm rounded-4">
+                            <div class="card-body p-5 text-center">
+                                {% if searchTerm or selectedTechnologie %}
+                                    <div class="py-5">
+                                        <div class="position-relative d-inline-block mb-4">
+                                            <i class="bi bi-inbox fs-1 text-muted opacity-50"></i>
+                                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
+                                                0
+                                            </span>
+                                        </div>
+                                        <h4 class="fw-bold mb-3">Aucun résultat trouvé</h4>
+                                        <p class="text-secondary col-lg-6 mx-auto mb-4">
+                                            Aucun projet ne correspond à vos critères de recherche. 
+                                            Essayez d'autres mots-clés ou réinitialisez les filtres.
+                                        </p>
+                                        <a href="{{ path('home_portfolio') }}" 
+                                           class="btn btn-outline-primary rounded-pill px-5 py-2">
+                                            <i class="bi bi-arrow-clockwise me-2"></i>Réinitialiser
+                                        </a>
+                                    </div>
+                                {% else %}
+                                    <div class="py-5">
+                                        <div class="mb-4">
+                                            <div class="bg-light rounded-circle d-inline-flex p-4 mb-3">
+                                                <i class="bi bi-folder-plus fs-1 text-primary"></i>
+                                            </div>
+                                            <h4 class="fw-bold mb-3">Aucun projet dans votre portfolio</h4>
+                                            <p class="text-secondary col-lg-8 mx-auto mb-4">
+                                                Commencez à enrichir votre portfolio en ajoutant votre premier projet. 
+                                                C'est le moment de montrer vos compétences !
+                                            </p>
+                                        </div>
+                                        <a href="{{ path('front_project_new', { portfolioId: portfolio.id }) }}"
+                                           class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow-sm hover-scale">
+                                            <i class="bi bi-plus-circle me-2"></i>
+                                            Ajouter un projet
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <!-- Projects Counter -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="d-flex align-items-center">
+                                <span class="bg-primary bg-opacity-10 px-3 py-2 rounded-pill">
+                                    <i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i>
+                                    <strong class="text-dark">{{ projets|length }}</strong> 
+                                    <span class="text-secondary">projet{% if projets|length > 1 %}s{% endif %}</span>
+                                </span>
+                            </div>
+                            <span class="text-secondary small">
+                                <i class="bi bi-arrow-repeat me-1"></i>
+                                {{ colors|default(['#7bb7e0','#8fd6ad','#d49089','#c7a0d7','#e9be79'])|length }} couleurs disponibles
+                            </span>
+                        </div>
+
+                        <!-- Projects Grid -->
+                        <div class="row g-4">
+                            {% set colors = ['#7bb7e0','#8fd6ad','#d49089','#c7a0d7','#e9be79','#b0a0d0','#f7c978','#9bb7d4','#d8a48f','#a8c9c9'] %}
+                            
+                            {% for projet in projets %}
+                                <div class="col-md-6 col-lg-4 col-xl-3">
+                                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-lift">
+                                        <!-- Card Header with Color -->
+                                        <div class="position-relative" 
+                                             style="height: 120px; background: linear-gradient(145deg, {{ colors[loop.index0 % colors|length] }}, {{ colors[loop.index0 % colors|length] }}dd);">
+                                            <div class="position-absolute bottom-0 start-0 p-3">
+                                                <span class="badge bg-white bg-opacity-90 text-dark rounded-pill px-3 py-2">
+                                                    <i class="bi bi-calendar3 me-1"></i>
+                                                    {{ projet.dateRealisation ? projet.dateRealisation|date('M Y') : 'Non daté' }}
+                                                </span>
+                                            </div>
+                                            {% if projet.lienDemo %}
+                                                <div class="position-absolute top-0 end-0 p-3">
+                                                    <span class="badge bg-success text-white rounded-pill px-3 py-2">
+                                                        <i class="bi bi-link-45deg me-1"></i>Démo
+                                                    </span>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <!-- Card Body -->
+                                        <div class="card-body p-4">
+                                            <a href="{{ path('front_projet_show', { id: projet.id }) }}" 
+                                               class="text-decoration-none">
+                                                <h5 class="fw-bold text-dark mb-2 hover-text-primary transition">
+                                                    {{ projet.titreProjet }}
+                                                </h5>
+                                            </a>
+                                            <p class="text-secondary small mb-3" style="line-height: 1.6;">
+                                                {{ projet.description|slice(0, 80) }}{% if projet.description|length > 80 %}...{% endif %}
+                                            </p>
+                                            
+                                            <!-- Technologies -->
+                                            <div class="mb-3">
+                                                {% for tech in projet.technologies|split(',')[:3] %}
+                                                    <span class="badge bg-light text-dark rounded-pill px-2 py-1 me-1 mb-1 border">
+                                                        {{ tech|trim }}
+                                                    </span>
+                                                {% endfor %}
+                                                {% if projet.technologies|split(',')|length > 3 %}
+                                                    <span class="badge bg-light text-secondary rounded-pill px-2 py-1 border">
+                                                        +{{ projet.technologies|split(',')|length - 3 }}
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <!-- Card Footer -->
+                                            <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="bi bi-folder2 text-primary me-1"></i>
+                                                    <small class="text-secondary">Projet #{{ projet.id }}</small>
+                                                </div>
+                                                <a href="{{ path('front_projet_show', { id: projet.id }) }}" 
+                                                   class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                                    Détails
+                                                    <i class="bi bi-arrow-right ms-1"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                            <!-- Add Project Card -->
+                            <div class="col-md-6 col-lg-4 col-xl-3">
+                                <a href="{{ path('front_project_new', { portfolioId: portfolio.id }) }}"
+                                   class="text-decoration-none">
+                                    <div class="card h-100 border-2 border-dashed bg-light rounded-4 hover-scale transition"
+                                         style="min-height: 380px;">
+                                        <div class="card-body d-flex flex-column align-items-center justify-content-center p-4">
+                                            <div class="bg-white rounded-circle shadow-sm p-4 mb-3">
+                                                <i class="bi bi-plus-circle fs-1 text-primary"></i>
+                                            </div>
+                                            <h6 class="fw-bold text-dark mb-2">Ajouter un projet</h6>
+                                            <p class="text-secondary small text-center mb-0">
+                                                Créez un nouveau projet et enrichissez votre portfolio
+                                            </p>
+                                            <span class="mt-4 btn btn-outline-primary btn-sm rounded-pill px-4">
+                                                <i class="bi bi-plus-circle me-2"></i>Nouveau projet
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Pagination (si nécessaire) -->
+                        {% if totalPages is defined and totalPages > 1 %}
+                        <nav class="mt-5">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item {% if currentPage == 1 %}disabled{% endif %}">
+                                    <a class="page-link rounded-start-pill" href="{{ path('home_portfolio', { page: currentPage - 1 }) }}">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </a>
+                                </li>
+                                {% for i in 1..totalPages %}
+                                    <li class="page-item {% if i == currentPage %}active{% endif %}">
+                                        <a class="page-link" href="{{ path('home_portfolio', { page: i }) }}">{{ i }}</a>
+                                    </li>
+                                {% endfor %}
+                                <li class="page-item {% if currentPage == totalPages %}disabled{% endif %}">
+                                    <a class="page-link rounded-end-pill" href="{{ path('home_portfolio', { page: currentPage + 1 }) }}">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <!-- No Portfolio State -->
+                    <div class="card border-0 shadow-lg rounded-4">
+                        <div class="card-body p-5 text-center">
+                            <div class="py-5">
+                                <div class="position-relative d-inline-block mb-5">
+                                    <div class="bg-light rounded-circle p-5">
+                                        <i class="bi bi-folder-x fs-1 text-secondary"></i>
+                                    </div>
+                                    <span class="position-absolute bottom-0 end-0 bg-warning rounded-circle p-2"></span>
+                                </div>
+                                
+                                <h3 class="fw-bold mb-3">Aucun portfolio créé</h3>
+                                <p class="text-secondary col-lg-6 mx-auto mb-4">
+                                    Vous n'avez pas encore de portfolio. Créez-en un pour commencer à présenter vos projets et réalisations.
+                                </p>
+                                
+                                <div class="d-flex gap-3 justify-content-center">
+                                    <a href="{{ path('home_portfolio_new') }}"
+                                       class="btn btn-primary btn-lg rounded-pill px-5 py-3 shadow-sm hover-scale">
+                                        <i class="bi bi-plus-circle me-2"></i>
+                                        Créer mon portfolio
+                                    </a>
+                                    <a href="#" class="btn btn-outline-secondary btn-lg rounded-pill px-5 py-3">
+                                        <i class="bi bi-question-circle me-2"></i>
+                                        En savoir plus
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Custom Styles -->
+<style>
+/* Custom Animations & Effects */
+.hover-lift {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+}
+
+.hover-scale {
+    transition: all 0.3s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.02);
+}
+
+.hover-text-primary {
+    transition: color 0.3s ease;
+}
+
+.hover-text-primary:hover {
+    color: var(--bs-primary) !important;
+}
+
+.border-dashed {
+    border-style: dashed !important;
+    border-color: #dee2e6 !important;
+}
+
+.transition {
+    transition: all 0.3s ease;
+}
+
+/* Card Gradient Hover Effect */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover .bg-gradient {
+    opacity: 0.9;
+}
+
+/* Custom Scrollbar for Filters */
+.form-select, .form-control {
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .display-5 {
+        font-size: 2.2rem;
+    }
+    
+    .btn-lg {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.9rem;
+    }
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+.btn:disabled {
+    animation: pulse 1.5s infinite;
+}
+
+/* Glass morphism effect */
+.glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Shadow variations */
+.shadow-hover {
+    transition: box-shadow 0.3s ease;
+}
+
+.shadow-hover:hover {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !important;
+}
+</style>
+<!-- Portfolio Section END -->
+<!-- =======================
+Portfolio Section END -->
+
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<!-- =======================
+Footer START -->
+<footer class="pt-5">
+	<div class="container">
+		<!-- Row START -->
+		<div class="row g-4">
+			<a class="me-0 d-flex align-items-center" href="{{ path('home') }}">
+				<img class="light-mode-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 200px;">
+				<img class="dark-mode-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 200px;">
+			</a>
+
+			<!-- Widget 2 START -->
+			<div class="col-lg-6">
+				<div class="row g-4">
+					<!-- Link block -->
+					<div class="col-6 col-md-4">
+						<h5 class="mb-2 mb-md-4">Entreprise</h5>
+						<ul class="nav flex-column">
+							<li class="nav-item"><a class="nav-link" href="#">À propos de nous</a></li>
+							<li class="nav-item"><a class="nav-link" href="#">Nous contacter</a></li>
+							<li class="nav-item"><a class="nav-link" href="#">Actualités et blogs</a></li>
+							<li class="nav-item"><a class="nav-link" href="#">Bibliothèque</a></li>
+							<li class="nav-item"><a class="nav-link" href="#">Carrière</a></li>
+						</ul>
+					</div>
+									
+					<!-- Link block -->
+					<div class="col-6 col-md-4">
+						<h5 class="mb-2 mb-md-4">Communauté</h5>
+						<ul class="nav flex-column">
+							<li class="nav-item"><a class="nav-link" href="#">Documentation</a></li>
+							<li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
+							<li class="nav-item"><a class="nav-link" href="#">Forum</a></li>
+							<li class="nav-item"><a class="nav-link" href="#">Plan du site</a></li>
+						</ul>
+					</div>
+
+					<!-- Link block -->
+					<div class="col-6 col-md-4">
+						<h5 class="mb-2 mb-md-4">Enseignement</h5>
+						<ul class="nav flex-column">
+							<li class="nav-item"><a class="nav-link" href="#">Devenir formateur</a></li>
+							<li class="nav-item"><a class="nav-link" href="#">Guide pratique</a></li>
+							<li class="nav-item"><a class="nav-link" href="#">Termes et conditions</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- Widget 2 END -->
+
+			<!-- Widget 3 START -->
+			<div class="col-lg-3">
+				<h5 class="mb-2 mb-md-4">Contact</h5>
+				<!-- Time -->
+				<p class="mb-2">
+					Numéro gratuit : <span class="h6 fw-light ms-2">+216 20629612</span>
+					<span class="d-block small">(9:AM to 8:PM IST)</span>
+				</p>
+
+				<p class="mb-0">Email: <span class="h6 fw-light ms-2">example@gmail.com</span></p>
+
+				<div class="row g-2 mt-2">
+					<!-- Google play store button -->
+					<div class="col-6 col-sm-4 col-md-3 col-lg-6">
+						<a href="#"> <img src="assets/images/client/google-play.svg" alt=""> </a>
+					</div>
+					<!-- App store button -->
+					<div class="col-6 col-sm-4 col-md-3 col-lg-6">
+						<a href="#"> <img src="assets/images/client/app-store.svg" alt="app-store"> </a>
+					</div>
+				</div> <!-- Row END -->
+			</div> 
+			<!-- Widget 3 END -->
+		</div><!-- Row END -->
+
+		<!-- Divider -->
+		<hr class="mt-4 mb-0">
+
+		<!-- Bottom footer -->
+		<div class="py-3">
+			<div class="container px-0">
+				<div class="d-lg-flex justify-content-between align-items-center py-3 text-center text-md-left">
+					<!-- copyright text -->
+					<div class="text-body text-primary-hover"> © 2026 Développé par  <a href="https://www.webestica.com/" target="_blank" class="text-body">Path2learn</a></div>
+					<!-- copyright links-->
+					<div class="justify-content-center mt-3 mt-lg-0">
+						<ul class="nav list-inline justify-content-center mb-0">
+							<li class="list-inline-item">
+								<!-- Language selector -->
+								<div class="dropup mt-0 text-center text-sm-end">
+									<a class="dropdown-toggle nav-link" href="#" role="button" id="languageSwitcher" data-bs-toggle="dropdown" aria-expanded="false">
+										<i class="fas fa-globe me-2"></i>Language
+									</a>
+									<ul class="dropdown-menu min-w-auto" aria-labelledby="languageSwitcher">
+										<li><a class="dropdown-item me-4" href="#"><img class="fa-fw me-2" src="assets/images/flags/uk.svg" alt="">English</a></li>
+										<li><a class="dropdown-item me-4" href="#"><img class="fa-fw me-2" src="assets/images/flags/gr.svg" alt="">German </a></li>
+										<li><a class="dropdown-item me-4" href="#"><img class="fa-fw me-2" src="assets/images/flags/sp.svg" alt="">French</a></li>
+									</ul>
+								</div>
+							</li>
+							<li class="list-inline-item"><a class="nav-link" href="#">Terms of use</a></li>
+							<li class="list-inline-item"><a class="nav-link pe-0" href="#">Privacy policy</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
+<!-- =======================
+Footer END -->
+
+<!-- Back to top -->
+<div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>
+
+<!-- Bootstrap JS -->
+<script src="assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Vendors -->
+<script src="assets/vendor/tiny-slider/tiny-slider.js"></script>
+<script src="assets/vendor/glightbox/js/glightbox.html"></script>
+<script src="assets/vendor/purecounterjs/dist/purecounter_vanilla.html"></script>
+
+<!-- Template Functions -->
+<script src="assets/js/functions.js"></script>
+
+<!-- Custom styles pour la partie portfolio -->
+<style>
+.projet-card {
+    border-radius: 12px; 
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.projet-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2) !important;
+}
+
+.add-project-card {
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.add-project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15) !important;
+    background-color: #e9ecef !important;
+    border-color: #adb5bd !important;
+}
+
+.hover-shadow {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.badge {
+    font-size: 0.7em;
+    padding: 0.25em 0.5em;
+}
+
+.btn-light {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+.btn-light:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+}
+
+.btn-light.text-danger:hover {
+    color: #dc3545 !important;
+    background-color: #f8d7da;
+}
+
+.btn-light.text-secondary:hover {
+    color: #6c757d !important;
+    background-color: #e2e3e5;
+}
+
+.input-group-text {
+    border-right: none;
+}
+
+.form-control:focus {
+    border-color: #ced4da;
+    box-shadow: none;
+}
+
+.form-select:focus {
+    border-color: #ced4da;
+    box-shadow: none;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+</style>
+
+<!-- Mirrored from eduport.webestica.com/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 02 Feb 2026 11:04:07 GMT -->
+
+{% endblock %}

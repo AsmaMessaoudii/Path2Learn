@@ -1,0 +1,244 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Étudiants{% endblock %}
+
+{% block body %}
+<div class="d-flex">
+
+    {% include 'layout/sidebar.html.twig' %}
+
+    <div class="flex-grow-1 min-vh-100 d-flex flex-column">
+
+        {% include 'layout/navbar.html.twig' %}
+
+        <main class="p-4 flex-grow-1" style="background-color: #f0f2f5;">
+            <div class="container-fluid">
+
+                <!-- Header -->
+                <div class="mb-4">
+                    <h4 class="fw-bold mb-1">Liste des Étudiants</h4>
+                    <p class="text-muted small">Visualisation des étudiants inscrits dans le système</p>
+                </div>
+
+                <!-- Search and Filter Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <form method="get" action="{{ path('portfolio_list') }}" class="row g-3">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                    <input type="text" 
+                                           class="form-control border-start-0" 
+                                           name="search" 
+                                           placeholder="Rechercher par nom, prénom ou email..." 
+                                           value="{{ searchTerm }}">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="bi bi-search me-1"></i> Rechercher
+                                    </button>
+                                    {% if searchTerm %}
+                                    <a href="{{ path('portfolio_list') }}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-x"></i>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" name="sort" onchange="this.form.submit()">
+                                    <option value="date_desc" {% if sortBy == 'date_desc' %}selected{% endif %}>
+                                        Trier par: Date (récent)
+                                    </option>
+                                    <option value="date_asc" {% if sortBy == 'date_asc' %}selected{% endif %}>
+                                        Trier par: Date (ancien)
+                                    </option>
+                                    <option value="nom_asc" {% if sortBy == 'nom_asc' %}selected{% endif %}>
+                                        Trier par: Nom (A-Z)
+                                    </option>
+                                    <option value="nom_desc" {% if sortBy == 'nom_desc' %}selected{% endif %}>
+                                        Trier par: Nom (Z-A)
+                                    </option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Students Table Card -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        {% if etudiants|length > 0 %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nom</th>
+                                            <th>Prénom</th>
+                                            <th>Email</th>
+                                            <th>Rôle</th>
+                                            <th>Date d'inscription</th>
+                                            <th>Statut</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for etudiant in etudiants %}
+<tr class="main-row" data-etudiant-id="{{ etudiant.id }}">
+    <td class="text-muted small">#{{ etudiant.id }}</td>
+    <td>
+        <div class="d-flex align-items-center">
+            <div class="avatar-sm bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-2" 
+                 style="width: 32px; height: 32px; font-size: 14px;">
+                {{ etudiant.nom|first|upper }}
+            </div>
+            <span class="fw-medium">{{ etudiant.nom }}</span>
+        </div>
+    </td>
+    <td>{{ etudiant.prenom }}</td>
+    <td>
+        <span class="text-muted">{{ etudiant.email }}</span>
+    </td>
+    <td>
+        <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25">
+            {{ etudiant.role }}
+        </span>
+    </td>
+    <td>
+        <span class="text-muted small">
+            {{ etudiant.dateCreation|date('d/m/Y') }}
+        </span>
+    </td>
+    <td>
+        {% if etudiant.statut == 'actif' %}
+            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                <i class="bi bi-check-circle me-1"></i> Actif
+            </span>
+        {% else %}
+            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25">
+                <i class="bi bi-x-circle me-1"></i> Inactif
+            </span>
+        {% endif %}
+    </td>
+    <td class="text-center">
+        <!-- ✅ Voir Portfolio Button - Redirige vers view_etudiant_portfolio -->
+        <a href="{{ path('view_etudiant_portfolio', {'id': etudiant.id}) }}" 
+           class="btn btn-sm btn-primary" 
+           title="Voir le portfolio complet">
+            <i class="bi bi-folder2-open me-1"></i> Voir portfolio
+        </a>
+    </td>
+</tr>
+{% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Stats -->
+                            <div class="mt-3 text-muted small">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Affichage de {{ etudiants|length }} étudiant(s)
+                                {% if searchTerm %}
+                                    correspondant à "{{ searchTerm }}"
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <div class="mb-3">
+                                    <i class="bi bi-people display-1 text-muted"></i>
+                                </div>
+                                <h5 class="text-muted">Aucun étudiant trouvé</h5>
+                                <p class="text-muted mb-4">
+                                    {% if searchTerm %}
+                                        Aucun étudiant ne correspond à "{{ searchTerm }}"
+                                    {% else %}
+                                        Aucun étudiant n'est enregistré dans le système
+                                    {% endif %}
+                                </p>
+                                {% if searchTerm %}
+                                    <a href="{{ path('portfolio_list') }}" class="btn btn-outline-primary">
+                                        <i class="bi bi-arrow-clockwise me-1"></i> Afficher tous les étudiants
+                                    </a>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+</div>
+
+<!-- Add JavaScript for AJAX loading -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle expand/collapse button clicks
+    document.querySelectorAll('.expand-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-bs-target').replace('#', '');
+            const etudiantId = targetId.replace('portfolioDetails', '');
+            const portfolioContent = document.getElementById('portfolioContent' + etudiantId);
+            
+            // Toggle chevron icon
+            const icon = this.querySelector('i');
+            if (icon.classList.contains('bi-chevron-down')) {
+                icon.classList.remove('bi-chevron-down');
+                icon.classList.add('bi-chevron-up');
+            } else {
+                icon.classList.remove('bi-chevron-up');
+                icon.classList.add('bi-chevron-down');
+            }
+            
+            // Load portfolio data via AJAX if not already loaded
+            if (portfolioContent.innerHTML.includes('Chargement du portfolio')) {
+                loadPortfolioData(etudiantId, portfolioContent);
+            }
+        });
+    });
+    
+    // Handle collapse events to reset chevron icon
+    document.querySelectorAll('.collapse').forEach(collapseElement => {
+        collapseElement.addEventListener('hidden.bs.collapse', function() {
+            const etudiantId = this.id.replace('portfolioDetails', '');
+            const button = document.querySelector(`[data-bs-target="#portfolioDetails${etudiantId}"]`);
+            if (button) {
+                const icon = button.querySelector('i');
+                icon.classList.remove('bi-chevron-up');
+                icon.classList.add('bi-chevron-down');
+            }
+        });
+        
+        collapseElement.addEventListener('shown.bs.collapse', function() {
+            const etudiantId = this.id.replace('portfolioDetails', '');
+            const button = document.querySelector(`[data-bs-target="#portfolioDetails${etudiantId}"]`);
+            if (button) {
+                const icon = button.querySelector('i');
+                icon.classList.remove('bi-chevron-down');
+                icon.classList.add('bi-chevron-up');
+            }
+        });
+    });
+    
+    // Load portfolio data via AJAX
+    function loadPortfolioData(etudiantId, portfolioContentElement) {
+        fetch('/portfolio/ajax/' + etudiantId)
+            .then(response => response.text())
+            .then(html => {
+                portfolioContentElement.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error loading portfolio:', error);
+                portfolioContentElement.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Erreur lors du chargement du portfolio
+                    </div>
+                `;
+            });
+    }
+});
+</script>
+
+{% endblock %}
