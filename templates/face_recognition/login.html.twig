@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion par reconnaissance faciale{% endblock %}
+
+{% block body %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-camera-fill me-2"></i>
+                            Connexion par reconnaissance faciale
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Video Preview -->
+                        <div class="text-center mb-4">
+                            <video id="video" width="100%" height="auto" autoplay style="border-radius: 10px;"></video>
+                            <canvas id="canvas" style="display: none;"></canvas>
+                        </div>
+
+                        <!-- Status -->
+                        <div id="status" class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Positionnez votre visage face à la caméra
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2">
+                            <button id="captureBtn" class="btn btn-primary btn-lg">
+                                <i class="bi bi-camera me-2"></i>Capturer et Se Connecter
+                            </button>
+                            <a href="{{ path('app_login') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Retour connexion classique
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const captureBtn = document.getElementById('captureBtn');
+const status = document.getElementById('status');
+
+// Accéder à la webcam
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+        video.srcObject = stream;
+    })
+    .catch(err => {
+        status.className = 'alert alert-danger';
+        status.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Erreur: Impossible d\'accéder à la caméra';
+        console.error(err);
+    });
+
+// Capturer et reconnaître
+captureBtn.addEventListener('click', async () => {
+    captureBtn.disabled = true;
+    status.className = 'alert alert-info';
+    status.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Analyse en cours...';
+
+    // Capturer l'image
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0);
+    const imageData = canvas.toDataURL('image/jpeg');
+
+    try {
+        const response = await fetch('{{ path('api_face_recognize') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ image: imageData })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            status.className = 'alert alert-success';
+            status.innerHTML = `<i class="bi bi-check-circle me-2"></i>Bienvenue ${result.user.prenom} ${result.user.nom}! (${(result.confidence * 100).toFixed(1)}% confiance)`;
+            
+            // Rediriger après 2 secondes
+            setTimeout(() => {
+                window.location.href = '{{ path('home') }}';
+            }, 2000);
+        } else {
+            status.className = 'alert alert-danger';
+            status.innerHTML = '<i class="bi bi-x-circle me-2"></i>Visage non reconnu. Veuillez réessayer.';
+            captureBtn.disabled = false;
+        }
+    } catch (error) {
+        status.className = 'alert alert-danger';
+        status.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Erreur: ' + error.message;
+        captureBtn.disabled = false;
+    }
+});
+</script>
+{% endblock %}

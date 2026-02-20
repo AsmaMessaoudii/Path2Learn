@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Enregistrer mon visage{% endblock %}
+
+{% block body %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-person-bounding-box me-2"></i>
+                            Enregistrer mon visage
+                        </h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="alert alert-info">
+                            <strong>Conseils:</strong>
+                            <ul class="mb-0">
+                                <li>Assurez-vous d'être dans un endroit bien éclairé</li>
+                                <li>Regardez directement la caméra</li>
+                                <li>Évitez les lunettes de soleil ou casquettes</li>
+                            </ul>
+                        </div>
+
+                        <!-- Video -->
+                        <div class="text-center mb-4">
+                            <video id="video" width="100%" autoplay style="border-radius: 10px;"></video>
+                            <canvas id="canvas" style="display: none;"></canvas>
+                        </div>
+
+                        <!-- Status -->
+                        <div id="status" class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Prêt à capturer votre visage
+                        </div>
+
+                        <!-- Button -->
+                        <div class="d-grid">
+                            <button id="registerBtn" class="btn btn-success btn-lg">
+                                <i class="bi bi-camera me-2"></i>Enregistrer mon visage
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const registerBtn = document.getElementById('registerBtn');
+const status = document.getElementById('status');
+
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+        video.srcObject = stream;
+    })
+    .catch(err => {
+        status.className = 'alert alert-danger';
+        status.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Impossible d\'accéder à la caméra';
+    });
+
+registerBtn.addEventListener('click', async () => {
+    registerBtn.disabled = true;
+    status.className = 'alert alert-info';
+    status.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Enregistrement en cours...';
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0);
+    const imageData = canvas.toDataURL('image/jpeg');
+
+    try {
+        const response = await fetch('{{ path('api_face_register') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ image: imageData })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            status.className = 'alert alert-success';
+            status.innerHTML = '<i class="bi bi-check-circle me-2"></i>' + result.message;
+            
+            setTimeout(() => {
+                window.location.href = '{{ path('app_user_profile_edit') }}';
+            }, 2000);
+        } else {
+            status.className = 'alert alert-danger';
+            status.innerHTML = '<i class="bi bi-x-circle me-2"></i>Erreur: ' + (result.error || 'Aucun visage détecté');
+            registerBtn.disabled = false;
+        }
+    } catch (error) {
+        status.className = 'alert alert-danger';
+        status.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Erreur: ' + error.message;
+        registerBtn.disabled = false;
+    }
+});
+</script>
+{% endblock %}
