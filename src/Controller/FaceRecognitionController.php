@@ -9,10 +9,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use App\Security\AppAuthenticator; // ton authenticator normal
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 
 class FaceRecognitionController extends AbstractController
 {
-    private const FACE_API_URL = 'http://localhost:5000';
+    private const FACE_API_URL = 'http://127.0.0.1:5000';
 
     public function __construct(
         private HttpClientInterface $httpClient,
@@ -28,14 +32,14 @@ class FaceRecognitionController extends AbstractController
     #[Route('/face-register', name: 'app_face_register')]
     public function faceRegister(): Response
     {
-       // $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         return $this->render('face_recognition/register.html.twig');
     }
 
     #[Route('/api/face/register', name: 'api_face_register', methods: ['POST'])]
     public function registerFace(Request $request): JsonResponse
     {
-        //$this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         
         $data = json_decode($request->getContent(), true);
         $imageData = $data['image'] ?? null;
@@ -52,18 +56,27 @@ class FaceRecognitionController extends AbstractController
                 'json' => [
                     'user_id' => $user->getId(),
                     'image' => $imageData
-                ]
+                ],
+                'timeout' => 30
             ]);
 
             $result = $response->toArray();
 
+            if (isset($result['success']) && $result['success']) {
+                return new JsonResponse([
+                    'success' => true,
+                    'message' => 'Visage enregistré avec succès!'
+                ]);
+            }
+
             return new JsonResponse([
-                'success' => true,
-                'message' => 'Visage enregistré avec succès!'
-            ]);
+                'success' => false,
+                'error' => $result['error'] ?? 'Erreur inconnue'
+            ], 400);
 
         } catch (\Exception $e) {
             return new JsonResponse([
+                'success' => false,
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -84,7 +97,8 @@ class FaceRecognitionController extends AbstractController
             $response = $this->httpClient->request('POST', self::FACE_API_URL . '/recognize', [
                 'json' => [
                     'image' => $imageData
-                ]
+                ],
+                'timeout' => 30
             ]);
 
             $result = $response->toArray();
@@ -109,11 +123,12 @@ class FaceRecognitionController extends AbstractController
 
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Visage non reconnu'
+                'message' => $result['message'] ?? 'Visage non reconnu'
             ]);
 
         } catch (\Exception $e) {
             return new JsonResponse([
+                'success' => false,
                 'error' => $e->getMessage()
             ], 500);
         }

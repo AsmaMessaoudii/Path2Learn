@@ -670,12 +670,17 @@
             <div class="avatar-img rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                 <span class="fw-bold">{{ app.user.prenom|first|upper }}{{ app.user.nom|first|upper }}</span>
             </div>
-        {% else %}
-            <!-- Guest avatar -->
-            <div class="avatar-img rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                <i class="bi bi-person"></i>
-            </div>
-        {% endif %}
+       {% else %}
+    {% if app.session.get('face_login') %}
+        <span class="badge bg-info ms-1">Face ID</span>
+        <span class="ms-2">Bonjour !</span>
+    {% else %}
+        <!-- Guest avatar -->
+        <div class="avatar-img rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+            <i class="bi bi-person"></i>
+        </div>
+    {% endif %}
+{% endif %}
     </a>
     
     <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
@@ -727,7 +732,13 @@
                     <i class="bi bi-info-circle fa-fw me-2"></i>Aide
                 </a>
             </li>
-            
+			
+            <!-- NOUVEAU: Bouton Face ID -->
+    <li>
+        <a class="dropdown-item bg-success-soft-hover" href="{{ path('app_face_register') }}">
+            <i class="bi bi-camera-video-fill fa-fw me-2"></i>Enregistrer mon Face ID
+        </a>
+    </li> 
             <li> <hr class="dropdown-divider"></li>
             
             <li>

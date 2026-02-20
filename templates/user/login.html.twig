@@ -25,59 +25,113 @@
                             </div>
                         {% endif %}
 
-                        <form action="{{ path('app_login') }}" method="post">
-
-                            <!-- Email -->
-                            <div class="mb-3">
-                                <label for="email" class="form-label fw-bold">
-                                    <i class="bi bi-envelope me-1 text-primary"></i>Email
-                                </label>
-                                <input type="text" id="email" name="email"
-                                       value="{{ last_username }}"
-                                       class="form-control"
-                                       placeholder="Votre email"
-                                       required autofocus>
-                            </div>
-
-                            <!-- Password -->
-                            <div class="mb-3">
-                                <label for="password" class="form-label fw-bold">
-                                    <i class="bi bi-key me-1 text-primary"></i>Mot de passe
-                                </label>
-                                <input type="password" id="password" name="password"
-                                       class="form-control"
-                                       placeholder="Votre mot de passe"
-                                       required>
-                            </div>
-
-                            <!-- Buttons -->
-                            <div class="d-grid gap-2 mt-4">
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="bi bi-box-arrow-in-right me-2"></i>Se connecter
+                        <!-- Tabs: Classic vs Face Recognition -->
+                        <ul class="nav nav-pills nav-fill mb-4" id="loginTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="classic-tab" data-bs-toggle="pill" data-bs-target="#classic" type="button" role="tab">
+                                    <i class="bi bi-key-fill me-2"></i>Classique
                                 </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+    <a class="nav-link" id="face-tab" href="{{ path('app_face_login') }}">
+        <i class="bi bi-camera-video-fill me-2"></i>Face ID
+    </a>
+</li>
+                        </ul>
 
-                                <a href="{{ path('app_user_register') }}" class="btn btn-outline-secondary">
-                                    <i class="bi bi-person-plus me-2"></i>S'inscrire
-                                </a>
+                        <div class="tab-content" id="loginTabContent">
+                            
+                            <!-- CLASSIC LOGIN TAB -->
+                            <div class="tab-pane fade show active" id="classic" role="tabpanel">
+                                <form action="{{ path('app_login') }}" method="post">
+
+                                    <!-- Email -->
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label fw-bold">
+                                            <i class="bi bi-envelope me-1 text-primary"></i>Email
+                                        </label>
+                                        <input type="text" id="email" name="email"
+                                               value="{{ last_username }}"
+                                               class="form-control"
+                                               placeholder="Votre email"
+                                               required autofocus>
+                                    </div>
+
+                                    <!-- Password -->
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label fw-bold">
+                                            <i class="bi bi-key me-1 text-primary"></i>Mot de passe
+                                        </label>
+                                        <input type="password" id="password" name="password"
+                                               class="form-control"
+                                               placeholder="Votre mot de passe"
+                                               required>
+                                    </div>
+
+                                    <!-- Buttons -->
+                                    <div class="d-grid gap-2 mt-4">
+                                        <button type="submit" class="btn btn-primary btn-lg">
+                                            <i class="bi bi-box-arrow-in-right me-2"></i>Se connecter
+                                        </button>
+
+                                        <a href="{{ path('app_user_register') }}" class="btn btn-outline-secondary">
+                                            <i class="bi bi-person-plus me-2"></i>S'inscrire
+                                        </a>
+                                    </div>
+
+                                    <!-- Forgot password link -->
+                                    <p class="mt-3 text-center">
+                                        <a href="{{ path('app_forgot_password_request') }}">
+                                            Mot de passe oublié ?
+                                        </a>
+                                    </p>
+
+                                    <!-- AI Help Button -->
+                                    <div class="text-center mt-2">
+                                        <button type="button"
+                                                class="btn btn-outline-primary btn-sm"
+                                                onclick="openChat()">
+                                            🤖 Besoin d'aide ?
+                                        </button>
+                                    </div>
+
+                                </form>
                             </div>
 
-                            <!-- Forgot password link -->
-                            <p class="mt-3 text-center">
-                                <a href="{{ path('app_forgot_password_request') }}">
-                                    Mot de passe oublié ?
-                                </a>
-                            </p>
+                            <!-- FACE RECOGNITION LOGIN TAB -->
+                            <div class="tab-pane fade" id="face" role="tabpanel">
+                                <div class="text-center">
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        Positionnez votre visage face à la caméra
+                                    </div>
 
-                            <!-- AI Help Button -->
-                            <div class="text-center mt-2">
-                                <button type="button"
-                                        class="btn btn-outline-primary btn-sm"
-                                        onclick="openChat()">
-                                    🤖 Besoin d’aide ?
-                                </button>
+                                    <!-- Video Preview -->
+                                    <video id="faceVideo" width="100%" height="auto" autoplay style="border-radius: 10px; display: none;"></video>
+                                    <canvas id="faceCanvas" style="display: none;"></canvas>
+
+                                    <!-- Status -->
+                                    <div id="faceStatus" class="alert alert-secondary">
+                                        <i class="bi bi-camera me-2"></i>
+                                        Cliquez pour démarrer la caméra
+                                    </div>
+
+                                    <!-- Buttons -->
+                                    <div class="d-grid gap-2">
+                                        <button id="startCameraBtn" class="btn btn-primary btn-lg">
+                                            <i class="bi bi-camera-video me-2"></i>Démarrer la caméra
+                                        </button>
+                                        <button id="faceCaptureBtn" class="btn btn-success btn-lg" style="display: none;">
+                                            <i class="bi bi-camera me-2"></i>Se connecter avec Face ID
+                                        </button>
+                                        <button class="btn btn-outline-secondary" onclick="document.getElementById('classic-tab').click()">
+                                            <i class="bi bi-arrow-left me-2"></i>Retour connexion classique
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
 
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -111,7 +165,7 @@
         font-size:14px;
         border-radius:10px;
     ">
-        <div><b>Bot:</b> Bonjour 👋 Comment puis-je t’aider ?</div>
+        <div><b>Bot:</b> Bonjour 👋 Comment puis-je t'aider ?</div>
     </div>
 
     <input id="chatInput"
@@ -129,7 +183,10 @@
 </div>
 
 
-<!-- ================= JS CHAT ================= -->
+/* <!-- ================= FACE RECOGNITION SCRIPT ================= -->
+
+
+<!-- ================= AI CHAT SCRIPT ================= -->
 <script>
 function openChat() {
     document.getElementById("chatBox").style.display = "block";
@@ -138,8 +195,8 @@ function openChat() {
 function closeChat() {
     document.getElementById("chatBox").style.display = "none";
 }
-async function sendMessage() {
 
+async function sendMessage() {
     let input = document.getElementById("chatInput");
     let message = input.value.trim();
 
@@ -152,7 +209,6 @@ async function sendMessage() {
     input.value = "";
 
     try {
-
         let response = await fetch("{{ path('ai_chat') }}", {
             method: "POST",
             headers: {
@@ -167,16 +223,14 @@ async function sendMessage() {
         }
 
         let data = await response.json();
-
         chatMessages.innerHTML += `<div><b>Bot:</b> ${data.reply}</div>`;
 
     } catch (e) {
-        chatMessages.innerHTML += `<div><b>Bot:</b> Impossible de contacter l’assistant ❌</div>`;
+        chatMessages.innerHTML += `<div><b>Bot:</b> Impossible de contacter l'assistant ❌</div>`;
     }
 
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
-
 </script>
 
 {% endblock %}

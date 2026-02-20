@@ -25,10 +25,13 @@ class LoginController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/logout', name: 'app_logout')]
-    public function logout(): void
-    {
-        // Ce controller doit rester vide, Symfony gère la route automatiquement
-        throw new \Exception('This should never be reached!');
-    }
+   #[Route(path: '/logout', name: 'app_logout')]
+public function logout(Request $request): void
+{
+    // Remove Face ID session
+    //$request->getSession()->remove('face_login');
+
+    // Symfony handles the rest of logout automatically
+    throw new \Exception('This should never be reached!');
+}
 }
