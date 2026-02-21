@@ -9,10 +9,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
-use App\Security\AppAuthenticator; // ton authenticator normal
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class FaceRecognitionController extends AbstractController
 {
@@ -20,7 +19,9 @@ class FaceRecognitionController extends AbstractController
 
     public function __construct(
         private HttpClientInterface $httpClient,
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
+        private TokenStorageInterface $tokenStorage,
+        private RequestStack $requestStack
     ) {}
 
     #[Route('/face-login', name: 'app_face_login')]
@@ -108,15 +109,30 @@ class FaceRecognitionController extends AbstractController
                 $user = $this->userRepository->find($userId);
 
                 if ($user) {
+                    // ✅ CONNEXION AUTOMATIQUE - C'EST ICI LE FIX!
+                    $token = new UsernamePasswordToken(
+                        $user,
+                        'main', // Le nom de votre firewall (généralement 'main')
+                        $user->getRoles()
+                    );
+                    
+                    $this->tokenStorage->setToken($token);
+                    
+                    // Sauvegarder le token dans la session
+                    $session = $this->requestStack->getSession();
+                    $session->set('_security_main', serialize($token));
+                    
                     return new JsonResponse([
                         'success' => true,
+                        'authenticated' => true,
                         'user' => [
                             'id' => $user->getId(),
                             'nom' => $user->getNom(),
                             'prenom' => $user->getPrenom(),
                             'email' => $user->getEmail()
                         ],
-                        'confidence' => $result['confidence']
+                        'confidence' => $result['confidence'],
+                        'redirect' => $this->generateUrl('home')
                     ]);
                 }
             }

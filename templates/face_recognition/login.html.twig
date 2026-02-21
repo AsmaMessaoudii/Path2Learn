@@ -84,22 +84,23 @@ captureBtn.addEventListener('click', async () => {
 
         const result = await response.json();
 
-        if (result.success) {
+        if (result.success && result.authenticated) {
+            // ✅ CONNEXION RÉUSSIE!
             status.className = 'alert alert-success';
-            status.innerHTML = `<i class="bi bi-check-circle me-2"></i>Bienvenue ${result.user.prenom} ${result.user.nom}! (${(result.confidence * 100).toFixed(1)}% confiance)`;
+            status.innerHTML = `<i class="bi bi-check-circle me-2"></i>✅ Bienvenue ${result.user.prenom} ${result.user.nom}! (${(result.confidence * 100).toFixed(1)}% confiance)`;
             
             // Rediriger après 2 secondes
             setTimeout(() => {
-                window.location.href = '{{ path('home') }}';
+                window.location.href = result.redirect || '{{ path('home') }}';
             }, 2000);
         } else {
             status.className = 'alert alert-danger';
-            status.innerHTML = '<i class="bi bi-x-circle me-2"></i>Visage non reconnu. Veuillez réessayer.';
+            status.innerHTML = '<i class="bi bi-x-circle me-2"></i>❌ ' + (result.message || 'Visage non reconnu. Veuillez réessayer.');
             captureBtn.disabled = false;
         }
     } catch (error) {
         status.className = 'alert alert-danger';
-        status.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Erreur: ' + error.message;
+        status.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>❌ Erreur: ' + error.message;
         captureBtn.disabled = false;
     }
 });
