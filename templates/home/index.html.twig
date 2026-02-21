@@ -104,7 +104,7 @@
 
 </head>
 
-<body>
+
 
 <!-- Header START -->
 <header class="navbar-light navbar-sticky header-static">
@@ -661,7 +661,6 @@
     </div>
 </div>
 <!-- Nav Search END -->
-
 <!-- Profile START -->
 <div class="dropdown ms-1 ms-lg-0">
     <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
@@ -670,17 +669,12 @@
             <div class="avatar-img rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                 <span class="fw-bold">{{ app.user.prenom|first|upper }}{{ app.user.nom|first|upper }}</span>
             </div>
-       {% else %}
-    {% if app.session.get('face_login') %}
-        <span class="badge bg-info ms-1">Face ID</span>
-        <span class="ms-2">Bonjour !</span>
-    {% else %}
-        <!-- Guest avatar -->
-        <div class="avatar-img rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-            <i class="bi bi-person"></i>
-        </div>
-    {% endif %}
-{% endif %}
+        {% else %}
+            <!-- Guest avatar -->
+            <div class="avatar-img rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <i class="bi bi-person"></i>
+            </div>
+        {% endif %}
     </a>
     
     <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
@@ -732,13 +726,22 @@
                     <i class="bi bi-info-circle fa-fw me-2"></i>Aide
                 </a>
             </li>
-			
-            <!-- NOUVEAU: Bouton Face ID -->
-    <li>
-        <a class="dropdown-item bg-success-soft-hover" href="{{ path('app_face_register') }}">
-            <i class="bi bi-camera-video-fill fa-fw me-2"></i>Enregistrer mon Face ID
-        </a>
-    </li> 
+            
+            <li> <hr class="dropdown-divider"></li>
+            
+            <!-- Face ID Section -->
+            <li id="faceIdMenuItem">
+                <a class="dropdown-item bg-success-soft-hover" href="{{ path('app_face_register') }}">
+                    <i class="bi bi-camera-video-fill fa-fw me-2"></i>Enregistrer mon Face ID
+                </a>
+            </li>
+
+            <li id="deleteFaceIdMenuItem" style="display: none;">
+                <a class="dropdown-item bg-warning-soft-hover" href="#" onclick="deleteFaceId(event)">
+                    <i class="bi bi-trash-fill fa-fw me-2"></i>Supprimer mon Face ID
+                </a>
+            </li>
+            
             <li> <hr class="dropdown-divider"></li>
             
             <li>
@@ -746,9 +749,92 @@
                     <i class="bi bi-power fa-fw me-2"></i>Déconnexion
                 </a>
             </li>
-
-          
+        {% else %}
+            <!-- NOT LOGGED IN -->
+            <li class="px-3 mb-3">
+                <div class="text-center">
+                    <h6 class="mb-2">Bienvenue!</h6>
+                    <p class="small text-muted mb-0">Connectez-vous pour accéder à votre profil</p>
+                </div>
+            </li>
+            <li> <hr class="dropdown-divider"></li>
+            
+            <li>
+                <a class="dropdown-item bg-success-soft-hover" href="{{ path('app_login') }}">
+                    <i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Connexion
+                </a>
+            </li>
+            
+            <li>
+                <a class="dropdown-item bg-primary-soft-hover" href="{{ path('app_user_register') }}">
+                    <i class="bi bi-person-plus fa-fw me-2"></i>Inscription
+                </a>
+            </li>
         {% endif %}
+    </ul>
+</div>
+<!-- Profile END -->
+
+<script>
+// Vérifier si l'utilisateur a un Face ID enregistré
+async function checkFaceIdStatus() {
+    try {
+        const response = await fetch('{{ path('api_face_check') }}');
+        const result = await response.json();
+        
+        const registerMenuItem = document.getElementById('faceIdMenuItem');
+        const deleteMenuItem = document.getElementById('deleteFaceIdMenuItem');
+        
+        if (registerMenuItem && deleteMenuItem) {
+            if (result.registered) {
+                // Face ID existe - afficher bouton supprimer
+                registerMenuItem.style.display = 'none';
+                deleteMenuItem.style.display = 'block';
+            } else {
+                // Pas de Face ID - afficher bouton enregistrer
+                registerMenuItem.style.display = 'block';
+                deleteMenuItem.style.display = 'none';
+            }
+        }
+    } catch (error) {
+        console.error('Erreur lors de la vérification Face ID:', error);
+    }
+}
+
+// Supprimer le Face ID
+async function deleteFaceId(event) {
+    event.preventDefault();
+    
+    if (!confirm('⚠️ Êtes-vous sûr de vouloir supprimer votre Face ID ?\n\nVous devrez le réenregistrer pour vous reconnecter avec votre visage.')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch('{{ path('api_face_delete') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('✅ ' + result.message);
+            location.reload();
+        } else {
+            alert('❌ Erreur: ' + result.error);
+        }
+    } catch (error) {
+        alert('❌ Erreur lors de la suppression: ' + error.message);
+    }
+}
+
+// Vérifier au chargement de la page
+{% if app.user %}
+    document.addEventListener('DOMContentLoaded', checkFaceIdStatus);
+{% endif %}
+</script>
     </ul>
 </div>
 <!-- Profile END -->
