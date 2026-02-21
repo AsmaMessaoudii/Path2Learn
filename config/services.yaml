@@ -18,4 +18,5 @@ services:
 
     App\Service\OpenAIService:
         arguments:
-            $apiKey: '%openai_api_key%'
+           $apiKey: '%env(GROQ_API_KEY)%'           # ← on passe la clé Groq
+           $model: '%env(GROQ_MODEL)%'
