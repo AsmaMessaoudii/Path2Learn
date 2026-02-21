@@ -28,10 +28,18 @@
                         </p>
                     </div>
                     <div>
-                        <span class="badge bg-{{ etudiant.statut == 'actif' ? 'success' : 'danger' }} bg-opacity-10 text-{{ etudiant.statut == 'actif' ? 'success' : 'danger' }} border border-{{ etudiant.statut == 'actif' ? 'success' : 'danger' }} border-opacity-25">
-                            {{ etudiant.statut|capitalize }}
-                        </span>
-                    </div>
+  {% set statusValue = etudiant.status.value ?? 'unknown' %}
+
+<span class="badge 
+    bg-{{ statusValue == 'enable' ? 'success' : 'danger' }} 
+    bg-opacity-10 
+    text-{{ statusValue == 'enable' ? 'success' : 'danger' }} 
+    border 
+    border-{{ statusValue == 'enable' ? 'success' : 'danger' }} 
+    border-opacity-25">
+    {{ statusValue|capitalize }}
+</span>
+</div>
                 </div>
 
                 <!-- Portfolio Info Card -->

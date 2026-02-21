@@ -12,106 +12,112 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Dompdf\Dompdf;
+use App\Enum\UserRole;
 use Dompdf\Options;
 
 final class PortfolioController extends AbstractController
 {
     // Front office avec recherche et tri
-    #[Route('/home/portfolio', name: 'home_portfolio')]
-    public function frontIndex(
-        PortfolioRepository $portfolioRepository, 
-        ProjetRepository $projetRepository,
-        Request $request
-    ): Response
-    {
-        $portfolios = $portfolioRepository->findAll();
-        $portfolio = $portfolios[0] ?? null;
-        
-        // Récupérer les paramètres de recherche et tri
-        $searchTerm = $request->query->get('search', '');
-        $sortBy = $request->query->get('sort', 'date_desc');
-        $technologie = $request->query->get('technologie', '');
-        
-        // Initialiser les projets
-        $projets = [];
-        
-        if ($portfolio) {
-            // Récupérer les projets avec filtres et tri
-            $projets = $projetRepository->findByFilters(
-                $portfolio->getId(),
-                $searchTerm,
-                $sortBy,
-                $technologie
-            );
-        }
-        
-        // Récupérer toutes les technologies distinctes pour le filtre
-        $allTechnologies = $portfolio ? $projetRepository->findDistinctTechnologies($portfolio->getId()) : [];
+   #[Route('/home/portfolio', name: 'home_portfolio')]
+public function frontIndex(
+    PortfolioRepository $portfolioRepository, 
+    ProjetRepository $projetRepository,
+    Request $request
+): Response
+{
+    $user = $this->getUser();
 
-        return $this->render('home/HomePortfolio.html.twig', [
-            'portfolios' => $portfolios,
-            'portfolio' => $portfolio,
-            'projets' => $projets,
-            'searchTerm' => $searchTerm,
-            'sortBy' => $sortBy,
-            'selectedTechnologie' => $technologie,
-            'allTechnologies' => $allTechnologies,
-        ]);
+    // Sécurité : seul les étudiants peuvent voir cette page
+    if (!$user || $user->getRole() !== UserRole::STUDENT) {
+        $this->addFlash('warning', 'Cette page est réservée aux étudiants.');
+        return $this->redirectToRoute('app_login'); // ou 'home' ou dashboard admin
     }
 
-    // Admin - List users for portfolio management (display only)
-    #[Route('/portfolio/list', name: 'portfolio_list')]
-    public function list(
-        Request $request,
-        EntityManagerInterface $em
-    ): Response
-    {
-        // Get query parameters
-        $searchTerm = $request->query->get('search', '');
-        $sortBy = $request->query->get('sort', 'date_desc');
-        
-        // Build query for students (role = 'etudiant')
-        $queryBuilder = $em->createQueryBuilder()
-            ->select('u')
-            ->from('App\Entity\User', 'u')
-            ->where('u.role = :role')
-            ->setParameter('role', 'etudiant');
-        
-        // Apply search filter if provided
-        if ($searchTerm) {
-            $queryBuilder->andWhere('u.nom LIKE :search OR u.prenom LIKE :search OR u.email LIKE :search')
-                ->setParameter('search', '%' . $searchTerm . '%');
-        }
-        
-        // Apply sorting
-        switch ($sortBy) {
-            case 'date_asc':
-                $queryBuilder->orderBy('u.dateCreation', 'ASC');
-                break;
-            case 'nom_asc':
-                $queryBuilder->orderBy('u.nom', 'ASC');
-                break;
-            case 'nom_desc':
-                $queryBuilder->orderBy('u.nom', 'DESC');
-                break;
-            default: // date_desc (most recent first)
-                $queryBuilder->orderBy('u.dateCreation', 'DESC');
-                break;
-        }
-        
-        // Get all results
-        $etudiants = $queryBuilder->getQuery()->getResult();
-        
-        return $this->render('portfolio/list_user.html.twig', [
-            'etudiants' => $etudiants,
-            'searchTerm' => $searchTerm,
-            'sortBy' => $sortBy,
-        ]);
+    // Récupérer UNIQUEMENT le portfolio de l'étudiant connecté
+    $portfolio = $portfolioRepository->findOneBy(['user' => $user]);
+
+    $projets = [];
+    $allTechnologies = [];
+    $searchTerm = $request->query->get('search', '');
+    $sortBy = $request->query->get('sort', 'date_desc');
+    $technologie = $request->query->get('technologie', '');
+
+    if ($portfolio) {
+        $projets = $projetRepository->findByFilters(
+            $portfolio->getId(),
+            $searchTerm,
+            $sortBy,
+            $technologie
+        );
+
+        $allTechnologies = $projetRepository->findDistinctTechnologies($portfolio->getId());
     }
+
+    return $this->render('home/HomePortfolio.html.twig', [
+        'portfolio'           => $portfolio,           // un seul portfolio ou null
+        'projets'             => $projets,
+        'searchTerm'          => $searchTerm,
+        'sortBy'              => $sortBy,
+        'selectedTechnologie' => $technologie,
+        'allTechnologies'     => $allTechnologies,
+        'hasPortfolio'        => $portfolio !== null,
+    ]);
+}
+// Admin - List users for portfolio management (display only)
+// Admin - List users for portfolio management (display only)
+// Admin - List users for portfolio management (display only)
+#[Route('/portfolio/list', name: 'portfolio_list')]
+public function list(
+    Request $request,
+    EntityManagerInterface $em
+): Response
+{
+    // Get query parameters
+    $searchTerm = $request->query->get('search', '');
+    $sortBy = $request->query->get('sort', 'date_desc');
+    
+    // Build query for students (roles = 'etudiant' or 'student')
+    $queryBuilder = $em->createQueryBuilder()
+        ->select('u')
+        ->from('App\Entity\User', 'u')
+        ->where('u.role IN (:roles)')
+        ->setParameter('roles', ['student', 'etudiant']);
+    
+    // Apply search filter if provided
+    if ($searchTerm) {
+        $queryBuilder->andWhere('u.nom LIKE :search OR u.prenom LIKE :search OR u.email LIKE :search')
+            ->setParameter('search', '%' . $searchTerm . '%');
+    }
+    
+    // Apply sorting
+    switch ($sortBy) {
+        case 'date_asc':
+            $queryBuilder->orderBy('u.dateCreation', 'ASC');
+            break;
+        case 'nom_asc':
+            $queryBuilder->orderBy('u.nom', 'ASC');
+            break;
+        case 'nom_desc':
+            $queryBuilder->orderBy('u.nom', 'DESC');
+            break;
+        default: // date_desc (most recent first)
+            $queryBuilder->orderBy('u.dateCreation', 'DESC');
+            break;
+    }
+    
+    // Get all results
+    $etudiants = $queryBuilder->getQuery()->getResult();
+    
+    return $this->render('portfolio/list_user.html.twig', [
+        'etudiants' => $etudiants,
+        'searchTerm' => $searchTerm,
+        'sortBy' => $sortBy,
+    ]);
+}
 
     
     
-    // View a specific student's portfolio
+// View a specific student's portfolio
 #[Route('/portfolio/etudiant/{id}', name: 'view_etudiant_portfolio')]
 public function viewEtudiantPortfolio(
     int $id,
@@ -127,11 +133,19 @@ public function viewEtudiantPortfolio(
     
     if (!$etudiant) {
         throw $this->createNotFoundException('Étudiant non trouvé');
+
+
+
     }
+
     
-    // 🔴 CORRECTION 1: Insensible à la casse
-    if (strtolower($etudiant->getRole()) !== 'etudiant') {
-        $this->addFlash('warning', 'Cet utilisateur (rôle: ' . $etudiant->getRole() . ') n\'est pas un étudiant');
+    
+    // 🔴 CORRECTION 1: Get the string value from the enum
+    $role = $etudiant->getRole();
+    $roleValue = $role instanceof \App\Enum\UserRole ? $role->value : $role;
+    
+    if (strtolower($roleValue) !== 'etudiant' && strtolower($roleValue) !== 'student') {
+        $this->addFlash('warning', 'Cet utilisateur (rôle: ' . $roleValue . ') n\'est pas un étudiant');
         return $this->redirectToRoute('portfolio_list');
     }
     
@@ -169,11 +183,18 @@ public function viewEtudiantPortfolio(
         'allTechnologies' => $allTechnologies,
     ]);
 }
+
+
+
+
+
+
     // Front office - Créer un nouveau portfolio
     #[Route('/home/portfolio/new', name: 'home_portfolio_new')]
     public function newFront(Request $request, EntityManagerInterface $em): Response
     {
         $portfolio = new Portfolio();
+        $portfolio->setUser($this->getUser());
 
         $form = $this->createForm(PortfolioType::class, $portfolio);
         $form->handleRequest($request);

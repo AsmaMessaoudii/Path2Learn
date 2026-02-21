@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Suppression de votre projet</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #68acef 0%, #764ba2 100%);
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h2 {
+            margin: 0;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #2d3748;
+            margin-bottom: 25px;
+        }
+        .greeting strong {
+            color: #68acef;
+        }
+        .project-title {
+            background-color: #f8fafd;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+            border-left: 4px solid #68acef;
+        }
+        .project-title p {
+            margin: 0;
+            font-size: 16px;
+        }
+        .project-title strong {
+            color: #2d3748;
+            font-size: 18px;
+            display: inline-block;
+            background: linear-gradient(135deg, #68acef 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .alert {
+            background-color: #fff5f5;
+            border: 1px solid #feb2b2;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        .alert h4 {
+            margin: 0 0 15px 0;
+            color: #c53030;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .alert p {
+            margin: 10px 0;
+        }
+        .alert strong {
+            color: #2d3748;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .reason-badge {
+            background-color: #fed7d7;
+            color: #c53030;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .details-box {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .details-box p {
+            margin: 0;
+            color: #4a5568;
+            font-style: italic;
+        }
+        .date-info {
+            background-color: #ebf4ff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+            color: #41906c;
+            font-weight: 500;
+            text-align: center;
+        }
+        .date-info strong {
+            color: #5a67d8;
+        }
+        .action-message {
+            background-color: #f0f9ff;
+            border: 1px solid #b6e0fe;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            color: #0369a1;
+            font-size: 15px;
+        }
+        .signature {
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 2px solid #edf2f7;
+        }
+        .signature p {
+            margin: 5px 0;
+        }
+        .signature .team {
+            font-size: 18px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #68acef 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+        .footer {
+            background-color: #f8fafc;
+            padding: 25px 30px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        .footer p {
+            margin: 5px 0;
+            color: #718096;
+            font-size: 13px;
+        }
+        .footer .auto-message {
+            color: #a0aec0;
+            font-style: italic;
+        }
+        .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        @media only screen and (max-width: 600px) {
+            .container {
+                margin: 15px;
+                border-radius: 8px;
+            }
+            .content {
+                padding: 25px 20px;
+            }
+            .header {
+                padding: 25px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>📋 Notification de suppression de projet</h2>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">
+                Bonjour <strong>{{ student_name }}</strong>,
+            </div>
+            
+            <p style="color: #4a5568; font-size: 16px;">Nous vous informons que votre projet a été supprimé de la plateforme Portfolio.</p>
+            
+            <div class="project-title">
+                <p>Projet concerné : <strong>"{{ project_title }}"</strong></p>
+            </div>
+            
+            <div class="alert">
+                <span class="reason-badge">Raison de la suppression</span>
+                <h4>{{ reason }}</h4>
+                {% if details %}
+                <div class="details-box">
+                    <p><strong>Détails supplémentaires :</strong><br>{{ details }}</p>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="date-info">
+                ⏱️ Cette action a été effectuée le <strong>{{ date|date('d/m/Y à H:i') }}</strong>
+            </div>
+            
+            <div class="action-message">
+                <strong>🔔 Information importante :</strong><br>
+                Si vous pensez qu'il s'agit d'une erreur, n'hésitez pas à contacter l'administrateur du système pour plus d'informations.
+            </div>
+            
+            <div class="signature">
+                <p>Cordialement,</p>
+                <p class="team">L'équipe Portfolio</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p class="auto-message">📧 Cet email a été envoyé automatiquement. Merci de ne pas y répondre.</p>
+            <p>© {{ "now"|date("Y") }} Path2learn Platform - Tous droits réservés</p>
+        </div>
+    </div>
+</body>
+</html>

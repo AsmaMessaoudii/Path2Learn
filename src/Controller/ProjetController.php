@@ -349,6 +349,9 @@ public function delete(
     return $this->redirectToRoute('portfolio_list');
 }*/
 
+
+
+
 #[Route('/project/{id}/delete', name: 'project_delete', methods: ['POST'])]
 public function delete(
     Request $request,
@@ -358,32 +361,20 @@ public function delete(
     int $id
 ): Response
 {
-    // LOG EVERYTHING
-    error_log('========== DELETE METHOD CALLED ==========');
-    error_log('Time: ' . date('Y-m-d H:i:s'));
-    error_log('Project ID: ' . $id);
-    error_log('Request Method: ' . $request->getMethod());
-    error_log('POST data: ' . json_encode($request->request->all()));
-    
     // Find the project
     $projet = $projetRepository->find($id);
     if (!$projet) {
-        error_log('ERROR: Project not found');
         $this->addFlash('error', 'Projet non trouvé');
         return $this->redirectToRoute('portfolio_list');
     }
-    error_log('Project found: ' . $projet->getTitreProjet());
     
     // CSRF check
     $submittedToken = $request->request->get('_token');
-    error_log('CSRF Token: ' . $submittedToken);
     
     if (!$this->isCsrfTokenValid('delete-project-' . $projet->getId(), $submittedToken)) {
-        error_log('ERROR: Invalid CSRF token');
         $this->addFlash('error', 'Token CSRF invalide.');
         return $this->redirectToRoute('portfolio_list');
     }
-    error_log('CSRF token valid');
     
     // Get form data
     $studentEmail = $request->request->get('student_email', '');
@@ -391,31 +382,17 @@ public function delete(
     $deleteReason = $request->request->get('delete_reason', '');
     $deleteDetails = $request->request->get('delete_details', '');
     
-    error_log('Student Email: ' . $studentEmail);
-    error_log('Student Name: ' . $studentName);
-    error_log('Delete Reason: ' . $deleteReason);
-    
-    // Try to send email
+    // Try to send email only if student email exists
     if (!empty($studentEmail)) {
-        error_log('ATTEMPTING TO SEND EMAIL TO: ' . $studentEmail);
-        
         try {
-            // Create a simple test email first to isolate the issue
-            $testEmail = (new \Symfony\Component\Mime\Email())
-                ->from('nonoreply167@gmail.com')
-                ->to($studentEmail)
-                ->subject('TEST - Project Deletion')
-                ->text('This is a test email from the delete method');
-            
-            error_log('Sending test email...');
-            $mailer->send($testEmail);
-            error_log('✅ TEST EMAIL SENT SUCCESSFULLY');
-            
-            // Now send the real email
+            // Create the email with explicit headers
             $email = (new \Symfony\Component\Mime\Email())
                 ->from('nonoreply167@gmail.com')
+                ->replyTo('nonoreply167@gmail.com')
+                ->sender('nonoreply167@gmail.com')
+                ->returnPath('nonoreply167@gmail.com')
                 ->to($studentEmail)
-                ->subject('Suppression de votre projet - Path2learn')
+                ->subject('Suppression de votre projet: ' . $projet->getTitreProjet())
                 ->html($this->renderView('emails/project_deleted.html.twig', [
                     'student_name' => $studentName,
                     'project_title' => $projet->getTitreProjet(),
@@ -424,79 +401,31 @@ public function delete(
                     'date' => new \DateTime()
                 ]));
             
-            error_log('Sending real email...');
-            $mailer->send($email);
-            error_log('✅ REAL EMAIL SENT SUCCESSFULLY');
+            // Add a custom header to ensure the from address is respected
+            $email->getHeaders()->addTextHeader('X-Original-From', 'nonoreply167@gmail.com');
             
+            $mailer->send($email);
             $this->addFlash('success', 'Projet supprimé et email envoyé avec succès !');
             
         } catch (\Exception $e) {
-            error_log('❌ EMAIL FAILED: ' . $e->getMessage());
-            error_log('File: ' . $e->getFile() . ':' . $e->getLine());
-            error_log('Trace: ' . $e->getTraceAsString());
             $this->addFlash('warning', 'Projet supprimé mais email non envoyé: ' . $e->getMessage());
         }
     } else {
-        error_log('❌ No student email provided');
         $this->addFlash('success', 'Projet supprimé avec succès !');
         $this->addFlash('info', 'Aucun email étudiant trouvé.');
     }
     
     // Delete the project
-    error_log('Deleting project...');
     $em->remove($projet);
     $em->flush();
-    error_log('✅ Project deleted');
-    error_log('========== DELETE METHOD ENDED ==========');
     
     return $this->redirectToRoute('portfolio_list');
 }
 
 
-private function sendDeletionEmail(
-    \Symfony\Component\Mailer\MailerInterface $mailer,
-    string $studentEmail,
-    string $studentName,
-    string $projectTitle,
-    string $reason,
-    ?string $details = null
-): void {
-    error_log('--- sendDeletionEmail STARTED ---');
-    error_log('Preparing email for: ' . $studentEmail);
-    
-    try {
-        // Render the email template
-        $htmlContent = $this->renderView('emails/project_deleted.html.twig', [
-            'student_name' => $studentName,
-            'project_title' => $projectTitle,
-            'reason' => $reason,
-            'details' => $details,
-            'date' => new \DateTime()
-        ]);
-        
-        error_log('Email template rendered, length: ' . strlen($htmlContent));
-        
-        $email = (new \Symfony\Component\Mime\Email())
-            ->from('nonoreply167@gmail.com')
-            ->to($studentEmail)
-            ->subject('Suppression de votre projet - Portfolio')
-            ->html($htmlContent);
-        
-        error_log('Email object created, attempting to send...');
-        
-        // Try to send
-        $mailer->send($email);
-        
-        error_log('✅ EMAIL SENT SUCCESSFULLY to: ' . $studentEmail);
-        error_log('--- sendDeletionEmail COMPLETED ---');
-        
-    } catch (\Exception $e) {
-        error_log('❌ EMAIL FAILED in sendDeletionEmail: ' . $e->getMessage());
-        error_log('File: ' . $e->getFile() . ':' . $e->getLine());
-        error_log('Trace: ' . $e->getTraceAsString());
-        throw $e;
-    }
-}
+
+
+
 
     #[Route('/home/projet/{id}/export-pdf', name: 'front_projet_export_pdf')]
     public function exportPdfFront(Projet $projet): Response
@@ -591,7 +520,7 @@ private function sendDeletionEmail(
 
 
 
-
+/*
 #[Route('/test-email-send', name: 'test_email_send')]
 public function testEmailSend(\Symfony\Component\Mailer\MailerInterface $mailer): Response
 {
@@ -619,7 +548,7 @@ public function testEmailSend(\Symfony\Component\Mailer\MailerInterface $mailer)
     } catch (\Exception $e) {
         return new Response('❌ Error: ' . $e->getMessage());
     }
-}
+}*/
 
 }
 
