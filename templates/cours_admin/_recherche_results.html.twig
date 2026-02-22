@@ -1,0 +1,98 @@
+<div class="alert alert-info mb-3">
+    <i class="bi bi-search me-2"></i>
+    Résultats de recherche pour : <strong>"{{ searchTerm }}"</strong>
+</div>
+
+{% if active_tab == 'cours' %}
+    {% if coursList|length > 0 %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Matière</th>
+                        <th>Niveau</th>
+                        <th>Statut</th>
+                        <th>Date création</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cours in coursList %}
+                        <tr>
+                            <td>{{ cours.titre }}</td>
+                            <td>{{ cours.matiere }}</td>
+                            <td><span class="badge bg-info">{{ cours.niveau }}</span></td>
+                            <td>
+                                {% if cours.statut == 'publié' %}
+                                    <span class="badge bg-success">Publié</span>
+                                {% elseif cours.statut == 'brouillon' %}
+                                    <span class="badge bg-warning">Brouillon</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Archivé</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ cours.dateCreation|date('d/m/Y') }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ path('admin_cours_view', {'id': cours.id}) }}" class="btn btn-outline-primary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="text-center py-4 text-muted">
+            <i class="bi bi-search display-4"></i>
+            <p class="mt-2">Aucun cours trouvé pour votre recherche</p>
+        </div>
+    {% endif %}
+{% else %}
+    {% if ressourcesList|length > 0 %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Type</th>
+                        <th>Cours</th>
+                        <th>Date ajout</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ressource in ressourcesList %}
+                        <tr>
+                            <td>{{ ressource.titre }}</td>
+                            <td><span class="badge bg-info">{{ ressource.type }}</span></td>
+                            <td>
+                                {% if ressource.cours %}
+                                    {{ ressource.cours.titre }}
+                                {% else %}
+                                    <span class="text-muted">Aucun cours</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ ressource.dateAjout|date('d/m/Y') }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ path('admin_ressources_view', {'id': ressource.id}) }}" class="btn btn-outline-primary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="text-center py-4 text-muted">
+            <i class="bi bi-search display-4"></i>
+            <p class="mt-2">Aucune ressource trouvée pour votre recherche</p>
+        </div>
+    {% endif %}
+{% endif %}

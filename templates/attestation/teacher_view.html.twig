@@ -1,0 +1,83 @@
+{# templates/attestation/teacher_view.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Attestation - {{ student.prenom }} {{ student.nom }}{% endblock %}
+
+{% block body %}
+<main class="pt-5 pb-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="display-5 mb-0">Attestation de {{ student.prenom }} {{ student.nom }}</h1>
+                    <a href="{{ path('quiz') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Retour
+                    </a>
+                </div>
+                
+                <div class="card border-0 shadow">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            {% if isCertified %}
+                                <span class="badge bg-success p-3" style="font-size: 1.2rem;">
+                                    <i class="bi bi-patch-check-fill me-2"></i>CERTIFIÉ
+                                </span>
+                            {% else %}
+                                <span class="badge bg-warning p-3" style="font-size: 1.2rem;">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>NON CERTIFIÉ
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h5>{{ student.prenom }} {{ student.nom }}</h5>
+                                <p class="text-muted">{{ student.email }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-3">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body text-center">
+                                        <h3 class="mb-0">{{ totalQuestions }}</h3>
+                                        <small>Questions</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body text-center">
+                                        <h3 class="mb-0">{{ answeredQuestions }}</h3>
+                                        <small>Traitées</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-info text-white">
+                                    <div class="card-body text-center">
+                                        <h3 class="mb-0">{{ totalScore }}/{{ maxPossibleScore }}</h3>
+                                        <small>Score</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card {% if percentage >= 50 %}bg-success{% else %}bg-danger{% endif %} text-white">
+                                    <div class="card-body text-center">
+                                        <h3 class="mb-0">{{ percentage }}%</h3>
+                                        <small>Réussite</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <strong>Mention obtenue :</strong> {{ mention }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

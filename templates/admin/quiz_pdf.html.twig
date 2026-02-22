@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 12px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        .meta {
+            font-size: 11px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 15px;
+        }
+
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>📘 Liste des Questions</h1>
+
+{% for question in questions %}
+    <div class="question">
+        <strong>{{ question.titre }}</strong>
+
+        <div class="meta">
+            Durée : {{ question.duree }} min |
+            Note max : {{ question.noteMax }} pts
+            {% if question.user %}
+                | Auteur : {{ question.user.nom }}
+            {% endif %}
+        </div>
+
+        <p>{{ question.description }}</p>
+
+        <ul>
+            {% for choix in question.choix %}
+                <li>
+                    {{ choix.contenu }}
+                    {% if choix.estCorrect %}
+                        <span class="correct">(Correct)</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endfor %}
+
+</body>
+</html>

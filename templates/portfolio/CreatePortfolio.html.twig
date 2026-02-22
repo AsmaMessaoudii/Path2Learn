@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer Portfolio{% endblock %}
+
+{% block body %}
+<div class="d-flex">
+
+    <!-- Sidebar -->
+    {% include 'layout/sidebar.html.twig' %}
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 min-vh-100 d-flex flex-column">
+
+        <!-- Navbar -->
+        {% include 'layout/navbar.html.twig' %}
+
+        <!-- ================= Main ================= -->
+        <main class="p-4 flex-grow-1 d-flex justify-content-center align-items-center"
+      style="background-color: #f0f2f5;">
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+
+            <!-- WIDER COLUMN -->
+            <div class="col-md-8 col-lg-6">
+
+                <!-- BIG FORM CARD -->
+                <div class="card shadow border-0 p-5">
+
+                    <h4 class="fw-bold text-center mb-4">
+                        Créer votre Portfolio
+                    </h4>
+
+                    {{ form_start(form) }}
+
+                        <div class="mb-4">
+                            {{ form_label(form.titre, null, {
+                                label_attr: { class: 'fw-semibold' }
+                            }) }}
+                            {{ form_widget(form.titre, {
+                                attr: { class: 'form-control form-control-lg' }
+                            }) }}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form_label(form.description, null, {
+                                label_attr: { class: 'fw-semibold' }
+                            }) }}
+                            {{ form_widget(form.description, {
+                                attr: { class: 'form-control form-control-lg', rows: 4 }
+                            }) }}
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button class="btn btn-primary btn-lg rounded-pill">
+                                Enregistrer
+                            </button>
+                        </div>
+
+                    {{ form_end(form) }}
+
+                </div>
+                <!-- END FORM CARD -->
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+    </div>
+</div>
+{% endblock %}

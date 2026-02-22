@@ -55,6 +55,7 @@ class DashboardAdminController extends AbstractController
                 'teachers' => $teacherCount,
                 'students' => $studentCount,
             ],
+               'role' => $this->getUser()->getRole(), 
         ]);
     }
 }

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Export des Cours</title>
+    <style>
+        @page {
+            margin: 15mm;
+            size: A4 portrait;
+        }
+        
+        body { 
+            font-family: 'Helvetica', 'Arial', sans-serif; 
+            font-size: 10px; 
+            line-height: 1.3;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .header { 
+            text-align: center; 
+            margin-bottom: 15px; 
+            padding-bottom: 8px; 
+            border-bottom: 2px solid #2c3e50;
+        }
+        
+        .title { 
+            font-size: 18px; 
+            font-weight: bold; 
+            color: #2c3e50; 
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle { 
+            font-size: 11px; 
+            color: #7f8c8d; 
+            font-style: italic;
+        }
+        
+        .table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 15px;
+            table-layout: fixed;
+            border: 1px solid #ddd;
+        }
+        
+        .table th { 
+            background-color: #34495e; 
+            color: white;
+            border: 1px solid #2c3e50; 
+            padding: 7px 5px; 
+            text-align: center; 
+            font-weight: bold;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .table td { 
+            border: 1px solid #ddd; 
+            padding: 5px; 
+            font-size: 9px;
+            vertical-align: middle;
+            height: 35px;
+        }
+        
+        /* Largeurs égales pour 7 colonnes */
+        .table th,
+        .table td {
+            width: 14.28%;
+        }
+        
+        /* Sauf pour la première colonne (#) plus petite */
+        .table th:first-child,
+        .table td:first-child {
+            width: 5%;
+        }
+        
+        /* Et pour le titre légèrement plus grand */
+        .table th:nth-child(2),
+        .table td:nth-child(2) {
+            width: 18%;
+        }
+        
+        /* Ajustement des autres colonnes */
+        .table th:nth-child(3),
+        .table td:nth-child(3) {
+            width: 14%;
+        }
+        
+        .table th:nth-child(4),
+        .table td:nth-child(4) {
+            width: 10%;
+        }
+        
+        .table th:nth-child(5),
+        .table td:nth-child(5) {
+            width: 14%;
+        }
+        
+        .table th:nth-child(6),
+        .table td:nth-child(6) {
+            width: 14%;
+        }
+        
+        .table th:nth-child(7),
+        .table td:nth-child(7) {
+            width: 15%;
+        }
+        
+        .badge { 
+            padding: 2px 5px; 
+            border-radius: 3px; 
+            font-size: 8px; 
+            display: inline-block;
+            font-weight: bold;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .badge-success { background-color: #27ae60; color: white; }
+        .badge-warning { background-color: #f39c12; color: white; }
+        .badge-secondary { background-color: #95a5a6; color: white; }
+        .badge-info { background-color: #3498db; color: white; }
+        .badge-danger { background-color: #e74c3c; color: white; }
+        .badge-primary { background-color: #2980b9; color: white; }
+        
+        .footer { 
+            margin-top: 30px; 
+            text-align: center; 
+            color: #7f8c8d; 
+            font-size: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #ecf0f1;
+        }
+        
+        .titre-cell {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 0;
+        }
+        
+        .table tbody tr:nth-child(odd) {
+            background-color: #f8f9fa;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .text-truncate {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .summary {
+            margin-top: 15px;
+            padding: 8px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            font-size: 9px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">Rapport des Cours</div>
+        <div class="subtitle">Généré le {{ date_export|date('d/m/Y à H:i') }}</div>
+    </div>
+    
+    <!-- Résumé statistique -->
+    <div class="summary">
+        <strong>Total : {{ coursList|length }} cours</strong> | 
+        Publiés : {{ coursList|filter(c => c.statut == 'publié')|length }} | 
+        Brouillons : {{ coursList|filter(c => c.statut == 'brouillon')|length }} | 
+        Archivés : {{ coursList|filter(c => c.statut == 'archivé')|length }}
+    </div>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>TITRE</th>
+                <th>MATIÈRE</th>
+                <th>NIVEAU</th>
+                <th>DURÉE</th>
+                <th>STATUT</th>
+                <th>DATE</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cours in coursList %}
+                <tr>
+                    <td class="text-center"><strong>{{ loop.index }}</strong></td>
+                    <td class="titre-cell text-truncate" title="{{ cours.titre }}">
+                        {# Solution 1 : Utiliser slice #}
+                        {% if cours.titre|length > 30 %}
+                            {{ cours.titre|slice(0, 30) }}...
+                        {% else %}
+                            {{ cours.titre|default('N/A') }}
+                        {% endif %}
+                    </td>
+                    <td class="text-truncate">
+                        {# Solution 2 : Créer une fonction personnalisée #}
+                        {% set matiere = cours.matiere|default('N/A') %}
+                        {% if matiere|length > 20 %}
+                            {{ matiere|slice(0, 20) }}...
+                        {% else %}
+                            {{ matiere }}
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <span class="badge 
+                            {% if cours.niveau == 'Débutant' %}badge-primary
+                            {% elseif cours.niveau == 'Intermédiaire' %}badge-info
+                            {% elseif cours.niveau == 'Avancé' %}badge-warning
+                            {% else %}badge-secondary{% endif %}">
+                            {{ cours.niveau|default('N/D') }}
+                        </span>
+                    </td>
+                    <td class="text-center">{{ cours.duree|default(0) }} min</td>
+                    <td class="text-center">
+                        {% if cours.statut == 'publié' %}
+                            <span class="badge badge-success">PUBLIÉ</span>
+                        {% elseif cours.statut == 'brouillon' %}
+                            <span class="badge badge-warning">BROUILLON</span>
+                        {% elseif cours.statut == 'archivé' %}
+                            <span class="badge badge-secondary">ARCHIVÉ</span>
+                        {% else %}
+                            <span class="badge badge-danger">N/D</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">{{ cours.dateCreation|date('d/m/Y') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div class="footer">
+        <p><strong>Système de Gestion Académique</strong> • Document officiel • Page 1/1</p>
+        <p>© {{ "now"|date('Y') }} - Tous droits réservés</p>
+    </div>
+</body>
+</html>

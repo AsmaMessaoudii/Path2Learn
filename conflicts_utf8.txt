@@ -1,0 +1,37 @@
+﻿
+UU .env
+UU composer.lock
+AA src/Controller/Hom
+eController.php
+AA 
+src/Entity/Choix.php
+AA 
+src/Entity/Cours.php
+AA src/Entity/Eveneme
+nt.php
+AA src/Entity/Partici
+pationEvent.php
+AA src/Entity/Questio
+n.php
+AA src/Entity/Ressour
+cePedagogique.php
+AA 
+src/Entity/User.php
+AA src/Repository/Cou
+rsRepository.php
+AA src/Repository/Eve
+nementRepository.php
+AA src/Repository/Que
+stionRepository.php
+AA src/Repository/Res
+sourcePedagogiqueRepo
+sitory.php
+UU templates/base.htm
+l.twig
+AA templates/dashboar
+d_admin/index.html.tw
+ig
+AA templates/home/ind
+ex.html.twig
+
+

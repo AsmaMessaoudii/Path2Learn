@@ -1,0 +1,342 @@
+{# templates/attestation/view.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Attestation{% endblock %}
+
+{% block body %}
+<header class="navbar-light navbar-sticky header-static">
+    <!-- Nav START -->
+    <nav class="navbar navbar-expand-xl">
+        <div class="container-fluid px-3 px-xl-5">
+            <!-- Logo START -->
+            <a class="navbar-brand" href="{{ path('home') }}">
+                <img class="light-mode-item navbar-brand-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 250px;">
+                <img class="dark-mode-item navbar-brand-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 250px;">
+            </a>
+            <!-- Logo END -->
+
+            <!-- Responsive navbar toggler -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-animation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+
+            <!-- Main navbar START -->
+            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+                <!-- Nav Main menu START -->
+                <ul class="navbar-nav navbar-nav-scroll me-auto">
+                    <!-- Nav item Demos -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Services</a>
+                        <ul class="dropdown-menu" aria-labelledby="demoMenu">
+                            <li> <a class="dropdown-item active" href="{{ path('home_portfolio') }}">Portfolio</a></li>
+                            <li> <a class="dropdown-item" href="#">Événements</a></li>
+                            <li> <a class="dropdown-item" href="#">Certification</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Pages -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
+                        <ul class="dropdown-menu" aria-labelledby="pagesMenu">
+                            <li><a class="dropdown-item" href="{{ path('quiz') }}">QUIZ</a></li>
+                            <li><a class="dropdown-item" href="#">Ressources</a></li>
+                            <li><a class="dropdown-item" href="#">Projets</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Account -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
+                        <ul class="dropdown-menu" aria-labelledby="accounntMenu">
+                            <li><a class="dropdown-item" href="{{ path('instructor') }}"><i class="fas fa-user-tie fa-fw me-1"></i>Enseignants</a></li>
+                            <li><a class="dropdown-item" href="{{ path('student_dashboard') }}"><i class="fas fa-user-graduate fa-fw me-1"></i>Étudiants</a></li>
+                            <li><a class="dropdown-item" href="{{ path('admin_dashboard') }}"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Nav Main menu END -->
+
+                <!-- Nav Search START -->
+                <div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+                    <div class="nav-item w-100">
+                        <form class="position-relative">
+                            <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
+                            <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+                                <i class="fas fa-search fs-6 "></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Nav Search END -->
+            </div>
+            <!-- Main navbar END -->
+
+            <!-- Profile START -->
+            <div class="dropdown ms-1 ms-lg-0">
+                <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                </a>
+                <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+                    <!-- Links -->
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+                    <li><a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+                </ul>
+            </div>
+            <!-- Profile START -->
+        </div>
+    </nav>
+    <!-- Nav END -->
+</header>
+<!-- Header END -->
+
+<!-- SVG sections (keep as is) -->
+<figure class="position-absolute top-50 start-0 translate-middle-y ms-n7 d-none d-xxl-block">
+    <!-- SVG content -->
+</figure>
+
+<span class="position-absolute top-50 end-0 translate-middle-y mt-5 me-n5 d-none d-xxl-inline-flex">
+    <!-- SVG content -->
+</span>
+
+<figure class="position-absolute top-0 start-0 ms-5">
+    <!-- SVG content -->
+</figure>
+
+<main class="pt-5 pb-5" style="min-height: calc(100vh - 200px); background: url('{{ asset('assets/images/pattern/04.png') }}') no-repeat center center; background-size: cover;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <!-- En-tête avec boutons -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="display-5 mb-0">Mon Attestation</h1>
+                    <div>
+                        {% if percentage >= 50 %}
+                            <a href="{{ path('attestation_generate') }}" class="btn btn-success">
+                                <i class="bi bi-download me-2"></i>Télécharger PDF
+                            </a>
+                        {% endif %}
+                        
+                        <!-- NOUVEAU BOUTON EMAIL -->
+                        <button onclick="sendAttestationByEmail()" class="btn btn-primary mx-2">
+                            <i class="bi bi-envelope-fill me-2"></i>Recevoir par email
+                        </button>
+                        
+                        <a href="{{ path('quiz') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-2"></i>Retour
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Aperçu de l'attestation -->
+                <div class="card border-0 shadow">
+                    <div class="card-body p-5">
+                        <!-- Badge de certification -->
+                        <div class="text-center mb-4">
+                            {% if isCertified %}
+                                <span class="badge bg-success p-3" style="font-size: 1.2rem;">
+                                    <i class="bi bi-patch-check-fill me-2"></i>ATTESTATION CERTIFIÉE
+                                </span>
+                            {% else %}
+                                <span class="badge bg-warning p-3" style="font-size: 1.2rem;">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>ATTESTATION NON CERTIFIÉE
+                                </span>
+                                <p class="text-muted mt-2">
+                                    Vous devez traiter toutes les questions et obtenir au moins 50% pour être certifié.
+                                </p>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Informations étudiant -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h5>{{ user.prenom }} {{ user.nom }}</h5>
+                                <p class="text-muted">{{ user.email }}</p>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <p class="mb-1"><strong>Date :</strong> {{ "now"|date('d/m/Y') }}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Statistiques -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-3">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body text-center">
+                                        <h3 class="mb-0">{{ totalQuestions }}</h3>
+                                        <small>Questions totales</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body text-center">
+                                        <h3 class="mb-0">{{ answeredQuestions }}</h3>
+                                        <small>Questions traitées</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-info text-white">
+                                    <div class="card-body text-center">
+                                        <h3 class="mb-0">{{ totalScore }}/{{ maxPossibleScore }}</h3>
+                                        <small>Score total</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card {% if percentage >= 50 %}bg-success{% else %}bg-danger{% endif %} text-white">
+                                    <div class="card-body text-center">
+                                        <h3 class="mb-0">{{ percentage }}%</h3>
+                                        <small>Réussite</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Barre de progression -->
+                        <div class="mb-4">
+                            <label>Progression globale</label>
+                            <div class="progress" style="height: 25px;">
+                                <div class="progress-bar bg-success" 
+                                     role="progressbar" 
+                                     style="width: {{ (answeredQuestions / totalQuestions * 100)|round }}%"
+                                     aria-valuenow="{{ (answeredQuestions / totalQuestions * 100)|round }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                    {{ (answeredQuestions / totalQuestions * 100)|round }}%
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Mention -->
+                        <div class="alert alert-info text-center">
+                            <h4 class="mb-0">Mention : <strong>{{ mention }}</strong></h4>
+                        </div>
+                        
+                        <!-- Message conditionnel -->
+                        {% if not isCertified %}
+                            <div class="alert alert-warning">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>Pour obtenir votre attestation certifiée :</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li>Traitez toutes les questions ({{ answeredQuestions }}/{{ totalQuestions }})</li>
+                                    <li>Obtenez au moins 50% de réussite (actuellement {{ percentage }}%)</li>
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Back to top -->
+<div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>
+
+<!-- Script pour l'envoi d'email -->
+<script>
+function sendAttestationByEmail() {
+    // Afficher une confirmation
+    if (!confirm('Voulez-vous recevoir votre attestation par email ?')) {
+        return;
+    }
+    
+    // Récupérer le bouton cliqué
+    const btn = event.target.closest('button');
+    const originalText = btn.innerHTML;
+    
+    // Afficher un indicateur de chargement
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Envoi en cours...';
+    btn.disabled = true;
+    
+    // Envoyer la requête
+    fetch('{{ path('attestation_send_email') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Succès
+            alert('✅ ' + data.message);
+        } else {
+            // Erreur
+            alert('❌ ' + (data.error || 'Erreur lors de l\'envoi'));
+        }
+    })
+    .catch(error => {
+        alert('❌ Erreur de connexion');
+        console.error('Error:', error);
+    })
+    .finally(() => {
+        // Restaurer le bouton après 2 secondes
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }, 2000);
+    });
+}
+</script>
+
+<style>
+html, body {
+    background-color: #ffffff !important;
+    height: 100%;
+    margin: 0;
+}
+
+.layout-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.page-content {
+    flex: 1;
+    background-color: #ffffff;
+}
+
+.site-footer {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.choice-item input[type="checkbox"]:checked + label {
+    background-color: #0d6efd !important;
+    color: white !important;
+}
+
+.choice-item input[type="checkbox"]:disabled + label {
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}
+
+/* Styles pour le bouton */
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    transition: transform 0.2s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.spinner-border {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.15em;
+}
+</style>
+{% endblock %}

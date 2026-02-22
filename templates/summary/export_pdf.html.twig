@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Résumé - {{ course.titre }}</title>
+    <style>
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 2cm;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4361ee;
+        }
+        
+        .header h1 {
+            color: #4361ee;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .header .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #4361ee;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .info-item {
+            font-size: 13px;
+        }
+        
+        .info-item strong {
+            color: #4361ee;
+            min-width: 100px;
+            display: inline-block;
+        }
+        
+        .summary-content {
+            margin: 30px 0;
+            padding: 20px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+        
+        .keywords {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .keywords span {
+            display: inline-block;
+            background: #e9ecef;
+            padding: 5px 12px;
+            margin: 3px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #495057;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #999;
+            font-size: 11px;
+            border-top: 1px solid #dee2e6;
+            padding-top: 20px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            background: #e7f3ff;
+            color: #4361ee;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: normal;
+        }
+        
+        .resources-summary {
+            margin: 20px 0;
+            font-size: 13px;
+        }
+        
+        .resources-summary table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .resources-summary td {
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ course.titre }}</h1>
+        <div class="subtitle">Résumé généré par intelligence artificielle</div>
+        <div class="badge">Path2Learn</div>
+    </div>
+    
+    <div class="info-box">
+        <div class="info-grid">
+            <div class="info-item"><strong>Matière :</strong> {{ course.matiere|default('Général') }}</div>
+            <div class="info-item"><strong>Niveau :</strong> {{ course.niveau|default('Tous niveaux') }}</div>
+            <div class="info-item"><strong>Durée :</strong> {{ course.duree|default(0) }} minutes</div>
+            <div class="info-item"><strong>Ressources :</strong> {{ ressources|length }}</div>
+            <div class="info-item"><strong>Formateur :</strong> {{ course.emailProf|default('Path2Learn') }}</div>
+            <div class="info-item"><strong>Généré le :</strong> {{ date_export|date('d/m/Y H:i') }}</div>
+        </div>
+    </div>
+    
+    <div class="resources-summary">
+        <table>
+            {% set types = {'pdf': 0, 'video': 0, 'image': 0, 'audio': 0, 'lien': 0} %}
+            {% for ressource in ressources %}
+                {% if ressource.fileName %}
+                    {% set ext = ressource.fileName|split('.')|last|lower %}
+                    {% if ext in ['pdf'] %}
+                        {% set types = types|merge({'pdf': types.pdf + 1}) %}
+                    {% elseif ext in ['mp4', 'mov', 'avi', 'mkv'] %}
+                        {% set types = types|merge({'video': types.video + 1}) %}
+                    {% elseif ext in ['jpg', 'jpeg', 'png', 'gif'] %}
+                        {% set types = types|merge({'image': types.image + 1}) %}
+                    {% elseif ext in ['mp3', 'wav', 'ogg'] %}
+                        {% set types = types|merge({'audio': types.audio + 1}) %}
+                    {% endif %}
+                {% elseif ressource.url %}
+                    {% set types = types|merge({'lien': types.lien + 1}) %}
+                {% endif %}
+            {% endfor %}
+            
+            <tr>
+                <td><strong>📄 PDF :</strong> {{ types.pdf }}</td>
+                <td><strong>🎬 Vidéos :</strong> {{ types.video }}</td>
+                <td><strong>🖼️ Images :</strong> {{ types.image }}</td>
+                <td><strong>🔊 Audios :</strong> {{ types.audio }}</td>
+                <td><strong>🔗 Liens :</strong> {{ types.lien }}</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="summary-content">
+        {{ summary.summaryText|nl2br }}
+    </div>
+    
+    {% if summary.keywords %}
+    <div class="keywords">
+        <h4 style="color: #4361ee; font-size: 16px; margin-bottom: 10px;">Mots-clés</h4>
+        {% for keyword in summary.keywords|split(', ') %}
+            <span>{{ keyword }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="footer">
+        <p>© Path2Learn - Résumé généré automatiquement le {{ date_export|date('d/m/Y à H:i') }}</p>
+        <p>Ce document est un résumé automatique du cours et de ses ressources pédagogiques.</p>
+    </div>
+</body>
+</html>

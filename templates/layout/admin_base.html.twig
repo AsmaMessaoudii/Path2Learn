@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="d-flex">
+    <!-- Sidebar -->
+    {% include 'layout/sidebar.html.twig' %}
+
+    <!-- Main Content Wrapper -->
+    <div class="flex-grow-1 min-vh-100 d-flex flex-column">
+        
+        <!-- Navbar -->
+        {% include 'layout/navbar.html.twig' %}
+
+        <!-- Main Content -->
+        <main class="p-4 flex-grow-1" style="background-color: #f0f2f5;">
+            <div class="container-fluid">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+        
+        <!-- Optional Admin Footer if needed, or leave empty -->
+    </div>
+</div>
+{% endblock %}

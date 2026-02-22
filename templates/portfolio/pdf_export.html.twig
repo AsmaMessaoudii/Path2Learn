@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ portfolio.titre }} - Portfolio PDF</title>
+    <style>
+        @page { margin: 50px 40px; }
+        body { 
+            font-family: DejaVu Sans, Arial, sans-serif; 
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+            font-size: 12px;
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            border-bottom: 3px solid #2c3e50; 
+            padding-bottom: 20px;
+        }
+        .header h1 { 
+            color: #2c3e50; 
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+        .header .meta { 
+            color: #7f8c8d; 
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .portfolio-info { 
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .portfolio-info h2 { 
+            color: #3498db;
+            margin-top: 0;
+            font-size: 20px;
+        }
+        .section { 
+            margin-bottom: 25px;
+            page-break-inside: avoid;
+        }
+        .section h2 { 
+            color: #3498db; 
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px; 
+            margin-bottom: 20px; 
+            font-size: 22px;
+        }
+        .project { 
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .project:last-child {
+            border-bottom: none;
+        }
+        .project-title { 
+            color: #2c3e50; 
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .project-meta { 
+            color: #7f8c8d; 
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        .technologies { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .tech-tag { 
+            background-color: #ecf0f1; 
+            padding: 4px 10px; 
+            border-radius: 15px; 
+            font-size: 11px;
+            color: #2c3e50;
+        }
+        .project-description { 
+            margin-top: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .demo-link { 
+            color: #2980b9; 
+            text-decoration: none;
+            word-break: break-all;
+            font-size: 12px;
+        }
+        .footer { 
+            margin-top: 60px; 
+            text-align: center; 
+            color: #95a5a6; 
+            font-size: 11px; 
+            border-top: 1px solid #eee; 
+            padding-top: 20px;
+        }
+        .content { 
+            padding: 0 10px;
+        }
+        .stats { 
+            display: flex;
+            justify-content: space-around;
+            background-color: #f1f8ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .stat-item { 
+            text-align: center;
+        }
+        .stat-number { 
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .stat-label { 
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        .table { 
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .table th { 
+            background-color: #f1f8ff;
+            padding: 10px;
+            text-align: left;
+            border-bottom: 2px solid #3498db;
+            font-size: 13px;
+        }
+        .table td { 
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 12px;
+        }
+        .table tr:hover { 
+            background-color: #f9f9f9;
+        }
+        .page-break { 
+            page-break-before: always;
+        }
+        .logo { 
+            text-align: center; 
+            margin-bottom: 10px;
+        }
+        .logo img { 
+            max-width: 120px; 
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <!-- Add logo if available -->
+        </div>
+        <h1>{{ portfolio.titre }}</h1>
+        <div class="meta">Portfolio - Exporté le {{ "now"|date('d/m/Y à H:i') }}</div>
+        <div class="meta">ID Portfolio: {{ portfolio.id }}</div>
+    </div>
+    
+    <div class="content">
+        <!-- Portfolio Information -->
+        <div class="portfolio-info">
+            <h2>Informations du Portfolio</h2>
+            <p><strong>Description:</strong> {{ portfolio.description|default('Aucune description') }}</p>
+            <p><strong>Date de création:</strong> {{ portfolio.dateCreation|date('d/m/Y') }}</p>
+            <p><strong>Dernière mise à jour:</strong> {{ portfolio.dateCreation|date('d/m/Y') }}</p>
+            <p><strong>Nombre de projets:</strong> {{ portfolio.projet|length }}</p>
+        </div>
+        
+        <!-- Statistics -->
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">{{ portfolio.projet|length }}</div>
+                <div class="stat-label">Projets</div>
+            </div>
+            <div class="stat-item">
+                {% set techCount = [] %}
+                {% for projet in portfolio.projet %}
+                    {% for tech in projet.technologies|split(',') %}
+                        {% set tech = tech|trim %}
+                        {% if tech not in techCount %}
+                            {% set techCount = techCount|merge([tech]) %}
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+                <div class="stat-number">{{ techCount|length }}</div>
+                <div class="stat-label">Technologies</div>
+            </div>
+            <div class="stat-item">
+                {% set demoCount = 0 %}
+                {% for projet in portfolio.projet %}
+                    {% if projet.lienDemo %}
+                        {% set demoCount = demoCount + 1 %}
+                    {% endif %}
+                {% endfor %}
+                <div class="stat-number">{{ demoCount }}</div>
+                <div class="stat-label">Démos en ligne</div>
+            </div>
+        </div>
+        
+        <!-- Projects Section -->
+        <div class="section">
+            <h2>Projets ({{ portfolio.projet|length }})</h2>
+            
+            {% if portfolio.projet|length > 0 %}
+                <!-- Summary Table -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Titre</th>
+                            <th>Date</th>
+                            <th>Technologies</th>
+                            <th>Démo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for projet in portfolio.projet %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ projet.titreProjet }}</td>
+                            <td>{{ projet.dateRealisation ? projet.dateRealisation|date('d/m/Y') : 'Non daté' }}</td>
+                            <td>
+                                {% for tech in projet.technologies|split(',') %}
+                                    <span class="tech-tag">{{ tech|trim }}</span>
+                                {% endfor %}
+                            </td>
+                            <td>{{ projet.lienDemo ? 'Oui' : 'Non' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <!-- Detailed Projects -->
+                <h3 style="margin-top: 30px;">Détails des projets</h3>
+                
+                {% for projet in portfolio.projet %}
+                <div class="project {% if loop.index % 3 == 0 %}page-break{% endif %}">
+                    <h3 class="project-title">{{ loop.index }}. {{ projet.titreProjet }}</h3>
+                    
+                    <div class="project-meta">
+                        <strong>Date:</strong> {{ projet.dateRealisation ? projet.dateRealisation|date('d/m/Y') : 'Non daté' }}
+                    </div>
+                    
+                    {% if projet.technologies %}
+                    <div class="technologies">
+                        <strong>Technologies:</strong>
+                        {% for tech in projet.technologies|split(',') %}
+                            <span class="tech-tag">{{ tech|trim }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    {% if projet.description %}
+                    <div class="project-description">
+                        <strong>Description:</strong><br>
+                        {{ projet.description }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if projet.lienDemo %}
+                    <div style="margin-top: 10px;">
+                        <strong>Lien de démonstration:</strong><br>
+                        <a href="{{ projet.lienDemo }}" class="demo-link">{{ projet.lienDemo }}</a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                
+            {% else %}
+                <p style="text-align: center; color: #7f8c8d; font-style: italic;">
+                    Aucun projet dans ce portfolio pour le moment.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="footer">
+        Document généré automatiquement par Path2Learn<br>
+        Portfolio ID: {{ portfolio.id }} • {{ "now"|date('Y') }}<br>
+        Total: {{ portfolio.projet|length }} projet(s)
+    </div>
+</body>
+</html>

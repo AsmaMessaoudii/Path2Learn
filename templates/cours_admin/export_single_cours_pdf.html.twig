@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Fiche du Cours - {{ cours.titre }}</title>
+    <style>
+        body { 
+            font-family: 'Helvetica', 'Arial', sans-serif; 
+            font-size: 12px; 
+            line-height: 1.4;
+            margin: 20px;
+        }
+        
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            padding-bottom: 15px; 
+            border-bottom: 2px solid #2c3e50;
+        }
+        
+        .title { 
+            font-size: 24px; 
+            font-weight: bold; 
+            color: #2c3e50; 
+            margin-bottom: 5px;
+        }
+        
+        .subtitle { 
+            font-size: 14px; 
+            color: #7f8c8d; 
+            margin-bottom: 10px;
+        }
+        
+        .info-section {
+            margin-bottom: 25px;
+        }
+        
+        .info-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #34495e;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .info-item {
+            margin-bottom: 8px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #2c3e50;
+            display: inline-block;
+            width: 140px;
+        }
+        
+        .info-value {
+            color: #34495e;
+        }
+        
+        .badge { 
+            padding: 3px 8px; 
+            border-radius: 3px; 
+            font-size: 10px; 
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .badge-success { background-color: #27ae60; color: white; }
+        .badge-warning { background-color: #f39c12; color: white; }
+        .badge-secondary { background-color: #95a5a6; color: white; }
+        .badge-info { background-color: #3498db; color: white; }
+        .badge-danger { background-color: #e74c3c; color: white; }
+        
+        .description-box {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            margin-top: 10px;
+        }
+        
+        .ressources-section {
+            margin-top: 30px;
+        }
+        
+        .ressource-item {
+            border: 1px solid #ecf0f1;
+            border-radius: 3px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+        }
+        
+        .footer { 
+            margin-top: 50px; 
+            text-align: center; 
+            color: #7f8c8d; 
+            font-size: 10px;
+            padding-top: 15px;
+            border-top: 1px solid #ecf0f1;
+        }
+        
+        .qr-code {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .statut-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .statut-publie { background-color: #27ae60; }
+        .statut-brouillon { background-color: #f39c12; }
+        .statut-archive { background-color: #95a5a6; }
+        
+        /* Pour formater l'ID avec des zéros devant */
+        .reference-code {
+            font-family: monospace;
+            background-color: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            border: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">FICHE DU COURS</div>
+        <div class="subtitle">
+            Référence : COURS-{{ "%04d"|format(cours.id) }}
+        </div>
+        <div>Généré le {{ date_export|date('d/m/Y à H:i') }}</div>
+    </div>
+    
+    <div class="info-section">
+        <div class="info-title">Informations Générales</div>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Titre :</span>
+                <span class="info-value"><strong>{{ cours.titre }}</strong></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Matière :</span>
+                <span class="info-value">{{ cours.matiere|default('Non spécifié') }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Niveau :</span>
+                <span class="info-value">
+                    <span class="badge 
+                        {% if cours.niveau == 'Débutant' %}badge-success
+                        {% elseif cours.niveau == 'Intermédiaire' %}badge-info
+                        {% elseif cours.niveau == 'Avancé' %}badge-warning
+                        {% else %}badge-secondary{% endif %}">
+                        {{ cours.niveau|default('Non défini') }}
+                    </span>
+                </span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Durée :</span>
+                <span class="info-value">{{ cours.duree|default(0) }} minutes</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Statut :</span>
+                <span class="info-value">
+                    <span class="statut-indicator 
+                        {% if cours.statut == 'publié' %}statut-publie
+                        {% elseif cours.statut == 'brouillon' %}statut-brouillon
+                        {% elseif cours.statut == 'archivé' %}statut-archive{% endif %}"></span>
+                    {% if cours.statut == 'publié' %}
+                        <span class="badge badge-success">PUBLIÉ</span>
+                    {% elseif cours.statut == 'brouillon' %}
+                        <span class="badge badge-warning">BROUILLON</span>
+                    {% elseif cours.statut == 'archivé' %}
+                        <span class="badge badge-secondary">ARCHIVÉ</span>
+                    {% else %}
+                        {{ cours.statut|default('Non défini') }}
+                    {% endif %}
+                </span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Date création :</span>
+                <span class="info-value">{{ cours.dateCreation|date('d/m/Y') }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Professeur :</span>
+                <span class="info-value">{{ cours.emailProf|default('Non spécifié') }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="info-section">
+        <div class="info-title">Description</div>
+        <div class="description-box">
+            {{ cours.description|default('Aucune description disponible.')|nl2br }}
+        </div>
+    </div>
+    
+    {% if cours.ressourcePedagogiques|length > 0 %}
+    <div class="ressources-section">
+        <div class="info-title">Ressources Associées ({{ cours.ressourcePedagogiques|length }})</div>
+        {% for ressource in cours.ressourcePedagogiques %}
+            <div class="ressource-item">
+                <div class="info-item">
+                    <span class="info-label">Titre :</span>
+                    <span class="info-value"><strong>{{ ressource.titre }}</strong></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Type :</span>
+                    <span class="info-value">
+                        <span class="badge badge-info">{{ ressource.type }}</span>
+                    </span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">URL :</span>
+                    <span class="info-value">{{ ressource.url|default('N/A') }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Date ajout :</span>
+                    <span class="info-value">{{ ressource.dateAjout|date('d/m/Y') }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <div class="qr-code">
+        <small>Code unique : COURS-{{ cours.id }}-{{ date_export|date('YmdHis') }}</small>
+    </div>
+    
+    <div class="footer">
+        <p><strong>Système de Gestion Académique</strong> - Document officiel</p>
+        <p>© {{ "now"|date('Y') }} - Tous droits réservés</p>
+    </div>
+</body>
+</html>

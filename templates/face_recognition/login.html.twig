@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion Face ID{% endblock %}
+
+{% block body %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+                <div class="card shadow">
+                    <!-- Card header -->
+                    <div class="card-header bg-primary bg-opacity-10">
+                        <h4 class="text-primary mb-0">
+                            <i class="bi bi-camera-video-fill me-2"></i>Connexion Face ID
+                        </h4>
+                        <p class="mb-0 small">Reconnaissance faciale sécurisée</p>
+                    </div>
+
+                    <!-- Card body -->
+                    <div class="card-body p-4">
+
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Positionnez votre visage face à la caméra
+                        </div>
+
+                        <!-- Video Preview -->
+                        <video id="faceVideo" width="100%" height="auto" autoplay style="border-radius: 10px; display: none;"></video>
+                        <canvas id="faceCanvas" style="display: none;"></canvas>
+
+                        <!-- Status -->
+                        <div id="faceStatus" class="alert alert-secondary">
+                            <i class="bi bi-camera me-2"></i>
+                            Cliquez pour démarrer la caméra
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2">
+                            <button id="startCameraBtn" class="btn btn-primary btn-lg">
+                                <i class="bi bi-camera-video me-2"></i>Démarrer la caméra
+                            </button>
+                            <button id="faceCaptureBtn" class="btn btn-success btn-lg" style="display: none;">
+                                <i class="bi bi-camera me-2"></i>Se connecter avec Face ID
+                            </button>
+                            <a href="{{ path('app_login') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Retour connexion classique
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= FACE RECOGNITION SCRIPT ================= -->
+<script>
+const faceVideo = document.getElementById('faceVideo');
+const faceCanvas = document.getElementById('faceCanvas');
+const faceCaptureBtn = document.getElementById('faceCaptureBtn');
+const startCameraBtn = document.getElementById('startCameraBtn');
+const faceStatus = document.getElementById('faceStatus');
+
+let stream = null; // ✅ IMPORTANT: Déclarer la variable
+
+// Start camera
+startCameraBtn.addEventListener('click', async () => {
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        faceVideo.srcObject = stream;
+        faceVideo.style.display = 'block';
+        startCameraBtn.style.display = 'none';
+        faceCaptureBtn.style.display = 'block';
+        
+        faceStatus.className = 'alert alert-success';
+        faceStatus.innerHTML = '<i class="bi bi-check-circle me-2"></i>Caméra prête! Cliquez pour vous connecter';
+    } catch (err) {
+        faceStatus.className = 'alert alert-danger';
+        faceStatus.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Erreur: Impossible d\'accéder à la caméra';
+        console.error(err);
+    }
+});
+
+// Capture and recognize
+faceCaptureBtn.addEventListener('click', async () => {
+    faceCaptureBtn.disabled = true;
+    faceStatus.className = 'alert alert-info';
+    faceStatus.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Analyse en cours...';
+
+    // Capture image
+    faceCanvas.width = faceVideo.videoWidth;
+    faceCanvas.height = faceVideo.videoHeight;
+    const context = faceCanvas.getContext('2d');
+    context.drawImage(faceVideo, 0, 0);
+    const imageData = faceCanvas.toDataURL('image/jpeg');
+
+    try {
+        const response = await fetch('{{ path('api_face_recognize') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ image: imageData })
+        });
+
+        const result = await response.json();
+
+        if (result.success && result.require_2fa) {
+            // 2FA requis
+            faceStatus.className = 'alert alert-success';
+            faceStatus.innerHTML = `<i class="bi bi-check-circle me-2"></i>✅ Visage reconnu: ${result.user.prenom} ${result.user.nom}!<br><small>Confiance: ${(result.confidence * 100).toFixed(1)}%</small><br><small>Redirection vers la vérification 2FA...</small>`;
+            
+            // Stop camera
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            
+            // Redirect to 2FA
+            setTimeout(() => {
+                window.location.href = result.redirect;
+            }, 2000);
+        } else if (result.success && result.authenticated) {
+            // Connexion directe (sans 2FA)
+            faceStatus.className = 'alert alert-success';
+            faceStatus.innerHTML = `<i class="bi bi-check-circle me-2"></i>✅ Bienvenue ${result.user.prenom} ${result.user.nom}!`;
+            
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            
+            setTimeout(() => {
+                window.location.href = result.redirect || '{{ path('home') }}';
+            }, 2000);
+        } else {
+            faceStatus.className = 'alert alert-danger';
+            faceStatus.innerHTML = '<i class="bi bi-x-circle me-2"></i>❌ ' + (result.message || 'Visage non reconnu. Veuillez réessayer.');
+            faceCaptureBtn.disabled = false;
+        }
+    } catch (error) {
+        faceStatus.className = 'alert alert-danger';
+        faceStatus.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>❌ Erreur: ' + error.message;
+        faceCaptureBtn.disabled = false;
+    }
+});
+</script>
+
+{% endblock %}

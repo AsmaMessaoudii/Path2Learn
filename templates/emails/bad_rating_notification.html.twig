@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Notification de mauvaise évaluation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+        .header {
+            background-color: #dc3545;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+        }
+        .content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 0 0 10px 10px;
+        }
+        .reason-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚠️ Alerte : Mauvaise évaluation</h1>
+        </div>
+        
+        <div class="content">
+            <h2>Bonjour {{ course.emailProf }},</h2>
+            
+            <p>Un étudiant vient de donner une <strong>note faible ({{ evaluation.note }}/100)</strong> à votre cours :</p>
+            
+            <h3>"{{ course.titre }}"</h3>
+            
+            <div class="reason-box">
+                <h4>Raison invoquée :</h4>
+                <p>
+                    {% if reason.reason == 'contenu_difficile' %}
+                        ⚠️ Contenu trop difficile
+                    {% elseif reason.reason == 'contenu_simple' %}
+                        📝 Contenu trop simple
+                    {% elseif reason.reason == 'qualite_mediocre' %}
+                        📉 Qualité du cours médiocre
+                    {% elseif reason.reason == 'problemes_techniques' %}
+                        🔧 Problèmes techniques
+                    {% elseif reason.reason == 'formateur_peu_clair' %}
+                        🗣️ Formateur peu clair
+                    {% elseif reason.reason == 'manque_exercices' %}
+                        📚 Manque d'exercices pratiques
+                    {% elseif reason.reason == 'ressources_insuffisantes' %}
+                        📎 Ressources insuffisantes
+                    {% elseif reason.reason == 'autre' %}
+                        💬 Autre raison
+                    {% endif %}
+                </p>
+                
+                {% if reason.customReason %}
+                    <h4>Précision :</h4>
+                    <p>{{ reason.customReason }}</p>
+                {% endif %}
+            </div>
+            
+            <p><strong>Date de l'évaluation :</strong> {{ evaluation.dateEvaluation|date('d/m/Y H:i') }}</p>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="{{ url('course_show', {'id': course.id}) }}" class="button">
+                    Voir le cours
+                </a>
+            </div>
+            
+            <p>Ce retour peut vous aider à améliorer votre contenu. N'hésitez pas à contacter l'étudiant si nécessaire.</p>
+            
+            <p>Cordialement,<br>L'équipe Path2Learn</p>
+        </div>
+        
+        <div class="footer">
+            <p>Cet email a été envoyé automatiquement. Merci de ne pas y répondre.</p>
+        </div>
+    </div>
+</body>
+</html>

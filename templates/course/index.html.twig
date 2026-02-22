@@ -1,0 +1,2885 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Cours - Path2Learn{% endblock %}
+
+{% block body %}
+<script>
+    var isAuthenticated = {% if app.user %}true{% else %}false{% endif %};
+</script>
+
+<header class="navbar-light navbar-sticky header-static">
+    <!-- Nav START -->
+   	<nav class="navbar navbar-expand-xl">
+		<div class="container-fluid px-3 px-xl-5">
+	<!-- Logo START -->
+<a class="navbar-brand" href="{{ path('home') }}">
+    <img class="light-mode-item navbar-brand-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 250px;">
+    <img class="dark-mode-item navbar-brand-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 250px;">
+</a>
+<!-- Logo END -->
+
+
+
+			<!-- Responsive navbar toggler -->
+			<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-animation">
+					<span></span>
+					<span></span>
+					<span></span>
+				</span>
+			</button>
+
+			<!-- Main navbar START -->
+			<div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+
+				<!-- Nav category menu START -->
+				<ul class="navbar-nav navbar-nav-scroll me-auto">
+					<!-- Nav item 1 Demos -->
+					<li class="nav-item dropdown dropdown-menu-shadow-stacked">
+						<a class="nav-link bg-primary bg-opacity-10 rounded-3 text-primary px-3 py-3 py-xl-0" href="#" id="categoryMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="bi bi-ui-radios-grid me-2"></i><span>Category</span></a>
+						<ul class="dropdown-menu" aria-labelledby="categoryMenu">
+
+							<!-- Dropdown submenu -->
+							<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#">Development</a>
+								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+									<!-- dropdown submenu open right -->
+									<li class="dropdown-submenu dropend">
+										<a class="dropdown-item dropdown-toggle" href="#">Web Development</a>
+										<ul class="dropdown-menu" data-bs-popper="none">
+											<li> <a class="dropdown-item" href="#">CSS</a> </li>
+											<li> <a class="dropdown-item" href="#">JavaScript</a> </li>
+											<li> <a class="dropdown-item" href="#">Angular</a> </li>
+											<li> <a class="dropdown-item" href="#">PHP</a> </li>
+											<li> <a class="dropdown-item" href="#">HTML</a> </li>
+											<li> <a class="dropdown-item" href="#">React</a> </li>
+										</ul>
+									</li>
+									<li> <a class="dropdown-item" href="#">Data Science</a> </li>
+									<li> <a class="dropdown-item" href="#">Mobile Development</a> </li>
+									<li> <a class="dropdown-item" href="#">Programing Language</a> </li>
+									<li> <a class="dropdown-item" href="#">Software Testing</a> </li>
+									<li> <a class="dropdown-item" href="#">Software Engineering</a> </li>
+									<li> <a class="dropdown-item" href="#">Software Development Tools</a> </li>
+								</ul>
+							</li>
+							<li> <a class="dropdown-item" href="#">Design</a></li>
+							<!-- Dropdown submenu -->
+							<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#">Marketing</a>
+								<div class="dropdown-menu dropdown-menu-start dropdown-width-lg" data-bs-popper="none">
+									<div class="row p-4">
+										<!-- Dropdown column item -->
+										<div class="col-xl-6 col-xxl-4 mb-4 mb-xl-0">
+											<h6 class="mb-0">Get started</h6>
+											<hr> <!-- Divider -->
+											<ul class="list-unstyled">
+												<li> <a class="dropdown-item" href="#">Market Research</a> </li>
+												<li> <a class="dropdown-item" href="#">Advertising</a> </li>
+												<li> <a class="dropdown-item" href="#">Consumer Behavior</a> </li>
+												<li> <a class="dropdown-item" href="#">Digital Marketing</a> </li>
+												<li> <a class="dropdown-item" href="#">Marketing Ethics</a> </li>
+												<li> <a class="dropdown-item" href="#">Social Media Marketing</a> </li>
+												<li> <a class="dropdown-item" href="#">Public Relations</a> </li>
+												<li> <a class="dropdown-item" href="#">Advertising</a> </li>
+												<li> <a class="dropdown-item" href="#">Decision Science</a> </li>
+												<li> <a class="dropdown-item" href="#">SEO</a> </li>
+												<li> <a class="dropdown-item" href="#">Business Marketing</a> </li>
+											</ul>
+										</div>
+
+										<!-- Dropdown column item -->
+										<div class="col-xl-6 col-xxl-4 mb-4 mb-xl-0">
+											<h6 class="mb-0">Degree</h6>
+											<hr> <!-- Divider -->
+											<!-- Dropdown item -->
+											<div class="d-flex mb-4 position-relative">
+												<img src="assets/images/client/uni-logo-01.svg" class="icon-md" alt="">
+												<div class="ms-3">
+													<a class="stretched-link h6 mb-0" href="#">American Century University, New Mexico</a>
+													<p class="mb-0 small">Bachelor of computer science</p>
+												</div>
+											</div>
+											<!-- Dropdown item -->
+											<div class="d-flex mb-4 position-relative">
+												<img src="assets/images/client/uni-logo-02.svg" class="icon-md" alt="">
+												<div class="ms-3">
+													<a class="stretched-link h6 mb-0" href="#">Indiana College of - Bloomington</a>
+													<p class="mb-0 small">Masters of computer science</p>
+												</div>
+											</div>
+											<!-- Dropdown item -->
+											<div class="d-flex mb-4 position-relative">
+												<img src="assets/images/client/uni-logo-03.svg" class="icon-md" alt="">
+												<div class="ms-3">
+													<a class="stretched-link h6 mb-0" href="#">College of South Florida</a>
+													<p class="mb-0 small">Medical science college</p>
+												</div>
+											</div>
+											<!-- Dropdown item -->
+											<div class="d-flex mb-4 position-relative">
+												<img src="assets/images/client/uni-logo-01.svg" class="icon-md" alt="">
+												<div class="ms-3">
+													<a class="stretched-link h6 mb-0" href="#">Andeerson Campus</a>
+													<p class="mb-0 small">Bachelor of computer science</p>
+												</div>
+											</div>
+											<!-- Dropdown item -->
+											<div class="d-flex position-relative">
+												<img src="assets/images/client/uni-logo-04.svg" class="icon-md" alt="">
+												<div class="ms-3">
+													<a class="stretched-link h6 mb-0" href="#">University of South California</a>
+													<p class="mb-0 small">Masters of business development</p>
+												</div>
+											</div>
+										</div>
+
+										<!-- Dropdown column item -->
+										<div class="col-xl-6 col-xxl-4">
+											<h6 class="mb-0">Certificate</h6>
+											<hr> <!-- Divider -->
+											<!-- Dropdown item -->
+											<div class="d-flex mb-4 position-relative">
+												<h2 class="mb-0"><i class="fab fa-fw fa-google text-google-icon"></i></h2>
+												<div class="ms-2">
+													<a class="stretched-link h6 mb-0" href="#">Google SEO certificate</a>
+													<p class="mb-0 small">No prerequisites</p>
+												</div>
+											</div>
+											<!-- Dropdown item -->
+											<div class="d-flex mb-4 position-relative">
+												<h2 class="mb-0"><i class="fab fa-fw fa-linkedin-in text-linkedin"></i></h2>
+												<div class="ms-2">
+													<a class="stretched-link h6 mb-0" href="#">Business Development Executive(BDE)</a>
+													<p class="mb-0 small">No prerequisites</p>
+												</div>
+											</div>
+											<!-- Dropdown item -->
+											<div class="d-flex mb-4 position-relative">
+												<h2 class="mb-0"><i class="fab fa-fw fa-facebook text-facebook"></i></h2>
+												<div class="ms-2">
+													<a class="stretched-link h6 mb-0" href="#">Facebook social media marketing</a>
+													<p class="mb-0 small">Expert advice</p>
+												</div>
+											</div>
+											<!-- Dropdown item -->
+											<div class="d-flex mb-4 position-relative">
+												<h2 class="mb-0"><i class="fas fa-fw fa-basketball-ball text-dribbble"></i></h2>
+												<div class="ms-2">
+													<a class="stretched-link h6 mb-0" href="#">Creative graphics design</a>
+													<p class="mb-0 small">No prerequisites</p>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- Advertisement -->
+									<div class="row">
+										<div class="col-12">
+											<div class="card bg-blue rounded-0 rounded-bottom p-3 position-relative overflow-hidden" style="background:url(assets/images/pattern/05.png) no-repeat center center; background-size:cover;">
+												<!-- SVG decoration -->
+												<figure class="position-absolute bottom-0 end-0 mb-n4 d-none d-md-block">
+													<svg width="92.6px" height="135.2px">	
+														<path class="fill-white" d="M71.5,131.4c0.2,0.1,0.4,0.1,0.6-0.1c0,0,0.6-0.7,1.6-1.9c0.2-0.2,0.1-0.5-0.1-0.7c-0.2-0.2-0.5-0.1-0.7,0.1 c-1,1.2-1.6,1.8-1.6,1.8c-0.2,0.2-0.2,0.5,0,0.7C71.4,131.3,71.4,131.4,71.5,131.4z"></path>
+														<path class="fill-white" d="M76,125.5c-0.2-0.2-0.3-0.5-0.1-0.7c1-1.4,1.9-2.8,2.8-4.2c0.1-0.2,0.4-0.3,0.7-0.2c0.2,0.1,0.3,0.4,0.2,0.7 c-0.9,1.4-1.8,2.9-2.8,4.2C76.6,125.6,76.3,125.6,76,125.5C76.1,125.5,76.1,125.5,76,125.5z M81.4,116.9 c-0.2-0.1-0.3-0.4-0.2-0.7c0.2-0.5,0.5-0.9,0.7-1.4c0.5-1.1,1-2.1,1.5-3.2c0.1-0.3,0.4-0.4,0.6-0.3c0.3,0.1,0.4,0.4,0.3,0.6 c-0.5,1.1-1,2.1-1.5,3.2c-0.2,0.5-0.5,0.9-0.7,1.4C81.9,117,81.6,117,81.4,116.9C81.4,116.9,81.4,116.9,81.4,116.9z M85.1,107.1 c0.5-1.6,1-3.2,1.3-4.8c0.1-0.3,0.3-0.4,0.6-0.4c0.3,0.1,0.4,0.3,0.4,0.6c-0.4,1.6-0.8,3.3-1.3,4.9c-0.1,0.3-0.4,0.4-0.6,0.3 c0,0,0,0-0.1,0C85.1,107.6,85,107.3,85.1,107.1z M47.3,83c-1.5-1.1-2.5-2.5-3.1-4.2c-0.1-0.3,0-0.5,0.3-0.6 c0.3-0.1,0.5,0,0.6,0.3c0.5,1.5,1.5,2.7,2.8,3.7c0.2,0.2,0.3,0.5,0.1,0.7C47.9,83.1,47.6,83.1,47.3,83C47.4,83,47.4,83,47.3,83z  M51.7,84.6c0-0.3,0.3-0.5,0.5-0.4c1.4,0.2,2.9-0.3,4.3-1.4c0.2-0.2,0.5-0.1,0.7,0.1c0.2,0.2,0.1,0.5-0.1,0.7 c-1.6,1.2-3.4,1.8-5,1.6c-0.1,0-0.1,0-0.2,0C51.8,85,51.7,84.8,51.7,84.6z M87.2,97.4c0.2-1.7,0.2-3.3,0.2-5 c0-0.3,0.2-0.5,0.5-0.5c0.3,0,0.5,0.2,0.5,0.5c0.1,1.7,0,3.4-0.2,5.1c0,0.3-0.3,0.5-0.5,0.4c-0.1,0-0.1,0-0.2,0 C87.3,97.8,87.1,97.6,87.2,97.4z M43.7,73.6c0.2-1.6,0.7-3.2,1.5-4.8l0.1-0.1c0.1-0.2,0.4-0.3,0.7-0.2c0,0,0,0,0,0 c0.2,0.1,0.3,0.4,0.2,0.7l-0.1,0.1c-0.7,1.5-1.2,3-1.4,4.5c0,0.3-0.3,0.5-0.6,0.4c-0.1,0-0.1,0-0.2,0 C43.8,74,43.7,73.8,43.7,73.6z M60,79.8c-0.2-0.1-0.3-0.5-0.1-0.7c0.4-0.6,0.8-1.3,1.1-2c0.4-0.8,0.7-1.6,1-2.4 c0.1-0.3,0.4-0.4,0.6-0.3c0.3,0.1,0.4,0.4,0.3,0.6c-0.3,0.9-0.7,1.7-1.1,2.5c-0.4,0.7-0.8,1.4-1.2,2.1C60.5,79.9,60.2,80,60,79.8 C60,79.9,60,79.8,60,79.8z M86.8,87.5c-0.3-1.6-0.7-3.2-1.2-4.8c-0.1-0.3,0.1-0.5,0.3-0.6c0.3-0.1,0.5,0.1,0.6,0.3 c0.5,1.6,1,3.3,1.2,4.9c0,0.3-0.1,0.5-0.4,0.6c-0.1,0-0.2,0-0.3,0C87,87.7,86.9,87.6,86.8,87.5z M48.2,65.1 c-0.2-0.2-0.2-0.5,0-0.7c1.2-1.3,2.5-2.4,3.9-3.4c0.2-0.1,0.5-0.1,0.7,0.1c0.1,0.2,0.1,0.5-0.1,0.7c-1.4,0.9-2.6,2-3.7,3.2 c-0.2,0.2-0.4,0.2-0.6,0.1C48.3,65.2,48.3,65.1,48.2,65.1z M63.3,70c0.3-1.6,0.5-3.3,0.5-4.9c0-0.3,0.2-0.5,0.5-0.5 c0.3,0,0.5,0.2,0.5,0.5c-0.1,1.7-0.2,3.4-0.5,5.1c0,0.3-0.3,0.4-0.6,0.4c0,0-0.1,0-0.1,0C63.3,70.4,63.2,70.2,63.3,70z M83.8,78 c-0.7-1.5-1.5-3-2.4-4.3c-0.1-0.2-0.1-0.5,0.1-0.7c0.2-0.1,0.5-0.1,0.7,0.2c0.9,1.4,1.7,2.9,2.5,4.4c0.1,0.2,0,0.5-0.2,0.7 c-0.1,0.1-0.3,0.1-0.4,0C83.9,78.2,83.8,78.1,83.8,78z M56.5,59.6c-0.1-0.3,0.1-0.5,0.4-0.6c1.7-0.4,3.4-0.5,5.2-0.3 c0.3,0,0.5,0.3,0.4,0.5c0,0.3-0.3,0.5-0.5,0.4c-1.7-0.2-3.3-0.1-4.8,0.3c-0.1,0-0.2,0-0.3,0C56.6,59.8,56.5,59.7,56.5,59.6z  M78.4,69.7c-1.1-1.3-2.2-2.5-3.4-3.6c-0.2-0.2-0.2-0.5,0-0.7c0.2-0.2,0.5-0.2,0.7,0c1.2,1.1,2.4,2.4,3.5,3.7 c0.2,0.2,0.1,0.5-0.1,0.7c-0.2,0.1-0.4,0.1-0.5,0.1C78.5,69.8,78.4,69.7,78.4,69.7z M63.6,60.1c-0.2-1.6-0.4-3.3-0.8-4.9 c-0.1-0.3,0.1-0.5,0.4-0.6c0.3-0.1,0.5,0.1,0.6,0.4c0.4,1.7,0.7,3.4,0.8,5c0,0.3-0.2,0.5-0.4,0.5c-0.1,0-0.2,0-0.3,0 C63.7,60.4,63.6,60.2,63.6,60.1z M71,63.1c-1.4-0.9-2.9-1.7-4.4-2.3c-0.3-0.1-0.4-0.4-0.3-0.6c0.1-0.3,0.4-0.4,0.6-0.3 c1.5,0.6,3.1,1.4,4.6,2.3c0.2,0.1,0.3,0.5,0.1,0.7C71.6,63.1,71.3,63.2,71,63.1C71.1,63.1,71.1,63.1,71,63.1z M61.3,50.4 c-0.6-1.5-1.3-3-2.1-4.5c-0.1-0.2-0.1-0.5,0.2-0.7c0.2-0.1,0.5-0.1,0.7,0.2c0.9,1.5,1.6,3.1,2.2,4.6c0.1,0.3,0,0.5-0.3,0.6 c-0.1,0.1-0.3,0-0.4,0C61.5,50.6,61.4,50.5,61.3,50.4z M56.5,41.8c-1-1.3-2.1-2.6-3.2-3.8c-0.2-0.2-0.2-0.5,0-0.7 c0.2-0.2,0.5-0.2,0.7,0c1.2,1.3,2.3,2.6,3.3,3.9c0.2,0.2,0.1,0.5-0.1,0.7c-0.2,0.1-0.4,0.1-0.5,0C56.6,41.9,56.5,41.8,56.5,41.8z  M49.7,34.5c-1.2-1.1-2.5-2.1-3.9-3.2c-0.2-0.2-0.3-0.5-0.1-0.7c0.2-0.2,0.5-0.3,0.7-0.1c1.4,1,2.7,2.1,3.9,3.2 c0.2,0.2,0.2,0.5,0,0.7c-0.2,0.2-0.4,0.2-0.6,0.1C49.7,34.6,49.7,34.5,49.7,34.5z M41.7,28.5c-1.4-0.9-2.8-1.8-4.3-2.6 c-0.2-0.1-0.3-0.4-0.2-0.7c0.1-0.2,0.4-0.3,0.7-0.2c1.5,0.8,2.9,1.7,4.3,2.6c0.2,0.1,0.3,0.5,0.1,0.7 C42.2,28.6,42,28.6,41.7,28.5C41.7,28.5,41.7,28.5,41.7,28.5z"></path>
+														<path class="fill-white" d="M30.7,22.6C30.7,22.6,30.7,22.6,30.7,22.6c0,0,0.9,0.4,2.3,1c0.2,0.1,0.5,0,0.7-0.2c0.1-0.2,0-0.5-0.2-0.7 c0,0,0,0,0,0c-1.4-0.7-2.2-1-2.3-1c-0.3-0.1-0.5,0-0.6,0.3C30.3,22.2,30.4,22.5,30.7,22.6z"></path>
+														<path class="fill-warning" d="M22.6,23.6l-1.1-4.1c0,0-11.7-7.5-11.9-7.6c-0.1-0.2-4.9-6.5-4.9-6.5l8.2,3.5l12.2,8.4L22.6,23.6z"></path>
+														<polygon class="fill-warning opacity-6" points="31.2,12.3 4.7,5.4 25.1,17.2"></polygon>
+														<polygon class="fill-warning opacity-6" points="21.5,19.5 15,24.8 4.7,5.4 "></polygon>
+													</svg>
+												</figure>
+												<!-- Body -->
+												<div class="card-body">
+													<!-- Title -->
+													<h5 class="card-title text-white mb-2">Access 25K Online courses from 120 institutions, Start today!</h5>
+													<p class="text-white text-opacity-75">Here is the description of premium features which will allow users to get benefits and save a lot of money</p>
+													<!-- Button -->
+													<a href="#" class="btn btn-sm btn-dark mb-0">Purchase Premium</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</li>
+							<li> <a class="dropdown-item" href="#">Music</a></li>
+							<li> <a class="dropdown-item" href="#">Lifestyle</a></li>
+							<li> <a class="dropdown-item" href="#">IT & software</a></li>
+							<li> <a class="dropdown-item" href="#">Personal development</a></li>
+							<li> <a class="dropdown-item" href="#">Health & fitness</a></li>
+							<li> <a class="dropdown-item" href="#">Teaching</a></li>
+							<li> <a class="dropdown-item" href="#">Social science</a></li>
+							<li> <a class="dropdown-item" href="#">Math & logic</a></li>
+							<li> <hr class="dropdown-divider"></li>
+							<li> <a class="dropdown-item bg-primary text-primary bg-opacity-10 rounded-2 mb-0" href="#">View all categories</a></li>
+						</ul>
+					</li>
+				</ul>
+				<!-- Nav category menu END -->
+
+				<!-- Nav Main menu START -->
+				<ul class="navbar-nav navbar-nav-scroll me-auto">
+					<!-- Nav item 1 Demos -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle active" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">services</a>
+						<ul class="dropdown-menu" aria-labelledby="demoMenu">
+							<li><a class="dropdown-item active" href="{{ path('home_portfolio') }}">portfolio</a></li>
+							<li> <a class="dropdown-item" href="{{ path('evenement_list') }}">évennements</a></li>
+							<li> <a class="dropdown-item" href="{{ path('home') }}">certification</a></li>
+							
+						
+						</ul>
+					</li>
+
+					<!-- Nav item 2 Pages -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
+						<ul class="dropdown-menu" aria-labelledby="pagesMenu">
+							<!-- Dropdown submenu -->
+
+							<li>
+								<a class="dropdown-item" href="{{ path('app_courses') }}">Cours</a>
+							</li>
+
+							
+
+							
+
+
+
+							<!-- Dropdown submenu -->
+							
+
+							<!-- Dropdown submenu -->
+							
+
+							<li> <a class="dropdown-item" href="{{ path('app_courses') }}">ressources</a></li>
+							
+					
+
+						
+
+						
+
+							<!-- Dropdown submenu -->
+							<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#">Authentication</a>
+								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+									<li> <a class="dropdown-item" href="sign-in.html">Sign In</a></li>
+									<li> <a class="dropdown-item" href="sign-up.html">Sign Up</a></li>
+									<li> <a class="dropdown-item" href="forgot-password.html">Forgot Password</a></li>
+								</ul>
+							</li>
+
+							<!-- Dropdown submenu -->
+							
+
+							<!-- Dropdown submenu -->
+							<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#">projets</a>
+								
+							</li>
+                              <!-- Dropdown submenu -->
+                    <li><a class="dropdown-item" href="{{ path('quiz') }}">QUIZ</a></li>
+
+ 
+
+                    <!-- Dropdown submenu -->
+
+						</ul>
+					</li>
+                  
+
+					<!-- Nav item 3 Account -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
+						<ul class="dropdown-menu" aria-labelledby="accounntMenu">
+							<!-- Dropdown submenu -->
+							<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#"><i class="fas fa-user-tie fa-fw me-1"></i>enseignants</a>
+								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+	<li>
+    <a class="dropdown-item" href="{{ path('instructor') }}">Dashboard</a>
+</li>
+
+
+									<li> <a class="dropdown-item" href="{{ path('admin_cours_index') }}"><i class="bi bi-basket-fill fa-fw me-1"></i>Cours</a> </li>
+									<li> <a class="dropdown-item" href="{{ path('admin_cours_index') }}"><i class="bi bi-file-earmark-plus-fill fa-fw me-1"></i>Créer un cours</a> </li>
+									<li> <a class="dropdown-item" href="{{ path('quiz_admin') }}"><i class="bi bi-question-diamond fa-fw me-1"></i>Quiz</a> </li>
+									<li> <a class="dropdown-item" href="{{ path('admin_evenement_list') }}"><i class="bi bi-calendar3 fa-fw me-1"></i>Événements</a> </li>
+									<li> <a class="dropdown-item" href="{{ path('admin_ressources_index') }}"><i class="bi bi-folder2-open fa-fw me-1"></i>Ressources</a> </li>
+								</ul>
+							</li>
+
+							<!-- Dropdown submenu -->
+								<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#"><i class="fas fa-user-graduate fa-fw me-1"></i>etudiants</a>
+								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+									<li>
+    <a class="dropdown-item" href="{{ path('student_dashboard') }}">
+        <i class="bi bi-grid-fill fa-fw me-1"></i>
+        Dashboard
+    </a>
+</li>
+
+									<li> <a class="dropdown-item" href="{{ path('app_courses') }}"><i class="bi bi-basket-fill fa-fw me-1"></i>Cours</a> </li>
+									<li> <a class="dropdown-item" href="{{ path('quiz') }}"><i class="bi bi-question-diamond fa-fw me-1"></i>Quiz</a> </li>
+									<li> <a class="dropdown-item" href="{{ path('evenement_list') }}"><i class="bi bi-calendar3 fa-fw me-1"></i>Événements</a> </li>
+								</ul>
+							</li>
+							
+							<li>
+    <a class="dropdown-item" href="{{ path('admin_dashboard') }}">
+        <i class="fas fa-user-cog fa-fw me-1"></i>
+        Admin
+    </a>
+</li>
+
+							<li> <hr class="dropdown-divider"></li>
+							<li> <a class="dropdown-item" href="{{ path('student_dashboard') }}"><i class="fas fa-fw fa-edit me-1"></i>Mon profil</a> </li>
+							<li> <a class="dropdown-item" href="{{ path('admin_dashboard') }}"><i class="fas fa-fw fa-cog me-1"></i>Paramètres</a> </li>
+							
+							<li> <hr class="dropdown-divider"></li>
+							<!-- Dropdown Level -->
+							<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#">Dropdown levels</a>
+								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+
+									<!-- dropdown submenu open right -->
+									<li class="dropdown-submenu dropend">
+										<a class="dropdown-item dropdown-toggle" href="#">Dropdown (end)</a>
+										<ul class="dropdown-menu" data-bs-popper="none">
+											<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+											<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+										</ul>
+									</li>
+									<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+
+									<!-- dropdown submenu open left -->
+									<li class="dropdown-submenu dropstart">
+										<a class="dropdown-item dropdown-toggle" href="#">Dropdown (start)</a>
+										<ul class="dropdown-menu dropdown-menu-end" data-bs-popper="none">
+											<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+											<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+										</ul>
+									</li>
+									<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+
+					<!-- Nav item 4 Megamenu-->
+					<li class="nav-item dropdown dropdown-fullwidth">
+						<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Megamenu</a>
+						<div class="dropdown-menu dropdown-menu-end" data-bs-popper="none">
+							<div class="row p-4">
+								<!-- Dropdown column item -->
+								<div class="col-xl-6 col-xxl-3 mb-3">
+									<h6 class="mb-0">Get started</h6>
+									<hr>
+									<ul class="list-unstyled">
+										<li> <a class="dropdown-item" href="#">Market research</a> </li>
+										<li> <a class="dropdown-item" href="#">Advertising</a> </li>
+										<li> <a class="dropdown-item" href="#">Consumer behavior</a> </li>
+										<li> <a class="dropdown-item" href="#">Digital marketing</a> </li>
+										<li> <a class="dropdown-item" href="#">Marketing ethics</a> </li>
+										<li> <a class="dropdown-item" href="#">Social media marketing</a> </li>
+										<li> <a class="dropdown-item" href="#">Public relations</a> </li>
+										<li> <a class="dropdown-item" href="#">Advertising</a> </li>
+										<li> <a class="dropdown-item" href="#">Decision science</a> </li>
+										<li> <a class="dropdown-item" href="#">SEO</a> </li>
+										<li> <a class="dropdown-item" href="#">Business marketing</a> </li>
+									</ul>
+								</div>
+								
+								<!-- Dropdown column item -->
+								<div class="col-xl-6 col-xxl-3 mb-3">
+									<h6 class="mb-0">Degree</h6>
+									<hr>
+									<!-- Dropdown item -->
+									<div class="mb-2 position-relative bg-primary-soft-hover rounded-2 transition-base p-3">
+										<a class="stretched-link h6 mb-0" href="#">Contact management</a>
+										<p class="mb-0 small text-truncate-2">Speedily say has suitable disposal add boy. On forth doubt miles of child.</p>
+									</div>
+									<!-- Dropdown item -->
+									<div class="mb-2 position-relative bg-primary-soft-hover rounded-2 transition-base p-3">
+										<a class="stretched-link h6 mb-0" href="#">Sales pipeline</a>
+										<p class="mb-0 small text-truncate-2">Speedily say has suitable disposal add boy. On forth doubt miles of child.</p>
+									</div>
+									<!-- Dropdown item -->
+									<div class="position-relative bg-primary-soft-hover rounded-2 transition-base p-3">
+										<a class="stretched-link h6 mb-0" href="#">Security & Permission</a>
+										<p class="mb-0 small text-truncate-2">Speedily say has suitable disposal add boy. On forth doubt miles of child.</p>
+									</div>
+								</div>
+
+								<!-- Dropdown column item -->
+								<div class="col-xl-6 col-xxl-3 mb-3">
+									<h6 class="mb-0">Certificate</h6>
+									<hr>
+									<!-- Dropdown item -->
+									<div class="d-flex mb-4 position-relative">
+										<h2 class="mb-0"><i class="fab fa-fw fa-google text-google-icon"></i></h2>
+										<div class="ms-2">
+											<a class="stretched-link h6 mb-0" href="#">Google SEO certificate</a>
+											<p class="mb-0 small">No prerequisites</p>
+										</div>
+									</div>
+									<!-- Dropdown item -->
+									<div class="d-flex mb-4 position-relative">
+										<h2 class="mb-0"><i class="fab fa-fw fa-linkedin-in text-linkedin"></i></h2>
+										<div class="ms-2">
+											<a class="stretched-link h6 mb-0" href="#">Business Development Executive(BDE)</a>
+											<p class="mb-0 small">No prerequisites</p>
+										</div>
+									</div>
+									<!-- Dropdown item -->
+									<div class="d-flex mb-4 position-relative">
+										<h2 class="mb-0"><i class="fab fa-fw fa-facebook text-facebook"></i></h2>
+										<div class="ms-2">
+											<a class="stretched-link h6 mb-0" href="#">Facebook social media marketing</a>
+											<p class="mb-0 small">Expert advice</p>
+										</div>
+									</div>
+									<!-- Dropdown item -->
+									<div class="d-flex mb-4 position-relative">
+										<h2 class="mb-0"><i class="fas fa-fw fa-basketball-ball text-dribbble"></i></h2>
+										<div class="ms-2">
+											<a class="stretched-link h6 mb-0" href="#">Creative graphics design</a>
+											<p class="mb-0 small">No prerequisites</p>
+										</div>
+									</div>
+								</div>
+
+								<!-- Dropdown column item -->
+								<div class="col-xl-6 col-xxl-3 mb-3">
+									<h6 class="mb-0">Download Eduport</h6>
+									<hr>
+									<!-- Image -->
+									<img src="assets/images/element/14.svg" alt="">
+
+									<!-- Download button -->
+									<div class="row g-2 justify-content-center mt-3">
+										<!-- Google play store button -->
+										<div class="col-6 col-sm-4 col-xxl-6">
+											<a href="#"> <img src="assets/images/client/google-play.svg" class="btn-transition" alt="google-store"> </a>
+										</div>
+										<!-- App store button -->
+										<div class="col-6 col-sm-4 col-xxl-6">
+											<a href="#"> <img src="assets/images/client/app-store.svg" class="btn-transition" alt="app-store"> </a>
+										</div>
+									</div>
+								</div>
+
+								<!-- Action box -->
+								<div class="col-12">
+									<div class="alert alert-success alert-dismissible fade show mt-2 mb-0 rounded-3" role="alert">
+										<!-- Avatar -->
+										<div class="avatar avatar-xs me-2">
+											<img class="avatar-img rounded-circle" src="assets/images/avatar/09.jpg" alt="avatar">
+										</div>
+										<!-- Info -->
+										The personality development class starts at 2:00 pm, click to <a href="#" class="alert-link">Join Now</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+
+					<!-- Nav item 5 link-->
+					<li class="nav-item dropdown">
+						<a class="nav-link" href="#" id="advanceMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<i class="fas fa-ellipsis-h"></i>
+						</a>
+						<ul class="dropdown-menu dropdown-menu-end min-w-auto" data-bs-popper="none">
+							<li> 
+								<a class="dropdown-item" href="https://support.webestica.com/" target="_blank">
+									<i class="text-warning fa-fw bi bi-life-preserver me-2"></i>Support
+								</a> 
+							</li>
+							<li> 
+								<a class="dropdown-item" href="docs/index.html" target="_blank">
+									<i class="text-danger fa-fw bi bi-card-text me-2"></i>Documentation
+								</a> 
+							</li>
+							<li> <hr class="dropdown-divider"></li>
+							<li> 
+								<a class="dropdown-item" href="rtl/index.html" target="_blank">
+									<i class="text-info fa-fw bi bi-toggle-off me-2"></i>RTL demo
+								</a> 
+							</li>
+							<li> 
+								<a class="dropdown-item" href="https://themes.getbootstrap.com/store/webestica/" target="_blank">
+									<i class="text-success fa-fw bi bi-cloud-download-fill me-2"></i>Buy Eduport!
+								</a> 
+							</li>
+							<li> <hr class="dropdown-divider"></li>
+							<li> 
+								<a class="dropdown-item" href="docs/alerts.html" target="_blank">
+									<i class="text-orange fa-fw bi bi-puzzle-fill me-2"></i>Components
+								</a> 
+							</li>
+							<li> 
+								<a class="dropdown-item" href="docs/snippets.html">
+									<i class="text-purple fa-fw bi bi-stickies-fill me-2"></i>Snippets
+								</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<!-- Nav Main menu END -->
+
+				<!-- Nav Search START -->
+				<div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+					<div class="nav-item w-100">
+						<form class="position-relative">
+							<input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
+							<button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+								<i class="fas fa-search fs-6 "></i>
+							</button>
+						</form>
+					</div>
+				</div>
+				<!-- Nav Search END -->
+			</div>
+			<!-- Main navbar END -->
+<li>
+    <a class="dropdown-item bg-success-soft-hover" href="{{ path('app_login') }}">
+        <i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Connexion
+    </a>
+</li>
+<li> <hr class="dropdown-divider"></li>
+<!-- Nav Search START -->
+<div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+    <div class="nav-item w-100">
+        <form class="position-relative">
+            <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
+            <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+                <i class="fas fa-search fs-6 "></i>
+            </button>
+        </form>
+    </div>
+</div>
+<!-- Nav Search END -->
+
+<!-- Profile START -->
+<div class="dropdown ms-1 ms-lg-0">
+    <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+        {% if app.user %}
+            <!-- Logged in user avatar -->
+            <div class="avatar-img rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <span class="fw-bold">{{ app.user.prenom|first|upper }}{{ app.user.nom|first|upper }}</span>
+            </div>
+        {% else %}
+            <!-- Guest avatar -->
+            <div class="avatar-img rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <i class="bi bi-person"></i>
+            </div>
+        {% endif %}
+    </a>
+    
+    <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+        {% if app.user %}
+            <!-- LOGGED IN USER -->
+            <!-- Profile info -->
+            <li class="px-3 mb-3">
+                <div class="d-flex align-items-center">
+                    <!-- Avatar -->
+                    <div class="avatar me-3">
+                        <div class="avatar-img rounded-circle shadow bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                            <span class="fw-bold fs-5">{{ app.user.prenom|first|upper }}{{ app.user.nom|first|upper }}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <a class="h6 mb-0" href="{{ path('app_user_profile_edit') }}">{{ app.user.prenom }} {{ app.user.nom }}</a>
+                        <p class="small m-0">{{ app.user.email }}</p>
+                        <span class="badge bg-{{ app.user.role.value == 'admin' ? 'danger' : (app.user.role.value == 'teacher' ? 'primary' : 'info') }} mt-1">
+                            {{ app.user.role.value == 'admin' ? 'Administrateur' : (app.user.role.value == 'teacher' ? 'Enseignant' : 'Étudiant') }}
+                        </span>
+                    </div>
+                </div>
+            </li>
+            <li> <hr class="dropdown-divider"></li>
+            
+            <!-- Links -->
+            <li>
+                <a class="dropdown-item" href="{{ path('app_user_profile_edit') }}">
+                    <i class="bi bi-person fa-fw me-2"></i>Mon Profil
+                </a>
+            </li>
+            
+            {% if is_granted('ROLE_ADMIN') %}
+                <li>
+                    <a class="dropdown-item" href="{{ path('admin_dashboard') }}">
+                        <i class="bi bi-speedometer2 fa-fw me-2"></i>Dashboard Admin
+                    </a>
+                </li>
+            {% endif %}
+            
+            <li>
+                <a class="dropdown-item" href="#">
+                    <i class="bi bi-gear fa-fw me-2"></i>Paramètres
+                </a>
+            </li>
+            
+            <li>
+                <a class="dropdown-item" href="#">
+                    <i class="bi bi-info-circle fa-fw me-2"></i>Aide
+                </a>
+            </li>
+            
+            <li> <hr class="dropdown-divider"></li>
+            
+            <li>
+                <a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_logout') }}">
+                    <i class="bi bi-power fa-fw me-2"></i>Déconnexion
+                </a>
+            </li>
+
+          
+        {% endif %}
+    </ul>
+</div>
+<!-- Profile END -->
+		</div>
+	</nav>
+</header>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Section d'affichage des résultats de recherche -->
+{% if searchQuery %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info alert-dismissible fade show mb-0" role="alert">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="fas fa-search me-2"></i>
+                        <strong>Résultats de recherche pour : "{{ searchQuery }}"</strong>
+                        <span class="ms-3 badge bg-primary">
+                            {{ pagination.getTotalItemCount }} cours trouvé(s)
+                        </span>
+                    </div>
+                    <div>
+                        <a href="{{ path('app_courses') }}" class="btn btn-sm btn-outline-dark">
+                            <i class="fas fa-times me-1"></i>Effacer la recherche
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- =======================
+Recommendation Section START -->
+<section class="pt-5 pb-0">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Recommendation Box -->
+            <div class="col-lg-8">
+                <div class="card bg-primary bg-opacity-10 h-100 p-4 border-0 rounded-4 overflow-hidden position-relative">
+                    <!-- Decor -->
+                    <div class="position-absolute top-0 end-0 mt-n3 me-n3">
+                         <i class="bi bi-patch-check-fill display-1 text-primary opacity-10"></i>
+                    </div>
+                    
+                    <div class="row g-4 align-items-center relative z-index-1">
+                        <div class="col-md-6">
+                            <div class="badge bg-primary text-white mb-3">Recommandé pour vous</div>
+                            {% if topCourseData %}
+                                <h3 class="mb-2">{{ topCourseData.course.titre }}</h3>
+                                <p class="mb-3 text-truncate-2">{{ topCourseData.course.description|striptags|slice(0, 100) }}...</p>
+                                
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="d-flex align-items-center me-4">
+                                        <i class="fas fa-star text-warning me-1"></i>
+                                        <span class="fw-bold text-dark">{{ topCourseData.averageRating|number_format(1) }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-thumbs-up text-success me-1"></i>
+                                        <span class="fw-bold text-dark">{{ topCourseData.likes }} likes</span>
+                                    </div>
+                                </div>
+                                
+                                <a href="{{ path('course_show', {'id': topCourseData.course.id}) }}" class="btn btn-dark rounded-pill">
+                                    Découvrir ce cours
+                                </a>
+                            {% else %}
+                                <h3 class="mb-2">Découvrez nos meilleurs cours</h3>
+                                <p class="mb-3">Explorez notre catalogue pour trouver le cours parfait pour vous.</p>
+                                <a href="#courses-list" class="btn btn-dark rounded-pill">
+                                    Voir tous les cours
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 text-center">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interest Search Box -->
+            <div class="col-lg-4">
+                <div class="card bg-dark text-white h-100 p-4 border-0 rounded-4">
+                    <h4 class="text-white mb-3">Vos centres d'intérêt</h4>
+                    <p class="text-white-50 mb-4">Dites-nous ce que vous cherchez, nous trouverons les cours adaptés.</p>
+                    
+                    <div class="position-relative">
+                        <input type="text" 
+                               class="form-control form-control-lg bg-white bg-opacity-25 text-white border-0 mb-3" 
+                               id="interestInput"
+                               placeholder="Ex: Design, Python, Business..."
+                               style="color: white !important; background-color: rgba(255,255,255,0.15) !important;"
+                               onkeyup="debounceSearch(this.value)">
+                        <span class="position-absolute top-50 end-0 translate-middle-y me-3">
+                            <i class="fas fa-search text-white-50"></i>
+                        </span>
+                    </div>
+
+                    <!-- Results Container -->
+                    <div id="recommendationResults" class="d-none">
+                        <h6 class="text-white mt-3 mb-2">Suggestions :</h6>
+                        <div class="list-group list-group-flush bg-transparent" id="resultsList" style="max-height: 300px; overflow-y: auto;">
+                            <!-- JS generates lines here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Recommendation Section END -->
+
+<!-- =======================
+Main Banner START -->
+<section class="position-relative overflow-hidden pt-5 pt-lg-3">
+    <!-- SVG START -->
+    <figure class="position-absolute top-50 start-0 translate-middle-y ms-n7 d-none d-xxl-block">
+        <svg class="rotate-74 fill-danger opacity-1" width="200" height="200" viewBox="0 0 200 200">
+            <circle cx="180.4" cy="15.5" r="7.7" />
+            <path d="m159.9 22.4c-3.8 0-6.9-3.1-6.9-6.9s3.1-6.9 6.9-6.9 6.9 3.1 6.9 6.9-3.1 6.9-6.9 6.9z" />
+            <ellipse transform="matrix(.3862 -.9224 .9224 .3862 71.25 138.08)" cx="139.4" cy="15.5" rx="6.1" ry="6.1" />
+            <circle cx="118.9" cy="15.5" r="5.4" />
+            <path d="m98.4 20.1c-2.5 0-4.6-2.1-4.6-4.6s2.1-4.6 4.6-4.6 4.6 2.1 4.6 4.6-2.1 4.6-4.6 4.6z" />
+            <path d="m77.9 19.3c-2.1 0-3.8-1.7-3.8-3.8s1.7-3.8 3.8-3.8 3.8 1.7 3.8 3.8-1.7 3.8-3.8 3.8z" />
+            <path d="m57.3 18.6c-1.7 0-3.1-1.4-3.1-3.1s1.4-3.1 3.1-3.1 3.1 1.4 3.1 3.1-1.4 3.1-3.1 3.1z" />
+            <path d="m36.8 17.8c-1.3 0-2.3-1-2.3-2.3s1-2.3 2.3-2.3 2.3 1 2.3 2.3-1 2.3-2.3 2.3z" />
+            <circle cx="16.3" cy="15.5" r="1.6" />
+        </svg>
+    </figure>
+    <!-- SVG END -->
+
+    <!-- SVG START -->
+    <span class="position-absolute top-50 end-0 translate-middle-y mt-5 me-n5 d-none d-xxl-inline-flex">
+        <svg class="fill-warning rotate-186 opacity-8" width="200" height="200" viewBox="0 0 200 200">
+            <path d="m35.4 54.2c0 0.6 0 1.1-0.1 1.7-0.9 9.3-9.2 16.1-18.5 15.1-4.5-0.4-8.5-2.6-11.4-6.1-2.8-3.5-4.2-7.9-3.7-12.4 0.9-9.3 9.2-16.1 18.5-15.1 4.5 0.4 8.5 2.6 11.4 6.1 2.4 3 3.8 6.8 3.8 10.7zm-33.4 0c0 3.8 1.3 7.5 3.8 10.4 2.8 3.4 6.8 5.5 11.2 6 9.1 0.9 17.2-5.8 18.1-14.8 0.4-4.4-0.9-8.7-3.7-12.1s-6.8-5.5-11.2-6c-9.2-0.8-17.3 5.8-18.2 14.9v1.6z" />
+            <path d="m39 54.1c0 1.1-0.1 2.2-0.3 3.3-1.8 9.8-11.2 16.2-21 14.4-4.7-0.8-8.8-3.5-11.5-7.4-2.7-4-3.7-8.7-2.8-13.5 1.8-9.8 11.2-16.2 21-14.4 4.7 0.9 8.8 3.6 11.5 7.5 2.1 3 3.1 6.6 3.1 10.1zm-35.6 0.1c0 3.5 1.1 7 3.1 9.9 2.7 3.9 6.7 6.5 11.3 7.4 9.6 1.8 18.8-4.5 20.6-14.1 0.9-4.6-0.1-9.3-2.8-13.2s-6.7-6.5-11.3-7.4c-9.6-1.8-18.8 4.5-20.6 14.1-0.2 1.1-0.3 2.2-0.3 3.3z" />
+        </svg>
+    </span>
+    <!-- SVG END -->
+
+    <!-- SVG START -->
+    <figure class="position-absolute top-0 start-0 ms-5">
+        <svg class="fill-orange opacity-4" width="29px" height="29px">
+            <path d="M29.004,14.502 C29.004,22.512 22.511,29.004 14.502,29.004 C6.492,29.004 -0.001,22.512 -0.001,14.502 C-0.001,6.492 6.492,-0.001 14.502,-0.001 C22.511,-0.001 29.004,6.492 29.004,14.502 Z"></path>
+        </svg>
+    </figure>
+    <!-- SVG END -->
+
+    <!-- Content START -->
+    <div class="container">
+        <!-- Title -->
+        <div class="row align-items-center g-5">
+            <!-- Left content START -->
+            <div class="col-lg-8 col-xl-7 position-relative z-index-1 text-center text-lg-start mb-5 mb-sm-0">
+                <!-- SVG -->
+                <figure class="fill-warning position-absolute bottom-0 end-0 me-5 d-none d-xl-block">
+                    <svg width="42px" height="42px">
+                        <path d="M21.000,-0.001 L28.424,13.575 L41.999,20.999 L28.424,28.424 L21.000,41.998 L13.575,28.424 L 0.000,20.999 L13.575,13.575 L21.000,-0.001 Z" />
+                    </svg>
+                </figure>
+                <!-- SVG -->
+                <figure class="fill-success position-absolute top-0 start-50 translate-middle-x mt-n5 ms-5">
+                    <svg width="22px" height="21px">
+                        <path d="M10.717,4.757 L14.440,-0.001 L14.215,6.023 L20.142,4.757 L16.076,9.228 L21.435,12.046 L15.430,12.873 L17.713,18.457 L12.579,15.252 L10.717,20.988 L8.856,15.252 L3.722,18.457 L6.005,12.873 L 0.000,12.046 L5.359,9.228 L1.292,4.757 L7.220,6.023 L6.995,-0.001 L10.717,4.757 Z" />
+                    </svg>
+                </figure>
+                
+                <!-- Title -->
+                <h1 class="mb-3 display-5 fw-bold">Nos Cours</h1>
+                
+                <!-- Content -->
+                <p class="my-4 lead text-secondary">Découvrez notre catalogue de cours soigneusement sélectionnés. Apprenez à votre rythme avec des ressources pédagogiques de qualité.</p>
+                
+                <!-- Stats -->
+                <div class="d-flex flex-wrap gap-4 mb-4">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-primary-soft rounded-circle p-3 me-3">
+                            <i class="bi bi-collection-play-fill text-primary fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0 fw-bold">{{ pagination.getTotalItemCount }}</h5>
+                            <p class="mb-0 small text-muted">Cours publiés</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-success-soft rounded-circle p-3 me-3">
+                            <i class="bi bi-clock-fill text-success fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0 fw-bold">{{ totalHours }}min</h5>
+                            <p class="mb-0 small text-muted">Heures de contenu</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-warning-soft rounded-circle p-3 me-3">
+                            <i class="bi bi-award-fill text-warning fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0 fw-bold">100%</h5>
+                            <p class="mb-0 small text-muted">Contenu vérifié</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section d'export PDF -->
+                <div class="mb-4">
+                    <div class="d-flex flex-wrap gap-2 align-items-center">
+                        <span class="text-muted">Export PDF :</span>
+                        <a href="{{ path('all_courses_pdf') }}" class="btn btn-sm btn-outline-danger rounded-pill px-4" target="_blank">
+                            <i class="fas fa-file-pdf me-2"></i>Tous les cours
+                        </a>
+                        {% if coursesWithData|length > 0 %}
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-primary rounded-pill px-4 dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-download me-2"></i>Exporter
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="exportDropdown">
+                                {% for courseData in coursesWithData|slice(0, 5) %}
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('course_pdf', {'id': courseData.course.id}) }}" target="_blank">
+                                        <i class="fas fa-graduation-cap me-2 text-primary"></i>{{ courseData.course.titre|slice(0, 30) }}{% if courseData.course.titre|length > 30 %}...{% endif %}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                                {% if coursesWithData|length > 5 %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-center fw-bold" href="{{ path('all_courses_pdf') }}" target="_blank">
+                                        <i class="fas fa-list me-2"></i>Tous les cours
+                                    </a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+            </div>
+            <!-- Left content END -->
+
+            <!-- Right content START -->
+            <div class="col-lg-4 col-xl-5 text-center position-relative">
+                <!-- SVG decoration -->
+                <figure class="position-absolute bottom-0 start-50 translate-middle-x mt-4 mb-0">
+                    <svg width="350px" height="338px" viewBox="0 0 554 544">
+                        <path class="fill-blue opacity-10" d="M423.3,77.2c49.5,32.5,100.4,67.2,118.4,114.5s3.5,107.1-15.4,165.7c-18.7,58.6-41.8,116.1-84,148.6 c-42.5,32.8-104.2,40.2-163.8,37.3c-59.5-3.2-116.8-17.1-164.7-47.9c-48.3-30.6-87.2-78.2-102-131.6C-3,310.5,6.6,251,25.3,194.7 C43.6,138,70.7,84.3,114.1,49.5C157.2,14.8,216.7-1,270.8,6.4C324.8,14.2,373.4,44.7,423.3,77.2z" />
+                    </svg>
+                </figure>
+            </div>
+            <!-- Right content END -->
+        </div>
+    </div>
+    <!-- Content END -->
+</section>
+<!-- =======================
+Main Banner END -->
+
+<!-- =======================
+Tabs filter START -->
+<section class="pt-4 pb-5">
+    <div class="container">
+        <!-- Tabs navigation -->
+        <div class="d-flex justify-content-center mb-5">
+            <ul class="nav nav-pills custom-nav-pills" id="courses-pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active rounded-pill px-4 py-2 mx-1" id="courses-pills-all-tab" data-bs-toggle="pill" data-bs-target="#courses-pills-tabs-all" type="button" role="tab" aria-controls="courses-pills-tabs-all" aria-selected="true">
+                        <i class="fas fa-th-large me-2"></i>Tous les cours
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-pill px-4 py-2 mx-1" id="courses-pills-dev-tab" data-bs-toggle="pill" data-bs-target="#courses-pills-tabs-dev" type="button" role="tab" aria-controls="courses-pills-tabs-dev" aria-selected="false">
+                        <i class="fas fa-code me-2"></i>Développement
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-pill px-4 py-2 mx-1" id="courses-pills-design-tab" data-bs-toggle="pill" data-bs-target="#courses-pills-tabs-design" type="button" role="tab" aria-controls="courses-pills-tabs-design" aria-selected="false">
+                        <i class="fas fa-paint-brush me-2"></i>Design
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-pill px-4 py-2 mx-1" id="courses-pills-business-tab" data-bs-toggle="pill" data-bs-target="#courses-pills-tabs-business" type="button" role="tab" aria-controls="courses-pills-tabs-business" aria-selected="false">
+                        <i class="fas fa-chart-line me-2"></i>Business
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Tabs content START -->
+        <div class="tab-content" id="courses-pills-tabContent">
+            <!-- All courses START -->
+            <div class="tab-pane fade show active" id="courses-pills-tabs-all" role="tabpanel" aria-labelledby="courses-pills-all-tab">
+                <div class="row g-4">
+                    {% if pagination|length > 0 %}
+                        {% for course in pagination %}
+                            {# Trouver les données correspondantes dans coursesWithData #}
+                            {% set courseData = null %}
+                            {% for data in coursesWithData %}
+                                {% if data.course.id == course.id %}
+                                    {% set courseData = data %}
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if courseData %}
+                                {% set resources = courseData.resources %}
+                                {% set likes = courseData.likes %}
+                                {% set dislikes = courseData.dislikes %}
+                                {% set averageRating = courseData.averageRating %}
+                                {% set userReaction = courseData.userReaction %}
+                                {% set userEvaluation = courseData.userEvaluation %}
+                            {% else %}
+                                {% set resources = [] %}
+                                {% set likes = 0 %}
+                                {% set dislikes = 0 %}
+                                {% set averageRating = null %}
+                                {% set userReaction = null %}
+                                {% set userEvaluation = null %}
+                            {% endif %}
+                            
+                            <!-- Font Awesome -->
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+                            
+                            <!-- Card item START -->
+                            <div class="col-sm-6 col-lg-4 col-xl-3">
+                                <div class="card shadow-sm h-100 position-relative course-card border-0" data-course-id="{{ course.id }}">
+                                    <!-- Badge QR code -->
+                                    <div class="position-absolute top-0 start-0 m-3 z-3 d-flex gap-2">
+                                        <button type="button" 
+                                            class="btn btn-sm btn-light rounded-circle p-2 qr-code-btn" 
+                                            data-course-id="{{ course.id }}"
+                                            data-course-title="{{ course.titre|escape('js') }}"
+                                            data-course-url="{{ absolute_url(path('course_show', {'id': course.id}))|escape('js') }}"
+                                            data-bs-toggle="tooltip" 
+                                            title="Voir le QR code"
+                                            style="width: 35px; height: 35px; background: rgba(255,255,255,0.9); border: none;">
+                                            <i class="fas fa-qrcode text-primary"></i>
+                                        </button>
+                                    </div>
+
+<div class="position-absolute top-0 end-0 m-3 z-3">
+    <a href="#" class="favorite-btn" 
+       data-course-id="{{ course.id }}" 
+       onclick="event.preventDefault(); event.stopPropagation(); toggleFavorite({{ course.id }})">
+        {% if course.id in userFavorites %}
+            <i class="fas fa-heart" style="color: #ff3366; filter: drop-shadow(0 2px 8px rgba(255,51,102,0.5));"></i>
+        {% else %}
+            <i class="far fa-heart" style="color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"></i>
+        {% endif %}
+    </a>
+</div>
+                                    
+                                    <div class="card-body p-4">
+                                        <!-- Matière et niveau -->
+                                        <div class="d-flex gap-2 mb-3 flex-wrap">
+                                            <span class="badge bg-primary-soft text-primary px-3 py-2 rounded-pill">
+                                                <i class="fas fa-tag me-1"></i>{{ course.matiere|default('Général') }}
+                                            </span>
+                                            <span class="badge bg-info-soft text-info px-3 py-2 rounded-pill">
+                                                <i class="fas fa-signal me-1"></i>{{ course.niveau|default('Tous niveaux') }}
+                                            </span>
+                                        </div>
+                                        
+                                        <!-- Titre -->
+                                        <h5 class="card-title mb-3">
+                                            <a href="{{ path('course_show', {'id': course.id}) }}" class="text-dark text-decoration-none course-title-link">
+                                                {{ course.titre }}
+                                            </a>
+                                        </h5>
+                                        
+                                        <p class="text-muted small mb-3">{{ course.description|default('Description non disponible')|slice(0, 100) }}...</p>
+                                        
+                                        <!-- Instructeur avec avatar -->
+                                        <div class="d-flex align-items-center mb-4">
+                                            <div class="avatar me-2">
+                                                <i class="fas fa-user-circle fa-2x text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 small fw-semibold">{{ course.emailProf|default('Formateur Path2Learn') }}</h6>
+                                                <small class="text-muted">Instructeur</small>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Section LIKE/DISLIKE -->
+                                        <div class="mb-4">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <!-- Like/Dislike buttons -->
+                                                <div class="d-flex gap-2">
+                                                    <button type="button" 
+                                                            class="reaction-btn {% if userReaction == 'like' %}active{% endif %}"
+                                                            onclick="handleReaction({{ course.id }}, 'like')"
+                                                            data-course-id="{{ course.id }}">
+                                                        <span class="reaction-icon">
+                                                            <i class="{% if userReaction == 'like' %}fas{% else %}far{% endif %} fa-thumbs-up"></i>
+                                                        </span>
+                                                        <span class="reaction-count likes-count">{{ likes }}</span>
+                                                    </button>
+                                                    
+                                                    <button type="button" 
+                                                            class="reaction-btn {% if userReaction == 'dislike' %}active dislike{% endif %}"
+                                                            onclick="handleReaction({{ course.id }}, 'dislike')"
+                                                            data-course-id="{{ course.id }}">
+                                                        <span class="reaction-icon">
+                                                            <i class="{% if userReaction == 'dislike' %}fas{% else %}far{% endif %} fa-thumbs-down"></i>
+                                                        </span>
+                                                        <span class="reaction-count dislikes-count">{{ dislikes }}</span>
+                                                    </button>
+                                                </div>
+                                                
+                                                <!-- Note moyenne -->
+                                                <div class="rating-modern" data-bs-toggle="tooltip" title="Note moyenne sur 100">
+                                                    {% if averageRating is not null and averageRating > 0 %}
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="rating-circle">
+                                                                <span class="rating-value">{{ averageRating|number_format(1) }}</span>
+                                                            </div>
+                                                            <span class="rating-max ms-1">/100</span>
+                                                        </div>
+                                                    {% else %}
+                                                        <span class="badge bg-light text-muted px-3 py-2 rounded-pill">
+                                                            <i class="far fa-star me-1"></i>Non noté
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Note utilisateur -->
+                                            {% if app.user %}
+                                                <div class="user-rating-modern mt-3 p-3" onclick="event.stopPropagation()">
+                                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                                        <span class="small fw-semibold text-muted">
+                                                            <i class="far fa-star me-1"></i>Votre note
+                                                        </span>
+                                                        <span class="small text-primary fw-bold" id="rating-percent-{{ course.id }}">
+                                                            {% if userEvaluation is not null %}{{ userEvaluation }}%{% else %}0%{% endif %}
+                                                        </span>
+                                                    </div>
+                                                    <div class="rating-slider-container">
+                                                        <input type="range" 
+                                                               class="rating-slider" 
+                                                               min="0" 
+                                                               max="100" 
+                                                               step="1"
+                                                               value="{{ userEvaluation is not null ? userEvaluation : 0 }}"
+                                                               id="rating-slider-{{ course.id }}"
+                                                               oninput="updateRatingValue({{ course.id }}, this.value)">
+                                                        <div class="rating-scale d-flex justify-content-between px-1 mt-1">
+                                                            <span class="small text-muted">0</span>
+                                                            <span class="small text-muted">25</span>
+                                                            <span class="small text-muted">50</span>
+                                                            <span class="small text-muted">75</span>
+                                                            <span class="small text-muted">100</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex justify-content-end mt-2">
+                                                        <button class="btn btn-sm btn-primary px-4 rounded-pill" 
+                                                                onclick="submitModernRating({{ course.id }})">
+                                                            <i class="fas fa-check me-1"></i>Noter
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <!-- Section des ressources -->
+                                        {% if resources|length > 0 %}
+                                            <div class="mb-3">
+                                                <div class="d-flex flex-wrap gap-2">
+                                                    {% for resource in resources|slice(0, 3) %}
+                                                        <span class="resource-badge" onclick="event.stopPropagation()">
+                                                            {% if resource.type == '-' or (resource.type is not defined and 'pdf' in resource.titre|lower) %}
+                                                                <i class="fas fa-file-pdf text-danger"></i>
+                                                            {% elseif resource.type == 'video' or (resource.type is not defined and 'vidéo' in resource.titre|lower) %}
+                                                                <i class="fas fa-play-circle text-primary"></i>
+                                                            {% elseif resource.type == 'lien' or resource.type == 'link' %}
+                                                                <i class="fas fa-link text-success"></i>
+                                                            {% elseif resource.type == 'image' or (resource.type is not defined and 'image' in resource.titre|lower) %}
+                                                                <i class="fas fa-image text-info"></i>
+                                                            {% else %}
+                                                                <i class="fas fa-file-alt text-secondary"></i>
+                                                            {% endif %}
+                                                            <span class="ms-1">{{ resource.titre|slice(0, 8) }}{% if resource.titre|length > 8 %}...{% endif %}</span>
+                                                        </span>
+                                                    {% endfor %}
+                                                    {% if resources|length > 3 %}
+                                                        <span class="resource-badge more">
+                                                            <i class="fas fa-plus-circle"></i>
+                                                            <span class="ms-1">{{ resources|length - 3 }}</span>
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        {% else %}
+                                            <div class="mb-3">
+                                                <p class="small text-muted mb-0">
+                                                    <i class="far fa-folder-open me-1"></i>Aucune ressource
+                                                </p>
+                                            </div>
+                                        {% endif %}
+                                        
+                                        <!-- Durée et date -->
+                                        <div class="d-flex justify-content-between align-items-center border-top pt-3 mt-3">
+                                            <div class="d-flex align-items-center text-muted small">
+                                                <i class="far fa-clock me-1"></i>
+                                                <span>{{ course.duree|default(0) }} min</span>
+                                            </div>
+                                            <div class="d-flex align-items-center text-muted small">
+                                                <i class="far fa-calendar-alt me-1"></i>
+                                                <span>{{ course.dateCreation|date('d M Y') }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Card footer avec boutons PDF -->
+                                    <div class="card-footer bg-light border-0 p-3" onclick="event.stopPropagation()">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <!-- Boutons PDF -->
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" type="button" id="pdfDropdown{{ course.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="fas fa-file-pdf me-1"></i>PDF
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="pdfDropdown{{ course.id }}">
+                                                    <li>
+                                                        <a class="dropdown-item" href="{{ path('course_pdf', {'id': course.id}) }}" target="_blank">
+                                                            <i class="fas fa-graduation-cap me-2 text-primary"></i>Fiche du cours
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="{{ path('course_ressources_pdf', {'id': course.id}) }}" target="_blank">
+                                                            <i class="fas fa-book me-2 text-success"></i>Ressources PDF
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <!-- Bouton Voir le cours -->
+                                            <a href="{{ path('course_show', {'id': course.id}) }}" class="btn btn-sm btn-primary rounded-pill px-4">
+                                                Voir le cours
+                                                <i class="fas fa-arrow-right ms-1"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Card item END -->
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12">
+                            <div class="text-center py-5">
+                                {% if searchQuery %}
+                                    <i class="fas fa-search display-1 text-muted mb-4"></i>
+                                    <h3 class="mb-3">Aucun résultat trouvé</h3>
+                                    <p class="text-muted mb-4">
+                                        Aucun cours ne correspond à votre recherche : <strong>"{{ searchQuery }}"</strong>
+                                    </p>
+                                    <div class="d-flex justify-content-center gap-3">
+                                        <a href="{{ path('app_courses') }}" class="btn btn-primary rounded-pill px-5 py-3">
+                                            <i class="fas fa-undo me-2"></i>Afficher tous les cours
+                                        </a>
+                                    </div>
+                                {% else %}
+                                    <i class="fas fa-book-open display-1 text-muted mb-4"></i>
+                                    <h3 class="mb-3">Aucun cours disponible pour le moment</h3>
+                                    <p class="text-muted mb-4">Nos formateurs préparent de nouveaux contenus passionnants.</p>
+                                    <a href="{{ path('home') }}" class="btn btn-primary rounded-pill px-5 py-3">
+                                        <i class="fas fa-arrow-left me-2"></i>Retour à l'accueil
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- All courses END -->
+
+            <!-- Développement courses START -->
+            <div class="tab-pane fade" id="courses-pills-tabs-dev" role="tabpanel" aria-labelledby="courses-pills-dev-tab">
+                <div class="row g-4">
+                    {% set devCourses = [] %}
+                    {% for courseData in coursesWithData %}
+                        {% set course = courseData.course %}
+                        {% if course.matiere is defined and course.matiere matches '/.*(dev|program|code|symfony|react|javascript|python|php|web|développement).*/i' %}
+                            {% set devCourses = devCourses|merge([courseData]) %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if devCourses|length > 0 %}
+                        {% for courseData in devCourses %}
+                            {% set course = courseData.course %}
+                            {% set likes = courseData.likes %}
+                            {% set dislikes = courseData.dislikes %}
+                            {% set averageRating = courseData.averageRating %}
+                            {% set userReaction = courseData.userReaction %}
+                            
+                            <div class="col-sm-6 col-lg-4 col-xl-3">
+                                <div class="card shadow-sm h-100 border-0 course-card" data-course-id="{{ course.id }}">
+                                    <div class="card-body p-4">
+                                        <div class="d-flex gap-2 mb-3">
+                                            <span class="badge bg-primary-soft text-primary px-3 py-2 rounded-pill">
+                                                <i class="fas fa-tag me-1"></i>{{ course.matiere|default('Développement') }}
+                                            </span>
+                                            <span class="badge bg-info-soft text-info px-3 py-2 rounded-pill">
+                                                <i class="fas fa-signal me-1"></i>{{ course.niveau|default('Tous niveaux') }}
+                                            </span>
+                                        </div>
+                                        
+                                        <h5 class="card-title mb-3">
+                                            <a href="{{ path('course_show', {'id': course.id}) }}" class="text-dark text-decoration-none">{{ course.titre }}</a>
+                                        </h5>
+                                        
+                                        <div class="d-flex align-items-center justify-content-between mb-3">
+                                            <div class="d-flex gap-2">
+                                                <button type="button" 
+                                                        class="reaction-btn small {% if userReaction == 'like' %}active{% endif %}"
+                                                        onclick="handleReaction({{ course.id }}, 'like')"
+                                                        data-course-id="{{ course.id }}">
+                                                    <span class="reaction-icon">
+                                                        <i class="{% if userReaction == 'like' %}fas{% else %}far{% endif %} fa-thumbs-up"></i>
+                                                    </span>
+                                                    <span class="reaction-count likes-count">{{ likes }}</span>
+                                                </button>
+                                                
+                                                <button type="button" 
+                                                        class="reaction-btn small {% if userReaction == 'dislike' %}active dislike{% endif %}"
+                                                        onclick="handleReaction({{ course.id }}, 'dislike')"
+                                                        data-course-id="{{ course.id }}">
+                                                    <span class="reaction-icon">
+                                                        <i class="{% if userReaction == 'dislike' %}fas{% else %}far{% endif %} fa-thumbs-down"></i>
+                                                    </span>
+                                                    <span class="reaction-count dislikes-count">{{ dislikes }}</span>
+                                                </button>
+                                            </div>
+                                            
+                                            <div class="rating-modern small">
+                                                {% if averageRating is not null and averageRating > 0 %}
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="rating-circle small">
+                                                            <span class="rating-value">{{ averageRating|number_format(1) }}</span>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        
+                                        <a href="{{ path('course_show', {'id': course.id}) }}" class="btn btn-outline-primary w-100 rounded-pill">
+                                            Voir le cours
+                                            <i class="fas fa-arrow-right ms-2"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12 text-center py-5">
+                            <i class="fas fa-code display-1 text-muted mb-4"></i>
+                            <h4 class="mb-3">Aucun cours de développement pour le moment</h4>
+                            <p class="text-muted">Nos formateurs préparent du nouveau contenu.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Développement courses END -->
+
+            <!-- Design courses START -->
+            <div class="tab-pane fade" id="courses-pills-tabs-design" role="tabpanel" aria-labelledby="courses-pills-design-tab">
+                <div class="row g-4">
+                    {% set designCourses = [] %}
+                    {% for courseData in coursesWithData %}
+                        {% set course = courseData.course %}
+                        {% if course.matiere is defined and course.matiere matches '/.*(design|ui|ux|figma|graphique|creative|art).*/i' %}
+                            {% set designCourses = designCourses|merge([courseData]) %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if designCourses|length > 0 %}
+                        {% for courseData in designCourses %}
+                            {% set course = courseData.course %}
+                            {% set likes = courseData.likes %}
+                            {% set dislikes = courseData.dislikes %}
+                            {% set averageRating = courseData.averageRating %}
+                            {% set userReaction = courseData.userReaction %}
+                            
+                            <div class="col-sm-6 col-lg-4 col-xl-3">
+                                <div class="card shadow-sm h-100 border-0 course-card" data-course-id="{{ course.id }}">
+                                    <div class="card-body p-4">
+                                        <div class="d-flex gap-2 mb-3">
+                                            <span class="badge bg-primary-soft text-primary px-3 py-2 rounded-pill">
+                                                <i class="fas fa-tag me-1"></i>{{ course.matiere|default('Design') }}
+                                            </span>
+                                            <span class="badge bg-info-soft text-info px-3 py-2 rounded-pill">
+                                                <i class="fas fa-signal me-1"></i>{{ course.niveau|default('Tous niveaux') }}
+                                            </span>
+                                        </div>
+                                        
+                                        <h5 class="card-title mb-3">
+                                            <a href="{{ path('course_show', {'id': course.id}) }}" class="text-dark text-decoration-none">{{ course.titre }}</a>
+                                        </h5>
+                                        
+                                        <div class="d-flex align-items-center justify-content-between mb-3">
+                                            <div class="d-flex gap-2">
+                                                <button type="button" 
+                                                        class="reaction-btn small {% if userReaction == 'like' %}active{% endif %}"
+                                                        onclick="handleReaction({{ course.id }}, 'like')"
+                                                        data-course-id="{{ course.id }}">
+                                                    <span class="reaction-icon">
+                                                        <i class="{% if userReaction == 'like' %}fas{% else %}far{% endif %} fa-thumbs-up"></i>
+                                                    </span>
+                                                    <span class="reaction-count likes-count">{{ likes }}</span>
+                                                </button>
+                                                
+                                                <button type="button" 
+                                                        class="reaction-btn small {% if userReaction == 'dislike' %}active dislike{% endif %}"
+                                                        onclick="handleReaction({{ course.id }}, 'dislike')"
+                                                        data-course-id="{{ course.id }}">
+                                                    <span class="reaction-icon">
+                                                        <i class="{% if userReaction == 'dislike' %}fas{% else %}far{% endif %} fa-thumbs-down"></i>
+                                                    </span>
+                                                    <span class="reaction-count dislikes-count">{{ dislikes }}</span>
+                                                </button>
+                                            </div>
+                                            
+                                            <div class="rating-modern small">
+                                                {% if averageRating is not null and averageRating > 0 %}
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="rating-circle small">
+                                                            <span class="rating-value">{{ averageRating|number_format(1) }}</span>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        
+                                        <a href="{{ path('course_show', {'id': course.id}) }}" class="btn btn-outline-primary w-100 rounded-pill">
+                                            Voir le cours
+                                            <i class="fas fa-arrow-right ms-2"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12 text-center py-5">
+                            <i class="fas fa-paint-brush display-1 text-muted mb-4"></i>
+                            <h4 class="mb-3">Aucun cours de design pour le moment</h4>
+                            <p class="text-muted">Nos formateurs préparent du nouveau contenu.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Design courses END -->
+
+            <!-- Business courses START -->
+            <div class="tab-pane fade" id="courses-pills-tabs-business" role="tabpanel" aria-labelledby="courses-pills-business-tab">
+                <div class="row g-4">
+                    {% set businessCourses = [] %}
+                    {% for courseData in coursesWithData %}
+                        {% set course = courseData.course %}
+                        {% if course.matiere is defined and course.matiere matches '/.*(business|marketing|management|finance|entrepreneur|commerce|vente).*/i' %}
+                            {% set businessCourses = businessCourses|merge([courseData]) %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if businessCourses|length > 0 %}
+                        {% for courseData in businessCourses %}
+                            {% set course = courseData.course %}
+                            {% set likes = courseData.likes %}
+                            {% set dislikes = courseData.dislikes %}
+                            {% set averageRating = courseData.averageRating %}
+                            {% set userReaction = courseData.userReaction %}
+                            
+                            <div class="col-sm-6 col-lg-4 col-xl-3">
+                                <div class="card shadow-sm h-100 border-0 course-card" data-course-id="{{ course.id }}">
+                                    <div class="card-body p-4">
+                                        <div class="d-flex gap-2 mb-3">
+                                            <span class="badge bg-primary-soft text-primary px-3 py-2 rounded-pill">
+                                                <i class="fas fa-tag me-1"></i>{{ course.matiere|default('Business') }}
+                                            </span>
+                                            <span class="badge bg-info-soft text-info px-3 py-2 rounded-pill">
+                                                <i class="fas fa-signal me-1"></i>{{ course.niveau|default('Tous niveaux') }}
+                                            </span>
+                                        </div>
+                                        
+                                        <h5 class="card-title mb-3">
+                                            <a href="{{ path('course_show', {'id': course.id}) }}" class="text-dark text-decoration-none">{{ course.titre }}</a>
+                                        </h5>
+                                        
+                                        <div class="d-flex align-items-center justify-content-between mb-3">
+                                            <div class="d-flex gap-2">
+                                                <button type="button" 
+                                                        class="reaction-btn small {% if userReaction == 'like' %}active{% endif %}"
+                                                        onclick="handleReaction({{ course.id }}, 'like')"
+                                                        data-course-id="{{ course.id }}">
+                                                    <span class="reaction-icon">
+                                                        <i class="{% if userReaction == 'like' %}fas{% else %}far{% endif %} fa-thumbs-up"></i>
+                                                    </span>
+                                                    <span class="reaction-count likes-count">{{ likes }}</span>
+                                                </button>
+                                                
+                                                <button type="button" 
+                                                        class="reaction-btn small {% if userReaction == 'dislike' %}active dislike{% endif %}"
+                                                        onclick="handleReaction({{ course.id }}, 'dislike')"
+                                                        data-course-id="{{ course.id }}">
+                                                    <span class="reaction-icon">
+                                                        <i class="{% if userReaction == 'dislike' %}fas{% else %}far{% endif %} fa-thumbs-down"></i>
+                                                    </span>
+                                                    <span class="reaction-count dislikes-count">{{ dislikes }}</span>
+                                                </button>
+                                            </div>
+                                            
+                                            <div class="rating-modern small">
+                                                {% if averageRating is not null and averageRating > 0 %}
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="rating-circle small">
+                                                            <span class="rating-value">{{ averageRating|number_format(1) }}</span>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        
+                                        <a href="{{ path('course_show', {'id': course.id}) }}" class="btn btn-outline-primary w-100 rounded-pill">
+                                            Voir le cours
+                                            <i class="fas fa-arrow-right ms-2"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-12 text-center py-5">
+                            <i class="fas fa-chart-line display-1 text-muted mb-4"></i>
+                            <h4 class="mb-3">Aucun cours de business pour le moment</h4>
+                            <p class="text-muted">Nos formateurs préparent du nouveau contenu.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Business courses END -->
+        </div>
+        <!-- Tabs content END -->
+        
+        <!-- Pagination -->
+        <div class="row mt-5">
+            <div class="col-12">
+                {% if pagination is defined and pagination|length > 0 %}
+                    <div class="d-flex justify-content-center">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                    
+                    <!-- Affichage du nombre total de cours -->
+                    <div class="text-center mt-3 text-muted">
+                        <small>Affichage de {{ pagination|length }} cours sur {{ pagination.getTotalItemCount }} au total</small>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+Tabs filter END -->
+
+<!-- =======================
+CTA Section START -->
+<section class="bg-gradient-primary py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3 class="text-white mb-3">Prêt à commencer votre apprentissage ?</h3>
+                <p class="text-white text-opacity-75 mb-0 fs-5">Rejoignez des milliers d'étudiants qui ont déjà transformé leur carrière avec nos cours.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                {% if app.user %}
+                    <a href="#" class="btn btn-light btn-lg rounded-pill px-5 py-3">
+                        <i class="fas fa-rocket me-2"></i>Explorer tous les cours
+                    </a>
+                {% else %}
+                    <a href="#" class="btn btn-light btn-lg rounded-pill px-5 py-3">
+                        <i class="fas fa-user-plus me-2"></i>S'inscrire gratuitement
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+CTA Section END -->
+
+<!-- =======================
+FAQ START -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 mx-auto text-center">
+                <h2 class="mb-4 display-5 fw-bold">Questions fréquentes</h2>
+                <p class="mb-5 text-secondary fs-5">Trouvez rapidement les réponses à vos questions sur nos cours et notre plateforme.</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="accordion accordion-flush" id="accordionExample">
+                    <!-- Item -->
+                    <div class="accordion-item border-0 mb-3">
+                        <h6 class="accordion-header" id="heading-1">
+                            <button class="accordion-button bg-light rounded-4 shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
+                                <i class="fas fa-question-circle text-primary me-3"></i>
+                                Comment accéder aux cours ?
+                            </button>
+                        </h6>
+                        <div id="collapse-1" class="accordion-collapse collapse show" aria-labelledby="heading-1" data-bs-parent="#accordionExample">
+                            <div class="accordion-body pt-3">
+                                Créez un compte gratuit, parcourez notre catalogue et inscrivez-vous aux cours qui vous intéressent. Vous aurez alors un accès immédiat à toutes les ressources.
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item -->
+                    <div class="accordion-item border-0 mb-3">
+                        <h6 class="accordion-header" id="heading-2">
+                            <button class="accordion-button bg-light rounded-4 shadow-sm collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
+                                <i class="fas fa-euro-sign text-primary me-3"></i>
+                                Les cours sont-ils gratuits ?
+                            </button>
+                        </h6>
+                        <div id="collapse-2" class="accordion-collapse collapse" aria-labelledby="heading-2" data-bs-parent="#accordionExample">
+                            <div class="accordion-body pt-3">
+                                Nous proposons à la fois des cours gratuits et des cours premium. Les cours gratuits vous donnent accès au contenu de base, tandis que les cours premium incluent des ressources supplémentaires, des certificats et un support personnalisé.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="accordion accordion-flush" id="accordionExample2">
+                    <!-- Item -->
+                    <div class="accordion-item border-0 mb-3">
+                        <h6 class="accordion-header" id="heading-3">
+                            <button class="accordion-button bg-light rounded-4 shadow-sm collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
+                                <i class="fas fa-clock text-primary me-3"></i>
+                                Puis-je apprendre à mon rythme ?
+                            </button>
+                        </h6>
+                        <div id="collapse-3" class="accordion-collapse collapse" aria-labelledby="heading-3" data-bs-parent="#accordionExample2">
+                            <div class="accordion-body pt-3">
+                                Absolument ! Tous nos cours sont disponibles 24h/24 et 7j/7. Vous pouvez apprendre quand vous voulez, où vous voulez, et revenir sur les leçons autant de fois que nécessaire.
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item -->
+                    <div class="accordion-item border-0 mb-3">
+                        <h6 class="accordion-header" id="heading-4">
+                            <button class="accordion-button bg-light rounded-4 shadow-sm collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
+                                <i class="fas fa-certificate text-primary me-3"></i>
+                                Comment obtenir un certificat ?
+                            </button>
+                        </h6>
+                        <div id="collapse-4" class="accordion-collapse collapse" aria-labelledby="heading-4" data-bs-parent="#accordionExample2">
+                            <div class="accordion-body pt-3">
+                                Pour obtenir un certificat, vous devez compléter tous les modules du cours et réussir l'évaluation finale avec un score minimum de 70%. Le certificat est ensuite disponible dans votre portfolio numérique.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- =======================
+FAQ END -->
+
+<!-- Footer START -->
+<footer class="pt-5">
+    <div class="container">
+        <!-- Row START -->
+        <div class="row g-4">
+            <div class="col-lg-3">
+                <a class="me-0 d-flex align-items-center" href="{{ path('home') }}">
+                    <img class="light-mode-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 200px;">
+                    <img class="dark-mode-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 200px;">
+                </a>
+            </div>
+
+            <!-- Widget 2 START -->
+            <div class="col-lg-6">
+                <div class="row g-4">
+                    <!-- Link block -->
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Entreprise</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">À propos de nous</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Nous contacter</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Actualités et blogs</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Bibliothèque</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Carrière</a></li>
+                        </ul>
+                    </div>
+                                    
+                    <!-- Link block -->
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Communauté</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">Documentation</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Forum</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Plan du site</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Link block -->
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Enseignement</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">Devenir formateur</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Guide pratique</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Termes et conditions</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Widget 2 END -->
+
+            <!-- Widget 3 START -->
+            <div class="col-lg-3">
+                <h5 class="mb-2 mb-md-4">Contact</h5>
+                <!-- Time -->
+                <p class="mb-2">
+                    Numéro gratuit : <span class="h6 fw-light ms-2">+216 20629612</span>
+                    <span class="d-block small">(9:AM to 8:PM IST)</span>
+                </p>
+
+                <p class="mb-0">Email: <span class="h6 fw-light ms-2">example@gmail.com</span></p>
+
+                <div class="row g-2 mt-2">
+                    <!-- Google play store button -->
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-6">
+                        <a href="#"> <img src="{{ asset('assets/images/client/google-play.svg') }}" alt=""> </a>
+                    </div>
+                    <!-- App store button -->
+                    <div class="col-6 col-sm-4 col-md-3 col-lg-6">
+                        <a href="#"> <img src="{{ asset('assets/images/client/app-store.svg') }}" alt="app-store"> </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="mt-4 mb-0">
+
+        <!-- Bottom footer -->
+        <div class="py-3">
+            <div class="container px-0">
+                <div class="d-lg-flex justify-content-between align-items-center py-3 text-center text-md-left">
+                    <!-- copyright text -->
+                    <div class="text-body text-primary-hover"> © 2026 Développé par <a href="https://www.webestica.com/" target="_blank" class="text-body">Path2learn</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- Footer END -->
+
+<style>
+html, body {
+    background-color: #ffffff !important;
+    height: 100%;
+    margin: 0;
+}
+
+.layout-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.page-content {
+    flex: 1;
+    background-color: #ffffff;
+}
+
+.site-footer {
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* Styles PDF */
+.btn-outline-danger:hover {
+    background: linear-gradient(135deg, #dc3545 0%, #bb2d3b 100%);
+    color: white;
+    border-color: #dc3545;
+}
+
+.badge-pdf {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .hstack.gap-2 {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .hstack.gap-2 .btn {
+        margin-bottom: 5px;
+        width: 100%;
+    }
+}
+
+:root {
+    --primary-color: #4361ee;
+    --primary-dark: #3a56d4;
+    --success-color: #2ecc71;
+    --danger-color: #e74c3c;
+    --warning-color: #f39c12;
+    --dark-color: #2c3e50;
+    --light-bg: #f8f9fa;
+}
+
+/* Background gradient */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #6c5ce7 100%);
+}
+
+/* Stat icons */
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-primary-soft {
+    background-color: #ffffff !important;
+}
+
+.bg-success-soft {
+    background-color: #ffffff !important;
+}
+
+.bg-warning-soft {
+   background-color: #ffffff !important;
+}
+
+/* Card styling moderne */
+.course-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 20px !important;
+    overflow: hidden;
+    background: white;
+}
+
+.course-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 30px -10px rgba(67, 97, 238, 0.2) !important;
+}
+
+/* Course image */
+.course-image {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Badges soft */
+.bg-primary-soft {
+    background-color: rgba(67, 97, 238, 0.1);
+    color: var(--primary-color);
+}
+
+.bg-info-soft {
+    background-color: rgba(54, 185, 204, 0.1);
+    color: #36b9cc;
+}
+
+/* Boutons de réaction modernes */
+.reaction-btn {
+    background: none;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 40px;
+    font-weight: 500;
+    color: #64748b;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.reaction-btn.small {
+    padding: 5px 12px;
+    font-size: 0.9rem;
+}
+
+.reaction-btn .reaction-icon {
+    font-size: 1.1rem;
+    transition: transform 0.2s ease;
+}
+
+.reaction-btn:hover {
+    background-color: rgba(67, 97, 238, 0.05);
+    color: var(--primary-color);
+}
+
+.reaction-btn:hover .reaction-icon {
+    transform: scale(1.1);
+}
+
+.reaction-btn.active {
+    color: var(--primary-color);
+    background-color: rgba(67, 97, 238, 0.1);
+}
+
+.reaction-btn.active.dislike {
+    color: var(--danger-color);
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+.reaction-count {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Cercle de notation moderne */
+.rating-modern {
+    display: inline-flex;
+    align-items: center;
+}
+
+.rating-modern.small .rating-circle {
+    width: 30px;
+    height: 30px;
+}
+
+.rating-circle {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary-color), #6c5ce7);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+}
+
+.rating-value {
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.rating-max {
+    color: #94a3b8;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Slider de notation moderne */
+.user-rating-modern {
+    background: linear-gradient(135deg, #f8faff, #f1f4ff);
+    border-radius: 20px;
+    border: 1px solid rgba(67, 97, 238, 0.1);
+}
+
+.rating-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, var(--danger-color) 0%, var(--warning-color) 50%, var(--success-color) 100%);
+    outline: none;
+}
+
+.rating-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--primary-color);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.rating-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.rating-scale {
+    margin-top: 5px;
+    font-size: 0.7rem;
+}
+
+/* Badges de ressources */
+.resource-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background-color: var(--light-bg);
+    border-radius: 30px;
+    font-size: 0.8rem;
+    color: var(--dark-color);
+    transition: all 0.2s ease;
+    cursor: default;
+}
+
+.resource-badge:hover {
+    background-color: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.resource-badge.more {
+    background-color: rgba(67, 97, 238, 0.1);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Titre du cours */
+.course-title-link {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--dark-color);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: color 0.2s ease;
+}
+
+.course-title-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Avatar */
+.avatar {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Bouton favori */
+.favorite-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    background: transparent;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+    text-decoration: none;
+}
+
+.favorite-btn i {
+    color: white !important;
+    font-size: 2rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    transition: all 0.2s ease;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.1);
+}
+
+.favorite-btn:hover i {
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+}
+
+/* Cœur rempli (favori) - Rouge vif */
+.favorite-btn .fas.fa-heart {
+    color: #ff3366 !important;
+    filter: drop-shadow(0 2px 8px rgba(255, 51, 102, 0.5));
+    animation: heartPop 0.3s ease;
+}
+
+@keyframes heartPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* Cœur vide - Blanc pur */
+.favorite-btn .far.fa-heart {
+    color: white !important;
+}
+
+.custom-nav-pills .nav-link:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.custom-nav-pills .nav-link.active {
+    background: linear-gradient(135deg, var(--primary-color), #6c5ce7);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+}
+
+/* Pagination personnalisée */
+.pagination {
+    gap: 5px;
+}
+
+.page-item .page-link {
+    border: none;
+    border-radius: 40px !important;
+    padding: 10px 18px;
+    color: var(--dark-color);
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.page-item.active .page-link {
+    background: linear-gradient(135deg, var(--primary-color), #6c5ce7);
+    color: white;
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+}
+
+.page-item .page-link:hover {
+    background-color: rgba(67, 97, 238, 0.1);
+    color: var(--primary-color);
+}
+
+/* Accordion */
+.accordion-button:not(.collapsed) {
+    background: linear-gradient(135deg, rgba(67, 97, 238, 0.05), rgba(108, 92, 231, 0.05));
+    color: var(--primary-color);
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(67, 97, 238, 0.1);
+}
+
+/* Notification */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Border white 10% */
+.border-white-10 {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Correction pour le champ de recommandation */
+#interestInput {
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(5px);
+}
+
+#interestInput:focus {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+    color: white !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+#interestInput::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Style pour les résultats de recommandation */
+#resultsList a {
+    transition: all 0.2s ease;
+}
+
+#resultsList a:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    padding-left: 10px !important;
+}
+
+#resultsList .badge {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.65rem;
+}
+
+/* Styles de pagination */
+.pagination {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.page-item {
+    margin: 0 3px;
+}
+
+.page-item .page-link {
+    border: none;
+    border-radius: 8px !important;
+    padding: 10px 16px;
+    color: #2c3e50;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.page-item.active .page-link {
+    background: linear-gradient(135deg, #4361ee, #6c5ce7);
+    color: white;
+    box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+}
+
+.page-item.disabled .page-link {
+    background-color: #e9ecef;
+    color: #adb5bd;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.page-item .page-link:hover:not(.active):not(.disabled) {
+    background-color: #e9ecef;
+    color: #4361ee;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Style pour les icônes dans la pagination */
+.page-item .page-link i {
+    font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .reaction-btn {
+        padding: 6px 12px;
+    }
+    
+    .rating-circle {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .stat-icon i {
+        font-size: 1.2rem !important;
+    }
+    
+    .pagination {
+        gap: 2px;
+    }
+    
+    .page-item .page-link {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+}
+</style>
+
+<script>
+// Gestion du scroll après changement de page
+document.addEventListener('DOMContentLoaded', function() {
+    // Vérifier si on vient d'un changement de page
+    if (window.location.hash === '#courses-list') {
+        setTimeout(function() {
+            const target = document.getElementById('courses-list');
+            if (target) {
+                const headerHeight = document.querySelector('.navbar-sticky')?.offsetHeight || 100;
+                const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        }, 100);
+    }
+    
+    // Intercepter les clics sur les liens de pagination
+    document.querySelectorAll('.pagination a.page-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            sessionStorage.setItem('scrollPosition', window.pageYOffset);
+            sessionStorage.setItem('targetPage', this.getAttribute('href').split('page=')[1]?.split('&')[0] || '1');
+        });
+    });
+    
+    // Restaurer la position si on revient en arrière
+    const savedPosition = sessionStorage.getItem('scrollPosition');
+    if (savedPosition && document.referrer.includes(window.location.hostname)) {
+        setTimeout(() => {
+            window.scrollTo({
+                top: parseInt(savedPosition),
+                behavior: 'smooth'
+            });
+            sessionStorage.removeItem('scrollPosition');
+        }, 100);
+    }
+    
+    // Ajouter data-course-id aux cartes pour faciliter la sélection
+    document.querySelectorAll('.course-card').forEach(card => {
+        const courseId = card.querySelector('[data-course-id]')?.dataset.courseId;
+        if (courseId) {
+            card.setAttribute('data-course-id', courseId);
+        }
+    });
+    
+    // Attacher les événements aux boutons QR code
+    document.querySelectorAll('.qr-code-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            const courseId = this.dataset.courseId;
+            const courseTitle = this.dataset.courseTitle;
+            const courseUrl = this.dataset.courseUrl;
+            openQRModal(courseId, courseTitle, courseUrl);
+        });
+    });
+    
+    // Empêcher la propagation des clics sur les éléments interactifs
+    document.querySelectorAll('[onclick], .dropdown, .btn, .badge, .resource-badge, .favorite-btn').forEach(element => {
+        element.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    });
+    
+    // Ajouter des écouteurs pour les liens PDF
+    document.querySelectorAll('a[href*="pdf"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (!this.target || this.target === '_self') {
+                e.preventDefault();
+                window.open(this.href, '_blank');
+                showPdfNotification();
+            }
+        });
+    });
+});
+
+// Variables globales pour le modal de notation
+let currentRatingCourseId = null;
+let currentRatingValue = 0;
+
+// Fonction pour mettre à jour la valeur du rating
+window.updateRatingValue = function(courseId, value) {
+    const percentSpan = document.getElementById(`rating-percent-${courseId}`);
+    if (percentSpan) {
+        percentSpan.textContent = value + '%';
+    }
+};
+
+// UNE SEULE FONCTION submitModernRating (celle avec les logs)
+window.submitModernRating = function(courseId) {
+    console.log('submitModernRating appelé pour courseId:', courseId);
+    
+    if (!isAuthenticated) {
+        showNotification('Veuillez vous connecter pour noter les cours.', 'warning');
+        setTimeout(() => {
+            window.location.href = '{{ path("app_login") }}';
+        }, 2000);
+        return;
+    }
+    
+    const slider = document.getElementById(`rating-slider-${courseId}`);
+    if (!slider) {
+        console.error('Slider non trouvé pour courseId:', courseId);
+        return;
+    }
+    
+    const note = parseInt(slider.value);
+    console.log('Note sélectionnée:', note);
+    
+    // Si note < 30, afficher le modal de raisons
+    if (note < 30) {
+        console.log('Note inférieure à 30, affichage du modal');
+        currentRatingCourseId = courseId;
+        currentRatingValue = note;
+        showRatingReasonModal(courseId, note);
+    } else {
+        console.log('Note supérieure ou égale à 30, envoi direct');
+        // Sinon, envoyer directement la note
+        submitRating(courseId, note);
+    }
+};
+
+// Fonction pour soumettre la note (avec ou sans raison)
+function submitRating(courseId, note, reason = null, customReason = null) {
+    console.log('submitRating appelé', {courseId, note, reason, customReason});
+    
+    // Utiliser le path Symfony au lieu de construire l'URL manuellement
+    let url;
+    if (reason) {
+        // Utiliser la route Symfony
+        url = '{{ path("course_rate_with_reason", {"id": "COURSE_ID"}) }}'.replace('COURSE_ID', courseId);
+    } else {
+        url = '{{ path("course_rate", {"id": "COURSE_ID"}) }}'.replace('COURSE_ID', courseId);
+    }
+    
+    const data = reason 
+        ? { note: note, reason: reason, customReason: customReason }
+        : { note: note };
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => { throw new Error(err.error || 'Erreur réseau'); });
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Réponse reçue:', data);
+        
+        if (data.success) {
+            // Mettre à jour le cercle de notation
+            const card = document.querySelector(`.course-card[data-course-id="${courseId}"]`);
+            if (card) {
+                const ratingCircle = card.querySelector('.rating-value');
+                if (ratingCircle && data.averageRating) {
+                    ratingCircle.textContent = data.averageRating.toFixed(1);
+                }
+                
+                // Mettre à jour le tooltip
+                const ratingBadge = card.querySelector('.rating-modern');
+                if (ratingBadge) {
+                    ratingBadge.setAttribute('title', `Note moyenne : ${data.averageRating.toFixed(1)}/100`);
+                }
+            }
+            
+            showNotification(data.message, 'success');
+            
+            // Fermer le modal si ouvert
+            const modalElement = document.getElementById('ratingReasonModal');
+            if (modalElement) {
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                if (modal) {
+                    modal.hide();
+                }
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Erreur: ' + error.message, 'danger');
+    });
+}
+
+// Fonction pour afficher le modal des raisons
+function showRatingReasonModal(courseId, note) {
+    const modalHtml = `
+        <div class="modal fade" id="ratingReasonModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                    <div class="modal-header bg-warning text-dark border-0">
+                        <h5 class="modal-title">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Note faible : ${note}/100
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    
+                    <div class="modal-body p-4">
+                        <p class="mb-3">Vous avez donné une note inférieure à 30. Pour nous aider à améliorer ce cours, pourriez-vous nous indiquer la raison ?</p>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Raison principale :</label>
+                            <div class="rating-reasons">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="ratingReason" id="reasonDifficile" value="contenu_difficile">
+                                    <label class="form-check-label" for="reasonDifficile">
+                                        Contenu trop difficile
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="ratingReason" id="reasonSimple" value="contenu_simple">
+                                    <label class="form-check-label" for="reasonSimple">
+                                        Contenu trop simple
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="ratingReason" id="reasonQualite" value="qualite_mediocre">
+                                    <label class="form-check-label" for="reasonQualite">
+                                        Qualité du cours médiocre
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="ratingReason" id="reasonTechnique" value="problemes_techniques">
+                                    <label class="form-check-label" for="reasonTechnique">
+                                        Problèmes techniques
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="ratingReason" id="reasonFormateur" value="formateur_peu_clair">
+                                    <label class="form-check-label" for="reasonFormateur">
+                                        Formateur peu clair
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="ratingReason" id="reasonExercices" value="manque_exercices">
+                                    <label class="form-check-label" for="reasonExercices">
+                                        Manque d'exercices pratiques
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="ratingReason" id="reasonRessources" value="ressources_insuffisantes">
+                                    <label class="form-check-label" for="reasonRessources">
+                                        Ressources insuffisantes
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="ratingReason" id="reasonAutre" value="autre">
+                                    <label class="form-check-label" for="reasonAutre">
+                                        Autre
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 d-none" id="customReasonContainer">
+                            <label for="customReason" class="form-label">Précisez votre raison :</label>
+                            <textarea class="form-control" id="customReason" rows="3" placeholder="Expliquez pourquoi vous avez donné cette note..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="button" class="btn btn-primary" onclick="submitRatingWithReason()">
+                            <i class="fas fa-paper-plane me-2"></i>Envoyer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Supprimer l'ancien modal s'il existe
+    const oldModal = document.getElementById('ratingReasonModal');
+    if (oldModal) {
+        oldModal.remove();
+    }
+    
+    // Ajouter le nouveau modal
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Gérer l'affichage du champ personnalisé
+    document.querySelectorAll('input[name="ratingReason"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const container = document.getElementById('customReasonContainer');
+            if (this.value === 'autre') {
+                container.classList.remove('d-none');
+            } else {
+                container.classList.add('d-none');
+            }
+        });
+    });
+    
+    // Afficher le modal
+    const modal = new bootstrap.Modal(document.getElementById('ratingReasonModal'));
+    modal.show();
+}
+
+// Fonction pour soumettre la note avec la raison
+function submitRatingWithReason() {
+    const selectedReason = document.querySelector('input[name="ratingReason"]:checked');
+    
+    if (!selectedReason) {
+        showNotification('Veuillez sélectionner une raison', 'warning');
+        return;
+    }
+    
+    const reason = selectedReason.value;
+    let customReason = null;
+    
+    if (reason === 'autre') {
+        customReason = document.getElementById('customReason').value;
+        if (!customReason.trim()) {
+            showNotification('Veuillez préciser votre raison', 'warning');
+            return;
+        }
+    }
+    
+    submitRating(currentRatingCourseId, currentRatingValue, reason, customReason);
+}
+
+// Fonction pour gérer les réactions (like/dislike)
+window.handleReaction = function(courseId, type) {
+    if (!isAuthenticated) {
+        showNotification('Veuillez vous connecter pour interagir avec les cours.', 'warning');
+        setTimeout(() => {
+            window.location.href = '{{ path("app_login") }}';
+        }, 2000);
+        return;
+    }
+    
+    const url = type === 'like' 
+        ? '{{ path("course_like", {"id": "COURSE_ID"}) }}'.replace('COURSE_ID', courseId)
+        : '{{ path("course_dislike", {"id": "COURSE_ID"}) }}'.replace('COURSE_ID', courseId);
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Mettre à jour l'affichage
+            const courseCard = document.querySelector(`.course-card[data-course-id="${courseId}"]`);
+            if (courseCard) {
+                // Mettre à jour les compteurs
+                const likeCounts = courseCard.querySelectorAll('.likes-count');
+                const dislikeCounts = courseCard.querySelectorAll('.dislikes-count');
+                
+                likeCounts.forEach(span => span.textContent = data.likes);
+                dislikeCounts.forEach(span => span.textContent = data.dislikes);
+                
+                // Mettre à jour les classes actives
+                const likeBtns = courseCard.querySelectorAll('.reaction-btn[onclick*="like"]');
+                const dislikeBtns = courseCard.querySelectorAll('.reaction-btn[onclick*="dislike"]');
+                
+                likeBtns.forEach(btn => {
+                    btn.classList.remove('active');
+                    const icon = btn.querySelector('i');
+                    if (icon) icon.className = 'far fa-thumbs-up';
+                });
+                
+                dislikeBtns.forEach(btn => {
+                    btn.classList.remove('active', 'dislike');
+                    const icon = btn.querySelector('i');
+                    if (icon) icon.className = 'far fa-thumbs-down';
+                });
+                
+                if (data.userReaction === 'like') {
+                    likeBtns.forEach(btn => {
+                        btn.classList.add('active');
+                        const icon = btn.querySelector('i');
+                        if (icon) icon.className = 'fas fa-thumbs-up';
+                    });
+                } else if (data.userReaction === 'dislike') {
+                    dislikeBtns.forEach(btn => {
+                        btn.classList.add('active', 'dislike');
+                        const icon = btn.querySelector('i');
+                        if (icon) icon.className = 'fas fa-thumbs-down';
+                    });
+                }
+            }
+            
+            showNotification(data.message, 'success');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Une erreur est survenue', 'danger');
+    });
+};
+
+// Fonction pour toggle favorite
+window.toggleFavorite = function(courseId) {
+    if (!isAuthenticated) {
+        showNotification('Veuillez vous connecter pour ajouter aux favoris.', 'warning');
+        setTimeout(() => { window.location.href = '{{ path("app_login") }}'; }, 2000);
+        return;
+    }
+    
+    const favoriteBtn = document.querySelector(`.favorite-btn[data-course-id="${courseId}"]`);
+    if (!favoriteBtn) return;
+    
+    const heartIcon = favoriteBtn.querySelector('i');
+    const url = '{{ path("course_toggle_favorite", {"id": "COURSE_ID"}) }}'.replace('COURSE_ID', courseId);
+    
+    fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (data.isFavorite) {
+                // ✅ Remplir le cœur
+                heartIcon.classList.remove('far');
+                heartIcon.classList.add('fas');
+                heartIcon.style.color = '#ff3366';
+                heartIcon.style.filter = 'drop-shadow(0 2px 8px rgba(255,51,102,0.5))';
+                heartIcon.style.textShadow = '';
+                showNotification('❤️ Cours ajouté aux favoris', 'success');
+            } else {
+                // ✅ Vider le cœur
+                heartIcon.classList.remove('fas');
+                heartIcon.classList.add('far');
+                heartIcon.style.color = 'white';
+                heartIcon.style.filter = '';
+                heartIcon.style.textShadow = '0 2px 4px rgba(0,0,0,0.5)';
+                showNotification('Cours retiré des favoris', 'info');
+            }
+        }
+    })
+    .catch(() => showNotification('Une erreur est survenue', 'danger'));
+};
+// Search Recommendation Debounce
+let searchTimeout;
+window.debounceSearch = function(val) {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        searchRecommendations(val);
+    }, 500);
+};
+
+window.searchRecommendations = function(interest) {
+    const resultContainer = document.getElementById('recommendationResults');
+    const list = document.getElementById('resultsList');
+    
+    if (!interest || interest.length < 2) {
+        resultContainer.classList.add('d-none');
+        return;
+    }
+    
+    const url = '{{ path("course_recommendation_search") }}?interest=' + encodeURIComponent(interest);
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            list.innerHTML = '';
+            if (data.results && data.results.length > 0) {
+                resultContainer.classList.remove('d-none');
+                data.results.forEach(course => {
+                    const item = document.createElement('a');
+                    item.href = '{{ path("course_show", {"id": 0}) }}'.replace('0', course.id);
+                    item.className = 'list-group-item list-group-item-action bg-transparent text-white border-bottom border-secondary d-flex justify-content-between align-items-center px-0 py-2';
+                    item.innerHTML = `
+                        <div>
+                            <h6 class="mb-0 text-white">${course.title}</h6>
+                            <small class="text-white-50">${course.level} • ${course.author}</small>
+                        </div>
+                        <span class="badge bg-primary rounded-pill">${course.rating || 'N/A'}</span>
+                    `;
+                    list.appendChild(item);
+                });
+            } else {
+                resultContainer.classList.remove('d-none');
+                list.innerHTML = '<div class="text-white-50 text-center py-2">Aucun résultat</div>';
+            }
+        })
+        .catch(err => console.error(err));
+};
+
+// Fonction pour afficher une notification
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show notification`;
+    notification.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'} me-2"></i>
+            <span>${message}</span>
+            <button type="button" class="btn-close ms-3" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Fonction pour afficher une notification PDF
+window.showPdfNotification = function() {
+    showNotification('PDF généré avec succès !', 'success');
+};
+
+// Fonction pour ouvrir le modal QR code
+function openQRModal(courseId, courseTitle, courseUrl) {
+    fetch(`/cours/qr-data/${courseId}`)
+        .then(response => response.json())
+        .then(data => {
+            const jsonData = encodeURIComponent(JSON.stringify(data));
+            
+            const modalHtml = `
+                <div class="modal fade" id="qrModal-${courseId}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content border-0 shadow">
+                            <div class="modal-header bg-primary text-white border-0">
+                                <h5 class="modal-title">
+                                    <i class="fas fa-qrcode me-2"></i>
+                                    QR Code - ${courseTitle}
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            
+                            <div class="modal-body text-center p-4">
+                                <div class="mb-4 p-3 bg-light rounded-3">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${jsonData}" 
+                                         alt="QR Code" 
+                                         class="img-fluid"
+                                         style="max-width: 250px;">
+                                </div>
+                                
+                                <h5 class="fw-bold">${courseTitle}</h5>
+                                
+                                <div class="text-start mb-3 p-2 bg-light rounded-3">
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Ce QR code contient ${data.ressources_details ? data.ressources_details.length : 0} ressources
+                                    </small>
+                                </div>
+                                
+                                <div class="d-flex gap-2 justify-content-center mt-3">
+                                    <a href="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${jsonData}" 
+                                       class="btn btn-primary rounded-pill px-4"
+                                       target="_blank">
+                                        <i class="fas fa-download me-2"></i>Télécharger
+                                    </a>
+                                    
+                                    <button type="button" 
+                                            class="btn btn-outline-secondary rounded-pill px-4"
+                                            onclick="showQRPreview(${JSON.stringify(data).replace(/"/g, '&quot;')})">
+                                        <i class="fas fa-eye me-2"></i>Aperçu
+                                    </button>
+                                    
+                                    <button type="button" class="btn btn-outline-dark rounded-pill px-4" data-bs-dismiss="modal">
+                                        Fermer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const oldModal = document.getElementById(`qrModal-${courseId}`);
+            if (oldModal) oldModal.remove();
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            
+            const modal = new bootstrap.Modal(document.getElementById(`qrModal-${courseId}`));
+            modal.show();
+            
+            document.getElementById(`qrModal-${courseId}`).addEventListener('hidden.bs.modal', function() {
+                this.remove();
+            });
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Impossible de charger les données du cours');
+        });
+}
+
+// Fonction pour montrer l'aperçu du QR code
+function showQRPreview(data) {
+    let message = "📦 DONNÉES DU QR CODE\n\n";
+    message += `📚 Titre : ${data.titre}\n`;
+    message += `📝 Description : ${data.description?.substring(0, 100)}...\n`;
+    message += `📊 Ressources : ${data.ressources_details?.length || 0}\n`;
+    if (data.statistiques) {
+        message += `📄 PDF : ${data.statistiques.pdfs}\n`;
+        message += `🎬 Vidéos : ${data.statistiques.videos}\n`;
+        message += `🖼️ Images : ${data.statistiques.images}\n`;
+    }
+    alert(message);
+}
+// Dans votre fichier JS global ou dans la balise script
+function generateSummary(courseId) {
+    if (!isAuthenticated) {
+        showNotification('Veuillez vous connecter pour générer un résumé', 'warning');
+        setTimeout(() => {
+            window.location.href = '{{ path("app_login") }}';
+        }, 2000);
+        return;
+    }
+    
+    // Afficher un loader
+    const btn = event?.target?.closest('button');
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Génération...';
+    }
+    
+    const url = '{{ path("summary_generate", {"id": 0}) }}'.replace('0', courseId);
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sync-alt me-2"></i>Générer un résumé';
+        }
+        
+        if (data.success) {
+            showNotification(data.message, 'success');
+            
+            // Rediriger vers la page de résumé
+            setTimeout(() => {
+                window.location.href = '{{ path("summary_view", {"id": 0}) }}'.replace('0', courseId);
+            }, 1500);
+        } else {
+            showNotification(data.error || 'Erreur lors de la génération', 'danger');
+        }
+    })
+    .catch(error => {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sync-alt me-2"></i>Générer un résumé';
+        }
+        
+        console.error('Error:', error);
+        showNotification('Erreur de connexion', 'danger');
+    });
+}
+</script>
+
+
+{% endblock %}

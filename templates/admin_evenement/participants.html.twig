@@ -1,0 +1,39 @@
+{% extends 'layout/admin_base.html.twig' %}
+
+{% block title %}Participants - {{ evenement.titre }}{% endblock %}
+
+{% block content %}
+    <h1>Participants : {{ evenement.titre }}</h1>
+    <p><strong>Total inscrits :</strong> {{ participations|length }} / {{ evenement.capaciteMax }}</p>
+    
+    <a href="{{ path('admin_evenement_list') }}" class="btn btn-secondary mb-3">Retour aux événements</a>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Date inscription</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for participation in participations %}
+            <tr>
+                <td>{{ participation.dateInscription|date('d/m/Y H:i') }}</td>
+                <td>{{ participation.nomParticipant }}</td>
+                <td>{{ participation.prenomParticipant }}</td>
+                <td>{{ participation.emailParticipant }}</td>
+                <td>{{ participation.telephoneParticipant }}</td>
+                <td>{{ participation.statut }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6" class="text-center">Aucun participant inscrit.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

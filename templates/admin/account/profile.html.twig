@@ -1,0 +1,51 @@
+{% extends 'layout/admin_base.html.twig' %}
+
+{% block title %}Mon Profil{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-header bg-primary bg-gradient p-5 text-center">
+                    <div class="avatar avatar-xxl mb-3">
+                        <img class="avatar-img rounded-circle border border-4 border-white shadow-lg" 
+                             src="{{ asset('assets/images/avatar/02.jpg') }}" 
+                             alt="avatar"
+                             style="width: 120px; height: 120px;">
+                    </div>
+                    <h3 class="text-white mb-0">Admin</h3>
+                    <p class="text-white text-opacity-75">Administrateur du Système</p>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <form>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Nom</label>
+                                        <input type="text" class="form-control bg-light border-0 p-3" value="Nasrawy" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Prénom</label>
+                                        <input type="text" class="form-control bg-light border-0 p-3" value="Mohamed Amine" readonly>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold">Email</label>
+                                        <input type="email" class="form-control bg-light border-0 p-3" value="Mohamedamine.Nasraoui@esprit.tn" readonly>
+                                    </div>
+                                    <div class="col-12 text-center mt-4">
+                                        <button type="button" class="btn btn-primary px-5 rounded-pill shadow-sm" disabled>
+                                            <i class="bi bi-pencil-square me-2"></i>Modifier mes infos (Bientôt)
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

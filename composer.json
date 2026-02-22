@@ -10,8 +10,13 @@
         "doctrine/doctrine-bundle": "^2.18",
         "doctrine/doctrine-migrations-bundle": "^3.7",
         "doctrine/orm": "^3.6",
+        "dompdf/dompdf": "^3.1",
+        "endroid/qrcode": "^6.0",
+        "knplabs/knp-paginator-bundle": "^6.10",
+        "knplabs/knp-snappy-bundle": "*",
         "phpdocumentor/reflection-docblock": "^5.6",
         "phpstan/phpdoc-parser": "^2.3",
+        "smalot/pdfparser": "^2.12",
         "symfony/asset": "7.4.*",
         "symfony/asset-mapper": "7.4.*",
         "symfony/console": "7.4.*",
@@ -21,6 +26,7 @@
         "symfony/flex": "^2",
         "symfony/form": "7.4.*",
         "symfony/framework-bundle": "7.4.*",
+        "symfony/google-mailer": "7.4.*",
         "symfony/http-client": "7.4.*",
         "symfony/intl": "7.4.*",
         "symfony/mailer": "7.4.*",
@@ -41,9 +47,11 @@
         "symfony/validator": "7.4.*",
         "symfony/web-link": "7.4.*",
         "symfony/yaml": "7.4.*",
-        "symfonycasts/reset-password-bundle": "^1.24",
+        "symfonycasts/reset-password-bundle": "*",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0"
+        "twig/string-extra": "^3.23",
+        "twig/twig": "^2.12|^3.0",
+        "vich/uploader-bundle": "^2.9"
     },
     "config": {
         "allow-plugins": {

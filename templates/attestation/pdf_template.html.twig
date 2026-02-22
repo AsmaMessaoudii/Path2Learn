@@ -1,0 +1,294 @@
+{# templates/attestation/pdf_template.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Attestation de réussite</title>
+    <style>
+        /* RESET TOTAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', serif;
+            background: white;
+            color: #2c3e50;
+        }
+
+        /* CONTAINER PRINCIPAL - UNE PAGE EXACTEMENT */
+        .certificate {
+            width: 100%;
+            height: 100vh;
+            padding: 40px;
+            position: relative;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* FILIGRANE DISCRET */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 100px;
+            color: rgba(13, 110, 253, 0.03);
+            z-index: 0;
+        }
+
+        /* EN-TÊTE SIMPLE */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #d4af37;
+            z-index: 1;
+            position: relative;
+        }
+
+        .logo {
+            height: 70px;
+            width: auto;
+        }
+
+        .certificate-number {
+            font-size: 12px;
+            color: #d4af37;
+            font-family: monospace;
+        }
+
+        /* TITRE CENTRÉ */
+        .title-section {
+            text-align: center;
+            margin: 10px 0;
+            z-index: 1;
+            position: relative;
+        }
+
+        .main-title {
+            font-size: 40px;
+            font-weight: bold;
+            color: #0d6efd;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 5px;
+        }
+
+        .sub-title {
+            font-size: 16px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        /* NOM ÉTUDIANT - TRÈS SIMPLE */
+        .student-name {
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: #0d6efd;
+            margin: 15px 0;
+            z-index: 1;
+            position: relative;
+        }
+
+        /* STATUT */
+        .status {
+            text-align: center;
+            margin: 10px 0;
+            z-index: 1;
+            position: relative;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 30px;
+            border-radius: 40px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .status-certified {
+            background: #28a745;
+        }
+
+        .status-not-certified {
+            background: #dc3545;
+        }
+
+        /* SCORE - TRÈS GROS */
+        .score-container {
+            text-align: center;
+            margin: 20px 0;
+            z-index: 1;
+            position: relative;
+        }
+
+        .score-number {
+            font-size: 100px;
+            font-weight: 900;
+            color: #0d6efd;
+            line-height: 1;
+        }
+
+        .score-label {
+            font-size: 18px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .percentage {
+            font-size: 24px;
+            color: #28a745;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .mention {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
+        /* TABLEAU DES STATS - SIMPLE */
+        .stats-simple {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 25px 0;
+            z-index: 1;
+            position: relative;
+        }
+
+        .stat-block {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
+        .stat-text {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+        }
+
+        /* FOOTER SIMPLE */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-top: 15px;
+            border-top: 2px solid #d4af37;
+            z-index: 1;
+            position: relative;
+        }
+
+        .signature-line {
+            width: 150px;
+            height: 2px;
+            background: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .signature-text {
+            font-size: 11px;
+            color: #6c757d;
+        }
+
+        .footer-date {
+            text-align: right;
+            font-size: 12px;
+            color: #0d6efd;
+        }
+
+        /* GARANTIE PAGE UNIQUE */
+        @page {
+            size: A4;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="certificate">
+    
+    <!-- FILIGRANE -->
+    <div class="watermark">PATH2LEARN</div>
+
+    <!-- EN-TÊTE -->
+    <div class="header">
+        <img src="{{ absolute_url(asset('images/logo.png')) }}" class="logo" alt="Path2Learn">
+        <div class="certificate-number">{{ certificateNumber }}</div>
+    </div>
+
+    <!-- TITRE -->
+    <div class="title-section">
+        <div class="main-title">ATTESTATION DE RÉUSSITE</div>
+        <div class="sub-title">Programme d'évaluation</div>
+    </div>
+
+    <!-- NOM ÉTUDIANT -->
+    <div class="student-name">{{ user.prenom }} {{ user.nom }}</div>
+
+    <!-- STATUT -->
+    <div class="status">
+        {% if isCertified %}
+            <div class="status-badge status-certified">★ CERTIFIÉ ★</div>
+        {% else %}
+            <div class="status-badge status-not-certified">⚠ NON CERTIFIÉ ⚠</div>
+        {% endif %}
+    </div>
+
+    <!-- SCORE -->
+    <div class="score-container">
+        <div class="score-number">{{ totalScore }}</div>
+        <div class="score-label">sur {{ maxPossibleScore }} points</div>
+        <div class="percentage">{{ percentage }}% de réussite</div>
+        <div class="mention">{{ mention }}</div>
+    </div>
+
+    <!-- STATS SIMPLES -->
+    <div class="stats-simple">
+        <div class="stat-block">
+            <div class="stat-number">{{ totalQuestions }}</div>
+            <div class="stat-text">Questions</div>
+        </div>
+        <div class="stat-block">
+            <div class="stat-number">{{ answeredQuestions }}</div>
+            <div class="stat-text">Traitées</div>
+        </div>
+        <div class="stat-block">
+            <div class="stat-number">{{ correctAnswers }}</div>
+            <div class="stat-text">Correctes</div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <div>
+            <div class="signature-line"></div>
+            <div class="signature-text">Signature candidat</div>
+        </div>
+        <div>
+            <div class="signature-line"></div>
+            <div class="signature-text">Responsable</div>
+        </div>
+        <div class="footer-date">
+            {{ "now"|date('d/m/Y') }}
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

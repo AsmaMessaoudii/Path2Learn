@@ -1,0 +1,29 @@
+{# templates/admin/_choices_list.html.twig #}
+<ul class="list-group list-group-flush mb-3">
+    {% for choix in question.choix %}
+        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+            <div>
+                {{ choix.contenu }}
+                {% if choix.estCorrect %}
+                    <span class="badge bg-success ms-2">Correct</span>
+                {% else %}
+                    <span class="badge bg-light text-muted ms-2">Incorrect</span>
+                {% endif %}
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ path('edit_choix', {'id': choix.id}) }}" class="text-success" title="Modifier">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                <form method="post" action="{{ path('delete_choix', {'id': choix.id}) }}"
+                      onsubmit="return confirm('Supprimer ce choix ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete_choix_' ~ choix.id) }}">
+                    <button class="btn btn-link text-danger p-0" title="Supprimer">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </li>
+    {% else %}
+        <li class="list-group-item text-muted px-0">Aucun choix ajouté</li>
+    {% endfor %}
+</ul>

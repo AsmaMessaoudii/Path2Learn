@@ -1,0 +1,615 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}QUIZ{% endblock %}
+
+{% block body %}
+<header class="navbar-light navbar-sticky header-static">
+    <!-- Nav START -->
+    <nav class="navbar navbar-expand-xl">
+        <div class="container-fluid px-3 px-xl-5">
+            <!-- Logo START -->
+            <a class="navbar-brand" href="{{ path('home') }}">
+                <img class="light-mode-item navbar-brand-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 250px;">
+                <img class="dark-mode-item navbar-brand-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 250px;">
+            </a>
+            <!-- Logo END -->
+
+            <!-- Responsive navbar toggler -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-animation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+
+            <!-- Main navbar START -->
+            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+                <!-- Nav Main menu START -->
+                <ul class="navbar-nav navbar-nav-scroll me-auto">
+                    <!-- Nav item Demos -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Services</a>
+                        <ul class="dropdown-menu" aria-labelledby="demoMenu">
+                            <li> <a class="dropdown-item active" href="{{ path('home_portfolio') }}">Portfolio</a></li>
+                            <li> <a class="dropdown-item" href="#">Événements</a></li>
+                            <li> <a class="dropdown-item" href="#">Certification</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Pages -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
+                        <ul class="dropdown-menu" aria-labelledby="pagesMenu">
+                            <li><a class="dropdown-item" href="{{ path('quiz') }}">QUIZ</a></li>
+                            <li><a class="dropdown-item" href="#">Ressources</a></li>
+                            <li><a class="dropdown-item" href="#">Projets</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Account -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
+                        <ul class="dropdown-menu" aria-labelledby="accounntMenu">
+                            <li><a class="dropdown-item" href="{{ path('instructor') }}"><i class="fas fa-user-tie fa-fw me-1"></i>Enseignants</a></li>
+                            <li><a class="dropdown-item" href="{{ path('student_dashboard') }}"><i class="fas fa-user-graduate fa-fw me-1"></i>Étudiants</a></li>
+                            <li><a class="dropdown-item" href="{{ path('admin_dashboard') }}"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Nav Main menu END -->
+
+                <!-- Nav Search START -->
+                <div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+                    <div class="nav-item w-100">
+                        <form class="position-relative">
+                            <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
+                            <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+                                <i class="fas fa-search fs-6 "></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Nav Search END -->
+            </div>
+            <!-- Main navbar END -->
+
+            <!-- Profile START -->
+            <div class="dropdown ms-1 ms-lg-0">
+                <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                </a>
+                <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+                    <!-- Links -->
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+                    <li><a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+                </ul>
+            </div>
+            <!-- Profile START -->
+        </div>
+    </nav>
+    <!-- Nav END -->
+</header>
+<!-- Header END -->
+
+<main class="pt-5 pb-5" style="min-height: calc(100vh - 200px); background: url('{{ asset('assets/images/pattern/04.png') }}') no-repeat center center; background-size: cover;">
+    <div class="container">
+        <!-- Information de l'utilisateur connecté -->
+        <div class="card border-0 shadow mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <div class="avatar avatar-lg rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">
+                            {{ currentUser.prenom|first|upper }}{{ currentUser.nom|first|upper }}
+                        </div>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h4 class="mb-1">Bienvenue, {{ currentUser.prenom }} {{ currentUser.nom }} !</h4>
+                        <p class="text-muted mb-0">
+                            {{ currentUser.email }} • 
+                            {% if 'ROLE_ADMIN' in currentUser.roles %}
+                                Administrateur
+                            {% elseif 'ROLE_TEACHER' in currentUser.roles %}
+                                Enseignant
+                            {% elseif 'ROLE_STUDENT' in currentUser.roles %}
+                                Étudiant
+                            {% endif %}
+                            {% if not canAnswer %}
+                                • <span class="text-warning"><i class="bi bi-eye me-1"></i>Mode lecture seule</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div>
+                        <span class="badge bg-primary p-2">
+                            <i class="bi bi-check-circle me-1"></i>
+                            {{ userResponses|length }} / {{ questions|length }} questions complétées
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Après la carte d'information utilisateur (ligne ~70) -->
+<!-- Bouton d'attestation - Visible uniquement pour les étudiants -->
+{% if 'ROLE_STUDENT' in currentUser.roles %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-end">
+                <a href="{{ path('attestation_view') }}" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-award-fill me-2"></i>Voir mon attestation
+                </a>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+        <!-- Section de recommandation et filtres -->
+        <div class="card border-0 shadow mb-4" id="recommendation-section">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0"><i class="bi bi-lightbulb me-2"></i>Recommandations et filtres</h5>
+                    <div id="progress-info">
+                        <span id="unworked-count" class="badge bg-danger me-2">0 non travaillées</span>
+                        <span id="worked-count" class="badge bg-success">0 travaillées</span>
+                    </div>
+                </div>
+                
+                <!-- Barre de progression -->
+                <div class="mb-3">
+                    <div class="d-flex align-items-center">
+                        <div class="progress flex-grow-1" style="height: 10px;">
+                            <div id="progress-bar" class="progress-bar bg-success" 
+                                 role="progressbar" style="width: 0%" 
+                                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <span class="ms-3 fw-bold" id="progress-percentage">0%</span>
+                    </div>
+                </div>
+                
+                <!-- Filtres -->
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-sm btn-outline-primary active filter-btn" data-filter="all">
+                        <i class="bi bi-grid-3x3-gap me-1"></i>Toutes
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger filter-btn" data-filter="unworked">
+                        <i class="bi bi-exclamation-circle me-1"></i>Non travaillées
+                    </button>
+                    <button class="btn btn-sm btn-outline-success filter-btn" data-filter="worked">
+                        <i class="bi bi-check-circle me-1"></i>Travaillées
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Liste des questions -->
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="display-5 mb-0">Liste des Questions</h1>
+                </div>
+                
+                <div id="quiz-list">
+                    {% for question in questions %}
+                        {% set response = userResponses['question_' ~ question.id] ?? null %}
+                        <div class="card border-0 shadow mb-4 question-card" 
+                             data-question-id="{{ question.id }}"
+                             data-has-response="{{ response ? 'true' : 'false' }}">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div class="flex-grow-1">
+                                        <!-- En-tête avec indicateur -->
+                                        <div class="d-flex align-items-center mb-2">
+                                            <div class="question-indicator me-3">
+                                                {% if response %}
+                                                    <i class="bi bi-check-circle-fill fs-4 text-success"></i>
+                                                {% else %}
+                                                    <i class="bi bi-question-circle fs-4 text-danger"></i>
+                                                {% endif %}
+                                            </div>
+                                            <div>
+                                                <h5 class="card-title mb-1">{{ question.titre }}</h5>
+                                                <div class="d-flex flex-wrap gap-2">
+                                                    <span class="badge bg-primary">
+                                                        <i class="bi bi-star me-1"></i>{{ question.noteMax }} pts
+                                                    </span>
+                                                    {% if question.duree %}
+                                                    <span class="badge bg-secondary">
+                                                        <i class="bi bi-clock me-1"></i>{{ question.duree }} min
+                                                    </span>
+                                                    {% endif %}
+                                                    <span class="badge bg-info">
+                                                        <i class="bi bi-list-check me-1"></i>{{ question.choix|length }} choix
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <p class="text-muted mb-0">{{ question.description|length > 150 ? question.description|slice(0, 150) ~ '...' : question.description }}</p>
+                                    </div>
+                                    
+                                    <!-- Badge de recommandation -->
+                                    <div class="recommendation-badge">
+                                        {% if not response %}
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-exclamation-triangle me-1"></i>À faire
+                                            </span>
+                                        {% elseif response.isCorrect %}
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-trophy me-1"></i>Réussi
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-warning">
+                                                <i class="bi bi-clock-history me-1"></i>À revoir
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-3">
+                                    <div class="col-md-8">
+                                        <!-- Métadonnées -->
+                                        <div class="mb-3">
+                                            <span class="badge bg-dark me-2">
+                                                <i class="bi bi-question-diamond me-1"></i>Q{{ loop.index }}
+                                            </span>
+                                            
+                                            {% if question.duree and question.duree <= 5 %}
+                                            <span class="badge bg-success me-2">
+                                                <i class="bi bi-lightning me-1"></i>Rapide
+                                            </span>
+                                            {% elseif question.duree and question.duree > 10 %}
+                                            <span class="badge bg-warning me-2">
+                                                <i class="bi bi-hourglass-split me-1"></i>Longue
+                                            </span>
+                                            {% endif %}
+                                            
+                                            {% if question.noteMax >= 10 %}
+                                            <span class="badge bg-danger me-2">
+                                                <i class="bi bi-trophy me-1"></i>Importante
+                                            </span>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <!-- Statut -->
+                                        <div id="question-status-{{ question.id }}">
+                                            {% if response %}
+                                                <div class="alert alert-{{ response.isCorrect ? 'success' : 'danger' }} py-2 mb-0">
+                                                    <i class="bi bi-{{ response.isCorrect ? 'check-circle' : 'x-circle' }} me-2"></i>
+                                                    <strong>{{ response.isCorrect ? 'Correct' : 'À revoir' }}</strong> - 
+                                                    Score: {{ response.score }}/{{ question.noteMax }} pts
+                                                </div>
+                                            {% else %}
+                                                <div class="alert alert-light py-2 mb-0 border">
+                                                    <i class="bi bi-clock me-2"></i>
+                                                    <strong>Non travaillée</strong>
+                                                    <small class="text-muted ms-2">À découvrir</small>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4 text-end">
+    <div class="d-flex align-items-center justify-content-end gap-2">
+        <!-- SEULEMENT QR Code Texte -->
+        <a href="{{ path('quiz_qr_view_text', {'id': question.id}) }}" 
+           class="btn btn-sm btn-outline-success"
+           title="QR code - Voir la question sans internet"
+           data-bs-toggle="tooltip">
+            <i class="bi bi-qr-code fs-5"></i>
+            <span class="d-none d-md-inline ms-1">QR</span>
+        </a>
+        
+        <!-- Bouton d'action principal -->
+        <a href="{{ path('quiz_play', {'id': question.id}) }}" 
+           class="btn {% if response %}btn-outline-secondary{% else %}btn-primary{% endif %}">
+            {% if response %}
+                <i class="bi bi-eye me-2"></i>Voir
+            {% else %}
+                <i class="bi bi-play-circle me-2"></i>
+                {% if canAnswer %}Commencer{% else %}Voir{% endif %}
+            {% endif %}
+        </a>
+    </div>
+</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                {% if questions|length == 0 %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Aucune question disponible pour le moment.
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="pt-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-3">
+                <a class="me-0 d-flex align-items-center" href="{{ path('home') }}">
+                    <img class="light-mode-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 200px;">
+                    <img class="dark-mode-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 200px;">
+                </a>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="row g-4">
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Entreprise</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">À propos de nous</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Nous contacter</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Actualités et blogs</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Bibliothèque</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Carrière</a></li>
+                        </ul>
+                    </div>
+                                    
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Communauté</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">Documentation</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Forum</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Plan du site</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Enseignement</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">Devenir formateur</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Guide pratique</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Termes et conditions</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <h5 class="mb-2 mb-md-4">Contact</h5>
+                <p class="mb-2">
+                    Numéro gratuit : <span class="h6 fw-light ms-2">+216 20629612</span>
+                    <span class="d-block small">(9:AM to 8:PM IST)</span>
+                </p>
+                <p class="mb-0">Email: <span class="h6 fw-light ms-2">example@gmail.com</span></p>
+            </div>
+        </div>
+
+        <hr class="mt-4 mb-0">
+
+        <div class="py-3">
+            <div class="container px-0">
+                <div class="d-lg-flex justify-content-between align-items-center py-3 text-center text-md-left">
+                    <div class="text-body text-primary-hover"> © 2026 Développé par <a href="https://www.webestica.com/" target="_blank" class="text-body">Path2learn</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Back to top -->
+<div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const userId = {{ currentUser.id }};
+    const canAnswer = {{ canAnswer ? 'true' : 'false' }};
+    const userResponses = {{ userResponses|json_encode|raw }};
+    
+    // Initialiser l'affichage
+    updateQuestionsAppearance();
+    updateProgressStats();
+    setupQuestionFilters();
+    
+    // Fonction pour mettre à jour l'apparence des questions
+    function updateQuestionsAppearance() {
+        const totalQuestions = document.querySelectorAll('.question-card').length;
+        let unworkedCount = 0;
+        let workedCount = 0;
+        
+        document.querySelectorAll('.question-card').forEach((card, index) => {
+            const hasResponse = card.dataset.hasResponse === 'true';
+            const questionIndicator = card.querySelector('.question-indicator i');
+            
+            // Reset classes
+            card.classList.remove('unworked', 'worked');
+            
+            if (hasResponse) {
+                workedCount++;
+                card.classList.add('worked');
+                
+                if (questionIndicator) {
+                    questionIndicator.className = 'bi bi-check-circle-fill fs-4 text-success';
+                }
+            } else {
+                unworkedCount++;
+                card.classList.add('unworked');
+                
+                if (questionIndicator) {
+                    questionIndicator.className = 'bi bi-question-circle fs-4 text-danger';
+                }
+            }
+        });
+        
+        // Mettre à jour les compteurs
+        document.getElementById('unworked-count').textContent = `${unworkedCount} non travaillées`;
+        document.getElementById('worked-count').textContent = `${workedCount} travaillées`;
+        
+        // Mettre à jour la barre de progression
+        const percentage = totalQuestions > 0 ? Math.round((workedCount / totalQuestions) * 100) : 0;
+        const progressBar = document.getElementById('progress-bar');
+        const progressPercentage = document.getElementById('progress-percentage');
+        
+        if (progressBar) {
+            progressBar.style.width = `${percentage}%`;
+            progressBar.className = `progress-bar ${
+                percentage < 30 ? 'bg-danger' : 
+                percentage < 70 ? 'bg-warning' : 'bg-success'
+            }`;
+        }
+        
+        if (progressPercentage) {
+            progressPercentage.textContent = `${percentage}%`;
+            progressPercentage.className = `ms-3 fw-bold ${
+                percentage < 30 ? 'text-danger' : 
+                percentage < 70 ? 'text-warning' : 'text-success'
+            }`;
+        }
+    }
+    
+    // Fonction pour mettre à jour les statistiques
+    function updateProgressStats() {
+        const totalQuestions = document.querySelectorAll('.question-card').length;
+        const workedCount = document.querySelectorAll('.question-card[data-has-response="true"]').length;
+        
+        document.getElementById('unworked-count').textContent = `${totalQuestions - workedCount} non travaillées`;
+        document.getElementById('worked-count').textContent = `${workedCount} travaillées`;
+    }
+    
+    // Fonction pour configurer les filtres
+    function setupQuestionFilters() {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Retirer la classe active de tous les boutons
+                filterButtons.forEach(b => b.classList.remove('active'));
+                // Ajouter la classe active au bouton cliqué
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                filterQuestions(filter);
+            });
+        });
+    }
+    
+    // Fonction pour filtrer les questions
+    function filterQuestions(filter) {
+        const cards = document.querySelectorAll('.question-card');
+        
+        cards.forEach(card => {
+            const hasResponse = card.dataset.hasResponse === 'true';
+            
+            switch(filter) {
+                case 'all':
+                    card.style.display = 'block';
+                    break;
+                case 'unworked':
+                    card.style.display = !hasResponse ? 'block' : 'none';
+                    break;
+                case 'worked':
+                    card.style.display = hasResponse ? 'block' : 'none';
+                    break;
+            }
+        });
+    }
+});
+</script>
+<style>
+html, body {
+    background-color: #ffffff !important;
+    height: 100%;
+    margin: 0;
+}
+
+.layout-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.page-content {
+    flex: 1;
+    background-color: #ffffff;
+}
+
+.site-footer {
+    background-color: #0d6efd;
+    color: white;
+}
+
+/* Styles pour les questions */
+.question-card {
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.question-card.unworked {
+    border-left-color: #ff6b6b;
+    background: linear-gradient(135deg, #fff8f8 0%, #ffffff 100%);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.1);
+}
+
+.question-card.unworked:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.2);
+}
+
+.question-card.worked {
+    border-left-color: #51cf66;
+    background: linear-gradient(135deg, #f8fff9 0%, #ffffff 100%);
+}
+
+/* Filtres */
+.filter-btn {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.filter-btn.active {
+    transform: scale(1.05);
+    border-color: currentColor;
+}
+
+/* Animations */
+.start-question-btn {
+    transition: all 0.3s ease;
+    padding: 0.5rem 1.5rem;
+}
+
+.start-question-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Indicateur de question */
+.question-indicator i {
+    transition: all 0.3s ease;
+}
+
+/* Badge de recommandation */
+.recommendation-badge {
+    opacity: 0;
+    transform: translateX(10px);
+    transition: all 0.3s ease;
+}
+
+.question-card:hover .recommendation-badge {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Animation pour les badges */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.badge.bg-danger {
+    animation: pulse 2s infinite;
+}
+</style>
+{% endblock %}

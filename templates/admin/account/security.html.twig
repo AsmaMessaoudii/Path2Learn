@@ -1,0 +1,46 @@
+{% extends 'layout/admin_base.html.twig' %}
+
+{% block title %}Sécurité{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row g-4 justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                <div class="card-header bg-warning bg-gradient p-4">
+                    <h4 class="text-white mb-0"><i class="bi bi-shield-lock me-2"></i>Changement de mot de passe</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Mot de passe actuel</label>
+                            <input type="password" class="form-control bg-light border-0 p-3" placeholder="••••••••">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nouveau mot de passe</label>
+                            <input type="password" class="form-control bg-light border-0 p-3" placeholder="Min. 8 caractères">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Confirmer le mot de passe</label>
+                            <input type="password" class="form-control bg-light border-0 p-3" placeholder="••••••••">
+                        </div>
+                        <button type="button" class="btn btn-warning text-white px-5 rounded-pill shadow-sm w-100 py-3 fw-bold" disabled>
+                            Mettre à jour le mot de passe
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4 border-start border-4 border-danger">
+                <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="text-danger mb-1 fw-bold">Désactiver le compte</h5>
+                        <p class="text-muted mb-0 small">Cette action est irréversible.</p>
+                    </div>
+                    <button class="btn btn-outline-danger rounded-pill px-4" disabled>Désactiver</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

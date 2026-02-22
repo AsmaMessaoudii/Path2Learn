@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ course.titre }} - Path2Learn</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .course-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-width: 500px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        .course-header {
+            background: linear-gradient(135deg, #4361ee, #6c5ce7);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        .course-header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            word-break: break-word;
+        }
+        .course-body {
+            padding: 25px;
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        .info-item i {
+            width: 30px;
+            font-size: 18px;
+            color: #4361ee;
+        }
+        .description {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .resource-type {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 2px;
+        }
+        .resource-pdf { background: #ffebee; color: #c62828; }
+        .resource-video { background: #e3f2fd; color: #1565c0; }
+        .resource-image { background: #e8f5e9; color: #2e7d32; }
+        .resource-audio { background: #fff3e0; color: #ef6c00; }
+        .resource-link { background: #e0f2f1; color: #00695c; }
+        .resource-other { background: #eeeeee; color: #616161; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .stat-box {
+            background: linear-gradient(135deg, #4361ee, #6c5ce7);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .stat-box .number {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .stat-box .label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        .btn-view {
+            background: linear-gradient(135deg, #4361ee, #6c5ce7);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            width: 100%;
+            font-weight: 600;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .btn-view:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+            color: white;
+        }
+        .badge {
+            font-size: 12px;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="course-card">
+        <div class="course-header">
+            <i class="fas fa-graduation-cap fa-3x mb-3"></i>
+            <h1>{{ course.titre }}</h1>
+            <div class="mt-2">
+                <span class="badge bg-light text-dark me-1">
+                    <i class="fas fa-tag me-1"></i>{{ course.matiere|default('Général') }}
+                </span>
+                <span class="badge bg-light text-dark">
+                    <i class="fas fa-signal me-1"></i>{{ course.niveau|default('Tous niveaux') }}
+                </span>
+            </div>
+        </div>
+        
+        <div class="course-body">
+            <!-- Description -->
+            <div class="info-item">
+                <i class="fas fa-align-left"></i>
+                <span><strong>Description :</strong></span>
+            </div>
+            <div class="description">
+                {{ course.description|default('Aucune description disponible.')|nl2br }}
+            </div>
+            
+            <!-- Informations générales -->
+            <div class="info-item">
+                <i class="fas fa-clock"></i>
+                <span><strong>Durée :</strong> {{ course.duree|default(0) }} minutes</span>
+            </div>
+            
+            <div class="info-item">
+                <i class="fas fa-calendar"></i>
+                <span><strong>Créé le :</strong> {{ course.dateCreation|date('d/m/Y') }}</span>
+            </div>
+            
+            <div class="info-item">
+                <i class="fas fa-user"></i>
+                <span><strong>Formateur :</strong> {{ course.emailProf|default('Path2Learn') }}</span>
+            </div>
+            
+            <!-- Statistiques des ressources -->
+            {% set images = resources|filter(r => r.fileName and r.fileName|lower|split('.')|last in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff']) %}
+            {% set videos = resources|filter(r => r.fileName and r.fileName|lower|split('.')|last in ['mp4', 'mov', 'avi', 'mkv', 'webm', 'wmv', 'flv', 'm4v']) %}
+            {% set audios = resources|filter(r => r.fileName and r.fileName|lower|split('.')|last in ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'aac']) %}
+            {% set pdfs = resources|filter(r => r.fileName and r.fileName|lower|split('.')|last == 'pdf') %}
+            {% set documents = resources|filter(r => r.fileName and r.fileName|lower|split('.')|last in ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx']) %}
+            {% set links = resources|filter(r => r.url) %}
+            
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="number">{{ resources|length }}</div>
+                    <div class="label">Total ressources</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">{{ images|length + videos|length + audios|length }}</div>
+                    <div class="label">Médias</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">{{ pdfs|length + documents|length }}</div>
+                    <div class="label">Documents</div>
+                </div>
+            </div>
+            
+            <!-- Types de ressources disponibles -->
+            {% if resources|length > 0 %}
+            <div class="info-item">
+                <i class="fas fa-folder-open"></i>
+                <span><strong>Ressources disponibles :</strong></span>
+            </div>
+            <div class="mb-3">
+                {% if pdfs|length > 0 %}
+                    <span class="resource-type resource-pdf">
+                        <i class="fas fa-file-pdf me-1"></i>{{ pdfs|length }} PDF
+                    </span>
+                {% endif %}
+                
+                {% if videos|length > 0 %}
+                    <span class="resource-type resource-video">
+                        <i class="fas fa-video me-1"></i>{{ videos|length }} Vidéos
+                    </span>
+                {% endif %}
+                
+                {% if images|length > 0 %}
+                    <span class="resource-type resource-image">
+                        <i class="fas fa-image me-1"></i>{{ images|length }} Images
+                    </span>
+                {% endif %}
+                
+                {% if audios|length > 0 %}
+                    <span class="resource-type resource-audio">
+                        <i class="fas fa-music me-1"></i>{{ audios|length }} Audios
+                    </span>
+                {% endif %}
+                
+                {% if documents|length > 0 %}
+                    <span class="resource-type resource-other">
+                        <i class="fas fa-file-word me-1"></i>{{ documents|length }} Documents
+                    </span>
+                {% endif %}
+                
+                {% if links|length > 0 %}
+                    <span class="resource-type resource-link">
+                        <i class="fas fa-link me-1"></i>{{ links|length }} Liens
+                    </span>
+                {% endif %}
+            </div>
+            
+            <!-- Liste des premières ressources -->
+            {% if resources|length > 0 %}
+                <div class="mt-3">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Scannez pour accéder à toutes les ressources
+                    </small>
+                </div>
+            {% endif %}
+            {% endif %}
+            
+            <!-- Bouton pour voir le cours complet -->
+            <a href="{{ absolute_url(path('course_show', {'id': course.id})) }}" class="btn-view" target="_blank">
+                <i class="fas fa-external-link-alt me-2"></i>Voir le cours complet
+            </a>
+            
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    <i class="fas fa-qrcode me-1"></i>
+                    Scanné depuis Path2Learn
+                </small>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Portfolio{% endblock %}
+
+{% block body %}
+<div class="d-flex">
+
+    {% include 'layout/sidebar.html.twig' %}
+
+    <div class="flex-grow-1 min-vh-100 d-flex flex-column">
+
+        {% include 'layout/navbar.html.twig' %}
+
+        <main class="p-4 flex-grow-1 d-flex justify-content-center align-items-center"
+              style="background-color: #f0f2f5;">
+
+            <div class="container">
+                <div class="row justify-content-center">
+
+                    <div class="col-md-8 col-lg-6">
+
+                        <div class="card shadow border-0 p-5">
+
+                            <h4 class="fw-bold text-center mb-4">
+                                Modifier le Portfolio
+                            </h4>
+
+                            {{ form_start(form) }}
+
+                                <div class="mb-4">
+                                    {{ form_label(form.titre, null, {
+                                        label_attr: { class: 'fw-semibold' }
+                                    }) }}
+                                    {{ form_widget(form.titre, {
+                                        attr: { class: 'form-control form-control-lg' }
+                                    }) }}
+                                </div>
+
+                                <div class="mb-4">
+                                    {{ form_label(form.description, null, {
+                                        label_attr: { class: 'fw-semibold' }
+                                    }) }}
+                                    {{ form_widget(form.description, {
+                                        attr: { class: 'form-control form-control-lg', rows: 4 }
+                                    }) }}
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{{ path('app_portfolio') }}"
+                                       class="btn btn-outline-secondary rounded-pill">
+                                        Annuler
+                                    </a>
+
+                                    <button class="btn btn-primary btn-lg rounded-pill">
+                                        Enregistrer les modifications
+                                    </button>
+                                </div>
+
+                            {{ form_end(form) }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,368 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résumé IA - {{ course.titre }}{% endblock %}
+
+{% block body %}
+<script>
+    var isAuthenticated = {% if app.user %}true{% else %}false{% endif %};
+</script>
+
+<header class="navbar-light navbar-sticky header-static">
+    <!-- Nav START -->
+    <nav class="navbar navbar-expand-xl">
+        <div class="container-fluid px-3 px-xl-5">
+            <!-- Logo START -->
+            <a class="navbar-brand" href="{{ path('home') }}">
+                <img class="light-mode-item navbar-brand-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 250px;">
+                <img class="dark-mode-item navbar-brand-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 250px;">
+            </a>
+            <!-- Logo END -->
+
+            <!-- Responsive navbar toggler -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-animation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+
+            <!-- Main navbar START -->
+            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+                <!-- Nav Main menu START -->
+                <ul class="navbar-nav navbar-nav-scroll me-auto">
+                    <!-- Nav item Demos -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Services</a>
+                        <ul class="dropdown-menu" aria-labelledby="demoMenu">
+                            <li> <a class="dropdown-item active" href="{{ path('home') }}">Portfolio</a></li>
+                            <li> <a class="dropdown-item" href="#">Événements</a></li>
+                            <li> <a class="dropdown-item" href="#">Certification</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Pages -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
+                        <ul class="dropdown-menu" aria-labelledby="pagesMenu">
+                            <li><a class="dropdown-item" href="{{ path('app_courses') }}">Cours</a></li>
+                            <li><a class="dropdown-item" href="#">Ressources</a></li>
+                            <li><a class="dropdown-item" href="#">Projets</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Account -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
+                        <ul class="dropdown-menu" aria-labelledby="accounntMenu">
+                            <li><a class="dropdown-item" href="{{ path('instructor') }}"><i class="fas fa-user-tie fa-fw me-1"></i>Enseignants</a></li>
+                            <li><a class="dropdown-item" href="{{ path('student_dashboard') }}"><i class="fas fa-user-graduate fa-fw me-1"></i>Étudiants</a></li>
+                            <li><a class="dropdown-item" href="{{ path('admin_dashboard') }}"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Nav Main menu END -->
+
+                <!-- Nav Search START -->
+                <div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+                    <div class="nav-item w-100">
+                        <form method="get" action="{{ path('app_courses') }}" class="position-relative">
+                            <input 
+                                class="form-control pe-5 bg-transparent" 
+                                type="search" 
+                                name="q"
+                                placeholder="Rechercher un cours, matière, formateur..." 
+                                aria-label="Search"
+                                value="{{ app.request.query.get('q', '') }}"
+                            >
+                            <button 
+                                class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" 
+                                type="submit"
+                            >
+                                <i class="fas fa-search fs-6"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Nav Search END -->
+            </div>
+            <!-- Main navbar END -->
+        </div>
+    </nav>
+    <!-- Nav END -->
+</header>
+
+<!-- Main content START -->
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-9 mx-auto">
+            <div class="card shadow border-0 rounded-4 overflow-hidden">
+
+                {# ── Header ── #}
+                <div class="card-header p-4" style="background: linear-gradient(135deg, #4361ee 0%, #6c5ce7 100%);">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                        <div class="d-flex align-items-center gap-3 text-white">
+                            <div class="ai-icon-wrap">
+                                <i class="fas fa-robot fa-2x"></i>
+                            </div>
+                            <div>
+                                <h2 class="h4 mb-1 fw-bold">{{ course.titre }}</h2>
+                                <p class="mb-0 opacity-75 small">
+                                    <i class="fas fa-wand-magic-sparkles me-1"></i>
+                                    Résumé généré par intelligence artificielle (Gemini)
+                                </p>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 flex-shrink-0">
+                            <a href="{{ path('summary_export_pdf', {'id': course.id}) }}"
+                               class="btn btn-sm btn-light rounded-pill px-3" target="_blank">
+                                <i class="fas fa-file-pdf me-1 text-danger"></i>PDF
+                            </a>
+                            <button class="btn btn-sm btn-light rounded-pill px-3" onclick="copySummary()">
+                                <i class="fas fa-copy me-1 text-primary"></i>Copier
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-0">
+                    {% if summary %}
+
+                        {# ── Meta bar ── #}
+                        <div class="px-4 py-2 bg-light border-bottom d-flex align-items-center gap-3 small text-muted">
+                            <span><i class="far fa-clock me-1"></i>Généré le {{ summary.generatedAt|date('d/m/Y à H:i') }}</span>
+                            <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">
+                                {{ summary.summaryType ?? 'standard' }}
+                            </span>
+                        </div>
+
+                        {# ── Raw summary (hidden, used by JS parser & copy) ── #}
+                        <div id="rawSummary" class="d-none">{{ summary.summaryText }}</div>
+
+                        {# ── Rendered summary (filled by JS) ── #}
+                        <div id="summaryRendered" class="p-4"></div>
+
+                        {# ── Keywords ── #}
+                        {% if summary.keywords %}
+                        <div class="px-4 pb-4">
+                            <div class="p-3 rounded-3 bg-light">
+                                <h6 class="fw-bold mb-2 text-muted small text-uppercase letter-spacing">
+                                    <i class="fas fa-tags me-1"></i>Mots-clés
+                                </h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    {% for kw in summary.keywords|split(', ') %}
+                                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-normal">
+                                            {{ kw }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    {% else %}
+                        {# ── Empty state ── #}
+                        <div class="text-center py-5 px-4">
+                            <i class="fas fa-robot display-1 mb-4" style="color:#d0d7ff;"></i>
+                            <h4 class="fw-bold mb-2">Aucun résumé disponible</h4>
+                            <p class="text-muted mb-4">Générez un résumé pédagogique structuré pour ce cours en un clic.</p>
+                            <a href="{{ path('summary_generate', {'id': course.id}) }}"
+                               class="btn btn-primary btn-lg rounded-pill px-5 py-3 fw-semibold"
+                               onclick="showLoading(this)">
+                                <i class="fas fa-magic me-2"></i>Générer le résumé IA
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="{{ path('course_show', {'id': course.id}) }}" class="btn btn-outline-secondary rounded-pill px-4">
+                    <i class="fas fa-arrow-left me-2"></i>Retour au cours
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Main content END -->
+
+<style>
+.ai-icon-wrap {
+    width: 52px; height: 52px;
+    background: rgba(255,255,255,.2);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Section cards */
+.ai-section {
+    border-radius: 12px;
+    padding: 1.1rem 1.4rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid #4361ee;
+    font-size: .97rem;
+    line-height: 1.8;
+    color: #2d3436;
+}
+.ai-section-title     { border-color: #4361ee; background: #f4f5ff; }
+.ai-section-objectif  { border-color: #00b4d8; background: #f0fbff; }
+.ai-section-resume    { border-color: #06d6a0; background: #f0fff8; }
+.ai-section-points    { border-color: #ffd166; background: #fffdf0; }
+.ai-section-concepts  { border-color: #ef476f; background: #fff0f4; }
+.ai-section-skills    { border-color: #6c5ce7; background: #f7f5ff; }
+.ai-section-other     { border-color: #b2bec3; background: #f8f9fa; }
+
+.ai-section-label {
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    opacity: .6;
+    margin-bottom: .5rem;
+}
+
+.ai-section ul, .ai-section ol { padding-left: 1.4rem; margin: .25rem 0 0; }
+.ai-section li { margin-bottom: .25rem; }
+
+.btn-loading { pointer-events: none; opacity: .75; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rawEl = document.getElementById('rawSummary');
+    const outEl = document.getElementById('summaryRendered');
+    if (!rawEl || !outEl) return;
+
+    const raw = rawEl.textContent;
+    outEl.innerHTML = parseSummary(raw);
+});
+
+/**
+ * Converts the structured AI summary text into styled HTML cards.
+ * Splits on the leading emoji of each section.
+ */
+function parseSummary(text) {
+    // Map of emoji → section config
+    const sections = [
+        { emoji: '📚', label: 'Titre du cours',    cls: 'ai-section-title'    },
+        { emoji: '🎯', label: 'Objectif général',  cls: 'ai-section-objectif' },
+        { emoji: '📝', label: 'Résumé global',     cls: 'ai-section-resume'   },
+        { emoji: '🗂️', label: 'Points clés',       cls: 'ai-section-points'   },
+        { emoji: '💡', label: 'Concepts importants', cls: 'ai-section-concepts'},
+        { emoji: '✅', label: 'Compétences acquises', cls: 'ai-section-skills' },
+    ];
+
+    // Collect block start positions
+    const blocks = [];
+    sections.forEach(s => {
+        let idx = text.indexOf(s.emoji);
+        if (idx !== -1) blocks.push({ idx, ...s });
+    });
+
+    if (blocks.length === 0) {
+        // No emoji markers found – just display plain text
+        return '<div class="ai-section ai-section-other"><pre style="white-space:pre-wrap;font-family:inherit">'
+             + escapeHtml(text) + '</pre></div>';
+    }
+
+    blocks.sort((a, b) => a.idx - b.idx);
+
+    let html = '';
+    blocks.forEach((block, i) => {
+        const start = block.idx;
+        const end   = (i + 1 < blocks.length) ? blocks[i + 1].idx : text.length;
+        let chunk = text.slice(start, end).trim();
+
+        // Remove leading decorators like "---" separators
+        chunk = chunk.replace(/^---+\s*/gm, '').replace(/\s*---+\s*$/, '').trim();
+
+        html += `<div class="ai-section ${block.cls}">`;
+        html += `<div class="ai-section-label">${escapeHtml(block.label)}</div>`;
+        html += `<div class="ai-section-body">${formatChunk(chunk)}</div>`;
+        html += `</div>`;
+    });
+
+    return html;
+}
+
+function formatChunk(chunk) {
+    const lines = chunk.split('\n');
+    let result = '';
+    let inList = false;
+    let listTag = '';
+
+    lines.forEach((line, idx) => {
+        if (idx === 0) return; // Skip the heading line (emoji + title)
+
+        const trimmed = line.trim();
+        if (!trimmed) {
+            if (inList) { result += `</${listTag}>`; inList = false; listTag = ''; }
+            return;
+        }
+
+        // Ordered list item: "1. blah"
+        if (/^\d+\.\s/.test(trimmed)) {
+            if (!inList || listTag !== 'ol') {
+                if (inList) result += `</${listTag}>`;
+                result += '<ol>'; inList = true; listTag = 'ol';
+            }
+            result += `<li>${escapeHtml(trimmed.replace(/^\d+\.\s/, '')).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</li>`;
+            return;
+        }
+
+        // Unordered list item: "- blah"
+        if (/^[-•]\s/.test(trimmed)) {
+            if (!inList || listTag !== 'ul') {
+                if (inList) result += `</${listTag}>`;
+                result += '<ul>'; inList = true; listTag = 'ul';
+            }
+            result += `<li>${escapeHtml(trimmed.replace(/^[-•]\s/, '')).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</li>`;
+            return;
+        }
+
+        // Regular line
+        if (inList) { result += `</${listTag}>`; inList = false; listTag = ''; }
+
+        // Bold **text** inside line
+        const formatted = escapeHtml(trimmed).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        result += `<p class="mb-1">${formatted}</p>`;
+    });
+
+    if (inList) result += `</${listTag}>`;
+    return result;
+}
+
+function escapeHtml(str) {
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+function copySummary() {
+    const raw = document.getElementById('rawSummary');
+    const text = raw ? raw.textContent : '';
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('Résumé copié dans le presse-papier ✔', 'success');
+    }).catch(() => {
+        showToast('Erreur lors de la copie', 'danger');
+    });
+}
+
+function showLoading(btn) {
+    btn.classList.add('btn-loading');
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Génération…';
+}
+
+function showToast(msg, type) {
+    const el = document.createElement('div');
+    el.className = `alert alert-${type} alert-dismissible fade show position-fixed bottom-0 end-0 m-3`;
+    el.style.zIndex = 9999;
+    el.innerHTML = `${msg}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+    document.body.appendChild(el);
+    setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3500);
+}
+</script>
+{% endblock %}

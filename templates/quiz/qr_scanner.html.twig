@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Scanner QR Code{% endblock %}
+
+{% block body %}
+<main class="pt-5 pb-5" style="min-height: calc(100vh - 200px); background: url('{{ asset('assets/images/pattern/04.png') }}') no-repeat center center; background-size: cover;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card border-0 shadow">
+                    <div class="card-header bg-white py-3">
+                        <h4 class="mb-0 text-center">
+                            <i class="bi bi-qr-code-scan me-2 text-success"></i>
+                            Scanner un QR Code
+                        </h4>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        <div id="qr-reader" style="width: 100%;"></div>
+                        
+                        <div id="scan-result" class="mt-4"></div>
+                        
+                        <div class="text-center mt-4">
+                            <a href="{{ path('quiz') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                Retour au quiz
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4 border-0 bg-light">
+                    <div class="card-body">
+                        <h6 class="fw-bold">
+                            <i class="bi bi-camera me-2 text-primary"></i>
+                            Instructions
+                        </h6>
+                        <ol class="small text-muted mb-0 mt-2">
+                            <li class="mb-2">Autorisez l'accès à la caméra</li>
+                            <li class="mb-2">Placez le QR code dans le cadre</li>
+                            <li>Vous serez automatiquement redirigé vers la question</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const html5QrCode = new Html5Qrcode("qr-reader");
+    
+    const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+        // Vérifier si l'URL est valide (contient /quiz/play/)
+        if (decodedText.includes('/quiz/play/')) {
+            html5QrCode.stop();
+            
+            document.getElementById('scan-result').innerHTML = `
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <strong>QR Code valide !</strong>
+                    <br>
+                    <small class="text-muted">Redirection en cours...</small>
+                </div>
+            `;
+            
+            // Rediriger vers l'URL
+            setTimeout(() => {
+                window.location.href = decodedText;
+            }, 1500);
+        } else {
+            // Afficher le texte directement
+            html5QrCode.stop();
+            
+            document.getElementById('scan-result').innerHTML = `
+                <div class="alert alert-info">
+                    <i class="bi bi-file-text-fill me-2"></i>
+                    <strong>Contenu du QR code :</strong>
+                    <pre class="mt-3 p-3 bg-light text-dark" style="white-space: pre-wrap; font-size: 14px;">${decodedText}</pre>
+                </div>
+            `;
+        }
+    };
+    
+    const config = {
+        fps: 10,
+        qrbox: { width: 250, height: 250 }
+    };
+    
+    // Démarrer le scanner
+    html5QrCode.start(
+        { facingMode: "environment" }, 
+        config, 
+        qrCodeSuccessCallback
+    ).catch(err => {
+        document.getElementById('scan-result').innerHTML = `
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Erreur d'accès à la caméra</strong>
+                <br>
+                <small class="text-muted">${err}</small>
+            </div>
+        `;
+    });
+});
+</script>
+{% endblock %}

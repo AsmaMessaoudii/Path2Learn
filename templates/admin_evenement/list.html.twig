@@ -1,0 +1,177 @@
+{% extends 'layout/admin_base.html.twig' %}
+
+{% block title %}Gestion des événements{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header START -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4 d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h3 mb-1 fw-bold text-dark">Gestion des événements</h1>
+                <p class="text-secondary mb-0">Recherchez, filtrez et gérez tous vos événements au même endroit.</p>
+            </div>
+            <a href="{{ path('admin_evenement_add') }}" class="btn btn-primary rounded-pill px-4 shadow">
+                <i class="bi bi-plus-circle me-1"></i>Créer un événement
+            </a>
+        </div>
+    </div>
+    <!-- Header END -->
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show mb-4 border-0 shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>{{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    <!-- Filters START -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+            <form method="get" class="row g-3">
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="q" class="form-control border-light bg-light" placeholder="Rechercher par titre ou lieu..." value="{{ filters.q }}">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select name="category" class="form-select border-light bg-light">
+                        <option value="">Toutes les catégories</option>
+                        {% for cat in ['Academique', 'Culturel', 'Sportif', 'Professionnel'] %}
+                            <option value="{{ cat }}" {% if filters.category == cat %}selected{% endif %}>{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="status" class="form-select border-light bg-light">
+                        <option value="">Tous les statuts</option>
+                        {% for stat in ['ouvert', 'complet', 'annulé', 'terminé'] %}
+                            <option value="{{ stat }}" {% if filters.status == stat %}selected{% endif %}>{{ stat|capitalize }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="d-grid gap-2 d-md-flex">
+                        <button type="submit" class="btn btn-dark rounded-3 px-4 flex-grow-1">Filtrer</button>
+                        {% if filters.q or filters.category or filters.status %}
+                            <a href="{{ path('admin_evenement_list') }}" class="btn btn-outline-secondary rounded-3 px-3"><i class="bi bi-x-lg"></i></a>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Filters END -->
+
+    <!-- Table START -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4 py-3">Id</th>
+                            <th class="py-3">Affiche</th>
+                            <th class="py-3">Titre</th>
+                            <th class="py-3">Dates</th>
+                            <th class="py-3">Lieu</th>
+                            <th class="py-3">Inscriptions</th>
+                            <th class="py-3 text-center">Statut</th>
+                            <th class="pe-4 py-3 text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for evenement in evenements %}
+                        <tr>
+                            <td class="ps-4">{{ evenement.id }}</td>
+                            <td>
+                                {% if evenement.imageUrl %}
+                                    <img src="{{ evenement.imageUrl }}" class="rounded shadow-sm" style="width: 65px; height: 45px; object-fit: cover;">
+                                {% else %}
+                                    <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted border" style="width: 65px; height: 45px;">
+                                        <i class="bi bi-image"></i>
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="fw-bold text-dark">{{ evenement.titre }}</div>
+                                <span class="badge bg-primary bg-opacity-10 text-primary small">{{ evenement.categorie }}</span>
+                            </td>
+                            <td class="small text-muted">
+                                <div><i class="bi bi-calendar-event me-1"></i>{{ evenement.dateDebut|date('d/m/Y H:i') }}</div>
+                                <div><i class="bi bi-calendar-check me-1"></i>{{ evenement.dateFin|date('d/m/Y H:i') }}</div>
+                            </td>
+                            <td class="small">{{ evenement.lieu }}</td>
+                            <td>
+                                <div class="progress mb-1" style="height: 6px; width: 80px;">
+                                    {% set percentage = (evenement.participationEvent|length / evenement.capaciteMax * 100)|round %}
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ percentage }}%"></div>
+                                </div>
+                                <small class="text-secondary">{{ evenement.participationEvent|length }} / {{ evenement.capaciteMax }}</small>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge rounded-pill {% if evenement.statut == 'ouvert' %}bg-success{% elseif evenement.statut == 'complet' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                    {{ evenement.statut|capitalize }}
+                                </span>
+                            </td>
+                            <td class="pe-4 text-end">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a href="{{ path('admin_evenement_edit', {'id': evenement.id}) }}" class="btn btn-sm btn-outline-primary" title="Modifier"><i class="bi bi-pencil"></i></a>
+                                    <a href="{{ path('admin_evenement_participants', {'id': evenement.id}) }}" class="btn btn-sm btn-info text-white" title="Participants"><i class="bi bi-people"></i></a>
+                                    <a href="{{ path('admin_evenement_delete', {'id': evenement.id}) }}" class="btn btn-sm btn-outline-danger" title="Supprimer" onclick="return confirm('Êtes-vous sûr ?');"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center py-5">
+                                <i class="bi bi-search fs-1 text-muted d-block mb-3"></i>
+                                <h5 class="text-secondary">Aucun événement trouvé</h5>
+                                <p class="text-muted mb-0">Essayez d'ajuster vos filtres de recherche.</p>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Table END -->
+
+    <!-- Pagination START -->
+    {% if totalPages > 1 %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item {% if currentPage == 1 %}disabled{% endif %}">
+                <a class="page-link border-0 shadow-sm rounded-start" href="{{ path('admin_evenement_list', filters|merge({'page': currentPage - 1})) }}">
+                    <i class="bi bi-chevron-bar-left"></i>
+                </a>
+            </li>
+            
+            {% for i in 1..totalPages %}
+                <li class="page-item mx-1">
+                    <a class="page-link border-0 shadow-sm rounded-3 {% if currentPage == i %}active bg-primary{% endif %}" href="{{ path('admin_evenement_list', filters|merge({'page': i})) }}">
+                        {{ i }}
+                    </a>
+                </li>
+            {% endfor %}
+
+            <li class="page-item {% if currentPage == totalPages %}disabled{% endif %}">
+                <a class="page-link border-0 shadow-sm rounded-end" href="{{ path('admin_evenement_list', filters|merge({'page': currentPage + 1})) }}">
+                    <i class="bi bi-chevron-bar-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+    <!-- Pagination END -->
+</div>
+
+<style>
+    .table-hover tbody tr:hover { background-color: rgba(13, 110, 253, 0.02); }
+    .pagination .page-link { color: #555; padding: 0.6rem 1rem; }
+    .pagination .page-item.active .page-link { color: white; }
+    .progress-bar { transition: width 0.6s ease; }
+</style>
+{% endblock %}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Suppression de votre projet</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #f8f9fa; padding: 20px; border-radius: 5px; }
+        .content { padding: 20px 0; }
+        .alert { background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Notification de suppression de projet</h2>
+        </div>
+        
+        <div class="content">
+            <p>Bonjour {{ student_name }},</p>
+            
+            <p>Nous vous informons que votre projet <strong>"{{ project_title }}"</strong> a été supprimé de la plateforme Portfolio.</p>
+            
+            <div class="alert">
+                <h4>Raison de la suppression :</h4>
+                <p><strong>{{ reason }}</strong></p>
+                {% if details %}
+                <p><strong>Détails supplémentaires :</strong><br>{{ details }}</p>
+                {% endif %}
+            </div>
+            
+            <p>Cette action a été effectuée le {{ date|date('d/m/Y à H:i') }}.</p>
+            
+            <p>Si vous pensez qu'il s'agit d'une erreur, veuillez contacter l'administrateur du système.</p>
+            
+            <p>Cordialement,<br>L'équipe Portfolio</p>
+        </div>
+        
+        <div class="footer">
+            <p>Cet email a été envoyé automatiquement. Merci de ne pas y répondre.</p>
+        </div>
+    </div>
+</body>
+</html>

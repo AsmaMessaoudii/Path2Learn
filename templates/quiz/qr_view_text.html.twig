@@ -1,0 +1,341 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ question.titre }} - QR Code{% endblock %}
+
+{% block body %}
+<header class="navbar-light navbar-sticky header-static">
+    <!-- Nav START -->
+    <nav class="navbar navbar-expand-xl">
+        <div class="container-fluid px-3 px-xl-5">
+            <!-- Logo START -->
+            <a class="navbar-brand" href="{{ path('home') }}">
+                <img class="light-mode-item navbar-brand-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 250px;">
+                <img class="dark-mode-item navbar-brand-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 250px;">
+            </a>
+            <!-- Logo END -->
+
+            <!-- Responsive navbar toggler -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-animation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+
+            <!-- Main navbar START -->
+            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+                <!-- Nav Main menu START -->
+                <ul class="navbar-nav navbar-nav-scroll me-auto">
+                    <!-- Nav item Demos -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Services</a>
+                        <ul class="dropdown-menu" aria-labelledby="demoMenu">
+                            <li> <a class="dropdown-item active" href="{{ path('home_portfolio') }}">Portfolio</a></li>
+                            <li> <a class="dropdown-item" href="#">Événements</a></li>
+                            <li> <a class="dropdown-item" href="#">Certification</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Pages -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
+                        <ul class="dropdown-menu" aria-labelledby="pagesMenu">
+                            <li><a class="dropdown-item" href="{{ path('quiz') }}">QUIZ</a></li>
+                            <li><a class="dropdown-item" href="#">Ressources</a></li>
+                            <li><a class="dropdown-item" href="#">Projets</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Nav item Account -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
+                        <ul class="dropdown-menu" aria-labelledby="accounntMenu">
+                            <li><a class="dropdown-item" href="{{ path('instructor') }}"><i class="fas fa-user-tie fa-fw me-1"></i>Enseignants</a></li>
+                            <li><a class="dropdown-item" href="{{ path('student_dashboard') }}"><i class="fas fa-user-graduate fa-fw me-1"></i>Étudiants</a></li>
+                            <li><a class="dropdown-item" href="{{ path('admin_dashboard') }}"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Nav Main menu END -->
+
+                <!-- Nav Search START -->
+                <div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+                    <div class="nav-item w-100">
+                        <form class="position-relative">
+                            <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
+                            <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+                                <i class="fas fa-search fs-6 "></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Nav Search END -->
+            </div>
+            <!-- Main navbar END -->
+
+            <!-- Profile START -->
+            <div class="dropdown ms-1 ms-lg-0">
+                <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                </a>
+                <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+                    <!-- Links -->
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+                    <li><a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+                </ul>
+            </div>
+            <!-- Profile START -->
+        </div>
+    </nav>
+    <!-- Nav END -->
+</header>
+<!-- Header END -->
+
+<!-- SVG sections (keep as is) -->
+<figure class="position-absolute top-50 start-0 translate-middle-y ms-n7 d-none d-xxl-block">
+    <!-- SVG content -->
+</figure>
+
+<span class="position-absolute top-50 end-0 translate-middle-y mt-5 me-n5 d-none d-xxl-inline-flex">
+    <!-- SVG content -->
+</span>
+
+<figure class="position-absolute top-0 start-0 ms-5">
+    <!-- SVG content -->
+</figure>
+
+<main class="pt-5 pb-5" style="min-height: calc(100vh - 200px); background: url('{{ asset('assets/images/pattern/04.png') }}') no-repeat center center; background-size: cover;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="mb-4">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ path('quiz') }}">Quiz</a></li>
+                        <li class="breadcrumb-item active">QR Code - {{ question.titre|length > 30 ? question.titre|slice(0, 30) ~ '...' : question.titre }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Colonne QR Code -->
+            <div class="col-md-5">
+                <div class="card border-0 shadow">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">
+                            <i class="bi bi-qr-code me-2 text-primary"></i>
+                            QR Code - Question #{{ questionId }}
+                        </h5>
+                    </div>
+                    
+                    <div class="card-body text-center p-4">
+                        <!-- QR Code -->
+                        <div class="mb-4 p-3 bg-light rounded-4 d-inline-block">
+                            <img src="{{ path('quiz_qr_text', {'id': question.id}) }}" 
+                                 alt="QR Code"
+                                 class="img-fluid"
+                                 style="max-width: 300px;">
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Mode hors-ligne</strong>
+                            <p class="small mb-0 mt-2">Scannez avec l'appareil photo pour voir la question directement</p>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-3">
+                            <a href="{{ path('quiz_qr_download_text', {'id': question.id}) }}" 
+                               class="btn btn-primary">
+                                <i class="bi bi-download me-2"></i>
+                                Télécharger QR Code
+                            </a>
+                            
+                            <a href="{{ path('quiz_play', {'id': question.id}) }}" 
+                               class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                Retour à la question
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Colonne Aperçu -->
+            <div class="col-md-7">
+                <div class="card border-0 shadow">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0">
+                            <i class="bi bi-eye me-2 text-primary"></i>
+                            Aperçu du scan
+                        </h5>
+                    </div>
+                    
+                    <div class="card-body">
+                        <!-- Simulation téléphone -->
+                        <div class="bg-dark text-white p-4 rounded-3" style="font-family: monospace; white-space: pre-wrap; font-size: 14px; min-height: 300px;">
+                            {{ qrText|nl2br }}
+                        </div>
+                        
+                        {% if 'ROLE_TEACHER' in currentUser.roles or 'ROLE_ADMIN' in currentUser.roles %}
+                        <!-- Message pour les enseignants -->
+                        <div class="alert alert-warning mt-3">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <strong>Mode enseignant :</strong> Vous voyez les réponses correctes (✓). Les étudiants ne les voient pas.
+                        </div>
+                        {% else %}
+                        <!-- Message pour les étudiants -->
+                        <div class="alert alert-secondary mt-3">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            <strong>Mode étudiant :</strong> Les réponses correctes sont cachées pour vous permettre de réfléchir.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Instructions -->
+                <div class="card mt-4 border-0 bg-light">
+                    <div class="card-body">
+                        <h6 class="fw-bold">
+                            <i class="bi bi-phone me-2 text-primary"></i>
+                            Utilisation
+                        </h6>
+                        <ul class="small text-muted mb-0">
+                            <li class="mb-2">1. Scannez avec l'appareil photo du téléphone</li>
+                            <li class="mb-2">2. Le texte de la question apparaît directement (pas d'internet)</li>
+                            <li class="mb-2">3. Idéal pour impressions ou tableau</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="pt-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-3">
+                <a class="me-0 d-flex align-items-center" href="{{ path('home') }}">
+                    <img class="light-mode-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 200px;">
+                    <img class="dark-mode-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 200px;">
+                </a>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="row g-4">
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Entreprise</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">À propos de nous</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Nous contacter</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Actualités et blogs</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Bibliothèque</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Carrière</a></li>
+                        </ul>
+                    </div>
+                                    
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Communauté</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">Documentation</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Forum</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Plan du site</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Enseignement</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">Devenir formateur</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Guide pratique</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Termes et conditions</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <h5 class="mb-2 mb-md-4">Contact</h5>
+                <p class="mb-2">
+                    Numéro gratuit : <span class="h6 fw-light ms-2">+216 20629612</span>
+                    <span class="d-block small">(9:AM to 8:PM IST)</span>
+                </p>
+                <p class="mb-0">Email: <span class="h6 fw-light ms-2">example@gmail.com</span></p>
+            </div>
+        </div>
+
+        <hr class="mt-4 mb-0">
+
+        <div class="py-3">
+            <div class="container px-0">
+                <div class="d-lg-flex justify-content-between align-items-center py-3 text-center text-md-left">
+                    <div class="text-body text-primary-hover"> © 2026 Développé par <a href="https://www.webestica.com/" target="_blank" class="text-body">Path2learn</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Back to top -->
+<div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>
+
+<style>
+html, body {
+    background-color: #ffffff !important;
+    height: 100%;
+    margin: 0;
+}
+
+.layout-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.page-content {
+    flex: 1;
+    background-color: #ffffff;
+}
+
+.site-footer {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.choice-item input[type="checkbox"]:checked + label {
+    background-color: #0d6efd !important;
+    color: white !important;
+}
+
+.choice-item input[type="checkbox"]:disabled + label {
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}
+
+.bg-dark {
+    background-color: #1e1e1e !important;
+    border: 1px solid #333;
+    line-height: 1.6;
+}
+
+.breadcrumb {
+    background-color: transparent;
+    padding: 0;
+}
+
+.breadcrumb-item a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: #6c757d;
+}
+</style>
+{% endblock %}

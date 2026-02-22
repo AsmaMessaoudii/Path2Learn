@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .header {
+            text-align: center;
+            font-size: 10px;
+            color: #666;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .header-title {
+            font-weight: bold;
+        }
+        .page-info {
+            float: right;
+            font-size: 9px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">Gestion Académique - Système de Cours</div>
+        <div>{{ title|default('Export des Ressources') }}</div>
+        <div class="page-info">
+            Page <span class="pageNumber"></span> sur <span class="totalPages"></span>
+        </div>
+    </div>
+</body>
+</html>

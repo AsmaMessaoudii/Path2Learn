@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Fiche de la Ressource - {{ ressource.titre }}</title>
+    <style>
+        body { 
+            font-family: 'Helvetica', 'Arial', sans-serif; 
+            font-size: 12px; 
+            line-height: 1.4;
+            margin: 20px;
+        }
+        
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            padding-bottom: 15px; 
+            border-bottom: 2px solid #2c3e50;
+        }
+        
+        .title { 
+            font-size: 24px; 
+            font-weight: bold; 
+            color: #2c3e50; 
+            margin-bottom: 5px;
+        }
+        
+        .subtitle { 
+            font-size: 14px; 
+            color: #7f8c8d; 
+            margin-bottom: 10px;
+        }
+        
+        .info-section {
+            margin-bottom: 25px;
+        }
+        
+        .info-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #34495e;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .info-item {
+            margin-bottom: 8px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #2c3e50;
+            display: inline-block;
+            width: 140px;
+        }
+        
+        .info-value {
+            color: #34495e;
+        }
+        
+        .badge { 
+            padding: 3px 8px; 
+            border-radius: 3px; 
+            font-size: 10px; 
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .badge-pdf { background-color: #e74c3c; color: white; }
+        .badge-lien { background-color: #3498db; color: white; }
+        .badge-video { background-color: #9b59b6; color: white; }
+        .badge-document { background-color: #34495e; color: white; }
+        
+        .url-box {
+            border: 1px solid #3498db;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #ebf5fb;
+            margin-top: 10px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 11px;
+        }
+        
+        .security-indicator {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .security-https { background-color: #27ae60; color: white; }
+        .security-http { background-color: #f39c12; color: white; }
+        
+        .cours-info {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            margin-top: 10px;
+        }
+        
+        .footer { 
+            margin-top: 50px; 
+            text-align: center; 
+            color: #7f8c8d; 
+            font-size: 10px;
+            padding-top: 15px;
+            border-top: 1px solid #ecf0f1;
+        }
+        
+        .qr-instructions {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            font-size: 10px;
+        }
+        
+        .reference-code {
+            font-family: monospace;
+            background-color: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            border: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">FICHE DE LA RESSOURCE</div>
+        <div class="subtitle">
+            Référence : RESS-{{ "%04d"|format(ressource.id) }}
+        </div>
+        <div>Généré le {{ date_export|date('d/m/Y à H:i') }}</div>
+    </div>
+    
+    <div class="info-section">
+        <div class="info-title">Informations Générales</div>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Titre :</span>
+                <span class="info-value"><strong>{{ ressource.titre }}</strong></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Type :</span>
+                <span class="info-value">
+                    <span class="badge 
+                        {% if ressource.type == 'PDF' %}badge-pdf
+                        {% elseif ressource.type == 'Lien' %}badge-lien
+                        {% elseif ressource.type == 'Vidéo' %}badge-video
+                        {% else %}badge-document{% endif %}">
+                        {{ ressource.type|default('Non spécifié') }}
+                    </span>
+                </span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Date d'ajout :</span>
+                <span class="info-value">{{ ressource.dateAjout|date('d/m/Y') }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Sécurité :</span>
+                <span class="info-value">
+                    {% if ressource.url|default('')|lower starts with 'https://' %}
+                        <span class="security-indicator security-https">HTTPS SÉCURISÉ</span>
+                    {% elseif ressource.url|default('')|lower starts with 'http://' %}
+                        <span class="security-indicator security-http">HTTP NON SÉCURISÉ</span>
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="info-section">
+        <div class="info-title">Accès à la Ressource</div>
+        <div class="url-box">
+            {{ ressource.url|default('URL non disponible') }}
+        </div>
+        <div class="qr-instructions">
+            <strong>Instructions :</strong> Copiez ce lien dans votre navigateur pour accéder directement à la ressource.
+        </div>
+    </div>
+    
+    {% if ressource.cours %}
+    <div class="info-section">
+        <div class="info-title">Cours Associé</div>
+        <div class="cours-info">
+            <div class="info-item">
+                <span class="info-label">Titre du cours :</span>
+                <span class="info-value"><strong>{{ ressource.cours.titre }}</strong></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Matière :</span>
+                <span class="info-value">{{ ressource.cours.matiere|default('N/A') }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Niveau :</span>
+                <span class="info-value">{{ ressource.cours.niveau|default('N/A') }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Statut :</span>
+                <span class="info-value">
+                    {% if ressource.cours.statut == 'publié' %}
+                        <span class="badge" style="background-color: #27ae60; color: white;">PUBLIÉ</span>
+                    {% elseif ressource.cours.statut == 'brouillon' %}
+                        <span class="badge" style="background-color: #f39c12; color: white;">BROUILLON</span>
+                    {% elseif ressource.cours.statut == 'archivé' %}
+                        <span class="badge" style="background-color: #95a5a6; color: white;">ARCHIVÉ</span>
+                    {% else %}
+                        {{ ressource.cours.statut|default('N/A') }}
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="info-section">
+        <div class="info-title">Cours Associé</div>
+        <div class="cours-info">
+            <em>Aucun cours associé à cette ressource.</em>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="footer">
+        <p><strong>Système de Gestion Académique</strong> - Document officiel</p>
+        <p>Ressource ID: {{ ressource.id }} • Généré le {{ date_export|date('d/m/Y H:i:s') }}</p>
+        <p>© {{ "now"|date('Y') }} - Tous droits réservés</p>
+    </div>
+</body>
+</html>
