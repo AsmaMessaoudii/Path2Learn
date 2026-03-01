@@ -333,5 +333,62 @@ private function getFallbackDifficulty(): array
         'competences_requises' => ['Connaissances générales'],
         'conseils_etudiant' => 'Révisez le cours correspondant avant de répondre.'
     ];
+}public function generateHint(string $questionTitle, string $questionDescription, array $choices): string
+{
+    try {
+        $choicesList = implode("\n", array_map(function($c) {
+            return "- " . $c->getContenu();
+        }, $choices));
+
+        $prompt = <<<EOT
+        Un étudiant a besoin d'un indice pour répondre à cette question de quiz.
+        
+        Question: "$questionTitle"
+        Description: "$questionDescription"
+        
+        Choix disponibles:
+        $choicesList
+        
+        Génère un indice pédagogique qui:
+        - Aide l'étudiant à réfléchir sans donner directement la réponse
+        - Est clair et concis (1-2 phrases maximum)
+        - Oriente vers la bonne piste de réflexion
+        - NE révèle PAS la bonne réponse
+        
+        Réponds uniquement avec le texte de l'indice, sans introduction ni formatage.
+        EOT;
+
+        $response = $this->httpClient->request('POST', $this->apiUrl, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'model' => 'llama-3.3-70b-versatile',
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => 'Tu es un assistant pédagogique bienveillant. Tu aides les étudiants à trouver la réponse par eux-mêmes sans jamais la révéler directement. Réponds toujours en français.'
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => $prompt
+                    ]
+                ],
+                'temperature' => 0.6,
+                'max_tokens' => 150
+            ]
+        ]);
+
+        $data = $response->toArray();
+        return $data['choices'][0]['message']['content'] ?? 
+               'Réfléchis bien aux mots-clés de la question avant de choisir.';
+
+    } catch (\Exception $e) {
+        $this->logger->error('Erreur génération hint Groq', [
+            'message' => $e->getMessage()
+        ]);
+        return 'Relis attentivement la question et élimine les réponses qui te semblent évidemment incorrectes.';
+    }
 }
 }

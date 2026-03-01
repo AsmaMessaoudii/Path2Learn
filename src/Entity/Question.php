@@ -58,8 +58,9 @@ class Question
     )]
     private ?string $noteMax = null;
 
-    #[ORM\ManyToOne(inversedBy: 'question')]
-    private ?User $user = null;
+   #[ORM\ManyToOne(inversedBy: 'questions')]
+#[ORM\JoinColumn(nullable: true)]
+private ?User $user = null;
 
     #[ORM\OneToMany(mappedBy: 'question', targetEntity: Choix::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $choix;

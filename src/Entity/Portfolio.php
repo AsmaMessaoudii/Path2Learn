@@ -49,7 +49,7 @@ class Portfolio
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateMiseAjour = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'portfolio')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'portfolios')]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
 

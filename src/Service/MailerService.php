@@ -71,4 +71,28 @@ class MailerService
             error_log("[$level] $message");
         }
     }
+    public function sendLiveStartNotification($course, string $studentEmail, string $studentPrenom, string $liveUrl): bool
+{
+    try {
+        $email = (new Email())
+            ->from($this->senderEmail)
+            ->to($studentEmail)
+            ->subject('🔴 Live commencé : ' . $course->getTitre())
+            ->html(sprintf(
+                '<h1>Bonjour %s,</h1>
+                <p>Le live pour le cours <strong>%s</strong> vient de commencer.</p>
+                <p><a href="%s" style="padding:10px 20px;background:#ef4444;color:white;text-decoration:none;border-radius:5px;">Rejoindre le Live</a></p>
+                <p>L\'équipe Path2Learn</p>',
+                $studentPrenom,
+                $course->getTitre(),
+                $liveUrl
+            ));
+
+        $this->mailer->send($email);
+        return true;
+    } catch (\Exception $e) {
+        $this->log('error', 'Erreur envoi live email à ' . $studentEmail . ': ' . $e->getMessage());
+        return false;
+    }
+}
 }

@@ -83,18 +83,25 @@
                         </div>
 
                         <!-- Footer -->
-                        <div class="card-footer bg-white border-0 p-4 pt-0 d-flex justify-content-between align-items-center">
-                            <div class="text-primary fw-bold">
-                                {% if evenement.isComplet %}
-                                    <span class="text-danger small"><i class="bi bi-x-circle me-1"></i>Complet</span>
-                                {% else %}
-                                    <span class="small"><i class="bi bi-people me-1"></i>{{ evenement.capaciteMax - evenement.participationEvent|length }} places libres</span>
-                                {% endif %}
-                            </div>
-                            <span class="btn btn-link p-0 text-primary fw-bold text-decoration-none">
-                                Détails <i class="bi bi-arrow-right ms-1"></i>
-                            </span>
-                        </div>
+                      <!-- Footer -->
+<div class="card-footer bg-white border-0 p-4 pt-0 d-flex justify-content-between align-items-center">
+    <div class="text-primary fw-bold">
+        {% if evenement.isComplet() %}
+            <span class="text-danger small">
+                <i class="bi bi-x-circle me-1"></i>Complet
+            </span>
+        {% else %}
+            <span class="small">
+                <i class="bi bi-people me-1"></i>
+                {{ evenement.getPlacesDisponibles() }} places libres
+            </span>
+        {% endif %}
+    </div>
+
+    <span class="btn btn-link p-0 text-primary fw-bold text-decoration-none">
+        Détails <i class="bi bi-arrow-right ms-1"></i>
+    </span>
+</div>
                     </div>
                 </div>
             {% else %}

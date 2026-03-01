@@ -205,11 +205,11 @@
                             <div class="progress" style="height: 25px;">
                                 <div class="progress-bar bg-success" 
                                      role="progressbar" 
-                                     style="width: {{ (answeredQuestions / totalQuestions * 100)|round }}%"
-                                     aria-valuenow="{{ (answeredQuestions / totalQuestions * 100)|round }}" 
-                                     aria-valuemin="0" 
-                                     aria-valuemax="100">
-                                    {{ (answeredQuestions / totalQuestions * 100)|round }}%
+                                   {% set progress = totalQuestions > 0 ? (answeredQuestions / totalQuestions * 100)|round(0) : 0 %}
+
+style="width: {{ progress }}%;"
+aria-valuenow="{{ progress }}"
+{{ progress }}%
                                 </div>
                             </div>
                         </div>

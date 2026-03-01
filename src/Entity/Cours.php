@@ -70,9 +70,11 @@ class Cours
         message: "Le statut doit être : 'brouillon', 'publié' ou 'archivé'"
     )]
     private ?string $statut = null;
+ 
 
-    #[ORM\ManyToOne(inversedBy: 'cours')]
-    private ?User $user = null;
+   #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'cours')]
+#[ORM\JoinColumn(nullable: false)]  // ← Change ou ajoute nullable=false
+private ?User $user = null;
 
     // ✅ Relation RessourcePedagogique
     #[ORM\OneToMany(

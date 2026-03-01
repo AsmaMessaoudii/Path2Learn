@@ -105,10 +105,10 @@
                             <td class="small">{{ evenement.lieu }}</td>
                             <td>
                                 <div class="progress mb-1" style="height: 6px; width: 80px;">
-                                    {% set percentage = (evenement.participationEvent|length / evenement.capaciteMax * 100)|round %}
+                                    {% set percentage = (evenement.participationEvents|length / evenement.capaciteMax * 100)|round %}
                                     <div class="progress-bar bg-info" role="progressbar" style="width: {{ percentage }}%"></div>
                                 </div>
-                                <small class="text-secondary">{{ evenement.participationEvent|length }} / {{ evenement.capaciteMax }}</small>
+                                <small class="text-secondary">{{ evenement.participationEvents|length }} / {{ evenement.capaciteMax }}</small>
                             </td>
                             <td class="text-center">
                                 <span class="badge rounded-pill {% if evenement.statut == 'ouvert' %}bg-success{% elseif evenement.statut == 'complet' %}bg-warning{% else %}bg-secondary{% endif %}">

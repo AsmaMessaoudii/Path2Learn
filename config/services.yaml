@@ -5,6 +5,7 @@ parameters:
     openai_api_key: '%env(GEMINI_API_KEY)%'
     groq_api_key: '%env(GROQ_API_KEY)%'
     groq_api_url: '%env(GROQ_API_URL)%'
+    mercure.default_hub: 'http://localhost:3000/.well-known/mercure'
 
     # Valeurs par défaut pour les variables d'environnement
     env(GROQ_API_KEY): ''

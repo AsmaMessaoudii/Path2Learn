@@ -286,103 +286,94 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route('/quiz/check-answer', name: 'quiz_check_answer', methods: ['POST'])]
-    public function checkAnswer(Request $request, EntityManagerInterface $entityManager): JsonResponse
-    {
-        $user = $this->getUser();
-        
-        if (!$user) {
-            return new JsonResponse([
-                'success' => false,
-                'error' => 'Utilisateur non connecté'
-            ], 401);
-        }
-        
-        // Vérifier que l'utilisateur est bien un étudiant (peut répondre)
-        if (!in_array('ROLE_STUDENT', $user->getRoles())) {
-            return new JsonResponse([
-                'success' => false,
-                'error' => 'Seuls les étudiants peuvent répondre aux questions'
-            ], 403);
-        }
-        
-        $data = json_decode($request->getContent(), true);
-        
-        $questionId = $data['questionId'] ?? null;
-        $selectedChoicesIds = $data['selectedChoicesIds'] ?? [];
-        
-        if (!$questionId) {
-            return new JsonResponse([
-                'success' => false,
-                'error' => 'Données manquantes'
-            ], 400);
-        }
-        
-        $question = $entityManager->getRepository(Question::class)->find($questionId);
-        
-        if (!$question) {
-            return new JsonResponse([
-                'success' => false,
-                'error' => 'Question non trouvée'
-            ], 404);
-        }
-        
-        // Vérifier si l'utilisateur a déjà répondu
-        $session = $request->getSession();
-        $userResponses = $session->get('quiz_responses_' . $user->getId(), []);
-        $questionKey = 'question_' . $questionId;
-        
-        if (isset($userResponses[$questionKey])) {
-            return new JsonResponse([
-                'success' => false,
-                'error' => 'Vous avez déjà répondu à cette question'
-            ], 403);
-        }
-        
-        // Récupérer toutes les réponses correctes
-        $allCorrectChoiceIds = [];
-        $correctCount = 0;
-        
-        foreach ($question->getChoix() as $choice) {
-            if ($choice->isEstCorrect()) {
-                $allCorrectChoiceIds[] = $choice->getId();
-                $correctCount++;
-            }
-        }
-        
-        // Appliquer la logique de notation
-        $score = $this->calculateScore(
-            $selectedChoicesIds,
-            $allCorrectChoiceIds,
-            $question->getNoteMax(),
-            $correctCount
-        );
-        
-        // Sauvegarder la réponse dans la session
-        $responseData = [
-            'selectedChoiceIds' => array_map('intval', $selectedChoicesIds),
-            'isCorrect' => $score > 0,
-            'score' => $score,
-            'maxScore' => $question->getNoteMax(),
-            'correctChoiceIds' => $allCorrectChoiceIds,
-            'correctCount' => $correctCount,
-            'timestamp' => time()
-        ];
-        
-        $userResponses[$questionKey] = $responseData;
-        $session->set('quiz_responses_' . $user->getId(), $userResponses);
-        
-        return new JsonResponse([
-            'success' => true,
-            'score' => $score,
-            'maxScore' => $question->getNoteMax(),
-            'correctChoiceIds' => $allCorrectChoiceIds,
-            'selectedChoiceIds' => $selectedChoicesIds,
-            'correctCount' => $correctCount,
-            'isCorrect' => $score > 0,
-            'message' => $score > 0 ? 'Bonne réponse !' : 'Mauvaise réponse.'
-        ]);
+   #[Route('/quiz/check-answer', name: 'quiz_check_answer', methods: ['POST'])]
+public function checkAnswer(Request $request, EntityManagerInterface $entityManager): JsonResponse
+{
+    $user = $this->getUser();
+
+    if (!$user) {
+        return new JsonResponse(['success' => false, 'error' => 'Utilisateur non connecté'], 401);
     }
+
+    if (!in_array('ROLE_STUDENT', $user->getRoles())) {
+        return new JsonResponse(['success' => false, 'error' => 'Seuls les étudiants peuvent répondre'], 403);
+    }
+
+    $data = json_decode($request->getContent(), true);
+
+    $questionId = $data['questionId'] ?? null;
+    $selectedChoicesIds = $data['selectedChoicesIds'] ?? [];
+    $hintUsed = $data['hintUsed'] ?? false; // ← NOUVEAU
+
+    if (!$questionId) {
+        return new JsonResponse(['success' => false, 'error' => 'Données manquantes'], 400);
+    }
+
+    $question = $entityManager->getRepository(Question::class)->find($questionId);
+
+    if (!$question) {
+        return new JsonResponse(['success' => false, 'error' => 'Question non trouvée'], 404);
+    }
+
+    $session = $request->getSession();
+    $userResponses = $session->get('quiz_responses_' . $user->getId(), []);
+    $questionKey = 'question_' . $questionId;
+
+    if (isset($userResponses[$questionKey])) {
+        return new JsonResponse(['success' => false, 'error' => 'Vous avez déjà répondu'], 403);
+    }
+
+    $allCorrectChoiceIds = [];
+    $correctCount = 0;
+
+    foreach ($question->getChoix() as $choice) {
+        if ($choice->isEstCorrect()) {
+            $allCorrectChoiceIds[] = $choice->getId();
+            $correctCount++;
+        }
+    }
+
+    $score = $this->calculateScore(
+        $selectedChoicesIds,
+        $allCorrectChoiceIds,
+        $question->getNoteMax(),
+        $correctCount
+    );
+
+    // ← NOUVEAU : Pénalité -25% si hint utilisé et bonne réponse
+    $penalite = 0;
+    if ($hintUsed && $score > 0) {
+        $penalite = (int) ceil($question->getNoteMax() * 0.25);
+        $score = max(0, $score - $penalite);
+    }
+
+    $responseData = [
+        'selectedChoiceIds' => array_map('intval', $selectedChoicesIds),
+        'isCorrect'         => $score > 0,
+        'score'             => $score,
+        'maxScore'          => $question->getNoteMax(),
+        'correctChoiceIds'  => $allCorrectChoiceIds,
+        'correctCount'      => $correctCount,
+        'hintUsed'          => $hintUsed, // ← NOUVEAU
+        'timestamp'         => time()
+    ];
+
+    $userResponses[$questionKey] = $responseData;
+    $session->set('quiz_responses_' . $user->getId(), $userResponses);
+
+    return new JsonResponse([
+        'success'           => true,
+        'score'             => $score,
+        'maxScore'          => $question->getNoteMax(),
+        'correctChoiceIds'  => $allCorrectChoiceIds,
+        'selectedChoiceIds' => $selectedChoicesIds,
+        'correctCount'      => $correctCount,
+        'isCorrect'         => $score > 0,
+        'hintUsed'          => $hintUsed,   // ← NOUVEAU
+        'penalite'          => $penalite,   // ← NOUVEAU
+        'message'           => $score > 0 ? 'Bonne réponse !' : 'Mauvaise réponse.'
+    ]);
+}
     
     #[Route('/quiz/user-responses', name: 'quiz_user_responses', methods: ['GET'])]
     public function getUserResponses(Request $request): JsonResponse
@@ -447,4 +438,44 @@ class QuizController extends AbstractController
         // Par défaut, 0
         return 0;
     }
+    #[Route('/quiz/ai-hint/{id}', name: 'quiz_ai_hint', methods: ['GET'])]
+public function getAIHint(
+    int $id,
+    EntityManagerInterface $entityManager,
+    Request $request,
+    \App\Service\AIService $aiService
+): JsonResponse {
+    $user = $this->getUser();
+
+    if (!$user || !in_array('ROLE_STUDENT', $user->getRoles())) {
+        return new JsonResponse(['success' => false, 'error' => 'Accès refusé'], 403);
+    }
+
+    $question = $entityManager->getRepository(Question::class)->find($id);
+
+    if (!$question) {
+        return new JsonResponse(['success' => false, 'error' => 'Question non trouvée'], 404);
+    }
+    // Bloquer le hint si déjà répondu
+    $session = $request->getSession();
+    $userResponses = $session->get('quiz_responses_' . $user->getId(), []);
+
+    if (isset($userResponses['question_' . $id])) {
+        return new JsonResponse([
+            'success' => false,
+            'error' => 'Vous avez déjà répondu à cette question'
+        ], 403);
+    }
+
+    $hint = $aiService->generateHint(
+        $question->getTitre(),
+        $question->getDescription(),
+        $question->getChoix()->toArray()
+    );
+
+    return new JsonResponse([
+        'success' => true,
+        'hint' => $hint
+    ]);
+}
 }

@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\ResetPasswordRequestRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Ignore;
+use SensitiveParameter;
 use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestInterface;
 use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestTrait;
 
@@ -35,5 +37,14 @@ class ResetPasswordRequest implements ResetPasswordRequestInterface
     public function getUser(): User
     {
         return $this->user;
+    }
+
+    /**
+     * Surcharge du setter du trait pour ajouter la protection SensitiveParameter
+     */
+    public function setHashedToken(#[SensitiveParameter] string $hashedToken): self
+    {
+        $this->hashedToken = $hashedToken;
+        return $this;
     }
 }

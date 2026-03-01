@@ -42,11 +42,12 @@ class ParticipationEvent
     #[Assert\Choice(choices: ['confirmé', 'en_attente', 'annulé', 'présent', 'absent'], message: "Statut invalide")]
     private ?string $statut = null;
 
-    #[ORM\ManyToOne(inversedBy: 'participationEvent')]
+    // ✅ Corrected inversedBy names
+    #[ORM\ManyToOne(targetEntity: Evenement::class, inversedBy: 'participationEvents')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Evenement $evenement = null;
 
-    #[ORM\ManyToOne(inversedBy: 'participationEvent')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'participationEvents')]
     private ?User $user = null;
 
     public function __construct()
@@ -55,104 +56,30 @@ class ParticipationEvent
         $this->statut = 'confirmé';
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    // ===== Getters & Setters =====
+    public function getId(): ?int { return $this->id; }
 
-    public function getNomParticipant(): ?string
-    {
-        return $this->nomParticipant;
-    }
+    public function getNomParticipant(): ?string { return $this->nomParticipant; }
+    public function setNomParticipant(string $nomParticipant): static { $this->nomParticipant = $nomParticipant; return $this; }
 
-    public function setNomParticipant(string $nomParticipant): static
-    {
-        $this->nomParticipant = $nomParticipant;
+    public function getPrenomParticipant(): ?string { return $this->prenomParticipant; }
+    public function setPrenomParticipant(string $prenomParticipant): static { $this->prenomParticipant = $prenomParticipant; return $this; }
 
-        return $this;
-    }
+    public function getEmailParticipant(): ?string { return $this->emailParticipant; }
+    public function setEmailParticipant(string $emailParticipant): static { $this->emailParticipant = $emailParticipant; return $this; }
 
-    public function getPrenomParticipant(): ?string
-    {
-        return $this->prenomParticipant;
-    }
+    public function getTelephoneParticipant(): ?string { return $this->telephoneParticipant; }
+    public function setTelephoneParticipant(?string $telephoneParticipant): static { $this->telephoneParticipant = $telephoneParticipant; return $this; }
 
-    public function setPrenomParticipant(string $prenomParticipant): static
-    {
-        $this->prenomParticipant = $prenomParticipant;
+    public function getDateInscription(): ?\DateTimeInterface { return $this->dateInscription; }
+    public function setDateInscription(\DateTimeInterface $dateInscription): static { $this->dateInscription = $dateInscription; return $this; }
 
-        return $this;
-    }
+    public function getStatut(): ?string { return $this->statut; }
+    public function setStatut(string $statut): static { $this->statut = $statut; return $this; }
 
-    public function getEmailParticipant(): ?string
-    {
-        return $this->emailParticipant;
-    }
+    public function getEvenement(): ?Evenement { return $this->evenement; }
+    public function setEvenement(?Evenement $evenement): static { $this->evenement = $evenement; return $this; }
 
-    public function setEmailParticipant(string $emailParticipant): static
-    {
-        $this->emailParticipant = $emailParticipant;
-
-        return $this;
-    }
-
-    public function getTelephoneParticipant(): ?string
-    {
-        return $this->telephoneParticipant;
-    }
-
-    public function setTelephoneParticipant(?string $telephoneParticipant): static
-    {
-        $this->telephoneParticipant = $telephoneParticipant;
-
-        return $this;
-    }
-
-    public function getDateInscription(): ?\DateTimeInterface
-    {
-        return $this->dateInscription;
-    }
-
-    public function setDateInscription(\DateTimeInterface $dateInscription): static
-    {
-        $this->dateInscription = $dateInscription;
-
-        return $this;
-    }
-
-    public function getStatut(): ?string
-    {
-        return $this->statut;
-    }
-
-    public function setStatut(string $statut): static
-    {
-        $this->statut = $statut;
-
-        return $this;
-    }
-
-    public function getEvenement(): ?Evenement
-    {
-        return $this->evenement;
-    }
-
-    public function setEvenement(?Evenement $evenement): static
-    {
-        $this->evenement = $evenement;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
-    }
+    public function getUser(): ?User { return $this->user; }
+    public function setUser(?User $user): static { $this->user = $user; return $this; }
 }

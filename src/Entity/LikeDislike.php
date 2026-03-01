@@ -12,10 +12,9 @@ class LikeDislike
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\ManyToOne(inversedBy: 'reactions')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Cours $cours = null;
+#[ORM\ManyToOne(inversedBy: 'likeDislikes')]
+#[ORM\JoinColumn(nullable: false)]
+private ?Cours $cours = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
