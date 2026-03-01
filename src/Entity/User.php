@@ -61,7 +61,11 @@ class User
     #[ORM\OneToMany(targetEntity: Evenement::class, mappedBy: 'user')]
     private Collection $evenement;
 
+
     /**
+
+
+    
      * @var Collection<int, ParticipationEvent>
      */
     #[ORM\OneToMany(targetEntity: ParticipationEvent::class, mappedBy: 'user')]

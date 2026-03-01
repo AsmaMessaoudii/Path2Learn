@@ -19,7 +19,12 @@ class Evenement
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "Le titre ne doit pas être vide")]
-    #[Assert\Length(min: 5, max: 255, minMessage: "Le titre doit faire au moins 5 caractères", maxMessage: "Le titre ne peut pas dépasser 255 caractères")]
+    #[Assert\Length(
+        min: 5, 
+        max: 255, 
+        minMessage: "Le titre doit faire au moins 5 caractères", 
+        maxMessage: "Le titre ne peut pas dépasser 255 caractères"
+    )]
     private ?string $titre = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -53,7 +58,10 @@ class Evenement
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank(message: "Le statut est obligatoire")]
-    #[Assert\Choice(choices: ['ouvert', 'complet', 'annulé', 'terminé'], message: "Le statut doit être valide")]
+    #[Assert\Choice(
+        choices: ['ouvert', 'complet', 'annulé', 'terminé'], 
+        message: "Le statut doit être valide"
+    )]
     private ?string $statut = null;
 
     #[ORM\Column(length: 100, nullable: true)]
@@ -65,18 +73,20 @@ class Evenement
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateModification = null;
 
-    #[ORM\ManyToOne(inversedBy: 'evenement')]
+    // Corrected inverse side with User
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'evenements')]
     private ?User $user = null;
 
+    // Corrected plural name for ParticipationEvent collection
     /**
      * @var Collection<int, ParticipationEvent>
      */
     #[ORM\OneToMany(targetEntity: ParticipationEvent::class, mappedBy: 'evenement', cascade: ['persist', 'remove'])]
-    private Collection $participationEvent;
+    private Collection $participationEvents;
 
     public function __construct()
     {
-        $this->participationEvent = new ArrayCollection();
+        $this->participationEvents = new ArrayCollection();
         $this->dateCreation = new \DateTime();
         $this->statut = 'ouvert';
     }
@@ -94,7 +104,6 @@ class Evenement
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
-
         return $this;
     }
 
@@ -106,7 +115,6 @@ class Evenement
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -118,7 +126,6 @@ class Evenement
     public function setDateDebut(\DateTimeInterface $dateDebut): static
     {
         $this->dateDebut = $dateDebut;
-
         return $this;
     }
 
@@ -130,7 +137,6 @@ class Evenement
     public function setDateFin(\DateTimeInterface $dateFin): static
     {
         $this->dateFin = $dateFin;
-
         return $this;
     }
 
@@ -142,7 +148,6 @@ class Evenement
     public function setLieu(string $lieu): static
     {
         $this->lieu = $lieu;
-
         return $this;
     }
 
@@ -154,7 +159,6 @@ class Evenement
     public function setCapaciteMax(int $capaciteMax): static
     {
         $this->capaciteMax = $capaciteMax;
-
         return $this;
     }
 
@@ -166,7 +170,6 @@ class Evenement
     public function setImageUrl(?string $imageUrl): static
     {
         $this->imageUrl = $imageUrl;
-
         return $this;
     }
 
@@ -178,7 +181,6 @@ class Evenement
     public function setStatut(string $statut): static
     {
         $this->statut = $statut;
-
         return $this;
     }
 
@@ -190,7 +192,6 @@ class Evenement
     public function setCategorie(?string $categorie): static
     {
         $this->categorie = $categorie;
-
         return $this;
     }
 
@@ -202,7 +203,6 @@ class Evenement
     public function setDateCreation(\DateTimeInterface $dateCreation): static
     {
         $this->dateCreation = $dateCreation;
-
         return $this;
     }
 
@@ -214,7 +214,6 @@ class Evenement
     public function setDateModification(?\DateTimeInterface $dateModification): static
     {
         $this->dateModification = $dateModification;
-
         return $this;
     }
 
@@ -226,49 +225,48 @@ class Evenement
     public function setUser(?User $user): static
     {
         $this->user = $user;
-
         return $this;
     }
 
     /**
      * @return Collection<int, ParticipationEvent>
      */
-    public function getParticipationEvent(): Collection
+    public function getParticipationEvents(): Collection
     {
-        return $this->participationEvent;
+        return $this->participationEvents;
     }
+
+   
+
 
     public function addParticipationEvent(ParticipationEvent $participationEvent): static
     {
-        if (!$this->participationEvent->contains($participationEvent)) {
-            $this->participationEvent->add($participationEvent);
+        if (!$this->participationEvents->contains($participationEvent)) {
+            $this->participationEvents->add($participationEvent);
             $participationEvent->setEvenement($this);
         }
-
         return $this;
     }
 
     public function removeParticipationEvent(ParticipationEvent $participationEvent): static
     {
-        if ($this->participationEvent->removeElement($participationEvent)) {
-            // set the owning side to null (unless already changed)
+        if ($this->participationEvents->removeElement($participationEvent)) {
             if ($participationEvent->getEvenement() === $this) {
                 $participationEvent->setEvenement(null);
             }
         }
-
         return $this;
     }
 
     // Méthodes métier
     public function getPlacesDisponibles(): int
     {
-        return $this->capaciteMax - $this->participationEvent->count();
+        return $this->capaciteMax - $this->participationEvents->count();
     }
 
     public function isComplet(): bool
     {
-        return $this->participationEvent->count() >= $this->capaciteMax;
+        return $this->participationEvents->count() >= $this->capaciteMax;
     }
 
     public function getTauxRemplissage(): float
@@ -276,11 +274,12 @@ class Evenement
         if ($this->capaciteMax === 0) {
             return 0;
         }
-        return ($this->participationEvent->count() / $this->capaciteMax) * 100;
+        return ($this->participationEvents->count() / $this->capaciteMax) * 100;
     }
 
     public function isPasse(): bool
     {
         return $this->dateFin < new \DateTime();
     }
+    
 }

@@ -177,79 +177,642 @@
         </div>
     </div>
 {% endmacro %}
-
-<!-- Navigation header -->
 <header class="navbar-light navbar-sticky header-static">
-    <nav class="navbar navbar-expand-xl">
-        <div class="container-fluid px-3 px-xl-5">
-            <a class="navbar-brand" href="{{ path('home') }}">
-                <img class="light-mode-item navbar-brand-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 250px;">
-                <img class="dark-mode-item navbar-brand-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 250px;">
-            </a>
+    <!-- Nav START -->
+   	<nav class="navbar navbar-expand-xl">
+		<div class="container-fluid px-3 px-xl-5">
+	<!-- Logo START -->
+<a class="navbar-brand" href="{{ path('home') }}">
+    <img class="light-mode-item navbar-brand-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 250px;">
+    <img class="dark-mode-item navbar-brand-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 250px;">
+</a>
+<!-- Logo END -->
 
-            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-animation">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </span>
+
+
+			<!-- Responsive navbar toggler -->
+			<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-animation">
+					<span></span>
+					<span></span>
+					<span></span>
+				</span>
+			</button>
+
+			<!-- Main navbar START -->
+			<div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+
+				<!-- Nav category menu START -->
+				<ul class="navbar-nav navbar-nav-scroll me-auto">
+					<!-- Nav item 1 Demos -->
+					<li class="nav-item dropdown dropdown-menu-shadow-stacked">
+						<a class="nav-link bg-primary bg-opacity-10 rounded-3 text-primary px-3 py-3 py-xl-0" href="#" id="categoryMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="bi bi-ui-radios-grid me-2"></i><span>Category</span></a>
+						<ul class="dropdown-menu" aria-labelledby="categoryMenu">
+
+							<!-- Dropdown submenu -->
+							<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#">Development</a>
+								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+									<!-- dropdown submenu open right -->
+									<li class="dropdown-submenu dropend">
+										<a class="dropdown-item dropdown-toggle" href="#">Web Development</a>
+										<ul class="dropdown-menu" data-bs-popper="none">
+											<li> <a class="dropdown-item" href="#">CSS</a> </li>
+											<li> <a class="dropdown-item" href="#">JavaScript</a> </li>
+											<li> <a class="dropdown-item" href="#">Angular</a> </li>
+											<li> <a class="dropdown-item" href="#">PHP</a> </li>
+											<li> <a class="dropdown-item" href="#">HTML</a> </li>
+											<li> <a class="dropdown-item" href="#">React</a> </li>
+										</ul>
+									</li>
+									<li> <a class="dropdown-item" href="#">Data Science</a> </li>
+									<li> <a class="dropdown-item" href="#">Mobile Development</a> </li>
+									<li> <a class="dropdown-item" href="#">Programing Language</a> </li>
+									<li> <a class="dropdown-item" href="#">Software Testing</a> </li>
+									<li> <a class="dropdown-item" href="#">Software Engineering</a> </li>
+									<li> <a class="dropdown-item" href="#">Software Development Tools</a> </li>
+								</ul>
+							</li>
+							<li> <a class="dropdown-item" href="#">Design</a></li>
+							<!-- Dropdown submenu -->
+							<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#">Marketing</a>
+								<div class="dropdown-menu dropdown-menu-start dropdown-width-lg" data-bs-popper="none">
+									<div class="row p-4">
+										<!-- Dropdown column item -->
+										<div class="col-xl-6 col-xxl-4 mb-4 mb-xl-0">
+											<h6 class="mb-0">Get started</h6>
+											<hr> <!-- Divider -->
+											<ul class="list-unstyled">
+												<li> <a class="dropdown-item" href="#">Market Research</a> </li>
+												<li> <a class="dropdown-item" href="#">Advertising</a> </li>
+												<li> <a class="dropdown-item" href="#">Consumer Behavior</a> </li>
+												<li> <a class="dropdown-item" href="#">Digital Marketing</a> </li>
+												<li> <a class="dropdown-item" href="#">Marketing Ethics</a> </li>
+												<li> <a class="dropdown-item" href="#">Social Media Marketing</a> </li>
+												<li> <a class="dropdown-item" href="#">Public Relations</a> </li>
+												<li> <a class="dropdown-item" href="#">Advertising</a> </li>
+												<li> <a class="dropdown-item" href="#">Decision Science</a> </li>
+												<li> <a class="dropdown-item" href="#">SEO</a> </li>
+												<li> <a class="dropdown-item" href="#">Business Marketing</a> </li>
+											</ul>
+										</div>
+
+										<!-- Dropdown column item -->
+										<div class="col-xl-6 col-xxl-4 mb-4 mb-xl-0">
+											<h6 class="mb-0">Degree</h6>
+											<hr> <!-- Divider -->
+											<!-- Dropdown item -->
+											<div class="d-flex mb-4 position-relative">
+												<img src="assets/images/client/uni-logo-01.svg" class="icon-md" alt="">
+												<div class="ms-3">
+													<a class="stretched-link h6 mb-0" href="#">American Century University, New Mexico</a>
+													<p class="mb-0 small">Bachelor of computer science</p>
+												</div>
+											</div>
+											<!-- Dropdown item -->
+											<div class="d-flex mb-4 position-relative">
+												<img src="assets/images/client/uni-logo-02.svg" class="icon-md" alt="">
+												<div class="ms-3">
+													<a class="stretched-link h6 mb-0" href="#">Indiana College of - Bloomington</a>
+													<p class="mb-0 small">Masters of computer science</p>
+												</div>
+											</div>
+											<!-- Dropdown item -->
+											<div class="d-flex mb-4 position-relative">
+												<img src="assets/images/client/uni-logo-03.svg" class="icon-md" alt="">
+												<div class="ms-3">
+													<a class="stretched-link h6 mb-0" href="#">College of South Florida</a>
+													<p class="mb-0 small">Medical science college</p>
+												</div>
+											</div>
+											<!-- Dropdown item -->
+											<div class="d-flex mb-4 position-relative">
+												<img src="assets/images/client/uni-logo-01.svg" class="icon-md" alt="">
+												<div class="ms-3">
+													<a class="stretched-link h6 mb-0" href="#">Andeerson Campus</a>
+													<p class="mb-0 small">Bachelor of computer science</p>
+												</div>
+											</div>
+											<!-- Dropdown item -->
+											<div class="d-flex position-relative">
+												<img src="assets/images/client/uni-logo-04.svg" class="icon-md" alt="">
+												<div class="ms-3">
+													<a class="stretched-link h6 mb-0" href="#">University of South California</a>
+													<p class="mb-0 small">Masters of business development</p>
+												</div>
+											</div>
+										</div>
+
+										<!-- Dropdown column item -->
+										<div class="col-xl-6 col-xxl-4">
+											<h6 class="mb-0">Certificate</h6>
+											<hr> <!-- Divider -->
+											<!-- Dropdown item -->
+											<div class="d-flex mb-4 position-relative">
+												<h2 class="mb-0"><i class="fab fa-fw fa-google text-google-icon"></i></h2>
+												<div class="ms-2">
+													<a class="stretched-link h6 mb-0" href="#">Google SEO certificate</a>
+													<p class="mb-0 small">No prerequisites</p>
+												</div>
+											</div>
+											<!-- Dropdown item -->
+											<div class="d-flex mb-4 position-relative">
+												<h2 class="mb-0"><i class="fab fa-fw fa-linkedin-in text-linkedin"></i></h2>
+												<div class="ms-2">
+													<a class="stretched-link h6 mb-0" href="#">Business Development Executive(BDE)</a>
+													<p class="mb-0 small">No prerequisites</p>
+												</div>
+											</div>
+											<!-- Dropdown item -->
+											<div class="d-flex mb-4 position-relative">
+												<h2 class="mb-0"><i class="fab fa-fw fa-facebook text-facebook"></i></h2>
+												<div class="ms-2">
+													<a class="stretched-link h6 mb-0" href="#">Facebook social media marketing</a>
+													<p class="mb-0 small">Expert advice</p>
+												</div>
+											</div>
+											<!-- Dropdown item -->
+											<div class="d-flex mb-4 position-relative">
+												<h2 class="mb-0"><i class="fas fa-fw fa-basketball-ball text-dribbble"></i></h2>
+												<div class="ms-2">
+													<a class="stretched-link h6 mb-0" href="#">Creative graphics design</a>
+													<p class="mb-0 small">No prerequisites</p>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- Advertisement -->
+									<div class="row">
+										<div class="col-12">
+											<div class="card bg-blue rounded-0 rounded-bottom p-3 position-relative overflow-hidden" style="background:url(assets/images/pattern/05.png) no-repeat center center; background-size:cover;">
+												<!-- SVG decoration -->
+												<figure class="position-absolute bottom-0 end-0 mb-n4 d-none d-md-block">
+													<svg width="92.6px" height="135.2px">	
+														<path class="fill-white" d="M71.5,131.4c0.2,0.1,0.4,0.1,0.6-0.1c0,0,0.6-0.7,1.6-1.9c0.2-0.2,0.1-0.5-0.1-0.7c-0.2-0.2-0.5-0.1-0.7,0.1 c-1,1.2-1.6,1.8-1.6,1.8c-0.2,0.2-0.2,0.5,0,0.7C71.4,131.3,71.4,131.4,71.5,131.4z"></path>
+														<path class="fill-white" d="M76,125.5c-0.2-0.2-0.3-0.5-0.1-0.7c1-1.4,1.9-2.8,2.8-4.2c0.1-0.2,0.4-0.3,0.7-0.2c0.2,0.1,0.3,0.4,0.2,0.7 c-0.9,1.4-1.8,2.9-2.8,4.2C76.6,125.6,76.3,125.6,76,125.5C76.1,125.5,76.1,125.5,76,125.5z M81.4,116.9 c-0.2-0.1-0.3-0.4-0.2-0.7c0.2-0.5,0.5-0.9,0.7-1.4c0.5-1.1,1-2.1,1.5-3.2c0.1-0.3,0.4-0.4,0.6-0.3c0.3,0.1,0.4,0.4,0.3,0.6 c-0.5,1.1-1,2.1-1.5,3.2c-0.2,0.5-0.5,0.9-0.7,1.4C81.9,117,81.6,117,81.4,116.9C81.4,116.9,81.4,116.9,81.4,116.9z M85.1,107.1 c0.5-1.6,1-3.2,1.3-4.8c0.1-0.3,0.3-0.4,0.6-0.4c0.3,0.1,0.4,0.3,0.4,0.6c-0.4,1.6-0.8,3.3-1.3,4.9c-0.1,0.3-0.4,0.4-0.6,0.3 c0,0,0,0-0.1,0C85.1,107.6,85,107.3,85.1,107.1z M47.3,83c-1.5-1.1-2.5-2.5-3.1-4.2c-0.1-0.3,0-0.5,0.3-0.6 c0.3-0.1,0.5,0,0.6,0.3c0.5,1.5,1.5,2.7,2.8,3.7c0.2,0.2,0.3,0.5,0.1,0.7C47.9,83.1,47.6,83.1,47.3,83C47.4,83,47.4,83,47.3,83z  M51.7,84.6c0-0.3,0.3-0.5,0.5-0.4c1.4,0.2,2.9-0.3,4.3-1.4c0.2-0.2,0.5-0.1,0.7,0.1c0.2,0.2,0.1,0.5-0.1,0.7 c-1.6,1.2-3.4,1.8-5,1.6c-0.1,0-0.1,0-0.2,0C51.8,85,51.7,84.8,51.7,84.6z M87.2,97.4c0.2-1.7,0.2-3.3,0.2-5 c0-0.3,0.2-0.5,0.5-0.5c0.3,0,0.5,0.2,0.5,0.5c0.1,1.7,0,3.4-0.2,5.1c0,0.3-0.3,0.5-0.5,0.4c-0.1,0-0.1,0-0.2,0 C87.3,97.8,87.1,97.6,87.2,97.4z M43.7,73.6c0.2-1.6,0.7-3.2,1.5-4.8l0.1-0.1c0.1-0.2,0.4-0.3,0.7-0.2c0,0,0,0,0,0 c0.2,0.1,0.3,0.4,0.2,0.7l-0.1,0.1c-0.7,1.5-1.2,3-1.4,4.5c0,0.3-0.3,0.5-0.6,0.4c-0.1,0-0.1,0-0.2,0 C43.8,74,43.7,73.8,43.7,73.6z M60,79.8c-0.2-0.1-0.3-0.5-0.1-0.7c0.4-0.6,0.8-1.3,1.1-2c0.4-0.8,0.7-1.6,1-2.4 c0.1-0.3,0.4-0.4,0.6-0.3c0.3,0.1,0.4,0.4,0.3,0.6c-0.3,0.9-0.7,1.7-1.1,2.5c-0.4,0.7-0.8,1.4-1.2,2.1C60.5,79.9,60.2,80,60,79.8 C60,79.9,60,79.8,60,79.8z M86.8,87.5c-0.3-1.6-0.7-3.2-1.2-4.8c-0.1-0.3,0.1-0.5,0.3-0.6c0.3-0.1,0.5,0.1,0.6,0.3 c0.5,1.6,1,3.3,1.2,4.9c0,0.3-0.1,0.5-0.4,0.6c-0.1,0-0.2,0-0.3,0C87,87.7,86.9,87.6,86.8,87.5z M48.2,65.1 c-0.2-0.2-0.2-0.5,0-0.7c1.2-1.3,2.5-2.4,3.9-3.4c0.2-0.1,0.5-0.1,0.7,0.1c0.1,0.2,0.1,0.5-0.1,0.7c-1.4,0.9-2.6,2-3.7,3.2 c-0.2,0.2-0.4,0.2-0.6,0.1C48.3,65.2,48.3,65.1,48.2,65.1z M63.3,70c0.3-1.6,0.5-3.3,0.5-4.9c0-0.3,0.2-0.5,0.5-0.5 c0.3,0,0.5,0.2,0.5,0.5c-0.1,1.7-0.2,3.4-0.5,5.1c0,0.3-0.3,0.4-0.6,0.4c0,0-0.1,0-0.1,0C63.3,70.4,63.2,70.2,63.3,70z M83.8,78 c-0.7-1.5-1.5-3-2.4-4.3c-0.1-0.2-0.1-0.5,0.1-0.7c0.2-0.1,0.5-0.1,0.7,0.2c0.9,1.4,1.7,2.9,2.5,4.4c0.1,0.2,0,0.5-0.2,0.7 c-0.1,0.1-0.3,0.1-0.4,0C83.9,78.2,83.8,78.1,83.8,78z M56.5,59.6c-0.1-0.3,0.1-0.5,0.4-0.6c1.7-0.4,3.4-0.5,5.2-0.3 c0.3,0,0.5,0.3,0.4,0.5c0,0.3-0.3,0.5-0.5,0.4c-1.7-0.2-3.3-0.1-4.8,0.3c-0.1,0-0.2,0-0.3,0C56.6,59.8,56.5,59.7,56.5,59.6z  M78.4,69.7c-1.1-1.3-2.2-2.5-3.4-3.6c-0.2-0.2-0.2-0.5,0-0.7c0.2-0.2,0.5-0.2,0.7,0c1.2,1.1,2.4,2.4,3.5,3.7 c0.2,0.2,0.1,0.5-0.1,0.7c-0.2,0.1-0.4,0.1-0.5,0.1C78.5,69.8,78.4,69.7,78.4,69.7z M63.6,60.1c-0.2-1.6-0.4-3.3-0.8-4.9 c-0.1-0.3,0.1-0.5,0.4-0.6c0.3-0.1,0.5,0.1,0.6,0.4c0.4,1.7,0.7,3.4,0.8,5c0,0.3-0.2,0.5-0.4,0.5c-0.1,0-0.2,0-0.3,0 C63.7,60.4,63.6,60.2,63.6,60.1z M71,63.1c-1.4-0.9-2.9-1.7-4.4-2.3c-0.3-0.1-0.4-0.4-0.3-0.6c0.1-0.3,0.4-0.4,0.6-0.3 c1.5,0.6,3.1,1.4,4.6,2.3c0.2,0.1,0.3,0.5,0.1,0.7C71.6,63.1,71.3,63.2,71,63.1C71.1,63.1,71.1,63.1,71,63.1z M61.3,50.4 c-0.6-1.5-1.3-3-2.1-4.5c-0.1-0.2-0.1-0.5,0.2-0.7c0.2-0.1,0.5-0.1,0.7,0.2c0.9,1.5,1.6,3.1,2.2,4.6c0.1,0.3,0,0.5-0.3,0.6 c-0.1,0.1-0.3,0-0.4,0C61.5,50.6,61.4,50.5,61.3,50.4z M56.5,41.8c-1-1.3-2.1-2.6-3.2-3.8c-0.2-0.2-0.2-0.5,0-0.7 c0.2-0.2,0.5-0.2,0.7,0c1.2,1.3,2.3,2.6,3.3,3.9c0.2,0.2,0.1,0.5-0.1,0.7c-0.2,0.1-0.4,0.1-0.5,0C56.6,41.9,56.5,41.8,56.5,41.8z  M49.7,34.5c-1.2-1.1-2.5-2.1-3.9-3.2c-0.2-0.2-0.3-0.5-0.1-0.7c0.2-0.2,0.5-0.3,0.7-0.1c1.4,1,2.7,2.1,3.9,3.2 c0.2,0.2,0.2,0.5,0,0.7c-0.2,0.2-0.4,0.2-0.6,0.1C49.7,34.6,49.7,34.5,49.7,34.5z M41.7,28.5c-1.4-0.9-2.8-1.8-4.3-2.6 c-0.2-0.1-0.3-0.4-0.2-0.7c0.1-0.2,0.4-0.3,0.7-0.2c1.5,0.8,2.9,1.7,4.3,2.6c0.2,0.1,0.3,0.5,0.1,0.7 C42.2,28.6,42,28.6,41.7,28.5C41.7,28.5,41.7,28.5,41.7,28.5z"></path>
+														<path class="fill-white" d="M30.7,22.6C30.7,22.6,30.7,22.6,30.7,22.6c0,0,0.9,0.4,2.3,1c0.2,0.1,0.5,0,0.7-0.2c0.1-0.2,0-0.5-0.2-0.7 c0,0,0,0,0,0c-1.4-0.7-2.2-1-2.3-1c-0.3-0.1-0.5,0-0.6,0.3C30.3,22.2,30.4,22.5,30.7,22.6z"></path>
+														<path class="fill-warning" d="M22.6,23.6l-1.1-4.1c0,0-11.7-7.5-11.9-7.6c-0.1-0.2-4.9-6.5-4.9-6.5l8.2,3.5l12.2,8.4L22.6,23.6z"></path>
+														<polygon class="fill-warning opacity-6" points="31.2,12.3 4.7,5.4 25.1,17.2"></polygon>
+														<polygon class="fill-warning opacity-6" points="21.5,19.5 15,24.8 4.7,5.4 "></polygon>
+													</svg>
+												</figure>
+												<!-- Body -->
+												<div class="card-body">
+													<!-- Title -->
+													<h5 class="card-title text-white mb-2">Access 25K Online courses from 120 institutions, Start today!</h5>
+													<p class="text-white text-opacity-75">Here is the description of premium features which will allow users to get benefits and save a lot of money</p>
+													<!-- Button -->
+													<a href="#" class="btn btn-sm btn-dark mb-0">Purchase Premium</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</li>
+							<li> <a class="dropdown-item" href="#">Music</a></li>
+							<li> <a class="dropdown-item" href="#">Lifestyle</a></li>
+							<li> <a class="dropdown-item" href="#">IT & software</a></li>
+							<li> <a class="dropdown-item" href="#">Personal development</a></li>
+							<li> <a class="dropdown-item" href="#">Health & fitness</a></li>
+							<li> <a class="dropdown-item" href="#">Teaching</a></li>
+							<li> <a class="dropdown-item" href="#">Social science</a></li>
+							<li> <a class="dropdown-item" href="#">Math & logic</a></li>
+							<li> <hr class="dropdown-divider"></li>
+							<li> <a class="dropdown-item bg-primary text-primary bg-opacity-10 rounded-2 mb-0" href="#">View all categories</a></li>
+						</ul>
+					</li>
+				</ul>
+				<!-- Nav category menu END -->
+
+				<!-- Nav Main menu START -->
+				<ul class="navbar-nav navbar-nav-scroll me-auto">
+					<!-- Nav item 1 Demos -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle active" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">services</a>
+						<ul class="dropdown-menu" aria-labelledby="demoMenu">
+							<li><a class="dropdown-item active" href="{{ path('home_portfolio') }}">portfolio</a></li>
+							<li> <a class="dropdown-item" href="{{ path('evenement_list') }}">évennements</a></li>
+							<li> <a class="dropdown-item" href="{{ path('home') }}">certification</a></li>
+							
+						
+						</ul>
+					</li>
+
+					<!-- Nav item 2 Pages -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
+						<ul class="dropdown-menu" aria-labelledby="pagesMenu">
+							<!-- Dropdown submenu -->
+
+							<li>
+								<a class="dropdown-item" href="{{ path('app_courses') }}">Cours</a>
+							</li>
+
+							
+
+							
+
+
+
+							<!-- Dropdown submenu -->
+							
+
+							<!-- Dropdown submenu -->
+							
+
+							<li> <a class="dropdown-item" href="{{ path('app_courses') }}">ressources</a></li>
+							
+					
+
+						
+
+						
+
+							<!-- Dropdown submenu -->
+							<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#">Authentication</a>
+								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+									<li> <a class="dropdown-item" href="sign-in.html">Sign In</a></li>
+									<li> <a class="dropdown-item" href="sign-up.html">Sign Up</a></li>
+									<li> <a class="dropdown-item" href="forgot-password.html">Forgot Password</a></li>
+								</ul>
+							</li>
+
+							<!-- Dropdown submenu -->
+							
+
+							<!-- Dropdown submenu -->
+							<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#">projets</a>
+								
+							</li>
+                              <!-- Dropdown submenu -->
+                    <li><a class="dropdown-item" href="{{ path('quiz') }}">QUIZ</a></li>
+
+ 
+
+                    <!-- Dropdown submenu -->
+
+						</ul>
+					</li>
+                  
+
+					<!-- Nav item 3 Account -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
+						<ul class="dropdown-menu" aria-labelledby="accounntMenu">
+							<!-- Dropdown submenu -->
+							<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#"><i class="fas fa-user-tie fa-fw me-1"></i>enseignants</a>
+								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+	<li>
+    <a class="dropdown-item" href="{{ path('instructor') }}">Dashboard</a>
+</li>
+
+
+									<li> <a class="dropdown-item" href="{{ path('admin_cours_index') }}"><i class="bi bi-basket-fill fa-fw me-1"></i>Cours</a> </li>
+									<li> <a class="dropdown-item" href="{{ path('admin_cours_index') }}"><i class="bi bi-file-earmark-plus-fill fa-fw me-1"></i>Créer un cours</a> </li>
+									<li> <a class="dropdown-item" href="{{ path('quiz_admin') }}"><i class="bi bi-question-diamond fa-fw me-1"></i>Quiz</a> </li>
+									<li> <a class="dropdown-item" href="{{ path('admin_evenement_list') }}"><i class="bi bi-calendar3 fa-fw me-1"></i>Événements</a> </li>
+									<li> <a class="dropdown-item" href="{{ path('admin_ressources_index') }}"><i class="bi bi-folder2-open fa-fw me-1"></i>Ressources</a> </li>
+								</ul>
+							</li>
+
+							<!-- Dropdown submenu -->
+								<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#"><i class="fas fa-user-graduate fa-fw me-1"></i>etudiants</a>
+								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+									<li>
+    <a class="dropdown-item" href="{{ path('student_dashboard') }}">
+        <i class="bi bi-grid-fill fa-fw me-1"></i>
+        Dashboard
+    </a>
+</li>
+
+									<li> <a class="dropdown-item" href="{{ path('app_courses') }}"><i class="bi bi-basket-fill fa-fw me-1"></i>Cours</a> </li>
+									<li> <a class="dropdown-item" href="{{ path('quiz') }}"><i class="bi bi-question-diamond fa-fw me-1"></i>Quiz</a> </li>
+									<li> <a class="dropdown-item" href="{{ path('evenement_list') }}"><i class="bi bi-calendar3 fa-fw me-1"></i>Événements</a> </li>
+								</ul>
+							</li>
+							
+							<li>
+    <a class="dropdown-item" href="{{ path('admin_dashboard') }}">
+        <i class="fas fa-user-cog fa-fw me-1"></i>
+        Admin
+    </a>
+</li>
+
+							<li> <hr class="dropdown-divider"></li>
+							<li> <a class="dropdown-item" href="{{ path('student_dashboard') }}"><i class="fas fa-fw fa-edit me-1"></i>Mon profil</a> </li>
+							<li> <a class="dropdown-item" href="{{ path('admin_dashboard') }}"><i class="fas fa-fw fa-cog me-1"></i>Paramètres</a> </li>
+							
+							<li> <hr class="dropdown-divider"></li>
+							<!-- Dropdown Level -->
+							<li class="dropdown-submenu dropend">
+								<a class="dropdown-item dropdown-toggle" href="#">Dropdown levels</a>
+								<ul class="dropdown-menu dropdown-menu-start" data-bs-popper="none">
+
+									<!-- dropdown submenu open right -->
+									<li class="dropdown-submenu dropend">
+										<a class="dropdown-item dropdown-toggle" href="#">Dropdown (end)</a>
+										<ul class="dropdown-menu" data-bs-popper="none">
+											<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+											<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+										</ul>
+									</li>
+									<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+
+									<!-- dropdown submenu open left -->
+									<li class="dropdown-submenu dropstart">
+										<a class="dropdown-item dropdown-toggle" href="#">Dropdown (start)</a>
+										<ul class="dropdown-menu dropdown-menu-end" data-bs-popper="none">
+											<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+											<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+										</ul>
+									</li>
+									<li> <a class="dropdown-item" href="#">Dropdown item</a> </li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+
+					<!-- Nav item 4 Megamenu-->
+					<li class="nav-item dropdown dropdown-fullwidth">
+						<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Megamenu</a>
+						<div class="dropdown-menu dropdown-menu-end" data-bs-popper="none">
+							<div class="row p-4">
+								<!-- Dropdown column item -->
+								<div class="col-xl-6 col-xxl-3 mb-3">
+									<h6 class="mb-0">Get started</h6>
+									<hr>
+									<ul class="list-unstyled">
+										<li> <a class="dropdown-item" href="#">Market research</a> </li>
+										<li> <a class="dropdown-item" href="#">Advertising</a> </li>
+										<li> <a class="dropdown-item" href="#">Consumer behavior</a> </li>
+										<li> <a class="dropdown-item" href="#">Digital marketing</a> </li>
+										<li> <a class="dropdown-item" href="#">Marketing ethics</a> </li>
+										<li> <a class="dropdown-item" href="#">Social media marketing</a> </li>
+										<li> <a class="dropdown-item" href="#">Public relations</a> </li>
+										<li> <a class="dropdown-item" href="#">Advertising</a> </li>
+										<li> <a class="dropdown-item" href="#">Decision science</a> </li>
+										<li> <a class="dropdown-item" href="#">SEO</a> </li>
+										<li> <a class="dropdown-item" href="#">Business marketing</a> </li>
+									</ul>
+								</div>
+								
+								<!-- Dropdown column item -->
+								<div class="col-xl-6 col-xxl-3 mb-3">
+									<h6 class="mb-0">Degree</h6>
+									<hr>
+									<!-- Dropdown item -->
+									<div class="mb-2 position-relative bg-primary-soft-hover rounded-2 transition-base p-3">
+										<a class="stretched-link h6 mb-0" href="#">Contact management</a>
+										<p class="mb-0 small text-truncate-2">Speedily say has suitable disposal add boy. On forth doubt miles of child.</p>
+									</div>
+									<!-- Dropdown item -->
+									<div class="mb-2 position-relative bg-primary-soft-hover rounded-2 transition-base p-3">
+										<a class="stretched-link h6 mb-0" href="#">Sales pipeline</a>
+										<p class="mb-0 small text-truncate-2">Speedily say has suitable disposal add boy. On forth doubt miles of child.</p>
+									</div>
+									<!-- Dropdown item -->
+									<div class="position-relative bg-primary-soft-hover rounded-2 transition-base p-3">
+										<a class="stretched-link h6 mb-0" href="#">Security & Permission</a>
+										<p class="mb-0 small text-truncate-2">Speedily say has suitable disposal add boy. On forth doubt miles of child.</p>
+									</div>
+								</div>
+
+								<!-- Dropdown column item -->
+								<div class="col-xl-6 col-xxl-3 mb-3">
+									<h6 class="mb-0">Certificate</h6>
+									<hr>
+									<!-- Dropdown item -->
+									<div class="d-flex mb-4 position-relative">
+										<h2 class="mb-0"><i class="fab fa-fw fa-google text-google-icon"></i></h2>
+										<div class="ms-2">
+											<a class="stretched-link h6 mb-0" href="#">Google SEO certificate</a>
+											<p class="mb-0 small">No prerequisites</p>
+										</div>
+									</div>
+									<!-- Dropdown item -->
+									<div class="d-flex mb-4 position-relative">
+										<h2 class="mb-0"><i class="fab fa-fw fa-linkedin-in text-linkedin"></i></h2>
+										<div class="ms-2">
+											<a class="stretched-link h6 mb-0" href="#">Business Development Executive(BDE)</a>
+											<p class="mb-0 small">No prerequisites</p>
+										</div>
+									</div>
+									<!-- Dropdown item -->
+									<div class="d-flex mb-4 position-relative">
+										<h2 class="mb-0"><i class="fab fa-fw fa-facebook text-facebook"></i></h2>
+										<div class="ms-2">
+											<a class="stretched-link h6 mb-0" href="#">Facebook social media marketing</a>
+											<p class="mb-0 small">Expert advice</p>
+										</div>
+									</div>
+									<!-- Dropdown item -->
+									<div class="d-flex mb-4 position-relative">
+										<h2 class="mb-0"><i class="fas fa-fw fa-basketball-ball text-dribbble"></i></h2>
+										<div class="ms-2">
+											<a class="stretched-link h6 mb-0" href="#">Creative graphics design</a>
+											<p class="mb-0 small">No prerequisites</p>
+										</div>
+									</div>
+								</div>
+
+								<!-- Dropdown column item -->
+								<div class="col-xl-6 col-xxl-3 mb-3">
+									<h6 class="mb-0">Download Eduport</h6>
+									<hr>
+									<!-- Image -->
+									<img src="assets/images/element/14.svg" alt="">
+
+									<!-- Download button -->
+									<div class="row g-2 justify-content-center mt-3">
+										<!-- Google play store button -->
+										<div class="col-6 col-sm-4 col-xxl-6">
+											<a href="#"> <img src="assets/images/client/google-play.svg" class="btn-transition" alt="google-store"> </a>
+										</div>
+										<!-- App store button -->
+										<div class="col-6 col-sm-4 col-xxl-6">
+											<a href="#"> <img src="assets/images/client/app-store.svg" class="btn-transition" alt="app-store"> </a>
+										</div>
+									</div>
+								</div>
+
+								<!-- Action box -->
+								<div class="col-12">
+									<div class="alert alert-success alert-dismissible fade show mt-2 mb-0 rounded-3" role="alert">
+										<!-- Avatar -->
+										<div class="avatar avatar-xs me-2">
+											<img class="avatar-img rounded-circle" src="assets/images/avatar/09.jpg" alt="avatar">
+										</div>
+										<!-- Info -->
+										The personality development class starts at 2:00 pm, click to <a href="#" class="alert-link">Join Now</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+
+					<!-- Nav item 5 link-->
+					<li class="nav-item dropdown">
+						<a class="nav-link" href="#" id="advanceMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<i class="fas fa-ellipsis-h"></i>
+						</a>
+						<ul class="dropdown-menu dropdown-menu-end min-w-auto" data-bs-popper="none">
+							<li> 
+								<a class="dropdown-item" href="https://support.webestica.com/" target="_blank">
+									<i class="text-warning fa-fw bi bi-life-preserver me-2"></i>Support
+								</a> 
+							</li>
+							<li> 
+								<a class="dropdown-item" href="docs/index.html" target="_blank">
+									<i class="text-danger fa-fw bi bi-card-text me-2"></i>Documentation
+								</a> 
+							</li>
+							<li> <hr class="dropdown-divider"></li>
+							<li> 
+								<a class="dropdown-item" href="rtl/index.html" target="_blank">
+									<i class="text-info fa-fw bi bi-toggle-off me-2"></i>RTL demo
+								</a> 
+							</li>
+							<li> 
+								<a class="dropdown-item" href="https://themes.getbootstrap.com/store/webestica/" target="_blank">
+									<i class="text-success fa-fw bi bi-cloud-download-fill me-2"></i>Buy Eduport!
+								</a> 
+							</li>
+							<li> <hr class="dropdown-divider"></li>
+							<li> 
+								<a class="dropdown-item" href="docs/alerts.html" target="_blank">
+									<i class="text-orange fa-fw bi bi-puzzle-fill me-2"></i>Components
+								</a> 
+							</li>
+							<li> 
+								<a class="dropdown-item" href="docs/snippets.html">
+									<i class="text-purple fa-fw bi bi-stickies-fill me-2"></i>Snippets
+								</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<!-- Nav Main menu END -->
+
+				<!-- Nav Search START -->
+				<div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+					<div class="nav-item w-100">
+						<form class="position-relative">
+							<input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
+							<button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+								<i class="fas fa-search fs-6 "></i>
+							</button>
+						</form>
+					</div>
+				</div>
+				<!-- Nav Search END -->
+			</div>
+			<!-- Main navbar END -->
+<li>
+    <a class="dropdown-item bg-success-soft-hover" href="{{ path('app_login') }}">
+        <i class="bi bi-box-arrow-in-right fa-fw me-2"></i>Connexion
+    </a>
+</li>
+<li> <hr class="dropdown-divider"></li>
+<!-- Nav Search START -->
+<div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+    <div class="nav-item w-100">
+        <form class="position-relative">
+            <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
+            <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
+                <i class="fas fa-search fs-6 "></i>
             </button>
+        </form>
+    </div>
+</div>
+<!-- Nav Search END -->
 
-            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
-                <ul class="navbar-nav navbar-nav-scroll me-auto">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active" href="#" id="demoMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Services</a>
-                        <ul class="dropdown-menu" aria-labelledby="demoMenu">
-                            <li><a class="dropdown-item active" href="{{ path('home_portfolio') }}">Portfolio</a></li>
-                            <li><a class="dropdown-item" href="{{ path('evenement_list') }}">Événements</a></li>
-                            <li><a class="dropdown-item" href="{{ path('home') }}">Certification</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
-                        <ul class="dropdown-menu" aria-labelledby="pagesMenu">
-                            <li><a class="dropdown-item" href="{{ path('quiz') }}">QUIZ</a></li>
-                            <li><a class="dropdown-item" href="{{ path('app_courses') }}">Cours & Ressources</a></li>
-                            <li><a class="dropdown-item" href="{{ path('home_portfolio') }}">Projets</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Accounts</a>
-                        <ul class="dropdown-menu" aria-labelledby="accounntMenu">
-                            <li><a class="dropdown-item" href="{{ path('instructor') }}"><i class="fas fa-user-tie fa-fw me-1"></i>Enseignants</a></li>
-                            <li><a class="dropdown-item" href="{{ path('student_dashboard') }}"><i class="fas fa-user-graduate fa-fw me-1"></i>Étudiants</a></li>
-                            <li><a class="dropdown-item" href="{{ path('admin_dashboard') }}"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a></li>
-                        </ul>
-                    </li>
-                </ul>
-
-                <div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
-                    <div class="nav-item w-100">
-                        <form class="position-relative">
-                            <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search" aria-label="Search">
-                            <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset" type="submit">
-                                <i class="fas fa-search fs-6 "></i>
-                            </button>
-                        </form>
+<!-- Profile START -->
+<div class="dropdown ms-1 ms-lg-0">
+    <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
+        {% if app.user %}
+            <!-- Logged in user avatar -->
+            <div class="avatar-img rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <span class="fw-bold">{{ app.user.prenom|first|upper }}{{ app.user.nom|first|upper }}</span>
+            </div>
+        {% else %}
+            <!-- Guest avatar -->
+            <div class="avatar-img rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <i class="bi bi-person"></i>
+            </div>
+        {% endif %}
+    </a>
+    
+    <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+        {% if app.user %}
+            <!-- LOGGED IN USER -->
+            <!-- Profile info -->
+            <li class="px-3 mb-3">
+                <div class="d-flex align-items-center">
+                    <!-- Avatar -->
+                    <div class="avatar me-3">
+                        <div class="avatar-img rounded-circle shadow bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                            <span class="fw-bold fs-5">{{ app.user.prenom|first|upper }}{{ app.user.nom|first|upper }}</span>
+                        </div>
+                    </div>
+                    <div>
+                        <a class="h6 mb-0" href="{{ path('app_user_profile_edit') }}">{{ app.user.prenom }} {{ app.user.nom }}</a>
+                        <p class="small m-0">{{ app.user.email }}</p>
+                        <span class="badge bg-{{ app.user.role.value == 'admin' ? 'danger' : (app.user.role.value == 'teacher' ? 'primary' : 'info') }} mt-1">
+                            {{ app.user.role.value == 'admin' ? 'Administrateur' : (app.user.role.value == 'teacher' ? 'Enseignant' : 'Étudiant') }}
+                        </span>
                     </div>
                 </div>
-            </div>
-
-            <div class="dropdown ms-1 ms-lg-0">
-                <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-display="static" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+            </li>
+            <li> <hr class="dropdown-divider"></li>
+            
+            <!-- Links -->
+            <li>
+                <a class="dropdown-item" href="{{ path('app_user_profile_edit') }}">
+                    <i class="bi bi-person fa-fw me-2"></i>Mon Profil
                 </a>
-                <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
-                    <li><a class="dropdown-item bg-danger-soft-hover" href="#"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+            </li>
+            
+            {% if is_granted('ROLE_ADMIN') %}
+                <li>
+                    <a class="dropdown-item" href="{{ path('admin_dashboard') }}">
+                        <i class="bi bi-speedometer2 fa-fw me-2"></i>Dashboard Admin
+                    </a>
+                </li>
+            {% endif %}
+            
+            <li>
+                <a class="dropdown-item" href="#">
+                    <i class="bi bi-gear fa-fw me-2"></i>Paramètres
+                </a>
+            </li>
+            
+            <li>
+                <a class="dropdown-item" href="#">
+                    <i class="bi bi-info-circle fa-fw me-2"></i>Aide
+                </a>
+            </li>
+            
+            <li> <hr class="dropdown-divider"></li>
+            
+            <li>
+                <a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_logout') }}">
+                    <i class="bi bi-power fa-fw me-2"></i>Déconnexion
+                </a>
+            </li>
+
+          
+        {% endif %}
+    </ul>
+</div>
+<!-- Profile END -->
+		</div>
+	</nav>
 </header>
 
 <!-- Gradient Header -->
@@ -283,11 +846,15 @@
                     </div>
                     <div class="vr bg-white-50"></div>
                     <div class="ms-4">
-                        {% set rating = attribute(course, 'rating') is defined ? course.rating : 4.5 %}
-                        {% for i in 1..5 %}
-                            <i class="fas fa-star{% if i <= rating|round %} text-warning{% else %} text-white-50{% endif %}"></i>
-                        {% endfor %}
-                        <span class="text-white ms-1">{{ rating }}/5</span>
+{% set ratingOn5 = averageRating ? (averageRating / 20) : 0 %}
+{% for i in 1..5 %}
+    <i class="fas fa-star{% if i <= ratingOn5|round %} text-warning{% else %} text-white-50{% endif %}"></i>
+{% endfor %}
+{% if averageRating %}
+    <span class="text-white ms-1">{{ averageRating|number_format(1) }}/100</span>
+{% else %}
+    <span class="text-white ms-1">Non noté</span>
+{% endif %}
                     </div>
                 </div>
             </div>
@@ -363,8 +930,12 @@
                                     <i class="fas fa-star text-warning fa-lg"></i>
                                 </div>
                                 <div>
-                                    <h3 class="mb-0">{{ attribute(course, 'rating') is defined ? course.rating : '4.5' }}</h3>
-                                    <p class="text-muted mb-0">Évaluation</p>
+{% if averageRating %}
+    <h3 class="mb-0">{{ averageRating|number_format(1) }}<small class="fs-6 text-muted">/100</small></h3>
+{% else %}
+    <h3 class="mb-0 text-muted">—</h3>
+{% endif %}
+<p class="text-muted mb-0">Évaluation</p>
                                 </div>
                             </div>
                             <p class="text-muted small mb-0">Note moyenne du cours</p>
@@ -683,13 +1254,27 @@
                             </h3>
                             <p class="text-muted mb-0 mt-2">Explorez les différents supports d'apprentissage</p>
                         </div>
-                        <div>
-                            <a href="{{ path('course_ressources_pdf', {'id': course.id}) }}" 
-                               class="btn btn-danger" 
-                               target="_blank">
-                                <i class="fas fa-file-pdf me-2"></i>Télécharger toutes
-                            </a>
-                        </div>
+                       
+<!-- Dans la section des actions rapides ou à côté du bouton PDF -->
+<div class="d-flex gap-2 mb-4 flex-wrap">
+    <a href="{{ path('course_ressources_pdf', {'id': course.id}) }}" 
+       class="btn btn-danger rounded-pill px-4" 
+       target="_blank">
+        <i class="fas fa-file-pdf me-2"></i>Télécharger toutes
+    </a>
+    
+    {% if app.user and (app.user == course.user or is_granted('ROLE_ADMIN')) %}
+        <a href="{{ path('app_live_teacher', {'courseId': course.id}) }}" class="btn btn-success rounded-pill px-4">
+            <i class="fas fa-video me-2"></i>Démarrer le Live
+        </a>
+    {% endif %}
+    <a href="{{ path('summary_view', {'id': course.id}) }}" class="btn btn-info rounded-pill px-4">
+        <i class="fas fa-robot me-2"></i>Voir le résumé IA
+    </a>
+    <a href="{{ path('summary_generate', {'id': course.id}) }}" class="btn btn-outline-info rounded-pill px-4">
+        <i class="fas fa-magic me-2"></i>Générer nouveau
+    </a>
+</div>
                     </div>
                 </div>
                 <div class="card-body p-4">
@@ -898,6 +1483,9 @@
                         Exporter en PDF
                     </h5>
                     <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#qrCodeModal">
+        <i class="fas fa-qrcode me-2"></i>QR Code
+    </button>
                         <a href="{{ path('course_pdf', {'id': course.id}) }}" 
                            class="btn btn-outline-danger" 
                            target="_blank">
@@ -1472,4 +2060,709 @@ document.addEventListener('DOMContentLoaded', function() {
     images.forEach(img => imageObserver.observe(img));
 });
 </script>
+<!-- Modal QR Code - VERSION CORRECTE SANS GOOGLE -->
+<!-- MODAL QR CODE - Version avec données intégrées -->
+<div class="modal fade" id="qrCodeModal" tabindex="-1" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white border-0">
+                <h5 class="modal-title" id="qrCodeModalLabel">
+                    <i class="fas fa-qrcode me-2"></i>
+                    QR Code du cours
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body text-center p-4">
+                {# Préparer toutes les données du cours #}
+                {% set images = resources|filter(r => r.fileName and r.fileName|lower|split('.')|last in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff']) %}
+                {% set videos = resources|filter(r => r.fileName and r.fileName|lower|split('.')|last in ['mp4', 'mov', 'avi', 'mkv', 'webm', 'wmv', 'flv', 'm4v']) %}
+                {% set pdfs = resources|filter(r => r.fileName and r.fileName|lower|split('.')|last == 'pdf') %}
+                {% set audios = resources|filter(r => r.fileName and r.fileName|lower|split('.')|last in ['mp3', 'wav', 'ogg', 'm4a', 'flac', 'aac']) %}
+                {% set documents = resources|filter(r => r.fileName and r.fileName|lower|split('.')|last in ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx']) %}
+                {% set links = resources|filter(r => r.url) %}
+                
+                {# Créer un objet avec toutes les informations #}
+                {% set courseContent = {
+                    'titre': course.titre,
+                    'description': course.description|striptags,
+                    'matiere': course.matiere|default('Général'),
+                    'niveau': course.niveau|default('Tous niveaux'),
+                    'duree': course.duree|default(0),
+                    'formateur': course.emailProf|default('Path2Learn'),
+                    'date': course.dateCreation|date('d/m/Y'),
+                    'statistiques': {
+                        'total_ressources': resources|length,
+                        'pdfs': pdfs|length,
+                        'videos': videos|length,
+                        'images': images|length,
+                        'audios': audios|length,
+                        'documents': documents|length,
+                        'liens': links|length
+                    },
+                    'ressources_details': []
+                } %}
+                
+                {# Ajouter les détails des premières ressources (limité à 5 pour ne pas surcharger) #}
+                {% for resource in resources|slice(0, 5) %}
+                    {% if resource.fileName %}
+                        {% set extension = resource.fileName|lower|split('.')|last %}
+                        {% set type = 'fichier' %}
+                        {% if extension in ['jpg', 'jpeg', 'png'] %} {% set type = 'image' %}
+                        {% elseif extension in ['mp4', 'mov'] %} {% set type = 'video' %}
+                        {% elseif extension == 'pdf' %} {% set type = 'pdf' %}
+                        {% elseif extension in ['mp3', 'wav'] %} {% set type = 'audio' %}
+                        {% endif %}
+                        
+                        {% set courseContent = courseContent|merge({
+                            'ressources_details': courseContent.ressources_details|merge([{
+                                'titre': resource.titre|default(resource.fileName),
+                                'type': type,
+                                'extension': extension
+                            }])
+                        }) %}
+                    {% elseif resource.url %}
+                        {% set courseContent = courseContent|merge({
+                            'ressources_details': courseContent.ressources_details|merge([{
+                                'titre': resource.titre|default('Lien externe'),
+                                'type': 'lien',
+                                'url': resource.url
+                            }])
+                        }) %}
+                    {% endif %}
+                {% endfor %}
+                
+                {# Convertir en JSON #}
+                {% set jsonData = courseContent|json_encode %}
+                
+                {# QR code avec les données JSON #}
+                <div class="mb-4 p-3 bg-light rounded-3">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ jsonData|url_encode }}" 
+                         alt="QR Code" 
+                         class="img-fluid"
+                         style="max-width: 250px;">
+                </div>
+                
+                <!-- Aperçu des données -->
+                <div class="text-start mb-3 p-3 bg-light rounded-3" style="max-height: 200px; overflow-y: auto;">
+                    <h6 class="fw-bold mb-2">📋 Contenu du QR code :</h6>
+                    <small class="text-muted">
+                        <i class="fas fa-check-circle text-success me-1"></i>{{ course.titre }}<br>
+                        <i class="fas fa-align-left me-1"></i>{{ course.description|striptags|slice(0, 100) }}...<br>
+                        <i class="fas fa-layer-group me-1"></i>{{ resources|length }} ressources<br>
+                        {% if pdfs|length > 0 %}📄 {{ pdfs|length }} PDF • {% endif %}
+                        {% if videos|length > 0 %}🎬 {{ videos|length }} vidéos • {% endif %}
+                        {% if images|length > 0 %}🖼️ {{ images|length }} images{% endif %}
+                    </small>
+                </div>
+                
+                <!-- Boutons d'action -->
+                <div class="d-flex gap-2 justify-content-center">
+                    <a href="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data={{ jsonData|url_encode }}" 
+                       class="btn btn-primary rounded-pill px-4"
+                       target="_blank">
+                        <i class="fas fa-download me-2"></i>Télécharger le QR code
+                    </a>
+                    
+                    <button type="button" 
+                            class="btn btn-outline-secondary rounded-pill px-4"
+                            onclick="previewQRData({{ jsonData|json_encode|raw }})">
+                        <i class="fas fa-eye me-2"></i>Aperçu
+                    </button>
+                </div>
+                
+                <div class="mt-3">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Ce QR code contient directement la description et les {{ resources|length }} ressources du cours
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function previewQRData(data) {
+    // Afficher un aperçu des données dans une alerte
+    let message = "📦 DONNÉES DU COURS\n\n";
+    message += `📚 Titre : ${data.titre}\n`;
+    message += `📝 Description : ${data.description.substring(0, 100)}...\n`;
+    message += `🏷️ Matière : ${data.matiere}\n`;
+    message += `📊 Niveau : ${data.niveau}\n`;
+    message += `⏱️ Durée : ${data.duree} minutes\n`;
+    message += `👨‍🏫 Formateur : ${data.formateur}\n`;
+    message += `📅 Date : ${data.date}\n\n`;
+    message += `📊 STATISTIQUES\n`;
+    message += `📄 PDF : ${data.statistiques.pdfs}\n`;
+    message += `🎬 Vidéos : ${data.statistiques.videos}\n`;
+    message += `🖼️ Images : ${data.statistiques.images}\n`;
+    message += `🎵 Audios : ${data.statistiques.audios}\n`;
+    message += `📑 Documents : ${data.statistiques.documents}\n`;
+    message += `🔗 Liens : ${data.statistiques.liens}\n`;
+    
+    if (data.ressources_details.length > 0) {
+        message += `\n📋 PREMIÈRES RESSOURCES\n`;
+        data.ressources_details.slice(0, 3).forEach(r => {
+            let emoji = r.type === 'pdf' ? '📄' : 
+                       r.type === 'video' ? '🎬' :
+                       r.type === 'image' ? '🖼️' :
+                       r.type === 'audio' ? '🎵' :
+                       r.type === 'lien' ? '🔗' : '📁';
+            message += `${emoji} ${r.titre}\n`;
+        });
+    }
+    
+    alert(message);
+}
+</script>
+{# Dans course/show.html.twig — juste avant </body> #}
+
+{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+<div id="chatbot-container" class="chatbot-wrapper">
+
+    {# Bouton flottant pour ouvrir/fermer #}
+    <button id="chatbot-toggle" class="chatbot-toggle-btn" title="Assistant IA">
+        <span id="chatbot-icon-open">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+        </span>
+        <span id="chatbot-icon-close" style="display:none;">✕</span>
+        <span id="chatbot-badge" class="chatbot-badge" style="display:none;">!</span>
+    </button>
+
+    {# Fenêtre du chatbot #}
+    <div id="chatbot-window" class="chatbot-window" style="display:none;">
+
+        {# Header #}
+        <div class="chatbot-header">
+    <div class="chatbot-header-info">
+        <div class="chatbot-avatar">🤖</div>
+        <div>
+            <div class="chatbot-title">Assistant IA</div>
+            <div class="chatbot-subtitle">Spécialisé sur ce cours</div>
+        </div>
+    </div>
+    <div style="display:flex; gap:6px;">
+        {# ✅ Bouton stop TTS #}
+        <button id="chatbot-stop-tts" class="chatbot-clear-btn" title="Arrêter la lecture" style="display:none;">⏹️</button>
+        <button id="chatbot-clear" class="chatbot-clear-btn" title="Effacer l'historique">🗑️</button>
+    </div>
+</div>
+
+        {# Messages #}
+        <div id="chatbot-messages" class="chatbot-messages">
+            <div class="chatbot-msg bot">
+                <div class="chatbot-bubble">
+                    👋 Bonjour ! Je suis votre assistant IA pour le cours <strong>{{ course.titre }}</strong>.<br>
+                    Posez-moi n'importe quelle question sur le contenu de ce cours !
+                </div>
+                <div class="chatbot-time">Maintenant</div>
+            </div>
+        </div>
+
+        {# Typing indicator #}
+        <div id="chatbot-typing" class="chatbot-typing" style="display:none;">
+            <div class="chatbot-bubble">
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+            </div>
+        </div>
+
+        {# Input #}
+        <div class="chatbot-input-area">
+            <textarea
+                id="chatbot-input"
+                class="chatbot-input"
+                placeholder="Posez votre question..."
+                rows="1"
+                maxlength="500"
+            ></textarea>
+            <button id="chatbot-send" class="chatbot-send-btn" title="Envoyer">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/>
+                </svg>
+            </button>
+        </div>
+        <div class="chatbot-footer">Basé sur le contenu du cours · Gemini AI</div>
+        {# Barre de traduction rapide #}
+<div class="chatbot-translate-bar">
+    <span class="chatbot-translate-label">🌐 Traduire le cours :</span>
+    <button class="chatbot-translate-btn" onclick="translateCourse('en')">
+        🇬🇧 Anglais
+    </button>
+    <button class="chatbot-translate-btn" onclick="translateCourse('ar')">
+        🇹🇳 Arabe
+    </button>
+    <button class="chatbot-translate-btn" onclick="translateCourse('fr')">
+        🇫🇷 Français
+    </button>
+</div>
+
+    </div>
+</div>
+
+{# ====== CSS ====== #}
+<style>
+.chatbot-translate-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #f0f4ff;
+    border-top: 1px solid #e0e7ff;
+    flex-wrap: wrap;
+}
+.chatbot-translate-label {
+    font-size: 11px;
+    color: #667eea;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.chatbot-translate-btn {
+    background: white;
+    border: 1.5px solid #667eea;
+    color: #667eea;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+.chatbot-translate-btn:hover {
+    background: #667eea;
+    color: white;
+}
+.chatbot-translate-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.chatbot-wrapper {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    font-family: 'Segoe UI', sans-serif;
+}
+.chatbot-toggle-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(102,126,234,0.5);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.chatbot-toggle-btn:hover { transform: scale(1.1); box-shadow: 0 6px 25px rgba(102,126,234,0.7); }
+.chatbot-badge {
+    position: absolute; top: -4px; right: -4px;
+    background: #ff4757; color: white; border-radius: 50%;
+    width: 20px; height: 20px; font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+}
+.chatbot-window {
+    position: absolute; bottom: 75px; right: 0;
+    width: 380px; height: 560px;
+    background: #fff; border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    display: flex; flex-direction: column;
+    overflow: hidden; animation: slideUp 0.3s ease;
+}
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.chatbot-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 16px 18px; display: flex;
+    align-items: center; justify-content: space-between; color: white;
+}
+.chatbot-header-info { display: flex; align-items: center; gap: 12px; }
+.chatbot-avatar { font-size: 28px; }
+.chatbot-title { font-weight: 700; font-size: 15px; }
+.chatbot-subtitle { font-size: 11px; opacity: 0.85; }
+.chatbot-clear-btn {
+    background: rgba(255,255,255,0.2); border: none; color: white;
+    padding: 6px 10px; border-radius: 8px; cursor: pointer;
+    font-size: 14px; transition: background 0.2s;
+}
+.chatbot-clear-btn:hover { background: rgba(255,255,255,0.35); }
+.chatbot-messages {
+    flex: 1; overflow-y: auto; padding: 16px;
+    display: flex; flex-direction: column; gap: 12px; background: #f8f9ff;
+}
+.chatbot-messages::-webkit-scrollbar { width: 4px; }
+.chatbot-messages::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+.chatbot-msg { display: flex; flex-direction: column; max-width: 85%; }
+.chatbot-msg.user { align-self: flex-end; align-items: flex-end; }
+.chatbot-msg.bot  { align-self: flex-start; align-items: flex-start; }
+.chatbot-bubble {
+    padding: 10px 14px; border-radius: 16px;
+    font-size: 14px; line-height: 1.5;
+    word-break: break-word; white-space: pre-wrap;
+}
+.chatbot-msg.user .chatbot-bubble {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white; border-bottom-right-radius: 4px;
+}
+.chatbot-msg.bot .chatbot-bubble {
+    background: white; color: #333;
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.chatbot-time {
+    font-size: 10px; color: #aaa; margin-top: 4px; padding: 0 4px;
+    display: flex; align-items: center; gap: 8px;
+}
+.chatbot-typing { padding: 0 16px 8px; background: #f8f9ff; }
+.chatbot-typing .chatbot-bubble {
+    display: flex; gap: 5px; align-items: center;
+    padding: 12px 16px; background: white;
+    border-radius: 16px; border-bottom-left-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08); width: fit-content;
+}
+.typing-dot {
+    width: 8px; height: 8px; background: #667eea;
+    border-radius: 50%; animation: typingBounce 1.2s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBounce {
+    0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+    40%           { transform: scale(1);   opacity: 1;   }
+}
+.chatbot-input-area {
+    padding: 12px 14px; background: white;
+    border-top: 1px solid #eee;
+    display: flex; gap: 10px; align-items: flex-end;
+}
+.chatbot-input {
+    flex: 1; border: 1.5px solid #e0e0e0;
+    border-radius: 12px; padding: 10px 14px;
+    font-size: 14px; resize: none; outline: none;
+    font-family: inherit; max-height: 100px; transition: border-color 0.2s;
+}
+.chatbot-input:focus { border-color: #667eea; }
+.chatbot-send-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none; color: white; width: 42px; height: 42px;
+    border-radius: 12px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; flex-shrink: 0;
+}
+.chatbot-send-btn:hover   { transform: scale(1.05); }
+.chatbot-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.chatbot-footer {
+    text-align: center; font-size: 10px; color: #bbb;
+    padding: 4px 0 8px; background: white;
+}
+.chatbot-error .chatbot-bubble {
+    background: #fff0f0 !important; color: #e53e3e !important;
+    border: 1px solid #fed7d7;
+}
+/* ✅ Bouton TTS */
+.chatbot-speak-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 13px; padding: 2px 5px;
+    border-radius: 6px; transition: background 0.2s; line-height: 1;
+}
+.chatbot-speak-btn:hover { background: rgba(102,126,234,0.1); }
+@media (max-width: 480px) {
+    .chatbot-window { width: calc(100vw - 20px); right: -10px; }
+    .chatbot-wrapper { bottom: 20px; right: 20px; }
+}
+</style>
+
+{# ====== JavaScript ====== #}
+<script>
+(function () {
+    const ASK_URL   = '{{ path('chatbot_ask', {id: course.id}) }}';
+    const HIST_URL  = '{{ path('chatbot_history', {id: course.id}) }}';
+    const CLEAR_URL = '{{ path('chatbot_clear', {id: course.id}) }}';
+
+    const toggle    = document.getElementById('chatbot-toggle');
+    const window_   = document.getElementById('chatbot-window');
+    const iconOpen  = document.getElementById('chatbot-icon-open');
+    const iconClose = document.getElementById('chatbot-icon-close');
+    const messages  = document.getElementById('chatbot-messages');
+    const input     = document.getElementById('chatbot-input');
+    const sendBtn   = document.getElementById('chatbot-send');
+    const typing    = document.getElementById('chatbot-typing');
+    const clearBtn  = document.getElementById('chatbot-clear');
+    const badge     = document.getElementById('chatbot-badge');
+    const stopTtsBtn = document.getElementById('chatbot-stop-tts');
+
+    let isOpen    = false;
+    let isSending = false;
+    let lastSentTime = 0;
+    let currentUtterance = null;
+
+    // ── Ouvrir / Fermer ──────────────────────────────────────────────
+    toggle.addEventListener('click', () => {
+        isOpen = !isOpen;
+        window_.style.display = isOpen ? 'flex' : 'none';
+        iconOpen.style.display  = isOpen ? 'none' : 'flex';
+        iconClose.style.display = isOpen ? 'flex' : 'none';
+        badge.style.display = 'none';
+        if (isOpen) {
+            loadHistory();
+            setTimeout(() => input.focus(), 300);
+        }
+    });
+
+    // ── Charger l'historique ─────────────────────────────────────────
+    function loadHistory() {
+        fetch(HIST_URL)
+            .then(r => r.json())
+            .then(data => {
+                if (data.success && data.messages.length > 0) {
+                    data.messages.forEach(m => {
+                        appendMessage(m.question, 'user', m.created_at);
+                        appendMessage(m.answer,   'bot',  m.created_at);
+                    });
+                    scrollToBottom();
+                }
+            })
+            .catch(() => {});
+    }
+
+    // ── Envoyer une question ─────────────────────────────────────────
+    function sendQuestion() {
+        const question = input.value.trim();
+        if (!question || isSending) return;
+
+        const now = Date.now();
+        if (now - lastSentTime < 5000) {
+            const remaining = Math.ceil((5000 - (now - lastSentTime)) / 1000);
+            appendMessage(`⏳ Attendez encore ${remaining} seconde(s).`, 'bot-error');
+            scrollToBottom();
+            return;
+        }
+
+        isSending = true;
+        lastSentTime = now;
+        sendBtn.disabled = true;
+        input.value = '';
+        autoResize();
+        appendMessage(question, 'user');
+        showTyping(true);
+        scrollToBottom();
+
+        fetch(ASK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question })
+        })
+        .then(r => r.json())
+        .then(data => {
+            showTyping(false);
+            if (data.success) {
+                appendMessage(data.answer, 'bot', data.time);
+            } else {
+                appendMessage(data.error || 'Une erreur est survenue.', 'bot-error');
+                lastSentTime = 0;
+            }
+        })
+        .catch(() => {
+            showTyping(false);
+            appendMessage('Erreur réseau.', 'bot-error');
+            lastSentTime = 0;
+        })
+        .finally(() => {
+            isSending = false;
+            setTimeout(() => { sendBtn.disabled = false; input.focus(); }, 5000);
+            scrollToBottom();
+        });
+    }
+
+    // ── Ajouter un message ───────────────────────────────────────────
+    function appendMessage(text, type, time) {
+        const div = document.createElement('div');
+        div.className = 'chatbot-msg ' + (type === 'user' ? 'user' : 'bot') + (type === 'bot-error' ? ' chatbot-error' : '');
+
+        const bubble = document.createElement('div');
+        bubble.className = 'chatbot-bubble';
+        bubble.textContent = text;
+
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'chatbot-time';
+        timeDiv.textContent = time || getCurrentTime();
+
+        // ✅ Bouton TTS uniquement pour les réponses du bot
+        if (type === 'bot') {
+            const speakBtn = document.createElement('button');
+            speakBtn.className = 'chatbot-speak-btn';
+            speakBtn.title = 'Écouter la réponse';
+            speakBtn.innerHTML = '🔊';
+            speakBtn.onclick = () => speakText(text, speakBtn);
+            timeDiv.appendChild(speakBtn);
+        }
+
+        div.appendChild(bubble);
+        div.appendChild(timeDiv);
+        messages.appendChild(div);
+    }
+
+    // ── Text-to-Speech ───────────────────────────────────────────────
+function speakText(text, btn, lang = 'fr-FR') {
+    const cleanText = text.replace(/\*\*/g, '').replace(/\*/g, '').replace(/#{1,6}\s/g, '').replace(/_/g, '').replace(/`/g, '').trim();
+
+    if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        document.querySelectorAll('.chatbot-speak-btn').forEach(b => b.innerHTML = '🔊');
+        if (currentUtterance && currentUtterance._btn === btn) {
+            currentUtterance = null;
+            return;
+        }
+    }
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = lang; // ✅ dynamique
+    utterance.rate = 0.95;
+    utterance.pitch = 1;
+    utterance._btn = btn;
+    currentUtterance = utterance;
+
+    const voices = window.speechSynthesis.getVoices();
+    const voice = voices.find(v => v.lang.startsWith(lang.split('-')[0]));
+    if (voice) utterance.voice = voice;
+
+    btn.innerHTML = '⏹️';
+    utterance.onend = () => { btn.innerHTML = '🔊'; currentUtterance = null; };
+    utterance.onerror = () => { btn.innerHTML = '🔊'; currentUtterance = null; };
+    window.speechSynthesis.speak(utterance);
+}
+
+    // ── Bouton Stop TTS ──────────────────────────────────────────────
+    stopTtsBtn.addEventListener('click', () => {
+        window.speechSynthesis.cancel();
+        document.querySelectorAll('.chatbot-speak-btn').forEach(b => b.innerHTML = '🔊');
+        stopTtsBtn.style.display = 'none';
+        currentUtterance = null;
+    });
+
+    setInterval(() => {
+        stopTtsBtn.style.display = window.speechSynthesis.speaking ? 'block' : 'none';
+    }, 500);
+
+    // ── Effacer l'historique ─────────────────────────────────────────
+    clearBtn.addEventListener('click', () => {
+        if (!confirm('Effacer tout l\'historique ?')) return;
+        fetch(CLEAR_URL, { method: 'POST' })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    messages.innerHTML = `
+                        <div class="chatbot-msg bot">
+                            <div class="chatbot-bubble">🗑️ Historique effacé.</div>
+                            <div class="chatbot-time">${getCurrentTime()}</div>
+                        </div>`;
+                }
+            });
+    });
+
+    // ── Helpers ──────────────────────────────────────────────────────
+    function showTyping(show) { typing.style.display = show ? 'block' : 'none'; if (show) scrollToBottom(); }
+    function scrollToBottom() { setTimeout(() => { messages.scrollTop = messages.scrollHeight; }, 50); }
+    function getCurrentTime() { return new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); }
+    function autoResize() { input.style.height = 'auto'; input.style.height = Math.min(input.scrollHeight, 100) + 'px'; }
+
+    input.addEventListener('input', autoResize);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendQuestion(); } });
+    sendBtn.addEventListener('click', sendQuestion);
+
+    // Précharger les voix TTS
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+// ── Traduction ───────────────────────────────────────────────
+const COURSE_DESC = {{ course.description|striptags|json_encode|raw }};
+const COURSE_TITRE = {{ course.titre|json_encode|raw }};
+
+window.translateCourse = function(lang) {
+    const langNames = { 'en': 'anglais', 'ar': 'arabe', 'fr': 'français' };
+    const langName = langNames[lang];
+
+    // Désactiver les boutons pendant la traduction
+    document.querySelectorAll('.chatbot-translate-btn').forEach(b => b.disabled = true);
+
+    const question = `Traduis en ${langName} le titre et la description suivants du cours. 
+Titre : "${COURSE_TITRE}"
+Description : "${COURSE_DESC.substring(0, 400)}"
+Réponds UNIQUEMENT avec :
+**Titre :** [traduction du titre]
+**Description :** [traduction de la description]`;
+
+    appendMessage(`🌐 Traduction en ${langName}...`, 'user');
+    showTyping(true);
+    scrollToBottom();
+
+    fetch(ASK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question })
+    })
+    .then(r => r.json())
+    .then(data => {
+        showTyping(false);
+        if (data.success) {
+            // Pour l'arabe, afficher en RTL
+            const isArabic = lang === 'ar';
+            appendMessageTranslation(data.answer, isArabic);
+        } else {
+            appendMessage(data.error || 'Erreur de traduction.', 'bot-error');
+        }
+    })
+    .catch(() => {
+        showTyping(false);
+        appendMessage('Erreur réseau.', 'bot-error');
+    })
+    .finally(() => {
+        document.querySelectorAll('.chatbot-translate-btn').forEach(b => b.disabled = false);
+        scrollToBottom();
+    });
+};
+
+// Message spécial pour la traduction (support RTL arabe)
+function appendMessageTranslation(text, isRTL = false) {
+    const div = document.createElement('div');
+    div.className = 'chatbot-msg bot';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'chatbot-bubble';
+    bubble.textContent = text.replace(/\*\*/g, '').replace(/\*/g, '');
+
+    if (isRTL) {
+        bubble.style.direction = 'rtl';
+        bubble.style.textAlign = 'right';
+        bubble.style.fontFamily = 'Arial, sans-serif';
+    }
+
+    const timeDiv = document.createElement('div');
+    timeDiv.className = 'chatbot-time';
+    timeDiv.textContent = getCurrentTime();
+
+    const speakBtn = document.createElement('button');
+    speakBtn.className = 'chatbot-speak-btn';
+    speakBtn.title = 'Écouter';
+    speakBtn.innerHTML = '🔊';
+    speakBtn.onclick = () => speakText(text, speakBtn, isRTL ? 'ar-TN' : 'fr-FR');
+    timeDiv.appendChild(speakBtn);
+
+    div.appendChild(bubble);
+    div.appendChild(timeDiv);
+    messages.appendChild(div);
+}
+})();
+</script>
+{% endif %}
+
 {% endblock %}

@@ -1,0 +1,188 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Live Etudiant - {{ course.titre }}{% endblock %}
+
+{% block body %}
+<!-- Bannière Live Automatique -->
+<div id="live-banner" class="alert alert-danger align-items-center justify-content-between mb-4" style="display: none; background: #ef4444; border: none; color: white;">
+    <div class="d-flex align-items-center gap-3">
+        <span class="pulse-dot"></span>
+        <strong>🔴 Un live est actuellement en cours pour ce cours !</strong>
+    </div>
+    <button class="btn btn-sm btn-light" onclick="showPlayer()">Rejoindre le Live</button>
+</div>
+
+<div class="live-container" id="live-player-section" style="display: none;">
+    <div class="live-main">
+        <div class="video-container">
+            <div id="student-jitsi-container"></div>
+            <div class="live-overlay">
+                <div class="reaction-layer" id="reaction-layer"></div>
+            </div>
+        </div>
+
+        <div class="interaction-bar mt-3">
+            <h4 class="text-white mb-3">Réagir en direct</h4>
+            <div class="reaction-buttons d-flex gap-2">
+                <button class="btn btn-reaction" onclick="sendReaction('👍')">👍</button>
+                <button class="btn btn-reaction" onclick="sendReaction('❤️')">❤️</button>
+                <button class="btn btn-reaction" onclick="sendReaction('😂')">😂</button>
+                <button class="btn btn-reaction" onclick="sendReaction('🔥')">🔥</button>
+                <button class="btn btn-reaction" onclick="sendReaction('🎉')">🎉</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="live-chat">
+        <div class="chat-header">
+            <h3>Chat en Direct</h3>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will appear here -->
+        </div>
+        <div class="chat-input-area p-3">
+            <div class="input-group">
+                <input type="text" id="chat-input" class="form-control" placeholder="Votre message...">
+                <button class="btn btn-primary" id="send-btn">Envoyer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .pulse-dot {
+        width: 12px;
+        height: 12px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 0 0 rgba(255, 255, 255, 0.4);
+        animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+        0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+    }
+    .live-container {
+        display: flex;
+        height: 80vh;
+        background: #0f172a;
+        margin: 0;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .live-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+    }
+    .video-container {
+        flex: 1;
+        background: #000;
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+    }
+    #student-jitsi-container { width: 100%; height: 100%; }
+    .live-chat {
+        width: 320px;
+        background: #1e293b;
+        border-left: 1px solid #334155;
+        display: flex;
+        flex-direction: column;
+    }
+    .chat-header { padding: 15px; border-bottom: 1px solid #334155; color: white; }
+    .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+    .message-bubble { padding: 8px 12px; border-radius: 15px; background: #334155; color: white; font-size: 0.9rem; align-self: flex-start; }
+    .message-bubble .user-name { font-weight: bold; font-size: 0.75rem; color: #94a3b8; display: block; }
+    .btn-reaction { background: #334155; border: none; font-size: 1.5rem; transition: transform 0.2s; color: white; }
+    .btn-reaction:hover { transform: scale(1.2); background: #475569; }
+    .reaction-layer { position: absolute; bottom: 0; right: 0; width: 100%; height: 100%; pointer-events: none; }
+    .floating-emoji { position: absolute; bottom: -50px; font-size: 2.5rem; animation: floatUp 3s ease-out forwards; }
+    @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-400px); opacity: 0; } }
+</style>
+
+<script src="https://meet.jit.si/external_api.js"></script>
+<script>
+    const courseId = {{ course.id }};
+    const liveBanner = document.getElementById('live-banner');
+    const playerSection = document.getElementById('live-player-section');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+    const reactionLayer = document.getElementById('reaction-layer');
+    
+    let api = null;
+
+    // --- MERCURE LISTEN (Feature disabled) ---
+    /*
+    const topic = 'course_live_' + courseId;
+    const eventSource = new EventSource('{{ mercure_url|default('http://localhost:3000/.well-known/mercure') }}?topic=' + encodeURIComponent(topic));
+    
+    eventSource.onmessage = event => { ... };
+    */
+
+    function showPlayer() {
+        liveBanner.style.display = 'none';
+        playerSection.style.display = 'flex';
+        
+        const domain = "meet.jit.si";
+        const options = {
+            roomName: "Path2Learn_Live_" + courseId + "_{{ course.user ? course.user.id : '0' }}",
+            width: '100%',
+            height: '100%',
+            parentNode: document.querySelector('#student-jitsi-container'),
+            configOverwrite: { 
+                startWithAudioMuted: true, 
+                startWithVideoMuted: true,
+                disableThirdPartyRequests: true
+            },
+            interfaceConfigOverwrite: { TOOLBAR_BUTTONS: ['microphone', 'camera', 'chat', 'raisehand'] }
+        };
+        api = new JitsiMeetExternalAPI(domain, options);
+    }
+
+    // --- CHAT & REACTIONS ---
+    sendBtn.onclick = async () => {
+        const msg = chatInput.value.trim();
+        if (!msg) return;
+
+        await fetch(`/live/message/${courseId}`, {
+            method: 'POST',
+            body: JSON.stringify({ message: msg }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        chatInput.value = '';
+    };
+
+    async function sendReaction(emoji) {
+        await fetch(`/live/reaction/${courseId}`, {
+            method: 'POST',
+            body: JSON.stringify({ emoji: emoji }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
+
+    function appendMessage(user, msg, time) {
+        const div = document.createElement('div');
+        div.className = 'message-bubble';
+        div.innerHTML = `<span class="user-name">${user} • ${time}</span>${msg}`;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showReaction(emoji) {
+        const el = document.createElement('div');
+        el.className = 'floating-emoji';
+        el.innerText = emoji;
+        el.style.left = Math.random() * 80 + 10 + '%';
+        reactionLayer.appendChild(el);
+        setTimeout(() => el.remove(), 3000);
+    }
+
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendBtn.click();
+    });
+</script>
+{% endblock %}

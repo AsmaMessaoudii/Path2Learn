@@ -944,21 +944,22 @@ Trending courses START -->
                 <div class="p-4 p-md-5">
                     
                     {# Display flash messages #}
-                    {% for message in app.flashes('success') %}
-                        <div class="alert alert-success alert-dismissible fade show mb-4">
-                            <i class="bi bi-check-circle me-2"></i>
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    {% endfor %}
-                    
-                    {% for message in app.flashes('error') %}
-                        <div class="alert alert-danger alert-dismissible fade show mb-4">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    {% endfor %}
+                    {# Display flash messages #}
+{#{% for message in app.flashes('success') %}
+    <div class="alert alert-success alert-dismissible fade show mb-4">
+        <i class="bi bi-check-circle me-2"></i>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+{% endfor %}
+
+{% for message in app.flashes('error') %}
+    <div class="alert alert-danger alert-dismissible fade show mb-4">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+{% endfor %}#}
 
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
 

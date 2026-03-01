@@ -400,12 +400,11 @@ Portfolio Section START -->
                                         <!-- Action Buttons Group -->
                                         <div class="d-flex gap-2">
                                             <!-- EXPORT PDF -->
-                                            <a href="{{ path('home_portfolio_export_pdf', { id: portfolio.id }) }}"
-                                               class="btn btn-outline-danger btn-sm rounded-pill"
-                                               title="Exporter en PDF"
-                                               onclick="this.disabled=true; this.innerHTML='<span class=\"spinner-border spinner-border-sm me-2\"></span>PDF...';">
-                                                <i class="bi bi-file-pdf me-2"></i>PDF
-                                            </a>
+<a href="{{ path('home_portfolio_export_pdf', { id: portfolio.id }) }}"
+   class="btn btn-outline-danger btn-sm rounded-pill"
+   title="Exporter en PDF">
+    <i class="bi bi-file-pdf me-2"></i>PDF
+</a>
 
                                             <!-- EDIT -->
                                             <a href="{{ path('home_portfolio_edit', { id: portfolio.id }) }}"
@@ -413,6 +412,15 @@ Portfolio Section START -->
                                                title="Modifier">
                                                 <i class="bi bi-pencil-square me-2"></i>Éditer
                                             </a>
+
+
+                                            <!-- Add this button next to your PDF, Edit, Delete buttons -->
+<a href="{{ path('home_cv') }}" 
+   class="btn btn-outline-success btn-sm rounded-pill"
+   title="Mon CV">
+    <i class="bi bi-file-earmark-person me-2"></i>Mon CV
+</a>
+
 
                                             <!-- DELETE -->
                                             <form method="post"

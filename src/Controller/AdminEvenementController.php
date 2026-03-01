@@ -131,7 +131,7 @@ class AdminEvenementController extends AbstractController
     {
         return $this->render('admin_evenement/participants.html.twig', [
             'evenement' => $evenement,
-            'participations' => $evenement->getParticipationEvent(),
+            'participations' => $evenement->getParticipationEvents(),
         ]);
     }
 }

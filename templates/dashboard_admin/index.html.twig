@@ -14,19 +14,226 @@
         <!-- Navbar -->
         {% include 'layout/navbar.html.twig' %}
 
-        <!-- Main -->
-        <main class="p-4 flex-grow-1" style="background-color: #f0f2f5;">
-            <div class="container-fluid">
+    <main class="p-4 flex-grow-1" style="background-color: #f0f2f5;">
+    <div class="container-fluid">
 
-                <div class="mb-4">
-                    <h4 class="fw-bold mb-1">Tableau de Bord Administratif</h4>
-                    <p class="text-muted small">Bienvenue sur votre espace de gestion centralisée.</p>
+        <div class="mb-4">
+            <h4 class="fw-bold mb-1">Tableau de Bord Administratif</h4>
+            <p class="text-muted small">Bienvenue sur votre espace de gestion centralisée.</p>
+        </div>
+
+        <!-- Content here -->
+
+       <div class="row">
+
+    <div class="col-xl-2 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col me-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Users</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.total }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-people fs-1 text-gray-300"></i>
+                    </div>
                 </div>
-
-                <!-- Content here -->
-
             </div>
-        </main>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col me-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Active Users</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.active }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-person-check fs-1 text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-6 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col me-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Admins</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.admins }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-shield-lock fs-1 text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col me-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Teachers</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.teachers }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-person-badge fs-1 text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col me-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Students</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.students }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-mortarboard fs-1 text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Bouton Predict + zone résultat -->
+<div class="row mt-5 mb-5 justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 text-center">
+        <button id="predict-btn" class="btn btn-primary btn-lg px-5 py-3 shadow" data-url="{{ path('admin_predict_stats') }}">
+            <i class="bi bi-graph-up-arrow me-2"></i>Predict & Get AI Tips
+        </button>
+    </div>
+</div>
+
+<div id="prediction-result" class="row justify-content-center mb-5" style="display: none;">
+    <div class="col-lg-10 col-xl-8">
+        <div class="card shadow border-0 rounded-4 overflow-hidden">
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="mb-0 text-center">Analyse & Prédiction IA</h5>
+            </div>
+            <div class="card-body p-4" id="prediction-content">
+                <!-- Content will be inserted here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript pour appeler la route -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const predictBtn = document.getElementById('predict-btn');
+    
+    if (predictBtn) {
+        predictBtn.addEventListener('click', function() {
+            const btn = this;
+            const resultDiv = document.getElementById('prediction-result');
+            const content = document.getElementById('prediction-content');
+            const url = btn.getAttribute('data-url');
+            
+            console.log('Button clicked, URL:', url); // Debug log
+            
+            // Show the result div with loading spinner
+            resultDiv.style.display = 'block';
+            content.innerHTML = `
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status" style="width: 3.5rem; height: 3.5rem;"></div>
+                    <p class="mt-4 text-muted lead">Analyse des statistiques en cours...</p>
+                </div>
+            `;
+            
+            // Disable button and show loading state
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Analyse...';
+            
+            // Make the fetch request
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => {
+                console.log('Response received:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data received:', data);
+                
+                if (data.success) {
+                    // Format the tips
+                    let tipsHtml = '';
+                    if (data.tips && Array.isArray(data.tips)) {
+                        tipsHtml = data.tips.map(tip => 
+                            `<li class="list-group-item d-flex align-items-start border-0 bg-light mb-2 rounded">
+                                <i class="bi bi-lightbulb-fill text-warning me-3 mt-1"></i>
+                                <span>${tip}</span>
+                            </li>`
+                        ).join('');
+                    }
+                    
+                    // Update content with results
+                    content.innerHTML = `
+                        <div class="p-4">
+                            <h5 class="text-primary mb-4 border-bottom pb-2">Analyse IA des statistiques</h5>
+                            <p class="lead text-dark mb-4">${data.prediction || 'Aucune prédiction disponible'}</p>
+                            
+                            <h6 class="mt-4 mb-3 text-dark fw-bold">Conseils prioritaires :</h6>
+                            <ul class="list-group list-group-flush">
+                                ${tipsHtml || '<li class="list-group-item text-muted">Aucun conseil disponible</li>'}
+                            </ul>
+                        </div>
+                    `;
+                } else {
+                    // Show error message
+                    content.innerHTML = `
+                        <div class="alert alert-danger m-4">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            ${data.error || 'Erreur lors de l\'analyse IA'}
+                        </div>
+                    `;
+                }
+            })
+            .catch(err => {
+                console.error('Fetch error:', err);
+                content.innerHTML = `
+                    <div class="alert alert-danger m-4">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Erreur de connexion au serveur: ${err.message}
+                    </div>
+                `;
+            })
+            .finally(() => {
+                // Re-enable button after 2 seconds
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-graph-up-arrow me-2"></i>Predict & Get AI Tips';
+                }, 2000);
+            });
+        });
+    } else {
+        console.error('Predict button not found!');
+    }
+});
+</script>
+
+</main>
 
     </div>
 </div>
