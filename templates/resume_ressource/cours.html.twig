@@ -1,0 +1,128 @@
+{# templates/resume_ressource/cours.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Analyse des ressources - {{ cours.titre }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1>
+                <i class="bi bi-files"></i> 
+                Analyse des ressources - {{ cours.titre }}
+            </h1>
+            <p class="lead">Résumé automatique de toutes les ressources du cours</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h3>{{ resumeGlobal.statistiques.total }}</h3>
+                    <p>Ressources totales</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h3>{{ resumeGlobal.statistiques.analysees }}</h3>
+                    <p>Ressources analysées</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h3>{{ resumeGlobal.motsClesGlobaux|length }}</h3>
+                    <p>Mots-clés uniques</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0">Résumé global du cours</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ resumeGlobal.resumeGlobal ?: 'Analyse en cours...' }}</p>
+                    
+                    <h6>Mots-clés les plus fréquents</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for mot in resumeGlobal.motsClesGlobaux %}
+                            <span class="badge bg-dark p-2">{{ mot }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mb-3">Détail par ressource</h3>
+    
+    <div class="row">
+        {# CHANGEMENT IMPORTANT ICI : 'item' au lieu de 'resume' #}
+        {% for item in ressources %}
+            {% set ressource = item.ressource %}
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">
+                                <i class="bi {{ ressource.fileIcon }} me-2"></i>
+                                {{ ressource.titre }}
+                            </h6>
+                            <span class="badge bg-secondary">{{ ressource.type }}</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="small text-muted mb-2">
+                            <i class="bi bi-calendar"></i> {{ ressource.dateAjout|date('d/m/Y') }}
+                            {% if item.nombrePages %}
+                                | <i class="bi bi-file-text"></i> {{ item.nombrePages }} pages
+                            {% endif %}
+                            | 
+                            {% if item.analyseComplete %}
+                                <span class="text-success">✓ Analysée</span>
+                            {% else %}
+                                <span class="text-warning">⏳ Non analysée</span>
+                            {% endif %}
+                        </p>
+                        
+                        <p class="card-text">
+                            <strong>Résumé :</strong><br>
+                            {{ item.resumeCourt|slice(0, 150) }}...
+                        </p>
+                        
+                        {% if item.motsCles %}
+                            <div class="mb-2">
+                                {% for mot in item.motsCles|slice(0, 3) %}
+                                    <span class="badge bg-info">{{ mot }}</span>
+                                {% endfor %}
+                                {% if item.motsCles|length > 3 %}
+                                    <span class="badge bg-secondary">+{{ item.motsCles|length - 3 }}</span>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        
+                        <a href="{{ path('app_resume_ressource', {'id': ressource.id}) }}" 
+                           class="btn btn-sm btn-outline-primary">
+                            Voir l'analyse complète
+                        </a>
+                        
+                        <a href="{{ ressource.url ?: ressource.fileUrl }}" 
+                           target="_blank" 
+                           class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

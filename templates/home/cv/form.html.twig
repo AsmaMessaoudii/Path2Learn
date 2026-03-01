@@ -1,0 +1,1111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ isNew ? 'Créer mon CV' : 'Modifier mon CV' }}{% endblock %}
+
+{% block body %}
+<!-- Styles améliorés -->
+<style>
+/* Variables globales */
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --success-gradient: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    --card-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    --hover-shadow: 0 30px 60px rgba(0,0,0,0.12);
+}
+
+/* Style général de la section */
+section[style*="linear-gradient"] {
+    position: relative;
+    overflow: hidden;
+    background: #ffffff !important;
+    min-height: 100vh;
+}
+
+/* Effet de particules en arrière-plan */
+section[style*="linear-gradient"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><circle cx="10" cy="10" r="1" fill="%23667eea" opacity="0.1"/><circle cx="90" cy="30" r="1.5" fill="%23764ba2" opacity="0.1"/><circle cx="30" cy="80" r="1" fill="%23667eea" opacity="0.1"/><circle cx="70" cy="50" r="2" fill="%23764ba2" opacity="0.1"/><circle cx="50" cy="20" r="1.2" fill="%23667eea" opacity="0.1"/></svg>');
+    background-size: 100px 100px;
+    animation: float 20s linear infinite;
+}
+
+@keyframes float {
+    from { transform: translateY(0) rotate(0deg); }
+    to { transform: translateY(-100px) rotate(10deg); }
+}
+
+/* Amélioration du breadcrumb */
+.breadcrumb {
+    background: #f8f9fa;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    border: 1px solid #e9ecef;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.breadcrumb-item a {
+    color: #6c757d;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: #667eea;
+    transform: translateX(5px);
+}
+
+.breadcrumb-item.active {
+    color: #764ba2;
+    font-weight: 600;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    color: #adb5bd;
+    content: "→";
+}
+
+/* Badge d'en-tête */
+.bg-primary.bg-opacity-10 {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    animation: glow 2s infinite;
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 5px rgba(102, 126, 234, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.5); }
+    100% { box-shadow: 0 0 5px rgba(102, 126, 234, 0.3); }
+}
+
+.bg-primary.bg-opacity-10 .text-primary {
+    background: linear-gradient(135deg, #4868fa, #91ffc8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+}
+
+/* Titres principaux */
+.display-5 {
+    color: #1e293b !important;
+    text-shadow: none;
+}
+
+.display-5 .text-primary {
+    background: linear-gradient(135deg, #4868fa, #91ffc8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+    display: inline-block;
+}
+
+.display-5 .text-primary::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent,#4868fa, #91ffc8, transparent);
+    animation: underline 2s infinite;
+}
+
+@keyframes underline {
+    0% { transform: scaleX(0.3); opacity: 0.3; }
+    50% { transform: scaleX(1); opacity: 1; }
+    100% { transform: scaleX(0.3); opacity: 0.3; }
+}
+
+.lead.text-muted {
+    color: #64748b !important;
+    font-size: 1.25rem;
+}
+
+/* Carte principale */
+.card.border-0.shadow-lg.rounded-4 {
+    border-radius: 30px !important;
+    overflow: hidden;
+    position: relative;
+    animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card.border-0.shadow-lg.rounded-4::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #4868fa, #91ffc8, #4868fa);
+    background-size: 200% 100%;
+    animation: gradientMove 3s linear infinite;
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+}
+
+/* En-têtes de section */
+.border-bottom {
+    border-bottom: 2px solid transparent !important;
+    background: linear-gradient(90deg, #e2e8f0, transparent) no-repeat;
+    background-size: 100% 2px;
+    background-position: bottom;
+    padding-bottom: 1rem !important;
+}
+
+.border-bottom i {
+    background: linear-gradient(135deg, #4868fa, #91ffc8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.5rem;
+    margin-right: 0.75rem;
+    animation: spin 6s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Champs de formulaire */
+.form-control, .form-select {
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+    background: white;
+    color: #1e293b;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+    transform: translateY(-2px);
+}
+
+.form-control.bg-light {
+    background: #f8fafc !important;
+    border: 2px solid #e2e8f0 !important;
+    color: #1e293b;
+}
+
+/* Labels */
+.form-label {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+}
+
+.text-danger {
+    color: #ef4444 !important;
+    font-size: 1.2rem;
+    vertical-align: middle;
+}
+
+/* Zone d'upload de photo */
+.border.rounded-3.p-3.text-center.bg-light {
+    background: #f8fafc !important;
+    border: 3px dashed #cbd5e1 !important;
+    border-radius: 15px !important;
+    transition: all 0.3s ease;
+}
+
+.border.rounded-3.p-3.text-center.bg-light:hover {
+    border-color: #667eea !important;
+    background: #f1f5f9 !important;
+    transform: scale(1.02);
+}
+
+/* Boutons d'ajout */
+.btn-outline-primary {
+    background: linear-gradient(135deg,#4868fa, #91ffc8);
+    border: none;
+    color: white;
+    border-radius: 25px;
+    padding: 10px 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-outline-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-outline-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+
+.btn-outline-primary:hover::before {
+    left: 100%;
+}
+
+/* Boutons de suppression */
+.btn-outline-danger {
+    border: 2px solid #ef4444;
+    border-radius: 10px;
+    color: #ef4444;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-danger:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+    transform: rotate(90deg);
+    color: white;
+}
+
+/* Éléments de langue/centre d'intérêt */
+.language-item, .interest-item {
+    background: white;
+    border-radius: 15px;
+    padding: 10px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.language-item:hover, .interest-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    border-color: #667eea;
+}
+
+/* Alertes */
+.alert-info {
+    background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+    border: none;
+    border-radius: 10px;
+    color: #0369a1;
+    border-left: 4px solid #0ea5e9;
+    animation: pulseAlert 2s infinite;
+}
+
+@keyframes pulseAlert {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; }
+    100% { opacity: 0.8; }
+}
+
+/* Boutons d'action principaux */
+.btn-outline-secondary {
+    background: transparent;
+    border: 2px solid #cbd5e1;
+    color: #475569;
+    border-radius: 50px;
+    padding: 12px 40px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-outline-secondary:hover {
+    background: #f1f5f9;
+    color: #667eea;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #4868fa, #91ffc8);
+    border: none;
+    border-radius: 50px;
+    padding: 12px 40px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    color: white;
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 140%;
+    height: 200%;
+    background: rgba(255,255,255,0.2);
+    transform: rotate(35deg) translateY(-100%);
+    transition: transform 0.6s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(102, 126, 234, 0.5);
+}
+
+.btn-primary:hover::after {
+    transform: rotate(35deg) translateY(100%);
+}
+
+/* Aperçu de l'image */
+.img-thumbnail {
+    border-radius: 15px !important;
+    border: 3px solid white !important;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.img-thumbnail:hover {
+    transform: scale(1.1) rotate(3deg);
+    box-shadow: 0 20px 30px rgba(0,0,0,0.15);
+}
+
+/* Messages d'information */
+.text-muted.small {
+    color: #64748b !important;
+    font-size: 0.85rem;
+    background: #f1f5f9;
+    padding: 5px 10px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+/* Animation de chargement pour le bouton submit */
+.btn-primary:active {
+    transform: scale(0.95);
+}
+
+/* Style pour les champs désactivés */
+.form-control[readonly], .form-control[disabled] {
+    background: #f1f5f9 !important;
+    border: 2px solid #cbd5e1 !important;
+    color: #475569;
+    cursor: not-allowed;
+    opacity: 0.9;
+}
+
+/* Footer styling */
+footer {
+    position: relative;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    color: white;
+}
+
+footer .nav-link {
+    color: #cbd5e1;
+    transition: all 0.3s ease;
+}
+
+footer .nav-link:hover {
+    color: white;
+    transform: translateX(5px);
+}
+
+footer h5 {
+    color: white;
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .card-body.p-4.p-xl-5 {
+        padding: 1.5rem !important;
+    }
+    
+    .btn-outline-secondary, .btn-primary {
+        padding: 10px 25px;
+        font-size: 0.9rem;
+    }
+    
+    .display-5 {
+        font-size: 2rem;
+    }
+}
+
+/* Animation de progression pour la validation */
+@keyframes checkmark {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* Effet de brillance sur les champs requis */
+.text-danger {
+    animation: shine 1.5s infinite;
+}
+
+@keyframes shine {
+    0% { text-shadow: 0 0 5px #ef4444; }
+    50% { text-shadow: 0 0 15px #ef4444; }
+    100% { text-shadow: 0 0 5px #ef4444; }
+}
+</style>
+
+<!-- Header START -->
+<header class="navbar-light navbar-sticky header-static">
+    <nav class="navbar navbar-expand-xl">
+        <div class="container-fluid px-3 px-xl-5">
+            <a class="navbar-brand" href="{{ path('home') }}">
+                <img class="light-mode-item navbar-brand-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 250px;">
+                <img class="dark-mode-item navbar-brand-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 250px;">
+            </a>
+
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-animation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+
+            <div class="navbar-collapse w-100 collapse" id="navbarCollapse">
+                <ul class="navbar-nav navbar-nav-scroll me-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="demoMenu" data-bs-toggle="dropdown">services</a>
+                        <ul class="dropdown-menu" aria-labelledby="demoMenu">
+                            <li><a class="dropdown-item" href="{{ path('home_portfolio') }}">portfolio</a></li>
+                            <li><a class="dropdown-item active" href="{{ path('home_cv') }}">Mon CV</a></li>
+                            <li><a class="dropdown-item" href="index-2.html">évennements</a></li>
+                            <li><a class="dropdown-item" href="index-3.html">certification</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="pagesMenu" data-bs-toggle="dropdown">Pages</a>
+                        <ul class="dropdown-menu" aria-labelledby="pagesMenu">
+                            <li><a class="dropdown-item" href="{{ path('app_courses') }}">Cours</a></li>
+                            <li><a class="dropdown-item" href="{{ path('quiz') }}">QUIZ</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accounntMenu" data-bs-toggle="dropdown">Accounts</a>
+                        <ul class="dropdown-menu" aria-labelledby="accounntMenu">
+                            <li><a class="dropdown-item" href="{{ path('instructor') }}"><i class="fas fa-user-tie fa-fw me-1"></i>enseignants</a></li>
+                            <li><a class="dropdown-item" href="{{ path('student_dashboard') }}"><i class="fas fa-user-graduate fa-fw me-1"></i>etudiants</a></li>
+                            <li><a class="dropdown-item" href="{{ path('admin_dashboard') }}"><i class="fas fa-user-cog fa-fw me-1"></i>Admin</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <div class="nav my-3 my-xl-0 px-4 flex-nowrap align-items-center">
+                    <div class="nav-item w-100">
+                        <form class="position-relative">
+                            <input class="form-control pe-5 bg-transparent" type="search" placeholder="Search">
+                            <button class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover" type="submit">
+                                <i class="fas fa-search fs-6"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dropdown ms-1 ms-lg-0">
+                <a class="avatar avatar-sm p-0" href="#" id="profileDropdown" role="button" data-bs-auto-close="outside" data-bs-toggle="dropdown">
+                    <img class="avatar-img rounded-circle" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                </a>
+                <ul class="dropdown-menu dropdown-animation dropdown-menu-end shadow pt-3" aria-labelledby="profileDropdown">
+                    <li class="px-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar me-3">
+                                <img class="avatar-img rounded-circle shadow" src="{{ asset('assets/images/avatar/01.jpg') }}" alt="avatar">
+                            </div>
+                            <div>
+                                <a class="h6" href="#">{{ app.user.nom }} {{ app.user.prenom }}</a>
+                                <p class="small m-0">{{ app.user.email }}</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-person fa-fw me-2"></i>Edit Profile</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-gear fa-fw me-2"></i>Account Settings</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Help</a></li>
+                    <li><a class="dropdown-item bg-danger-soft-hover" href="{{ path('app_logout') }}"><i class="bi bi-power fa-fw me-2"></i>Sign Out</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<!-- Header END -->
+
+<!-- **************** MAIN CONTENT START **************** -->
+<main>
+    <!-- =======================
+    CV Form START -->
+    <section class="py-5" style="background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);">
+        <div class="container">
+            <!-- Header -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{ path('home') }}" class="text-decoration-none">Accueil</a></li>
+                            <li class="breadcrumb-item"><a href="{{ path('home_cv') }}" class="text-decoration-none">Mon CV</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ isNew ? 'Créer mon CV' : 'Modifier mon CV' }}</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-12 text-center">
+                    <div class="d-inline-block bg-primary bg-opacity-10 px-4 py-2 rounded-pill mb-3">
+                        <span class="small fw-bold text-primary">
+                            <i class="bi bi-file-earmark-person me-2"></i>{{ isNew ? 'NOUVEAU CV' : 'MODIFICATION' }}
+                        </span>
+                    </div>
+                    <h2 class="display-5 fw-bold mb-3">
+                        {{ isNew ? 'Créez votre' : 'Modifiez votre' }} <span class="text-primary">CV</span>
+                    </h2>
+                    <p class="lead text-muted col-lg-8 mx-auto">
+                        {{ isNew ? 'Remplissez vos informations pour générer un CV professionnel' : 'Mettez à jour vos informations personnelles' }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Form Card -->
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card border-0 shadow-lg rounded-4">
+                        <div class="card-body p-4 p-xl-5">
+                            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
+                            
+                            <!-- Informations de base -->
+                            <div class="mb-5">
+                                <h5 class="fw-bold mb-4 pb-2 border-bottom">
+                                    <i class="bi bi-person-circle text-primary me-2"></i>Informations personnelles
+                                </h5>
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Nom <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control bg-light" value="{{ app.user.nom }} {{ app.user.prenom }}" readonly disabled>
+                                            <small class="text-muted">Récupéré de votre profil</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Email <span class="text-danger">*</span></label>
+                                            <input type="email" class="form-control bg-light" value="{{ app.user.email }}" readonly disabled>
+                                            <small class="text-muted">Récupéré de votre profil</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form_row(form.telephone, {
+                                            'attr': {'class': 'form-control', 'placeholder': 'Ex: +216 20 123 456'},
+                                            'label': 'Téléphone',
+                                            'label_attr': {'class': 'form-label fw-bold'}
+                                        }) }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ form_row(form.date_naissance, {
+                                            'attr': {'class': 'form-control'},
+                                            'label': 'Date de naissance',
+                                            'label_attr': {'class': 'form-label fw-bold'}
+                                        }) }}
+                                    </div>
+                                    <div class="col-12">
+                                        {{ form_row(form.adresse, {
+                                            'attr': {'class': 'form-control', 'rows': 3, 'placeholder': 'Votre adresse complète'},
+                                            'label': 'Adresse',
+                                            'label_attr': {'class': 'form-label fw-bold'}
+                                        }) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Réseaux et photo -->
+                            <div class="mb-5">
+                                <h5 class="fw-bold mb-4 pb-2 border-bottom">
+                                    <i class="bi bi-share text-primary me-2"></i>Réseaux et photo
+                                </h5>
+                                <div class="row g-4">
+                                    <div class="col-md-8">
+                                        {{ form_row(form.linkedin, {
+                                            'attr': {'class': 'form-control', 'placeholder': 'https://www.linkedin.com/in/...'},
+                                            'label': 'Profil LinkedIn',
+                                            'label_attr': {'class': 'form-label fw-bold'}
+                                        }) }}
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">Photo de profil</label>
+                                            
+                                            <!-- Bouton simple qui fonctionne à coup sûr -->
+                                            <div class="border rounded-3 p-3 text-center bg-light">
+                                                {{ form_widget(form.photoFile, {
+                                                    'attr': {
+                                                        'class': 'form-control',
+                                                        'accept': 'image/*',
+                                                        'style': 'padding: 10px; border: 1px solid #ced4da; border-radius: 5px; width: 100%;',
+                                                        'onchange': 'previewFile(this)'
+                                                    }
+                                                }) }}
+                                                <p class="text-muted small mt-2">JPG, PNG, GIF, WEBP (Max 2MB)</p>
+                                            </div>
+
+                                            <!-- Aperçu de l'image -->
+                                            <div id="preview-container" class="mt-3 text-center {% if not cvInfo.photo %}d-none{% endif %}">
+                                                {% if cvInfo.photo %}
+                                                    <img src="{{ asset('uploads/cv_photos/' ~ cvInfo.photo) }}" 
+                                                         alt="Preview" 
+                                                         class="img-thumbnail" 
+                                                         style="max-width: 150px; max-height: 150px;">
+                                                    <p class="small text-muted mt-1">Photo actuelle</p>
+                                                {% else %}
+                                                    <img id="preview-img" src="#" alt="Aperçu" class="img-thumbnail d-none" style="max-width: 150px; max-height: 150px;">
+                                                {% endif %}
+                                            </div>
+                                            
+                                            {{ form_errors(form.photoFile) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Langues -->
+                            <div class="mb-5">
+                                <h5 class="fw-bold mb-4 pb-2 border-bottom">
+                                    <i class="bi bi-translate text-primary me-2"></i>Langues
+                                </h5>
+                                
+                               <div class="languages-wrapper" id="languages-wrapper" data-prototype="{{ form_widget(form.langues.vars.prototype)|default('')|e('html_attr') }}">
+                                    <div class="languages-list" id="languages-list">
+                                        {% for language in form.langues %}
+                                            <div class="row g-3 mb-3 language-item">
+                                                <div class="col-md-5">
+                                                    {{ form_widget(language.nom, {
+                                                        'attr': {'class': 'form-control', 'placeholder': 'Ex: Français'},
+                                                        'label': false
+                                                    }) }}
+                                                </div>
+                                                <div class="col-md-5">
+                                                    {{ form_widget(language.niveau, {
+                                                        'attr': {'class': 'form-control'},
+                                                        'label': false
+                                                    }) }}
+                                                </div>
+                                                <div class="col-md-2 d-flex align-items-center">
+                                                    <button type="button" class="btn btn-outline-danger remove-language">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    
+                                    {% if form.langues is empty %}
+                                        <div class="alert alert-info py-2 mb-3" id="no-languages-msg">
+                                            <i class="bi bi-info-circle me-2"></i>Aucune langue ajoutée. Cliquez sur le bouton ci-dessous pour ajouter.
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <button type="button" class="btn btn-outline-primary mt-2" id="add-language">
+                                        <i class="bi bi-plus-circle me-2"></i>Ajouter une langue
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Centres d'intérêt -->
+                            <div class="mb-5">
+                                <h5 class="fw-bold mb-4 pb-2 border-bottom">
+                                    <i class="bi bi-heart text-primary me-2"></i>Centres d'intérêt
+                                </h5>
+                                
+                                <div class="interests-wrapper" id="interests-wrapper" data-prototype="{{ form_widget(form.centres_interet.vars.prototype)|default('')|e('html_attr') }}">
+                                    <div class="interests-list" id="interests-list">
+                                        {% for interest in form.centres_interet %}
+                                            <div class="row g-3 mb-3 interest-item">
+                                                <div class="col-md-5">
+                                                    {{ form_widget(interest.nom, {
+                                                        'attr': {'class': 'form-control', 'placeholder': 'Ex: Programmation'},
+                                                        'label': false
+                                                    }) }}
+                                                </div>
+                                                <div class="col-md-5">
+                                                    {{ form_widget(interest.icone, {
+                                                        'attr': {'class': 'form-control', 'placeholder': '💻 ou bi-code-slash'},
+                                                        'label': false
+                                                    }) }}
+                                                </div>
+                                                <div class="col-md-2 d-flex align-items-center">
+                                                    <button type="button" class="btn btn-outline-danger remove-interest">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    
+                                    {% if form.centres_interet is empty %}
+                                        <div class="alert alert-info py-2 mb-3" id="no-interests-msg">
+                                            <i class="bi bi-info-circle me-2"></i>Aucun centre d'intérêt ajouté. Cliquez sur le bouton ci-dessous pour ajouter.
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <button type="button" class="btn btn-outline-primary mt-2" id="add-interest">
+                                        <i class="bi bi-plus-circle me-2"></i>Ajouter un centre d'intérêt
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Certifications et objectif -->
+                            <div class="mb-5">
+                                <h5 class="fw-bold mb-4 pb-2 border-bottom">
+                                    <i class="bi bi-award text-primary me-2"></i>Certifications et objectif
+                                </h5>
+                                <div class="row g-4">
+                                    <div class="col-12">
+                                        {{ form_row(form.certifications, {
+                                            'attr': {'class': 'form-control', 'rows': 4, 'placeholder': '• Certification Symfony\n• Certification Python\n• ...'},
+                                            'label': 'Certifications',
+                                            'label_attr': {'class': 'form-label fw-bold'}
+                                        }) }}
+                                    </div>
+                                    <div class="col-12">
+                                        {{ form_row(form.objectif, {
+                                            'attr': {'class': 'form-control', 'rows': 3, 'placeholder': 'Développeur Full Stack passionné par les nouvelles technologies...'},
+                                            'label': 'Objectif professionnel',
+                                            'label_attr': {'class': 'form-label fw-bold'}
+                                        }) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Boutons d'action -->
+                            <div class="d-flex gap-3 justify-content-end mt-5 pt-3 border-top">
+                                <a href="{{ path('home_cv') }}" class="btn btn-outline-secondary btn-lg rounded-pill px-5">
+                                    <i class="bi bi-x-circle me-2"></i>Annuler
+                                </a>
+                                <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">
+                                    <i class="bi bi-check-circle me-2"></i>{{ isNew ? 'Créer mon CV' : 'Mettre à jour' }}
+                                </button>
+                            </div>
+                            
+                            {{ form_end(form) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- =======================
+    CV Form END -->
+</main>
+<!-- **************** MAIN CONTENT END **************** -->
+
+<!-- Footer START -->
+<footer class="pt-5">
+    <div class="container">
+        <div class="row g-4">
+            <a class="me-0 d-flex align-items-center" href="{{ path('home') }}">
+                <img class="light-mode-item" src="{{ asset('images/logo.png') }}" alt="logo" style="height: 200px;">
+                <img class="dark-mode-item" src="{{ asset('images/logo-light.png') }}" alt="logo dark" style="height: 200px;">
+            </a>
+
+            <div class="col-lg-6">
+                <div class="row g-4">
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Entreprise</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">À propos de nous</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Nous contacter</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Actualités et blogs</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Bibliothèque</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Carrière</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Communauté</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">Documentation</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Forum</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Plan du site</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <h5 class="mb-2 mb-md-4">Enseignement</h5>
+                        <ul class="nav flex-column">
+                            <li class="nav-item"><a class="nav-link" href="#">Devenir formateur</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Guide pratique</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Termes et conditions</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <h5 class="mb-2 mb-md-4">Contact</h5>
+                <p class="mb-2">
+                    Numéro gratuit : <span class="h6 fw-light ms-2">+216 20629612</span>
+                    <span class="d-block small">(9:AM to 8:PM IST)</span>
+                </p>
+                <p class="mb-0">Email: <span class="h6 fw-light ms-2">example@gmail.com</span></p>
+            </div>
+        </div>
+
+        <hr class="mt-4 mb-0">
+
+        <div class="py-3">
+            <div class="container px-0">
+                <div class="d-lg-flex justify-content-between align-items-center py-3 text-center text-md-left">
+                    <div class="text-body text-primary-hover"> © 2026 Développé par <a href="#" class="text-body">Path2learn</a></div>
+                    <div class="justify-content-center mt-3 mt-lg-0">
+                        <ul class="nav list-inline justify-content-center mb-0">
+                            <li class="list-inline-item"><a class="nav-link" href="#">Terms of use</a></li>
+                            <li class="list-inline-item"><a class="nav-link pe-0" href="#">Privacy policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- Footer END -->
+
+<!-- Back to top -->
+<div class="back-top"><i class="bi bi-arrow-up-short position-absolute top-50 start-50 translate-middle"></i></div>
+
+<!-- JavaScript -->
+<!-- Script simple pour l'aperçu -->
+<script>
+function previewFile(input) {
+    const preview = document.getElementById('preview-img');
+    const container = document.getElementById('preview-container');
+    
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        
+        // Vérifier la taille (2MB max)
+        if (file.size > 2 * 1024 * 1024) {
+            alert('Le fichier est trop volumineux. Taille maximum: 2MB');
+            input.value = '';
+            return;
+        }
+        
+        // Vérifier le type
+        if (!file.type.match('image.*')) {
+            alert('Veuillez sélectionner une image');
+            input.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            if (preview) {
+                preview.src = e.target.result;
+                preview.classList.remove('d-none');
+            } else {
+                // Créer l'élément preview s'il n'existe pas
+                const newPreview = document.createElement('img');
+                newPreview.id = 'preview-img';
+                newPreview.src = e.target.result;
+                newPreview.alt = 'Aperçu';
+                newPreview.className = 'img-thumbnail';
+                newPreview.style.maxWidth = '150px';
+                newPreview.style.maxHeight = '150px';
+                container.innerHTML = '';
+                container.appendChild(newPreview);
+            }
+            container.classList.remove('d-none');
+        }
+        reader.readAsDataURL(file);
+    }
+}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM chargé - Initialisation des événements');
+
+
+    // ========== LANGUAGES COLLECTION ==========
+    const languagesWrapper = document.getElementById('languages-wrapper');
+    const languagesList = document.getElementById('languages-list');
+    const addLanguageBtn = document.getElementById('add-language');
+    const noLanguagesMsg = document.getElementById('no-languages-msg');
+    
+    if (addLanguageBtn && languagesWrapper) {
+        addLanguageBtn.addEventListener('click', function() {
+            console.log('Ajout d\'une langue');
+            const prototype = languagesWrapper.dataset.prototype;
+            const index = languagesList.children.length;
+            let newForm = prototype.replace(/__name__/g, index);
+            
+            // Create a temporary div to parse the HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = newForm;
+            
+            // Create the row structure
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'row g-3 mb-3 language-item';
+            
+            // Get the form fields
+            const nomField = tempDiv.querySelector('[id$="_nom"]');
+            const niveauField = tempDiv.querySelector('[id$="_niveau"]');
+            
+            if (nomField && niveauField) {
+                // Create columns
+                const col1 = document.createElement('div');
+                col1.className = 'col-md-5';
+                nomField.className = 'form-control';
+                nomField.placeholder = 'Ex: Français';
+                col1.appendChild(nomField);
+                
+                const col2 = document.createElement('div');
+                col2.className = 'col-md-5';
+                niveauField.className = 'form-control';
+                col2.appendChild(niveauField);
+                
+                const col3 = document.createElement('div');
+                col3.className = 'col-md-2 d-flex align-items-center';
+                col3.innerHTML = '<button type="button" class="btn btn-outline-danger remove-language"><i class="bi bi-trash"></i></button>';
+                
+                rowDiv.appendChild(col1);
+                rowDiv.appendChild(col2);
+                rowDiv.appendChild(col3);
+                
+                languagesList.appendChild(rowDiv);
+                
+                // Hide the "no languages" message
+                if (noLanguagesMsg) {
+                    noLanguagesMsg.style.display = 'none';
+                }
+                
+                // Add remove event
+                rowDiv.querySelector('.remove-language').addEventListener('click', function() {
+                    rowDiv.remove();
+                    if (languagesList.children.length === 0 && noLanguagesMsg) {
+                        noLanguagesMsg.style.display = 'block';
+                    }
+                });
+            }
+        });
+    }
+
+    // ========== INTERESTS COLLECTION ==========
+    const interestsWrapper = document.getElementById('interests-wrapper');
+    const interestsList = document.getElementById('interests-list');
+    const addInterestBtn = document.getElementById('add-interest');
+    const noInterestsMsg = document.getElementById('no-interests-msg');
+    
+    if (addInterestBtn && interestsWrapper) {
+        addInterestBtn.addEventListener('click', function() {
+            console.log('Ajout d\'un centre d\'intérêt');
+            const prototype = interestsWrapper.dataset.prototype;
+            const index = interestsList.children.length;
+            let newForm = prototype.replace(/__name__/g, index);
+            
+            // Create a temporary div to parse the HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = newForm;
+            
+            // Create the row structure
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'row g-3 mb-3 interest-item';
+            
+            // Get the form fields
+            const nomField = tempDiv.querySelector('[id$="_nom"]');
+            const iconeField = tempDiv.querySelector('[id$="_icone"]');
+            
+            if (nomField && iconeField) {
+                // Create columns
+                const col1 = document.createElement('div');
+                col1.className = 'col-md-5';
+                nomField.className = 'form-control';
+                nomField.placeholder = 'Ex: Programmation';
+                col1.appendChild(nomField);
+                
+                const col2 = document.createElement('div');
+                col2.className = 'col-md-5';
+                iconeField.className = 'form-control';
+                iconeField.placeholder = '💻 ou bi-code-slash';
+                col2.appendChild(iconeField);
+                
+                const col3 = document.createElement('div');
+                col3.className = 'col-md-2 d-flex align-items-center';
+                col3.innerHTML = '<button type="button" class="btn btn-outline-danger remove-interest"><i class="bi bi-trash"></i></button>';
+                
+                rowDiv.appendChild(col1);
+                rowDiv.appendChild(col2);
+                rowDiv.appendChild(col3);
+                
+                interestsList.appendChild(rowDiv);
+                
+                // Hide the "no interests" message
+                if (noInterestsMsg) {
+                    noInterestsMsg.style.display = 'none';
+                }
+                
+                // Add remove event
+                rowDiv.querySelector('.remove-interest').addEventListener('click', function() {
+                    rowDiv.remove();
+                    if (interestsList.children.length === 0 && noInterestsMsg) {
+                        noInterestsMsg.style.display = 'block';
+                    }
+                });
+            }
+        });
+    }
+
+    // Remove buttons for existing items
+    document.querySelectorAll('.remove-language').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const item = this.closest('.language-item');
+            if (item) {
+                item.remove();
+                if (languagesList && languagesList.children.length === 0 && noLanguagesMsg) {
+                    noLanguagesMsg.style.display = 'block';
+                }
+            }
+        });
+    });
+    
+    document.querySelectorAll('.remove-interest').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const item = this.closest('.interest-item');
+            if (item) {
+                item.remove();
+                if (interestsList && interestsList.children.length === 0 && noInterestsMsg) {
+                    noInterestsMsg.style.display = 'block';
+                }
+            }
+        });
+    });
+});
+</script>
+
+<!-- Bootstrap JS -->
+<script src="{{ asset('vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+{% endblock %}

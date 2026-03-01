@@ -1,0 +1,54 @@
+{# templates/resume/fiche.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Fiche de révision - {{ cours.titre }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            {# En-tête avec options d'export #}
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>
+                    <i class="bi bi-journal-text"></i> 
+                    Fiche de révision
+                </h1>
+                <div>
+                    <a href="{{ path('app_resume_download', {'id': cours.id}) }}" class="btn btn-success">
+                        <i class="bi bi-download"></i> Télécharger PDF
+                    </a>
+                    <a href="{{ path('app_resume_cours', {'id': cours.id}) }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Retour au résumé
+                    </a>
+                </div>
+            </div>
+            
+            {# La fiche de révision générée par le service #}
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    {{ fiche|raw }}
+                </div>
+            </div>
+            
+            {# Options d'impression #}
+            <div class="text-center mt-4">
+                <button onclick="window.print()" class="btn btn-primary">
+                    <i class="bi bi-printer"></i> Imprimer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@media print {
+    .btn, .d-flex, footer, nav, header {
+        display: none !important;
+    }
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+}
+</style>
+{% endblock %}

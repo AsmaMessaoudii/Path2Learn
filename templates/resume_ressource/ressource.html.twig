@@ -1,0 +1,117 @@
+{# templates/resume_ressource/ressource.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Résumé - {{ ressource.titre }}{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('course_show', {'id': ressource.cours.id}) }}">
+                            {{ ressource.cours.titre }}
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active">Résumé de la ressource</li>
+                </ol>
+            </nav>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi {{ ressource.fileIcon }} me-2"></i>
+                        {{ ressource.titre }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6>Informations</h6>
+                            <ul class="list-unstyled">
+                                <li><strong>Type :</strong> {{ ressource.type }}</li>
+                                <li><strong>Date d'ajout :</strong> {{ ressource.dateAjout|date('d/m/Y') }}</li>
+                                {% if resume.nombrePages %}
+                                    <li><strong>Pages :</strong> {{ resume.nombrePages }}</li>
+                                {% endif %}
+                                <li><strong>Langue :</strong> 
+                                    {% if resume.langue == 'fr' %}🇫🇷 Français
+                                    {% elseif resume.langue == 'en' %}🇬🇧 Anglais
+                                    {% else %}🌍 Non détectée
+                                    {% endif %}
+                                </li>
+                                <li><strong>Analyse :</strong> 
+                                    {% if resume.analyseComplete %}
+                                        <span class="badge bg-success">Complète</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Partielle</span>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Mots-clés</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for mot in resume.motsCles %}
+                                    <span class="badge bg-info p-2">{{ mot }}</span>
+                                {% else %}
+                                    <span class="text-muted">Aucun mot-clé extrait</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>Résumé court</h5>
+                        <div class="p-3 bg-light rounded">
+                            <p class="mb-0">{{ resume.resumeCourt ?: 'Aucun résumé disponible' }}</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>Résumé détaillé</h5>
+                        <div class="p-3 bg-light rounded">
+                            <p class="mb-0" style="white-space: pre-line;">
+                                {{ resume.resumeDetaille ?: 'Aucun résumé détaillé disponible' }}
+                            </p>
+                        </div>
+                    </div>
+
+                    {% if resume.contenuTexte %}
+                        <div class="mb-4">
+                            <h5>
+                                Aperçu du contenu
+                                <button class="btn btn-sm btn-outline-secondary ms-2" 
+                                        type="button" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#contenuComplet">
+                                    Afficher/Masquer
+                                </button>
+                            </h5>
+                            <div class="collapse" id="contenuComplet">
+                                <div class="p-3 bg-light rounded" style="max-height: 400px; overflow-y: auto;">
+                                    <pre style="white-space: pre-wrap;">{{ resume.contenuTexte|slice(0, 5000) }}...</pre>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="d-flex gap-2">
+                        {# CORRECTION ICI : remplacer 'lien' par 'url' #}
+                        <a href="{{ ressource.url ?: ressource.fileUrl }}" 
+                           target="_blank" 
+                           class="btn btn-primary">
+                            <i class="bi bi-eye"></i> Voir la ressource originale
+                        </a>
+                        <a href="{{ path('app_resume_ressources_cours', {'id': ressource.cours.id}) }}" 
+                           class="btn btn-outline-secondary">
+                            <i class="bi bi-grid"></i> Voir toutes les ressources
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
