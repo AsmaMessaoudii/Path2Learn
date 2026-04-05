@@ -68,4 +68,14 @@ public class Question {
                 ", userId=" + userId +
                 "}\n";
     }
+// Add these methods to your Question class
+
+    public float getPoints() {
+        return noteMax;
+    }
+
+    public void setPoints(float points) {
+        this.noteMax = points;
+    }
+
 }
