@@ -1,8 +1,10 @@
 package org.example.Test;
 
+import org.example.Models.Choix;
 import org.example.Models.Cours;
 import org.example.Models.Question;
 import org.example.Models.RessourcePedagogique;
+import org.example.Services.ChoixService;
 import org.example.Services.ServiceCours;
 import org.example.Services.QuestionService;
 import org.example.Services.ServiceRessourcePedagogique;
@@ -17,6 +19,7 @@ public class Main {
         ServiceCours serviceCours = new ServiceCours();
         QuestionService serviceQuestion = new QuestionService();
         ServiceRessourcePedagogique serviceRessource = new ServiceRessourcePedagogique();
+        ChoixService serviceChoix = new ChoixService();
 
         try {
             // ==================== COURS ====================
@@ -80,7 +83,25 @@ public class Main {
             System.out.println("=== Après suppression Ressource ===");
             serviceRessource.recuperer().forEach(System.out::println);
 
-        } catch (SQLException e) { // ✅ SQLException au lieu de SQLDataException
+            // ==================== CHOIX ====================
+            serviceChoix.ajouter(new Choix("hhh", true, 5));
+            serviceChoix.ajouter(new Choix("Londres", false, 116));
+            serviceChoix.ajouter(new Choix("Madrid", false, 116));
+
+            System.out.println("=== Liste des choix ===");
+            serviceChoix.recuperer().forEach(System.out::println);
+
+            serviceChoix.modifier(new Choix(1, "Paris modifié", true, 1));
+            System.out.println("=== Après modification Choix ===");
+            serviceChoix.recuperer().forEach(System.out::println);
+
+            Choix choixSupprimer = new Choix();
+            choixSupprimer.setId(121);
+            serviceChoix.supprimer(choixSupprimer);
+            System.out.println("=== Après suppression Choix ===");
+            serviceChoix.recuperer().forEach(System.out::println);
+
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
