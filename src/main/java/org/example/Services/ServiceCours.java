@@ -6,68 +6,98 @@ import org.example.utils.MyDatabase;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.SQLDataException;
 
 public class ServiceCours implements IService<Cours> {
 
-    private Connection conn;
-    private Statement ste;
+    private Connection connection;
 
     public ServiceCours() {
-        conn = MyDatabase.getInstance().getConnection();
+        connection = MyDatabase.getInstance().getConnection();
     }
 
     @Override
-    public void ajouter(Cours c) throws SQLException {
-        String req = "INSERT INTO cours (titre, description, niveau, matiere, duree, date_creation, email_prof, statut, user_id) " +
-                "VALUES ('" + c.getTitre() + "', '" + c.getDescription() + "', '" + c.getNiveau() + "', '" +
-                c.getMatiere() + "', " + c.getDuree() + ", '" + c.getDate_creation() + "', '" +
-                c.getEmail_prof() + "', '" + c.getStatut() + "', " + c.getUser_id() + ")";
-        ste = conn.createStatement();
-        ste.executeUpdate(req);
-        System.out.println("Cours ajouté avec succès !");
-    }
-
-    @Override
-    public void modifier(Cours c) throws SQLException {
-        String req = "UPDATE cours SET titre='" + c.getTitre() + "', description='" + c.getDescription() +
-                "', niveau='" + c.getNiveau() + "', matiere='" + c.getMatiere() +
-                "', duree=" + c.getDuree() + ", date_creation='" + c.getDate_creation() +
-                "', email_prof='" + c.getEmail_prof() + "', statut='" + c.getStatut() +
-                "', user_id=" + c.getUser_id() + " WHERE id=" + c.getId();
-        ste = conn.createStatement();
-        ste.executeUpdate(req);
-        System.out.println("Cours modifié avec succès !");
-    }
-
-    @Override
-    public void supprimer(Cours c) throws SQLException {
-        String req = "DELETE FROM cours WHERE id=" + c.getId();
-        ste = conn.createStatement();
-        ste.executeUpdate(req);
-        System.out.println("Cours supprimé avec succès !");
-    }
-
-    @Override
-    public List<Cours> recuperer() throws SQLException {
-        List<Cours> liste = new ArrayList<>();
-        String req = "SELECT * FROM cours";
-        ste = conn.createStatement();
-        ResultSet rs = ste.executeQuery(req);
-        while (rs.next()) {
-            Cours c = new Cours(
-                    rs.getString("titre"),
-                    rs.getString("description"),
-                    rs.getString("niveau"),
-                    rs.getString("matiere"),
-                    rs.getInt("duree"),
-                    rs.getDate("date_creation"),
-                    rs.getString("email_prof"),
-                    rs.getString("statut"),
-                    rs.getInt("user_id")
-            );
-            c.setId(rs.getInt("id"));
-            liste.add(c);
+    public void ajouter(Cours c) throws SQLDataException {
+        String sql = "INSERT INTO cours(titre, description, niveau, matiere, duree, date_creation, email_prof, statut, user_id) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, c.getTitre());
+            ps.setString(2, c.getDescription());
+            ps.setString(3, c.getNiveau());
+            ps.setString(4, c.getMatiere());
+            ps.setInt(5, c.getDuree());
+            ps.setDate(6, c.getDate_creation());
+            ps.setString(7, c.getEmail_prof());
+            ps.setString(8, c.getStatut());
+            ps.setInt(9, c.getUser_id());
+            ps.executeUpdate();
+            System.out.println("✅ Cours ajouté !");
+        } catch (SQLException e) {
+            System.out.println("❌ Erreur ajout cours : " + e.getMessage());
         }
-        return liste;
+    }
+
+    @Override
+    public void modifier(Cours c) throws SQLDataException {
+        String sql = "UPDATE cours SET titre=?, description=?, niveau=?, matiere=?, duree=?, " +
+                "date_creation=?, email_prof=?, statut=?, user_id=? WHERE id=?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, c.getTitre());
+            ps.setString(2, c.getDescription());
+            ps.setString(3, c.getNiveau());
+            ps.setString(4, c.getMatiere());
+            ps.setInt(5, c.getDuree());
+            ps.setDate(6, c.getDate_creation());
+            ps.setString(7, c.getEmail_prof());
+            ps.setString(8, c.getStatut());
+            ps.setInt(9, c.getUser_id());
+            ps.setInt(10, c.getId());
+            ps.executeUpdate();
+            System.out.println("✅ Cours modifié !");
+        } catch (SQLException e) {
+            System.out.println("❌ Erreur modification cours : " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void supprimer(Cours c) throws SQLDataException {
+        String sql = "DELETE FROM cours WHERE id=?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, c.getId());
+            ps.executeUpdate();
+            System.out.println("✅ Cours supprimé !");
+        } catch (SQLException e) {
+            System.out.println("❌ Erreur suppression cours : " + e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Cours> recuperer() throws SQLDataException {
+        List<Cours> coursList = new ArrayList<>();
+        String sql = "SELECT * FROM cours";
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
+                Cours c = new Cours();
+                c.setId(rs.getInt("id"));
+                c.setTitre(rs.getString("titre"));
+                c.setDescription(rs.getString("description"));
+                c.setNiveau(rs.getString("niveau"));
+                c.setMatiere(rs.getString("matiere"));
+                c.setDuree(rs.getInt("duree"));
+                c.setDate_creation(rs.getDate("date_creation"));
+                c.setEmail_prof(rs.getString("email_prof"));
+                c.setStatut(rs.getString("statut"));
+                c.setUser_id(rs.getInt("user_id"));
+                coursList.add(c);
+            }
+        } catch (SQLException e) {
+            System.out.println("❌ Erreur récupération cours : " + e.getMessage());
+        }
+        return coursList;
     }
 }
