@@ -4,13 +4,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import org.example.Models.User;
 import org.example.Services.ServiceUser;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
@@ -29,8 +34,11 @@ public class UserController {
 
     @FXML private Button addUserBtn;
 
+    @FXML private Button badgeBtn;
+
     private ServiceUser serviceUser = new ServiceUser();
     private ObservableList<User> users = FXCollections.observableArrayList();
+
 
     @FXML
     public void initialize() {
@@ -48,8 +56,11 @@ public class UserController {
         // Add CRUD buttons
         addActionButtons();
 
+
         // Add user button
         addUserBtn.setOnAction(this::handleAjouterUser);
+
+        badgeBtn.setOnAction(e -> openBadgePage());
     }
 
     private void loadUsers() {
@@ -234,4 +245,26 @@ public class UserController {
 
         return dialog.showAndWait();
     }
+    @FXML
+    private void openBadgePage() {
+        try {
+            // Notice the leading slash and correct folder
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Badge.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Badge Page");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Optional: show alert to the user
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Impossible d'ouvrir la page des badges !");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
 }

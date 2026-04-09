@@ -23,6 +23,11 @@
                 style="-fx-background-color: transparent; -fx-text-fill: #81C784; -fx-font-size: 13px; -fx-font-weight: bold; -fx-border-color: #81C784; -fx-border-radius: 25; -fx-background-radius: 25; -fx-padding: 8 18; -fx-cursor: hand;" />
         <Button fx:id="exportBtn" text="Exporter"
                 style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px; -fx-font-weight: bold; -fx-border-color: #555555; -fx-border-radius: 25; -fx-background-radius: 25; -fx-padding: 8 18; -fx-cursor: hand;" />
+
+        <!-- NEW BADGE BUTTON -->
+        <Button fx:id="badgeBtn" text="Badges"
+                style="-fx-background-color: #FFC107; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 8 18; -fx-background-radius: 25; -fx-cursor: hand;" />
+
     </HBox>
 
     <!-- USERS TABLE -->
