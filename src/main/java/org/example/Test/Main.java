@@ -1,13 +1,19 @@
 package org.example.Test;
 
+
+import org.example.Models.*;
+
 import org.example.Models.Choix;
 import org.example.Models.Cours;
 import org.example.Models.Question;
 import org.example.Models.RessourcePedagogique;
+
 import org.example.Services.ChoixService;
 import org.example.Services.ServiceCours;
 import org.example.Services.QuestionService;
 import org.example.Services.ServiceRessourcePedagogique;
+import org.example.Services.ServiceUser;
+import org.example.Services.ServiceBadge;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -100,6 +106,49 @@ public class Main {
             serviceChoix.supprimer(choixSupprimer);
             System.out.println("=== Après suppression Choix ===");
             serviceChoix.recuperer().forEach(System.out::println);
+
+
+            // ==================== USER ====================
+            ServiceUser serviceUser = null;
+            serviceUser.ajouter(new User(
+                    "Ben Ali", "Mohamed", "med@gmail.com", "1234",
+                    "teacher", "actif",
+                    new Timestamp(System.currentTimeMillis())
+            ));
+            System.out.println("=== Après ajout User ===");
+            serviceUser.recuperer().forEach(System.out::println);
+
+            serviceUser.modifier(new User(
+                    1, "Ben Ali", "Ahmed", "ahmed@gmail.com", "5678",
+                    "teacher", "actif",
+                    new Timestamp(System.currentTimeMillis())
+            ));
+            System.out.println("=== Après modification User ===");
+            serviceUser.recuperer().forEach(System.out::println);
+
+            serviceUser.supprimer(1);
+            System.out.println("=== Après suppression User ===");
+            serviceUser.recuperer().forEach(System.out::println);
+
+
+            // ==================== BADGE (ADMIN CRUD) ====================
+            ServiceBadge serviceBadge = new ServiceBadge();
+
+            serviceBadge.ajouter(new Badge("Beginner",    "1 cours",   "bronze.png",  1,  new Timestamp(System.currentTimeMillis())));
+            serviceBadge.ajouter(new Badge("Rising Star", "3 cours",   "star.png",    3,  new Timestamp(System.currentTimeMillis())));
+            serviceBadge.ajouter(new Badge("Expert",      "5 cours",   "fire.png",    5,  new Timestamp(System.currentTimeMillis())));
+            serviceBadge.ajouter(new Badge("Legend",      "10 cours",  "diamond.png", 10, new Timestamp(System.currentTimeMillis())));
+
+            System.out.println("=== Tous les badges ===");
+            serviceBadge.recuperer().forEach(System.out::println);
+
+            serviceBadge.modifier(new Badge(1, "Beginner+", "Premier cours !", "bronze2.png", 1,
+                    new Timestamp(System.currentTimeMillis())));
+
+            serviceBadge.supprimer(4);
+
+// SYSTEM — status teacher user_id=1
+            serviceBadge.printStatus(1);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

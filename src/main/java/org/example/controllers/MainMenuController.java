@@ -1,5 +1,6 @@
 package org.example.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,12 +14,14 @@ import java.io.IOException;
 
 public class MainMenuController {
 
-    @FXML private Button homeBtn, coursBtn, ressourcesBtn, questionsBtn, projetsBtn, evenementsBtn, utilisateursBtn;
-    @FXML private VBox coursCard, ressourcesCard, questionsCard, projetsCard, evenementsCard, utilisateursCard;
+    @FXML
+    private Button homeBtn, coursBtn, ressourcesBtn, questionsBtn, projetsBtn, evenementsBtn, utilisateursBtn;
+
+    @FXML
+    private VBox coursCard, ressourcesCard, questionsCard, projetsCard, evenementsCard, utilisateursCard;
 
     @FXML
     private void handleHome() {
-        // Déjà sur la page d'accueil
         resetButtonStyles();
         setActiveButton(homeBtn);
     }
@@ -39,18 +42,22 @@ public class MainMenuController {
     }
 
     @FXML
-    private void handleProjets() {
+    private void handleProjets(ActionEvent actionEvent) {
         showAlert("Projets", "Module Projets - Bientôt disponible", Alert.AlertType.INFORMATION);
+        resetButtonStyles();
+        setActiveButton(projetsBtn);
     }
 
     @FXML
     private void handleEvenements() {
         showAlert("Événements", "Module Événements - Bientôt disponible", Alert.AlertType.INFORMATION);
+        resetButtonStyles();
+        setActiveButton(evenementsBtn);
     }
 
     @FXML
     private void handleUtilisateurs() {
-        showAlert("Communauté", "Module Communauté - Bientôt disponible", Alert.AlertType.INFORMATION);
+        naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs");
     }
 
     // Navigation vers les cartes
@@ -72,21 +79,24 @@ public class MainMenuController {
     @FXML
     private void handleProjetsCard() {
         showAlert("Projets", "Module Projets - Bientôt disponible", Alert.AlertType.INFORMATION);
+        resetButtonStyles();
+        setActiveButton(projetsBtn);
     }
 
     @FXML
     private void handleEvenementsCard() {
         showAlert("Événements", "Module Événements - Bientôt disponible", Alert.AlertType.INFORMATION);
+        resetButtonStyles();
+        setActiveButton(evenementsBtn);
     }
 
     @FXML
     private void handleUtilisateursCard() {
-        showAlert("Communauté", "Module Communauté - Bientôt disponible", Alert.AlertType.INFORMATION);
+        naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs");
     }
 
     private void naviguerVers(String fxmlPath, String titre) {
         try {
-            // Vérifier si la ressource existe
             java.net.URL resource = getClass().getResource(fxmlPath);
             if (resource == null) {
                 showAlert("Erreur", "Page non trouvée: " + fxmlPath, Alert.AlertType.ERROR);
@@ -137,21 +147,16 @@ public class MainMenuController {
         addCardHoverEffect(evenementsCard);
         addCardHoverEffect(utilisateursCard);
 
-        // Activer le bouton Accueil par défaut
         setActiveButton(homeBtn);
     }
 
     private void addCardHoverEffect(VBox card) {
         if (card != null) {
             card.setOnMouseEntered(e -> {
-                card.setStyle(card.getStyle() + "-fx-scale-x: 1.02; -fx-scale-y: 1.02;");
-                card.setStyle(card.getStyle().replace("rgba(0,0,0,0.05)", "rgba(0,0,0,0.12)"));
+                card.setStyle("-fx-scale-x: 1.02; -fx-scale-y: 1.02; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 10, 0, 0, 2);");
             });
             card.setOnMouseExited(e -> {
-                String style = card.getStyle();
-                style = style.replace("-fx-scale-x: 1.02; -fx-scale-y: 1.02;", "");
-                style = style.replace("rgba(0,0,0,0.12)", "rgba(0,0,0,0.05)");
-                card.setStyle(style);
+                card.setStyle("-fx-scale-x: 1; -fx-scale-y: 1; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);");
             });
         }
     }

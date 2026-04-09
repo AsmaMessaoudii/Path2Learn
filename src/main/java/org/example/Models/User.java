@@ -65,6 +65,8 @@ public class User {
     public java.sql.Timestamp getDate_creation() { return date_creation; }
     public void setDate_creation(java.sql.Timestamp date_creation) { this.date_creation = date_creation; }
 
+
+
     @Override
     public String toString() {
         return "User{id=" + id +

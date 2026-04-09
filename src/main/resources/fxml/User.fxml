@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controllers.UserController"
+      style="-fx-background-color: #F5F5F5;" spacing="20.0">
+
+    <!-- PAGE HEADER -->
+    <HBox style="-fx-background-color: white; -fx-padding: 20 40; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 10, 0, 0, 2);"
+          alignment="CENTER_LEFT" spacing="20.0">
+        <Label text="🌿" style="-fx-font-size: 28px;" />
+        <Label text="Communauté" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #81C784;" />
+    </HBox>
+
+    <!-- ACTION BUTTONS -->
+    <HBox spacing="15.0" style="-fx-padding: 0 40;" alignment="CENTER_LEFT">
+        <Button fx:id="addUserBtn" text="Ajouter un utilisateur"
+                style="-fx-background-color: #81C784; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 8 18; -fx-background-radius: 25; -fx-cursor: hand;" />
+        <Button fx:id="filterBtn" text="Filtrer"
+                style="-fx-background-color: transparent; -fx-text-fill: #81C784; -fx-font-size: 13px; -fx-font-weight: bold; -fx-border-color: #81C784; -fx-border-radius: 25; -fx-background-radius: 25; -fx-padding: 8 18; -fx-cursor: hand;" />
+        <Button fx:id="exportBtn" text="Exporter"
+                style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px; -fx-font-weight: bold; -fx-border-color: #555555; -fx-border-radius: 25; -fx-background-radius: 25; -fx-padding: 8 18; -fx-cursor: hand;" />
+
+        <!-- NEW BADGE BUTTON -->
+        <Button fx:id="badgeBtn" text="Badges"
+                style="-fx-background-color: #FFC107; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 8 18; -fx-background-radius: 25; -fx-cursor: hand;" />
+
+    </HBox>
+
+    <!-- USERS TABLE -->
+    <TableView fx:id="userTable" VBox.vgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15;" prefHeight="500">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+            <TableColumn fx:id="nomColumn" text="Nom" prefWidth="120"/>
+            <TableColumn fx:id="prenomColumn" text="Prénom" prefWidth="120"/>
+            <TableColumn fx:id="emailColumn" text="Email" prefWidth="200"/>
+            <TableColumn fx:id="roleColumn" text="Rôle" prefWidth="100"/>
+            <TableColumn fx:id="statusColumn" text="Statut" prefWidth="100"/>
+            <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="180"/>
+        </columns>
+    </TableView>
+</VBox>
