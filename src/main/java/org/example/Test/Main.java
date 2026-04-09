@@ -1,6 +1,13 @@
 package org.example.Test;
 
+
 import org.example.Models.*;
+
+import org.example.Models.Choix;
+import org.example.Models.Cours;
+import org.example.Models.Question;
+import org.example.Models.RessourcePedagogique;
+
 import org.example.Services.ChoixService;
 import org.example.Services.ServiceCours;
 import org.example.Services.QuestionService;
@@ -19,7 +26,6 @@ public class Main {
         QuestionService serviceQuestion = new QuestionService();
         ServiceRessourcePedagogique serviceRessource = new ServiceRessourcePedagogique();
         ChoixService serviceChoix = new ChoixService();
-        ServiceUser serviceUser = new ServiceUser();
 
         try {
             // ==================== COURS ====================
@@ -45,10 +51,10 @@ public class Main {
             serviceCours.recuperer().forEach(System.out::println);
 
             // ==================== QUESTIONS ====================
-            serviceQuestion.ajouter(new Question("Question Java", "Différence JDK et JRE ?", new java.util.Date(), 30, 20.0f, 1));
-            serviceQuestion.ajouter(new Question("Question SQL", "C'est quoi une clé étrangère ?", new java.util.Date(), 20, 15.0f, 1));
+            serviceQuestion.ajouter(new Question("Question Java", "Différence JDK et JRE ?", (Date) new java.util.Date(), 30, 20.0f, 1));
+            serviceQuestion.ajouter(new Question("Question SQL", "C'est quoi une clé étrangère ?", (Date) new java.util.Date(), 20, 15.0f, 1));
 
-            serviceQuestion.modifier(new Question(120, "Question modifiée", "Nouvelle description", new java.util.Date(), 45, 18.0f, 1));
+            serviceQuestion.modifier(new Question(120, "Question modifiée", "Nouvelle description", (Date) new java.util.Date(), 45, 18.0f, 1));
 
             System.out.println("=== Liste des questions ===");
             serviceQuestion.recuperer().forEach(System.out::println);
@@ -101,7 +107,9 @@ public class Main {
             System.out.println("=== Après suppression Choix ===");
             serviceChoix.recuperer().forEach(System.out::println);
 
+
             // ==================== USER ====================
+            ServiceUser serviceUser = null;
             serviceUser.ajouter(new User(
                     "Ben Ali", "Mohamed", "med@gmail.com", "1234",
                     "teacher", "actif",

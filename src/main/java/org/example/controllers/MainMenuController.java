@@ -1,24 +1,51 @@
 package org.example.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-
 import java.io.IOException;
 
 public class MainMenuController {
 
-    @FXML private Button homeBtn, coursBtn, ressourcesBtn, questionsBtn, projetsBtn, evenementsBtn, utilisateursBtn;
-    @FXML private VBox coursCard, ressourcesCard, questionsCard, projetsCard, evenementsCard, utilisateursCard;
+    @FXML
+    private Button homeBtn, coursBtn, ressourcesBtn, questionsBtn, projetsBtn, evenementsBtn, utilisateursBtn;
+
+    @FXML
+    private VBox coursCard, ressourcesCard, questionsCard, projetsCard, evenementsCard, utilisateursCard;
 
     @FXML
     private void handleHome() {
         showAlert("Accueil", "Bienvenue sur Path2Learn");
         resetButtonStyles();
         setActiveButton(homeBtn);
+    }
+
+    private void setActiveButton(Button button) {
+        button.setStyle("-fx-background-color: transparent; -fx-text-fill: #81C784; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 0 0 5 0; -fx-border-color: transparent transparent #81C784 transparent; -fx-border-width: 0 0 2 0;");
+    }
+
+    private void resetButtonStyles() {
+        String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 0 0 5 0;";
+        homeBtn.setStyle(defaultStyle);
+        coursBtn.setStyle(defaultStyle);
+        ressourcesBtn.setStyle(defaultStyle);
+        questionsBtn.setStyle(defaultStyle);
+        projetsBtn.setStyle(defaultStyle);
+        evenementsBtn.setStyle(defaultStyle);
+        utilisateursBtn.setStyle(defaultStyle);
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML
@@ -40,10 +67,20 @@ public class MainMenuController {
         showAlert("Quiz", "Testez vos connaissances avec nos quiz");
         resetButtonStyles();
         setActiveButton(questionsBtn);
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/QuestionListView.fxml"));
+            Parent root = loader.load();
+            Scene scene = questionsBtn.getScene();
+            scene.setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible de charger l'interface des questions: " + e.getMessage());
+        }
     }
 
     @FXML
-    private void handleProjets() {
+    private void handleProjets(ActionEvent actionEvent) {
         showAlert("Projets", "Découvrez les projets réalisés par nos apprenants");
         resetButtonStyles();
         setActiveButton(projetsBtn);
@@ -63,7 +100,7 @@ public class MainMenuController {
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/User.fxml"));
-            VBox usersPage = loader.load(); // or AnchorPane if root is AnchorPane
+            VBox usersPage = loader.load();
 
             VBox root = (VBox) homeBtn.getScene().getRoot();
             if (root.getChildren().size() > 1) {
@@ -73,32 +110,8 @@ public class MainMenuController {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Erreur", "Impossible de charger la page Utilisateurs");
+            showAlert("Erreur", "Impossible de charger la page Utilisateurs: " + e.getMessage());
         }
-
-    }
-
-    private void resetButtonStyles() {
-        String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 0 0 5 0;";
-        homeBtn.setStyle(defaultStyle);
-        coursBtn.setStyle(defaultStyle);
-        ressourcesBtn.setStyle(defaultStyle);
-        questionsBtn.setStyle(defaultStyle);
-        projetsBtn.setStyle(defaultStyle);
-        evenementsBtn.setStyle(defaultStyle);
-        utilisateursBtn.setStyle(defaultStyle);
-    }
-
-    private void setActiveButton(Button btn) {
-        btn.setStyle("-fx-background-color: transparent; -fx-text-fill: #81C784; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 0 0 5 0; -fx-border-color: transparent transparent #81C784 transparent; -fx-border-width: 0 0 2 0;");
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     @FXML
@@ -114,14 +127,10 @@ public class MainMenuController {
     private void addCardHoverEffect(VBox card) {
         if (card != null) {
             card.setOnMouseEntered(e -> {
-                card.setStyle(card.getStyle() + "-fx-scale-x: 1.02; -fx-scale-y: 1.02;");
-                card.setStyle(card.getStyle().replace("rgba(0,0,0,0.05)", "rgba(0,0,0,0.12)"));
+                card.setStyle("-fx-scale-x: 1.02; -fx-scale-y: 1.02; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 10, 0, 0, 2);");
             });
             card.setOnMouseExited(e -> {
-                String style = card.getStyle();
-                style = style.replace("-fx-scale-x: 1.02; -fx-scale-y: 1.02;", "");
-                style = style.replace("rgba(0,0,0,0.12)", "rgba(0,0,0,0.05)");
-                card.setStyle(style);
+                card.setStyle("-fx-scale-x: 1; -fx-scale-y: 1; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);");
             });
         }
     }

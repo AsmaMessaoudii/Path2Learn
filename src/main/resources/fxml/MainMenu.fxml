@@ -134,19 +134,19 @@
                 <Label text="Des retours positifs qui nous motivent" style="-fx-font-size: 14px; -fx-text-fill: #666666; -fx-alignment: CENTER; -fx-padding: 5 0 40 0;" />
 
                 <HBox spacing="25.0" alignment="CENTER">
-                    <VBox spacing="12.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 25; ;">
+                    <VBox spacing="12.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 25;">
                         <Label text="★★★★★" style="-fx-font-size: 16px; -fx-text-fill: #FFD700;" />
                         <Label text="Une plateforme exceptionnelle. Les cours sont clairs et bien structurés." style="-fx-font-size: 13px; -fx-text-fill: #555555; -fx-wrap-text: true;" />
                         <Label text="Marie Dupont" style="-fx-font-size: 12px; -fx-text-fill: #81C784; -fx-font-weight: bold;" />
                     </VBox>
 
-                    <VBox spacing="12.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 25; ">
+                    <VBox spacing="12.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 25;">
                         <Label text="★★★★★" style="-fx-font-size: 16px; -fx-text-fill: #FFD700;" />
                         <Label text="Grâce à Path2Learn, j'ai pu me reconvertir et trouver un emploi." style="-fx-font-size: 13px; -fx-text-fill: #555555; -fx-wrap-text: true;" />
                         <Label text="Thomas Martin" style="-fx-font-size: 12px; -fx-text-fill: #81C784; -fx-font-weight: bold;" />
                     </VBox>
 
-                    <VBox spacing="12.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 25; ">
+                    <VBox spacing="12.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 25;">
                         <Label text="★★★★★" style="-fx-font-size: 16px; -fx-text-fill: #FFD700;" />
                         <Label text="La communauté est très bienveillante et les formateurs disponibles." style="-fx-font-size: 13px; -fx-text-fill: #555555; -fx-wrap-text: true;" />
                         <Label text="Sophie Bernard" style="-fx-font-size: 12px; -fx-text-fill: #81C784; -fx-font-weight: bold;" />
