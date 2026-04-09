@@ -3,13 +3,13 @@ package org.example.Test;
 import org.example.Models.Choix;
 import org.example.Models.Cours;
 import org.example.Models.Question;
-import org.example.Models.User;
 import org.example.Models.RessourcePedagogique;
+import org.example.Models.User;
 import org.example.Services.ChoixService;
 import org.example.Services.ServiceCours;
 import org.example.Services.QuestionService;
-import org.example.Services.ServiceUser;
 import org.example.Services.ServiceRessourcePedagogique;
+import org.example.Services.ServiceUser;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -105,25 +105,22 @@ public class Main {
             serviceChoix.recuperer().forEach(System.out::println);
 
             // ==================== USER ====================
-            // Ajouter
             serviceUser.ajouter(new User(
                     "Ben Ali", "Mohamed", "med@gmail.com", "1234",
-                    "admin", "actif",
+                    "teacher", "actif",
                     new Timestamp(System.currentTimeMillis())
             ));
             System.out.println("=== Après ajout User ===");
             serviceUser.recuperer().forEach(System.out::println);
 
-            // Modifier (id=1)
             serviceUser.modifier(new User(
                     1, "Ben Ali", "Ahmed", "ahmed@gmail.com", "5678",
-                    "user", "actif",
+                    "teacher", "actif",
                     new Timestamp(System.currentTimeMillis())
             ));
             System.out.println("=== Après modification User ===");
             serviceUser.recuperer().forEach(System.out::println);
 
-            // Supprimer (id=1)
             serviceUser.supprimer(1);
             System.out.println("=== Après suppression User ===");
             serviceUser.recuperer().forEach(System.out::println);
