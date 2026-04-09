@@ -45,10 +45,10 @@ public class Main {
             serviceCours.recuperer().forEach(System.out::println);
 
             // ==================== QUESTIONS ====================
-            serviceQuestion.ajouter(new Question("Question Java", "Différence JDK et JRE ?", new java.util.Date(), 30, 20.0f, 1));
-            serviceQuestion.ajouter(new Question("Question SQL", "C'est quoi une clé étrangère ?", new java.util.Date(), 20, 15.0f, 1));
+            serviceQuestion.ajouter(new Question("Question Java", "Différence JDK et JRE ?", (Date) new java.util.Date(), 30, 20.0f, 1));
+            serviceQuestion.ajouter(new Question("Question SQL", "C'est quoi une clé étrangère ?", (Date) new java.util.Date(), 20, 15.0f, 1));
 
-            serviceQuestion.modifier(new Question(120, "Question modifiée", "Nouvelle description", new java.util.Date(), 45, 18.0f, 1));
+            serviceQuestion.modifier(new Question(120, "Question modifiée", "Nouvelle description", (Date) new java.util.Date(), 45, 18.0f, 1));
 
             System.out.println("=== Liste des questions ===");
             serviceQuestion.recuperer().forEach(System.out::println);
