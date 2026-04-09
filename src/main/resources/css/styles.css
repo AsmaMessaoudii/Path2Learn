@@ -1,0 +1,252 @@
+/* Variables CSS */
+.root {
+    -fx-primary-color: #2E7D32;
+    -fx-primary-light: #A5D6A7;
+    -fx-primary-dark: #1B5E20;
+    -fx-white: #FFFFFF;
+    -fx-gray-light: #F5F5F5;
+    -fx-gray: #E0E0E0;
+    -fx-gray-dark: #757575;
+    -fx-text-primary: #212121;
+    -fx-text-secondary: #616161;
+    -fx-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Container principal */
+.main-container {
+    -fx-background-color: -fx-gray-light;
+}
+
+/* Header */
+.header {
+    -fx-background-color: -fx-white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}
+
+.logo-container {
+    -fx-background-color: -fx-primary-color;
+    -fx-background-radius: 10;
+    -fx-padding: 10;
+}
+
+.logo-icon {
+    -fx-font-size: 32px;
+}
+
+.app-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-primary-color;
+}
+
+.app-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: -fx-text-secondary;
+}
+
+/* Sidebar */
+.sidebar {
+    -fx-background-color: -fx-white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 2, 0);
+}
+
+.menu-title {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-gray-dark;
+    -fx-padding: 0 0 10 0;
+}
+
+.menu-subtitle {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-primary-color;
+    -fx-padding: 15 0 5 0;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-text-primary;
+    -fx-font-size: 14px;
+    -fx-padding: 10 15;
+    -fx-alignment: CENTER_LEFT;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 10;
+}
+
+.nav-button:hover {
+    -fx-background-color: -fx-primary-light;
+    -fx-text-fill: -fx-primary-dark;
+}
+
+.nav-button-active {
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: -fx-white;
+    -fx-font-size: 14px;
+    -fx-padding: 10 15;
+    -fx-alignment: CENTER_LEFT;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 10;
+}
+
+.nav-icon {
+    -fx-font-size: 18px;
+}
+
+/* Cartes */
+.card {
+    -fx-background-color: -fx-white;
+    -fx-background-radius: 10;
+    -fx-padding: 20;
+    -fx-spacing: 10;
+    -fx-alignment: CENTER;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);
+    -fx-transition: all 0.3s ease;
+}
+
+.card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 15, 0, 0, 4);
+    -fx-translate-y: -2;
+}
+
+.card-icon {
+    -fx-font-size: 48px;
+}
+
+.card-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-primary-color;
+}
+
+.card-description {
+    -fx-font-size: 12px;
+    -fx-text-fill: -fx-text-secondary;
+    -fx-wrap-text: true;
+    -fx-text-alignment: CENTER;
+}
+
+.card-stats {
+    -fx-font-size: 11px;
+    -fx-text-fill: -fx-gray-dark;
+    -fx-font-weight: bold;
+}
+
+/* Bannière de bienvenue */
+.welcome-banner {
+    -fx-background-color: linear-gradient(135deg, -fx-primary-color 0%, -fx-primary-dark 100%);
+    -fx-background-radius: 10;
+    -fx-padding: 40;
+    -fx-spacing: 10;
+    -fx-alignment: CENTER;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}
+
+.welcome-title {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-white;
+}
+
+.welcome-subtitle {
+    -fx-font-size: 16px;
+    -fx-text-fill: -fx-primary-light;
+}
+
+/* Sections */
+.section-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-primary;
+    -fx-padding: 20 0 15 0;
+}
+
+/* Statistiques */
+.stat-card {
+    -fx-background-color: -fx-white;
+    -fx-background-radius: 10;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);
+    -fx-spacing: 10;
+}
+
+.stat-number {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-primary-color;
+}
+
+.stat-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: -fx-text-secondary;
+}
+
+/* Boutons d'action */
+.action-button-primary {
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: -fx-white;
+    -fx-font-size: 14px;
+    -fx-padding: 8 20;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.action-button-primary:hover {
+    -fx-background-color: -fx-primary-dark;
+}
+
+.action-button {
+    -fx-background-color: -fx-gray;
+    -fx-text-fill: -fx-text-primary;
+    -fx-font-size: 14px;
+    -fx-padding: 8 20;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.action-button-danger {
+    -fx-background-color: #f44336;
+    -fx-text-fill: -fx-white;
+    -fx-font-size: 14px;
+    -fx-padding: 8 20;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+/* TableView */
+.data-table {
+    -fx-background-color: -fx-white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+.data-table .column-header-background {
+    -fx-background-color: -fx-primary-color;
+    -fx-background-radius: 10 10 0 0;
+}
+
+.data-table .column-header {
+    -fx-background-color: transparent;
+}
+
+.data-table .column-header .label {
+    -fx-text-fill: -fx-white;
+    -fx-font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cards-grid {
+        -fx-hgap: 10;
+        -fx-vgap: 10;
+    }
+
+    .card-icon {
+        -fx-font-size: 32px;
+    }
+
+    .welcome-title {
+        -fx-font-size: 24px;
+    }
+}
