@@ -45,4 +45,30 @@ public class Choix {
                 ", questionId=" + questionId +
                 "}\n";
     }
+
+    public char[] getQuestion_id() {
+        return String.valueOf(questionId).toCharArray();
+    }
+    // Add these methods to Choix.java
+    public String getTexte() {
+        return contenu;
+    }
+
+    public void setTexte(String texte) {
+        this.contenu = texte;
+    }
+
+    public boolean isCorrect() {
+        return estCorrect;
+    }
+
+    public void setCorrect(boolean correct) {
+        this.estCorrect = correct;
+    }
+
+
+
+    public void setQuestion_id(int questionId) {
+        this.questionId = questionId;
+    }
 }
