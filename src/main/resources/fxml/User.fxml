@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controllers.UserController"
+      style="-fx-background-color: #F5F5F5;">
+
+    <!-- ═══════════════════════════════════════════════════════ SIDEBAR MODERNE -->
+    <VBox style="-fx-background-color: #FFFFFF; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 2, 0);" prefWidth="280">
+
+        <!-- Logo Section -->
+        <VBox spacing="10.0" style="-fx-padding: 30 20 30 20; -fx-background-color: #F8F9FA; -fx-alignment: CENTER;">
+            <Label text="🌿" style="-fx-font-size: 48px; -fx-alignment: CENTER;" />
+            <Label text="Path2Learn" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #4CAF50; -fx-alignment: CENTER;" />
+            <Label text="Plateforme d'apprentissage" style="-fx-font-size: 11px; -fx-text-fill: #999999; -fx-alignment: CENTER;" />
+        </VBox>
+
+        <Separator style="-fx-background-color: #EEEEEE;" />
+
+        <!-- Navigation Menu -->
+        <VBox spacing="5.0" style="-fx-padding: 20 10;">
+            <Label text="MENU PRINCIPAL" style="-fx-font-size: 11px; -fx-text-fill: #BBBBBB; -fx-padding: 0 0 10 15; -fx-font-weight: bold;" />
+
+            <Button fx:id="homeBtn" text="🏠  Tableau de bord" onAction="#handleHome"
+                    style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT;" />
+
+            <Button fx:id="coursBtn" text="📚  Cours" onAction="#handleCours"
+                    style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT;" />
+
+            <Button fx:id="ressourcesBtn" text="📎  Ressources" onAction="#handleRessources"
+                    style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT;" />
+
+            <Button fx:id="questionsBtn" text="❓  Quiz" onAction="#handleQuestions"
+                    style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT;" />
+
+            <Button fx:id="projetsBtn" text="💼  Projets" onAction="#handleProjets"
+                    style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT;" />
+
+            <Button fx:id="evenementsBtn" text="📅  Événements" onAction="#handleEvenements"
+                    style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT;" />
+
+            <Button fx:id="utilisateursBtn" text="👥  Communauté" onAction="#handleUtilisateurs"
+                    style="-fx-background-color: transparent; -fx-text-fill: #4CAF50; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-border-color: transparent #4CAF50 transparent transparent; -fx-border-width: 0 4 0 0;" />
+
+            <Button fx:id="badgeBtn" text="🏅  Badges" onAction="#openBadgePage"
+                    style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT;" />
+        </VBox>
+
+        <Separator style="-fx-background-color: #EEEEEE;" />
+
+        <!-- Auth Buttons -->
+        <VBox spacing="10.0" style="-fx-padding: 20 20; -fx-background-color: #F8F9FA; -fx-alignment: CENTER;">
+            <Button text="🔑  Se connecter"
+                    style="-fx-background-color: transparent; -fx-text-fill: #4CAF50; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 20; -fx-border-color: #4CAF50; -fx-border-radius: 25;"
+                    maxWidth="Infinity" />
+            <Button text="📝  S'inscrire"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 20; -fx-background-radius: 25;"
+                    maxWidth="Infinity" />
+        </VBox>
+
+        <Region VBox.vgrow="ALWAYS" />
+
+        <!-- Footer -->
+        <VBox spacing="5.0" style="-fx-padding: 20; -fx-background-color: #F8F9FA;">
+            <Label text="© 2026 Path2Learn" style="-fx-font-size: 10px; -fx-text-fill: #CCCCCC; -fx-alignment: CENTER;" />
+            <Label text="v1.0.0" style="-fx-font-size: 9px; -fx-text-fill: #DDDDDD; -fx-alignment: CENTER;" />
+        </VBox>
+    </VBox>
+
+    <!-- ═══════════════════════════════════════════════════════ MAIN CONTENT -->
+    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #F5F5F5;" spacing="20.0">
+
+        <!-- Header -->
+        <HBox style="-fx-background-color: white; -fx-padding: 20 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);" alignment="CENTER_LEFT">
+            <Label text="👥 Gestion de la Communauté" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2E5C2E;" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label text="👤 Administrateur" style="-fx-font-size: 13px; -fx-text-fill: #666666;" />
+        </HBox>
+
+        <!-- Content -->
+        <VBox spacing="20.0" style="-fx-padding: 30 40;" VBox.vgrow="ALWAYS">
+
+            <!-- Action Buttons -->
+            <HBox spacing="15.0" alignment="CENTER_LEFT">
+                <Button fx:id="addUserBtn" text="➕ Ajouter un utilisateur"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 8 18; -fx-background-radius: 25; -fx-cursor: hand;" />
+                <Button fx:id="filterBtn" text="🔍 Filtrer"
+                        style="-fx-background-color: transparent; -fx-text-fill: #4CAF50; -fx-font-size: 13px; -fx-font-weight: bold; -fx-border-color: #4CAF50; -fx-border-radius: 25; -fx-background-radius: 25; -fx-padding: 8 18; -fx-cursor: hand;" />
+                <Button fx:id="exportBtn" text="📤 Exporter"
+                        style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px; -fx-font-weight: bold; -fx-border-color: #555555; -fx-border-radius: 25; -fx-background-radius: 25; -fx-padding: 8 18; -fx-cursor: hand;" />
+            </HBox>
+
+            <!-- Search Bar -->
+            <HBox spacing="12" alignment="CENTER_LEFT"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 16;
+                         -fx-border-color: #EEEEEE; -fx-border-radius: 10;">
+                <Label text="🔍" style="-fx-font-size: 16px;" />
+                <TextField fx:id="searchField"
+                           promptText="Rechercher par nom, prénom ou email..."
+                           style="-fx-padding: 8 12; -fx-background-radius: 7;
+                                  -fx-border-color: #DDDDDD; -fx-border-radius: 7; -fx-font-size: 13px;"
+                           HBox.hgrow="ALWAYS" />
+                <ComboBox fx:id="roleFilterCombo" promptText="Tous les rôles"
+                          prefWidth="150"
+                          style="-fx-background-radius: 7; -fx-border-color: #DDDDDD;
+                                 -fx-border-radius: 7; -fx-font-size: 13px;" />
+                <ComboBox fx:id="statusFilterCombo" promptText="Tous les statuts"
+                          prefWidth="150"
+                          style="-fx-background-radius: 7; -fx-border-color: #DDDDDD;
+                                 -fx-border-radius: 7; -fx-font-size: 13px;" />
+                <!-- Remove or comment the two buttons below if methods don't exist -->
+                <!--
+                <Button onAction="#handleRechercher" text="Rechercher"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 13px;
+                               -fx-padding: 8 20; -fx-background-radius: 7; -fx-cursor: hand;" />
+                <Button onAction="#handleResetRecherche" text="Réinitialiser"
+                        style="-fx-background-color: white; -fx-text-fill: #555555; -fx-font-size: 13px;
+                               -fx-padding: 8 16; -fx-background-radius: 7; -fx-cursor: hand;
+                               -fx-border-color: #DDDDDD; -fx-border-radius: 7;" />
+                -->
+            </HBox>
+
+            <!-- Statistics Label -->
+            <Label fx:id="statsLabel" text="0 utilisateurs au total"
+                   style="-fx-font-size: 12px; -fx-text-fill: #888888;" />
+
+            <!-- Users Table -->
+            <TableView fx:id="userTable" VBox.vgrow="ALWAYS"
+                       style="-fx-background-color: white; -fx-background-radius: 15;
+                              -fx-border-color: #EEEEEE; -fx-border-radius: 15;">
+                <columns>
+                    <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+                    <TableColumn fx:id="nomColumn" text="Nom" prefWidth="120"/>
+                    <TableColumn fx:id="prenomColumn" text="Prénom" prefWidth="120"/>
+                    <TableColumn fx:id="emailColumn" text="Email" prefWidth="200"/>
+                    <TableColumn fx:id="roleColumn" text="Rôle" prefWidth="100"/>
+                    <TableColumn fx:id="statusColumn" text="Statut" prefWidth="100"/>
+                    <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="180"/>
+                </columns>
+                <placeholder>
+                    <Label text="Aucun utilisateur trouvé"
+                           style="-fx-font-size: 13px; -fx-text-fill: #AAAAAA;" />
+                </placeholder>
+            </TableView>
+
+        </VBox>
+    </VBox>
+</HBox>

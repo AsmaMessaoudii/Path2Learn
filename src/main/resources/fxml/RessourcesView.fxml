@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -9,7 +10,7 @@
 <?import javafx.scene.layout.*?>
 
 <HBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.example.controllers.QuestionListController"
+      fx:controller="org.example.controllers.RessourcesController"
       style="-fx-background-color: #F5F5F5;">
 
     <!-- ═══════════════════════════════════════════════════════ SIDEBAR -->
@@ -38,18 +39,18 @@
                        -fx-alignment: CENTER_LEFT; -fx-cursor: hand; -fx-padding: 10 16;
                        -fx-background-radius: 0; -fx-max-width: Infinity;" />
 
+        <!-- Ressources (actif) -->
         <Button fx:id="ressourcesBtn" onAction="#handleRessources" text="  Ressources"
-                style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px;
-                       -fx-alignment: CENTER_LEFT; -fx-cursor: hand; -fx-padding: 10 16;
-                       -fx-background-radius: 0; -fx-max-width: Infinity;" />
-
-        <!-- Quiz (actif) -->
-        <Button fx:id="questionsBtn" onAction="#handleQuestions" text="  Quiz"
                 style="-fx-background-color: #E8F5E9; -fx-text-fill: #2E7D32; -fx-font-size: 13px;
                        -fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;
                        -fx-padding: 10 16; -fx-background-radius: 0;
                        -fx-border-color: transparent #4CAF50 transparent transparent;
                        -fx-border-width: 0 3 0 0; -fx-max-width: Infinity;" />
+
+        <Button fx:id="questionsBtn" onAction="#handleQuestions" text="  Quiz"
+                style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px;
+                       -fx-alignment: CENTER_LEFT; -fx-cursor: hand; -fx-padding: 10 16;
+                       -fx-background-radius: 0; -fx-max-width: Infinity;" />
 
         <Button fx:id="projetsBtn" onAction="#handleProjets" text="  Projets"
                 style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px;
@@ -94,17 +95,15 @@
                      -fx-border-color: #E0E0E0; -fx-border-width: 0 0 1 0;">
             <Label text="Dashboard" style="-fx-font-size: 12px; -fx-text-fill: #AAAAAA;" />
             <Label text="›" style="-fx-font-size: 12px; -fx-text-fill: #CCCCCC;" />
-            <Label text="Quiz" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+            <Label text="Ressources" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
             <Region HBox.hgrow="ALWAYS" />
-            <Button text="➕  Ajouter une question" onAction="#handleAjouter"
+            <Button onAction="#handleAjouter" text="➕  Ajouter une ressource"
                     style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 12px;
                            -fx-font-weight: bold; -fx-padding: 7 18; -fx-background-radius: 7; -fx-cursor: hand;" />
-            <Button fx:id="btnModifier" text="✏️  Modifier" onAction="#handleModifier"
-                    style="-fx-background-color: #FFA726; -fx-text-fill: white; -fx-font-size: 12px;
-                           -fx-font-weight: bold; -fx-padding: 7 18; -fx-background-radius: 7; -fx-cursor: hand;" />
-            <Button fx:id="btnSupprimer" text="🗑️  Supprimer" onAction="#handleSupprimer"
-                    style="-fx-background-color: #EF5350; -fx-text-fill: white; -fx-font-size: 12px;
-                           -fx-font-weight: bold; -fx-padding: 7 18; -fx-background-radius: 7; -fx-cursor: hand;" />
+            <Button onAction="#handleActualiser" text="🔄  Actualiser"
+                    style="-fx-background-color: white; -fx-text-fill: #555555; -fx-font-size: 12px;
+                           -fx-padding: 7 16; -fx-background-radius: 7; -fx-cursor: hand;
+                           -fx-border-color: #DDDDDD; -fx-border-radius: 7;" />
         </HBox>
 
         <!-- Contenu scrollable -->
@@ -114,69 +113,69 @@
 
                 <!-- En-tête -->
                 <VBox spacing="4">
-                    <Label text="Gestion des Questions"
+                    <Label text="Gestion des Ressources"
                            style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1A1A1A;" />
-                    <Label text="Créez, modifiez et gérez toutes les questions de vos quiz."
+                    <Label text="Ajoutez, modifiez et gérez les ressources pédagogiques par cours."
                            style="-fx-font-size: 13px; -fx-text-fill: #888888;" />
                 </VBox>
+
+                <!-- Filtre par cours -->
+                <HBox spacing="12" alignment="CENTER_LEFT"
+                      style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 16;
+                             -fx-border-color: #EEEEEE; -fx-border-radius: 10;">
+                    <Label text="📚" style="-fx-font-size: 16px;" />
+                    <Label text="Filtrer par cours :" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #555555;" />
+                    <ComboBox fx:id="coursFilterCombo" prefWidth="250"
+                              style="-fx-background-radius: 7; -fx-border-color: #DDDDDD; -fx-border-radius: 7; -fx-padding: 5;" />
+                    <Region HBox.hgrow="ALWAYS" />
+                </HBox>
 
                 <!-- Barre de recherche -->
                 <HBox spacing="12" alignment="CENTER_LEFT"
                       style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 16;
                              -fx-border-color: #EEEEEE; -fx-border-radius: 10;">
                     <Label text="🔍" style="-fx-font-size: 16px;" />
-                    <TextField fx:id="searchField" promptText="Rechercher par titre ou description..."
+                    <TextField fx:id="searchField" promptText="Rechercher par titre ou type..."
                                style="-fx-padding: 8 12; -fx-background-radius: 7;
                                       -fx-border-color: #DDDDDD; -fx-border-radius: 7; -fx-font-size: 13px;"
                                HBox.hgrow="ALWAYS" />
-                    <Button text="Rechercher" onAction="#handleRechercher"
+                    <Button onAction="#handleRechercher" text="Rechercher"
                             style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 13px;
                                    -fx-padding: 8 20; -fx-background-radius: 7; -fx-cursor: hand;" />
-                    <Button text="Actualiser" onAction="#handleActualiser"
+                    <Button onAction="#handleResetRecherche" text="Réinitialiser"
                             style="-fx-background-color: white; -fx-text-fill: #555555; -fx-font-size: 13px;
                                    -fx-padding: 8 16; -fx-background-radius: 7; -fx-cursor: hand;
                                    -fx-border-color: #DDDDDD; -fx-border-radius: 7;" />
                 </HBox>
 
-                <Label fx:id="statusLabel" style="-fx-font-size: 12px;"/>
-
                 <!-- TableView -->
                 <VBox style="-fx-background-color: white; -fx-background-radius: 10;
                              -fx-border-color: #EEEEEE; -fx-border-radius: 10;" VBox.vgrow="ALWAYS">
-                    <TableView fx:id="questionTable" VBox.vgrow="ALWAYS"
+                    <TableView fx:id="tableView" VBox.vgrow="ALWAYS"
                                style="-fx-background-color: transparent; -fx-border-width: 0;">
                         <columns>
-                            <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
-                            <TableColumn fx:id="colTitre" text="Titre" prefWidth="200"/>
-                            <TableColumn fx:id="colDescription" text="Description" prefWidth="250"/>
-                            <TableColumn fx:id="colDuree" text="Durée (min)" prefWidth="80"/>
-                            <TableColumn fx:id="colNoteMax" text="Note Max" prefWidth="80"/>
-                            <TableColumn fx:id="colUserId" text="Créateur ID" prefWidth="80"/>
+                            <TableColumn fx:id="colId" text="ID" prefWidth="50" />
+                            <TableColumn fx:id="colTitre" text="Titre" prefWidth="200" />
+                            <TableColumn fx:id="colType" text="Type" prefWidth="100" />
+                            <TableColumn fx:id="colUrl" text="URL" prefWidth="250" />
+                            <TableColumn fx:id="colCours" text="Cours associé" prefWidth="200" />
+                            <TableColumn fx:id="colFileName" text="Fichier" prefWidth="150" />
+                            <TableColumn fx:id="colDateAjout" text="Date d'ajout" prefWidth="120" />
+                            <TableColumn fx:id="colActions" text="Actions" prefWidth="120" />
                         </columns>
                         <placeholder>
-                            <Label text="Aucune question trouvée"
+                            <Label text="Aucune ressource trouvée"
                                    style="-fx-font-size: 13px; -fx-text-fill: #AAAAAA;" />
                         </placeholder>
                     </TableView>
                 </VBox>
 
-                <!-- Pagination -->
-                <HBox alignment="CENTER" spacing="10.0">
-                    <Button text="◀ Précédent" onAction="#handlePrevious"
-                            style="-fx-background-color: white; -fx-text-fill: #555555; -fx-font-size: 12px;
-                                   -fx-padding: 6 15; -fx-background-radius: 7; -fx-cursor: hand;
-                                   -fx-border-color: #DDDDDD; -fx-border-radius: 7;"/>
-                    <Label fx:id="pageLabel" text="Page 1 sur 1"
-                           style="-fx-font-size: 12px; -fx-text-fill: #888888;"/>
-                    <Button text="Suivant ▶" onAction="#handleNext"
-                            style="-fx-background-color: white; -fx-text-fill: #555555; -fx-font-size: 12px;
-                                   -fx-padding: 6 15; -fx-background-radius: 7; -fx-cursor: hand;
-                                   -fx-border-color: #DDDDDD; -fx-border-radius: 7;"/>
+                <!-- Statistiques -->
+                <HBox alignment="CENTER_RIGHT">
+                    <Label fx:id="statsLabel" text="0 ressources au total"
+                           style="-fx-font-size: 12px; -fx-text-fill: #AAAAAA;" />
                 </HBox>
 
-                <!-- Information -->
-                <Label text="💡 Astuce : Cliquez sur '⚙️ Gérer les options' dans la ligne d'une question pour ajouter/modifier ses réponses"
-                       style="-fx-font-size: 11px; -fx-text-fill: #AAAAAA; -fx-padding: 10 0 0 0;"/>
             </VBox>
         </ScrollPane>
     </VBox>

@@ -1,6 +1,5 @@
 package org.example.controllers;
 
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -57,14 +56,11 @@ public class ChoixEditController {
         if (currentChoix != null) {
             choixIdLabel.setText("Modification de l'option #" + currentChoix.getId());
             contenuArea.setText(currentChoix.getContenu());
-
             if (currentChoix.isEstCorrect()) {
                 correctOui.setSelected(true);
             } else {
                 correctNon.setSelected(true);
             }
-
-            // Sélectionner la question dans le combo
             for (Question q : questions) {
                 if (q.getId() == currentChoix.getQuestionId()) {
                     questionCombo.getSelectionModel().select(q.getId() + " - " + q.getTitre());
@@ -76,28 +72,20 @@ public class ChoixEditController {
 
     @FXML
     private void handleModifier(ActionEvent event) {
-        if (!validateFields()) {
-            return;
-        }
-
+        if (!validateFields()) return;
         try {
             currentChoix.setContenu(contenuArea.getText());
             currentChoix.setEstCorrect(correctOui.isSelected());
-
             String selected = questionCombo.getSelectionModel().getSelectedItem();
             int questionId = Integer.parseInt(selected.split(" - ")[0]);
             currentChoix.setQuestionId(questionId);
-
             choixService.modifier(currentChoix);
-
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Succès");
             alert.setHeaderText(null);
             alert.setContentText("Option modifiée avec succès !");
             alert.showAndWait();
-
             handleRetour(event);
-
         } catch (SQLException | NumberFormatException e) {
             showError("Erreur: " + e.getMessage());
         }
@@ -114,13 +102,11 @@ public class ChoixEditController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ChoixListView.fxml"));
             Parent root = loader.load();
-
             ChoixListController controller = loader.getController();
             Question q = new Question();
             q.setId(currentChoix.getQuestionId());
             q.setTitre("Question #" + currentChoix.getQuestionId());
             controller.setQuestion(q);
-
             Scene scene = contenuArea.getScene();
             scene.setRoot(root);
         } catch (IOException e) {
@@ -133,12 +119,10 @@ public class ChoixEditController {
             showError("Le contenu de l'option est obligatoire");
             return false;
         }
-
         if (questionCombo.getSelectionModel().getSelectedItem() == null) {
             showError("Veuillez sélectionner une question");
             return false;
         }
-
         return true;
     }
 
@@ -152,14 +136,14 @@ public class ChoixEditController {
         alert.showAndWait();
     }
 
-    // Navigation Menu
+    // ==================== NAVIGATION CORRIGÉE ====================
     @FXML private void handleHome() { navigateTo("/fxml/MainMenu.fxml"); }
-    @FXML private void handleCours() { showAlert("Cours", "Page en construction"); }
-    @FXML private void handleRessources() { showAlert("Ressources", "Page en construction"); }
+    @FXML private void handleCours() { navigateTo("/fxml/CoursView.fxml"); }
+    @FXML private void handleRessources() { navigateTo("/fxml/RessourcesView.fxml"); }
     @FXML private void handleQuestions() { navigateTo("/fxml/QuestionListView.fxml"); }
-    @FXML private void handleProjets() { showAlert("Projets", "Page en construction"); }
-    @FXML private void handleEvenements() { showAlert("Événements", "Page en construction"); }
-    @FXML private void handleUtilisateurs() { showAlert("Communauté", "Page en construction"); }
+    @FXML private void handleProjets() { navigateTo("/fxml/PortfolioListView.fxml"); }
+    @FXML private void handleEvenements() { showInfo("Événements", "Module en construction"); }
+    @FXML private void handleUtilisateurs() { navigateTo("/fxml/User.fxml"); }
 
     private void navigateTo(String fxmlPath) {
         try {
@@ -172,7 +156,7 @@ public class ChoixEditController {
         }
     }
 
-    private void showAlert(String title, String message) {
+    private void showInfo(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);

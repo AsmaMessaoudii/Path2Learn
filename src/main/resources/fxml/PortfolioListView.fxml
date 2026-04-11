@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controllers.PortfolioListController"
+      style="-fx-background-color: #F5F5F5;">
+
+    <!-- SIDEBAR -->
+    <VBox style="-fx-background-color: white; -fx-border-color: #E0E0E0; -fx-border-width: 0 1 0 0;
+                 -fx-min-width: 220; -fx-max-width: 220; -fx-pref-width: 220;"
+          VBox.vgrow="ALWAYS">
+
+        <HBox alignment="CENTER_LEFT" spacing="10"
+              style="-fx-padding: 20 16 16 16; -fx-border-color: #F0F0F0; -fx-border-width: 0 0 1 0;">
+            <Label text="🌿" style="-fx-font-size: 22px;" />
+            <Label text="Path2Learn" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;" />
+        </HBox>
+
+        <Label text="NAVIGATION" style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #AAAAAA; -fx-padding: 16 16 6 16;" />
+
+        <Button fx:id="homeBtn" onAction="#handleHome" text="  Dashboard"
+                style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px;
+                       -fx-alignment: CENTER_LEFT; -fx-cursor: hand; -fx-padding: 10 16;
+                       -fx-background-radius: 0; -fx-max-width: Infinity;" />
+
+        <Button onAction="#handleCours" text="  Cours"
+                style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px;
+                       -fx-alignment: CENTER_LEFT; -fx-cursor: hand; -fx-padding: 10 16;
+                       -fx-background-radius: 0; -fx-max-width: Infinity;" />
+
+        <Button onAction="#handleRessources" text="  Ressources"
+                style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px;
+                       -fx-alignment: CENTER_LEFT; -fx-cursor: hand; -fx-padding: 10 16;
+                       -fx-background-radius: 0; -fx-max-width: Infinity;" />
+
+        <Button onAction="#handleQuestions" text="  Quiz"
+                style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px;
+                       -fx-alignment: CENTER_LEFT; -fx-cursor: hand; -fx-padding: 10 16;
+                       -fx-background-radius: 0; -fx-max-width: Infinity;" />
+
+        <Button onAction="#handleProjets" text="  Projets"
+                style="-fx-background-color: #E8F5E9; -fx-text-fill: #2E7D32; -fx-font-size: 13px;
+                       -fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-cursor: hand;
+                       -fx-padding: 10 16; -fx-background-radius: 0;
+                       -fx-border-color: transparent #4CAF50 transparent transparent;
+                       -fx-border-width: 0 3 0 0; -fx-max-width: Infinity;" />
+
+        <Label text="GESTION" style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #AAAAAA; -fx-padding: 16 16 6 16;" />
+
+        <Button onAction="#handleEvenements" text="  Événements"
+                style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px;
+                       -fx-alignment: CENTER_LEFT; -fx-cursor: hand; -fx-padding: 10 16;
+                       -fx-background-radius: 0; -fx-max-width: Infinity;" />
+
+        <Button onAction="#handleUtilisateurs" text="  Communauté"
+                style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px;
+                       -fx-alignment: CENTER_LEFT; -fx-cursor: hand; -fx-padding: 10 16;
+                       -fx-background-radius: 0; -fx-max-width: Infinity;" />
+
+        <Region VBox.vgrow="ALWAYS" />
+
+        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 14 16; -fx-border-color: #F0F0F0; -fx-border-width: 1 0 0 0;">
+            <Label text="AD" style="-fx-background-color: #E8F5E9; -fx-text-fill: #2E7D32; -fx-font-size: 12px;
+                          -fx-font-weight: bold; -fx-padding: 6 9; -fx-background-radius: 50;" />
+            <VBox spacing="1">
+                <Label text="Admin" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+                <Label text="Administrateur" style="-fx-font-size: 11px; -fx-text-fill: #999999;" />
+            </VBox>
+        </HBox>
+    </VBox>
+
+    <!-- MAIN -->
+    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #F5F5F5;">
+
+        <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-background-color: white; -fx-padding: 13 24;
+                     -fx-border-color: #E0E0E0; -fx-border-width: 0 0 1 0;">
+            <Label text="Dashboard" style="-fx-font-size: 12px; -fx-text-fill: #AAAAAA;" />
+            <Label text="›" style="-fx-font-size: 12px; -fx-text-fill: #CCCCCC;" />
+            <Label text="Projets" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button onAction="#handleAjouter" text="➕  Ajouter un portfolio"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 12px;
+                           -fx-font-weight: bold; -fx-padding: 7 18; -fx-background-radius: 7; -fx-cursor: hand;" />
+            <Button onAction="#handleActualiser" text="🔄  Actualiser"
+                    style="-fx-background-color: white; -fx-text-fill: #555555; -fx-font-size: 12px;
+                           -fx-padding: 7 16; -fx-background-radius: 7; -fx-cursor: hand;
+                           -fx-border-color: #DDDDDD; -fx-border-radius: 7;" />
+        </HBox>
+
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                    style="-fx-background: #F5F5F5; -fx-background-color: #F5F5F5; -fx-border-width: 0;">
+            <VBox spacing="20" style="-fx-padding: 28 32;">
+
+                <VBox spacing="4">
+                    <Label text="Gestion des Portfolios" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1A1A1A;" />
+                    <Label text="Créez, modifiez et gérez les portfolios des utilisateurs."
+                           style="-fx-font-size: 13px; -fx-text-fill: #888888;" />
+                </VBox>
+
+                <HBox spacing="12" alignment="CENTER_LEFT"
+                      style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 16;
+                             -fx-border-color: #EEEEEE; -fx-border-radius: 10;">
+                    <Label text="🔍" style="-fx-font-size: 16px;" />
+                    <TextField fx:id="searchField" promptText="Rechercher par titre ou description..."
+                               style="-fx-padding: 8 12; -fx-background-radius: 7;
+                                      -fx-border-color: #DDDDDD; -fx-border-radius: 7; -fx-font-size: 13px;"
+                               HBox.hgrow="ALWAYS" />
+                </HBox>
+
+                <Label fx:id="statsLabel" style="-fx-font-size: 12px;"/>
+
+                <VBox style="-fx-background-color: white; -fx-background-radius: 10;
+                             -fx-border-color: #EEEEEE; -fx-border-radius: 10;" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="tableView" VBox.vgrow="ALWAYS"
+                               style="-fx-background-color: transparent; -fx-border-width: 0;">
+                        <columns>
+                            <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+                            <TableColumn fx:id="colTitre" text="Titre" prefWidth="150"/>
+                            <TableColumn fx:id="colDescription" text="Description" prefWidth="250"/>
+                            <TableColumn fx:id="colDateCreation" text="Date création" prefWidth="120"/>
+                            <TableColumn fx:id="colDateMiseAjour" text="Mise à jour" prefWidth="120"/>
+                            <TableColumn fx:id="colUserId" text="User ID" prefWidth="70"/>
+                            <TableColumn fx:id="colActions" text="Actions" prefWidth="280"/>
+                        </columns>
+                        <placeholder>
+                            <Label text="Aucun portfolio trouvé" style="-fx-font-size: 13px; -fx-text-fill: #AAAAAA;" />
+                        </placeholder>
+                    </TableView>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</HBox>

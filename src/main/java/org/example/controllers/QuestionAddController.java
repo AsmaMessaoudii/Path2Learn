@@ -38,8 +38,6 @@ public class QuestionAddController {
         questionService = new QuestionService();
         validator = new QuestionValidator();
         datePicker.setValue(LocalDate.now());
-
-        // Ajouter des listeners pour la validation en temps réel
         setupValidationListeners();
     }
 
@@ -95,7 +93,6 @@ public class QuestionAddController {
             dureeErrorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
             return;
         }
-
         try {
             int duree = Integer.parseInt(dureeText);
             if (duree <= 0) {
@@ -121,7 +118,6 @@ public class QuestionAddController {
             noteMaxErrorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
             return;
         }
-
         try {
             float noteMax = Float.parseFloat(noteText);
             if (noteMax <= 0) {
@@ -132,7 +128,7 @@ public class QuestionAddController {
                 noteMaxErrorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
             } else {
                 noteMaxErrorLabel.setText("✅ Note valide");
-                noteMaxErrorLabel.setStyle("-fx-text-fill: green; -fx-font-size: 11px;");
+                noteMaxErrorLabel.setStyle("-fx-text-fill: green; -fx-font-size: 11px");
             }
         } catch (NumberFormatException e) {
             noteMaxErrorLabel.setText("❌ Veuillez entrer un nombre valide");
@@ -147,7 +143,6 @@ public class QuestionAddController {
             userIdErrorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
             return;
         }
-
         try {
             int userId = Integer.parseInt(userIdText);
             if (userId <= 0) {
@@ -165,14 +160,12 @@ public class QuestionAddController {
 
     @FXML
     private void handleAjouter(ActionEvent event) {
-        // Valider tous les champs avant l'ajout
         validateTitre();
         validateDescription();
         validateDuree();
         validateNoteMax();
         validateUserId();
 
-        // Créer l'objet Question
         Question question = new Question();
         question.setTitre(titreField.getText());
         question.setDescription(descriptionArea.getText());
@@ -187,7 +180,6 @@ public class QuestionAddController {
             return;
         }
 
-        // Validation complète
         if (!validator.validate(question)) {
             showError("Erreurs de validation:\n• " + validator.getErrorsAsString());
             return;
@@ -195,15 +187,12 @@ public class QuestionAddController {
 
         try {
             questionService.ajouter(question);
-
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Succès");
             alert.setHeaderText(null);
-            alert.setContentText("Question ajoutée avec succès !\n\nVous pouvez maintenant ajouter des options pour cette question.");
+            alert.setContentText("Question ajoutée avec succès !");
             alert.showAndWait();
-
             handleRetour(event);
-
         } catch (SQLException e) {
             showError("Erreur lors de l'ajout: " + e.getMessage());
         }
@@ -216,14 +205,7 @@ public class QuestionAddController {
 
     @FXML
     private void handleRetour(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/QuestionListView.fxml"));
-            Parent root = loader.load();
-            Scene scene = titreField.getScene();
-            scene.setRoot(root);
-        } catch (IOException e) {
-            showError("Erreur lors du retour");
-        }
+        navigateTo("/fxml/QuestionListView.fxml");
     }
 
     private void clearForm() {
@@ -233,13 +215,11 @@ public class QuestionAddController {
         noteMaxField.clear();
         userIdField.clear();
         datePicker.setValue(LocalDate.now());
-
         titreErrorLabel.setText("");
         descriptionErrorLabel.setText("");
         dureeErrorLabel.setText("");
         noteMaxErrorLabel.setText("");
         userIdErrorLabel.setText("");
-
         statusLabel.setText("Formulaire réinitialisé");
         statusLabel.setStyle("-fx-text-fill: blue;");
     }
@@ -247,7 +227,6 @@ public class QuestionAddController {
     private void showError(String message) {
         statusLabel.setText("❌ " + message);
         statusLabel.setStyle("-fx-text-fill: red;");
-
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Erreur");
         alert.setHeaderText(null);
@@ -255,14 +234,14 @@ public class QuestionAddController {
         alert.showAndWait();
     }
 
-    // Navigation Menu
+    // ==================== NAVIGATION CORRIGÉE ====================
     @FXML private void handleHome() { navigateTo("/fxml/MainMenu.fxml"); }
-    @FXML private void handleCours() { showAlert("Cours", "Page en construction"); }
-    @FXML private void handleRessources() { showAlert("Ressources", "Page en construction"); }
+    @FXML private void handleCours() { navigateTo("/fxml/CoursView.fxml"); }
+    @FXML private void handleRessources() { navigateTo("/fxml/RessourcesView.fxml"); }
     @FXML private void handleQuestions() { navigateTo("/fxml/QuestionListView.fxml"); }
-    @FXML private void handleProjets() { showAlert("Projets", "Page en construction"); }
-    @FXML private void handleEvenements() { showAlert("Événements", "Page en construction"); }
-    @FXML private void handleUtilisateurs() { showAlert("Communauté", "Page en construction"); }
+    @FXML private void handleProjets() { navigateTo("/fxml/PortfolioListView.fxml"); }
+    @FXML private void handleEvenements() { showInfo("Événements", "Module en construction"); }
+    @FXML private void handleUtilisateurs() { navigateTo("/fxml/User.fxml"); }
 
     private void navigateTo(String fxmlPath) {
         try {
@@ -275,7 +254,7 @@ public class QuestionAddController {
         }
     }
 
-    private void showAlert(String title, String message) {
+    private void showInfo(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);

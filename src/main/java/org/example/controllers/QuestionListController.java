@@ -47,7 +47,6 @@ public class QuestionListController {
         questionList = FXCollections.observableArrayList();
         filteredList = FXCollections.observableArrayList();
 
-        // Initialiser les colonnes
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colTitre.setCellValueFactory(new PropertyValueFactory<>("titre"));
         colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
@@ -55,10 +54,8 @@ public class QuestionListController {
         colNoteMax.setCellValueFactory(new PropertyValueFactory<>("noteMax"));
         colUserId.setCellValueFactory(new PropertyValueFactory<>("userId"));
 
-        // Charger les questions
         loadQuestions();
 
-        // Listener pour la sélection
         questionTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 selectedQuestion = newSelection;
@@ -73,7 +70,6 @@ public class QuestionListController {
         btnModifier.setDisable(true);
         btnSupprimer.setDisable(true);
 
-        // Ajouter la colonne d'actions APRÈS avoir chargé les données
         addActionsColumn();
     }
 
@@ -88,7 +84,6 @@ public class QuestionListController {
                 manageButton.setStyle("-fx-background-color: #42A5F5; -fx-text-fill: white; -fx-font-size: 11px; -fx-cursor: hand; -fx-padding: 5 10; -fx-background-radius: 3;");
                 manageButton.setOnAction(event -> {
                     Question question = getTableView().getItems().get(getIndex());
-                    System.out.println("Clic sur Gérer options pour la question ID: " + question.getId());
                     gererOptionsPourQuestion(question);
                 });
             }
@@ -115,10 +110,8 @@ public class QuestionListController {
             updateTable();
             statusLabel.setText("✅ " + questionList.size() + " question(s) chargée(s)");
             statusLabel.setStyle("-fx-text-fill: green;");
-            System.out.println("Questions chargées: " + questionList.size());
         } catch (SQLException e) {
             showError("Erreur lors du chargement: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -138,15 +131,7 @@ public class QuestionListController {
 
     @FXML
     private void handleAjouter(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/QuestionAddView.fxml"));
-            Parent root = loader.load();
-            Scene scene = btnModifier.getScene();
-            scene.setRoot(root);
-        } catch (IOException e) {
-            showError("Erreur: " + e.getMessage());
-            e.printStackTrace();
-        }
+        navigateTo("/fxml/QuestionAddView.fxml");
     }
 
     @FXML
@@ -166,7 +151,6 @@ public class QuestionListController {
             Scene scene = btnModifier.getScene();
             scene.setRoot(root);
         } catch (IOException e) {
-            e.printStackTrace();
             showError("Erreur: " + e.getMessage());
         }
     }
@@ -181,11 +165,9 @@ public class QuestionListController {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation de suppression");
         alert.setHeaderText("Supprimer la question");
-        alert.setContentText("Êtes-vous sûr de vouloir supprimer la question : \n\n" +
-                selectedQuestion.getTitre() + "\n\n⚠️ Attention : Toutes les options associées seront également supprimées !\n\nCette action est irréversible !");
+        alert.setContentText("Supprimer : " + selectedQuestion.getTitre() + " ?\n\n⚠️ Toutes les options seront supprimées !");
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+        if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             try {
                 questionService.supprimer(selectedQuestion);
                 loadQuestions();
@@ -197,48 +179,16 @@ public class QuestionListController {
         }
     }
 
-    // Méthode pour gérer les options d'une question spécifique
     private void gererOptionsPourQuestion(Question question) {
         try {
-            System.out.println("=== Chargement des options ===");
-            System.out.println("Question ID: " + question.getId());
-            System.out.println("Question Titre: " + question.getTitre());
-            System.out.println("Chemin du FXML: /fxml/ChoixListView.fxml");
-
-            // Vérifier si le fichier FXML existe
-            java.net.URL fxmlUrl = getClass().getResource("/fxml/ChoixListView.fxml");
-            if (fxmlUrl == null) {
-                System.err.println("ERREUR: Fichier ChoixListView.fxml non trouvé !");
-                showError("Fichier ChoixListView.fxml non trouvé !");
-                return;
-            }
-            System.out.println("FXML trouvé à: " + fxmlUrl.getPath());
-
-            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ChoixListView.fxml"));
             Parent root = loader.load();
-
             ChoixListController controller = loader.getController();
-            if (controller == null) {
-                System.err.println("ERREUR: Le contrôleur ChoixListController est null !");
-                showError("Erreur de chargement du contrôleur");
-                return;
-            }
-
             controller.setQuestion(question);
-
             Scene scene = questionTable.getScene();
             scene.setRoot(root);
-
-            System.out.println("Navigation vers ChoixListController réussie !");
-
         } catch (IOException e) {
-            System.err.println("ERREUR IO: " + e.getMessage());
-            e.printStackTrace();
-            showError("Erreur lors du chargement de la gestion des options: " + e.getMessage());
-        } catch (Exception e) {
-            System.err.println("ERREUR: " + e.getMessage());
-            e.printStackTrace();
-            showError("Erreur inattendue: " + e.getMessage());
+            showError("Erreur lors du chargement des options: " + e.getMessage());
         }
     }
 
@@ -280,27 +230,14 @@ public class QuestionListController {
         }
     }
 
-    // Navigation Menu
-    @FXML
-    private void handleHome() { navigateTo("/fxml/MainMenu.fxml"); }
-
-    @FXML
-    private void handleCours() { showAlert("Cours", "Page en construction"); }
-
-    @FXML
-    private void handleRessources() { showAlert("Ressources", "Page en construction"); }
-
-    @FXML
-    private void handleQuestions() { /* Déjà sur la page des questions */ }
-
-    @FXML
-    private void handleProjets() { showAlert("Projets", "Page en construction"); }
-
-    @FXML
-    private void handleEvenements() { showAlert("Événements", "Page en construction"); }
-
-    @FXML
-    private void handleUtilisateurs() { showAlert("Communauté", "Page en construction"); }
+    // ==================== NAVIGATION CORRIGÉE ====================
+    @FXML private void handleHome() { navigateTo("/fxml/MainMenu.fxml"); }
+    @FXML private void handleCours() { navigateTo("/fxml/CoursView.fxml"); }
+    @FXML private void handleRessources() { navigateTo("/fxml/RessourcesView.fxml"); }
+    @FXML private void handleQuestions() { navigateTo("/fxml/QuestionListView.fxml"); }
+    @FXML private void handleProjets() { navigateTo("/fxml/PortfolioListView.fxml"); }
+    @FXML private void handleEvenements() { showInfo("Événements", "Module en construction"); }
+    @FXML private void handleUtilisateurs() { navigateTo("/fxml/User.fxml"); }
 
     private void navigateTo(String fxmlPath) {
         try {
@@ -316,7 +253,6 @@ public class QuestionListController {
     private void showError(String message) {
         statusLabel.setText("❌ " + message);
         statusLabel.setStyle("-fx-text-fill: red;");
-
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Erreur");
         alert.setHeaderText(null);
@@ -329,7 +265,7 @@ public class QuestionListController {
         statusLabel.setStyle("-fx-text-fill: green;");
     }
 
-    private void showAlert(String title, String message) {
+    private void showInfo(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);

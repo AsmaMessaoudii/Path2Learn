@@ -93,14 +93,7 @@ public class QuestionEditController {
 
     @FXML
     private void handleRetour(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/QuestionListView.fxml"));
-            Parent root = loader.load();
-            Scene scene = titreField.getScene();
-            scene.setRoot(root);
-        } catch (IOException e) {
-            showError("Erreur lors du retour");
-        }
+        navigateTo("/fxml/QuestionListView.fxml");
     }
 
     private boolean validateFields() {
@@ -148,14 +141,14 @@ public class QuestionEditController {
         alert.showAndWait();
     }
 
-    // Navigation Menu
+    // ==================== NAVIGATION CORRIGÉE ====================
     @FXML private void handleHome() { navigateTo("/fxml/MainMenu.fxml"); }
-    @FXML private void handleCours() { showAlert("Cours", "Page en construction"); }
-    @FXML private void handleRessources() { showAlert("Ressources", "Page en construction"); }
+    @FXML private void handleCours() { navigateTo("/fxml/CoursView.fxml"); }
+    @FXML private void handleRessources() { navigateTo("/fxml/RessourcesView.fxml"); }
     @FXML private void handleQuestions() { navigateTo("/fxml/QuestionListView.fxml"); }
-    @FXML private void handleProjets() { showAlert("Projets", "Page en construction"); }
-    @FXML private void handleEvenements() { showAlert("Événements", "Page en construction"); }
-    @FXML private void handleUtilisateurs() { showAlert("Communauté", "Page en construction"); }
+    @FXML private void handleProjets() { navigateTo("/fxml/PortfolioListView.fxml"); }
+    @FXML private void handleEvenements() { showInfo("Événements", "Module en construction"); }
+    @FXML private void handleUtilisateurs() { navigateTo("/fxml/User.fxml"); }
 
     private void navigateTo(String fxmlPath) {
         try {
@@ -168,7 +161,7 @@ public class QuestionEditController {
         }
     }
 
-    private void showAlert(String title, String message) {
+    private void showInfo(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
