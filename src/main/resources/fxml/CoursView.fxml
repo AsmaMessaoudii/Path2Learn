@@ -3,15 +3,21 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
 
-<HBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.example.controllers.CoursController"
-      style="-fx-background-color: #F5F5F5;">
+<HBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controllers.MainMenuController" style="-fx-background-color: #F5F5F5;">
 
+    <!-- SIDEBAR GAUCHE -->
     <VBox style="-fx-background-color: #FFFFFF; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 2, 0);" prefWidth="280">
+
+        <!-- Logo et titre - AVEC IMAGE -->
         <VBox spacing="10.0" style="-fx-padding: 30 20 30 20; -fx-background-color: #F8F9FA; -fx-alignment: CENTER;">
-            <Label text="🌿" style="-fx-font-size: 48px; -fx-alignment: CENTER;" />
-            <Label text="Path2Learn" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #81C784; -fx-alignment: CENTER;" />
+            <!-- Image Logo au lieu de l'emoji -->
+            <ImageView fitWidth="150" fitHeight="150" preserveRatio="true">
+                <Image url="@/logo.png" />
+            </ImageView>
             <Label text="Plateforme d'apprentissage" style="-fx-font-size: 11px; -fx-text-fill: #999999; -fx-alignment: CENTER;" />
         </VBox>
         <Separator style="-fx-background-color: #EEEEEE;" />
