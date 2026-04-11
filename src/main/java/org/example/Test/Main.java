@@ -1,9 +1,7 @@
 package org.example.Test;
 
 
-
 import org.example.Models.*;
-
 
 import org.example.Models.Choix;
 import org.example.Models.Cours;
@@ -18,12 +16,11 @@ import org.example.Services.ChoixService;
 import org.example.Services.ServiceCours;
 import org.example.Services.QuestionService;
 import org.example.Services.ServiceRessourcePedagogique;
-
 import org.example.Services.ServiceUser;
 import org.example.Services.ServiceBadge;
+
 import org.example.Services.ServicePortfolio;
 import org.example.Services.ServiceProjet;
-
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -118,7 +115,6 @@ public class Main {
             serviceChoix.recuperer().forEach(System.out::println);
 
 
-
             // ==================== USER ====================
             ServiceUser serviceUser = null;
             serviceUser.ajouter(new User(
@@ -140,6 +136,7 @@ public class Main {
             serviceUser.supprimer(1);
             System.out.println("=== Après suppression User ===");
             serviceUser.recuperer().forEach(System.out::println);
+
 
 
             // ==================== PORTFOLIO ====================
@@ -184,6 +181,7 @@ public class Main {
             serviceProjet.recupererParPortfolio(1).forEach(System.out::println);
 
 
+
             // ==================== BADGE (ADMIN CRUD) ====================
             ServiceBadge serviceBadge = new ServiceBadge();
 
@@ -202,7 +200,6 @@ public class Main {
 
 // SYSTEM — status teacher user_id=1
             serviceBadge.printStatus(1);
-
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

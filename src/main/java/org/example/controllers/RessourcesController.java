@@ -74,12 +74,12 @@ public class RessourcesController {
 
     @FXML
     private void handleHome() {
-        naviguerVers("/fxml/MainMenu.fxml");
+        naviguerVers("/fxml/MainMenu.fxml", "Path2Learn - Accueil");
     }
 
     @FXML
     private void handleCours() {
-        naviguerVers("/fxml/CoursView.fxml");
+        naviguerVers("/fxml/CoursView.fxml", "Path2Learn - Gestion des cours");
     }
 
     @FXML
@@ -93,30 +93,36 @@ public class RessourcesController {
 
     @FXML
     private void handleQuestions() {
-        naviguerVers("/fxml/QuestionListView.fxml");
+        naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Quiz");
     }
 
     @FXML
     private void handleProjets() {
-        naviguerVers("/fxml/PortfolioListView.fxml");
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
     }
 
     @FXML
     private void handleEvenements() {
-        showInfo("Événements", "Module en construction");
+        showInfoAlert("Événements", "Module Événements - Bientôt disponible");
     }
 
     @FXML
     private void handleUtilisateurs() {
-        naviguerVers("/fxml/User.fxml");
+        naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs");
     }
 
-    private void naviguerVers(String fxmlPath) {
+    private void naviguerVers(String fxmlPath, String titre) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            java.net.URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                showAlert("Erreur", "Page non trouvée: " + fxmlPath, Alert.AlertType.ERROR);
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
             Stage stage = (Stage) homeBtn.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.setTitle(titre);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -124,7 +130,7 @@ public class RessourcesController {
         }
     }
 
-    private void showInfo(String title, String message) {
+    private void showInfoAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -263,10 +269,106 @@ public class RessourcesController {
     }
 
     private void openFile(File file) {
+        String fileName = file.getName();
+        String extension = getFileExtension(fileName);
+        String fileType = detectFileType(extension);
+
         try {
-            Desktop.getDesktop().open(file);
+            switch (fileType) {
+                case "Image":
+                    openImageViewer(file);
+                    break;
+                case "Video":
+                case "Audio":
+                case "PDF":
+                case "Document":
+                default:
+                    Desktop.getDesktop().open(file);
+                    break;
+            }
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'ouvrir le fichier: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private String getFileExtension(String fileName) {
+        int lastDot = fileName.lastIndexOf(".");
+        if (lastDot > 0) {
+            return fileName.substring(lastDot + 1).toLowerCase();
+        }
+        return "";
+    }
+
+    private String detectFileType(String extension) {
+        switch (extension) {
+            case "png": case "jpg": case "jpeg": case "gif": case "bmp": case "svg": case "webp":
+                return "Image";
+            case "mp4": case "avi": case "mov": case "mkv": case "wmv": case "flv": case "webm":
+                return "Video";
+            case "mp3": case "wav": case "flac": case "ogg": case "m4a": case "aac":
+                return "Audio";
+            case "pdf":
+                return "PDF";
+            case "doc": case "docx": case "xls": case "xlsx": case "ppt": case "pptx": case "txt": case "rtf":
+                return "Document";
+            default:
+                return "Other";
+        }
+    }
+
+    private void openImageViewer(File imageFile) {
+        Stage imageStage = new Stage();
+        imageStage.setTitle("Aperçu de l'image - " + imageFile.getName());
+
+        VBox vbox = new VBox();
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
+        vbox.setStyle("-fx-padding: 20; -fx-background-color: #F5F5F5;");
+
+        ImageView imageView = new ImageView();
+        try {
+            Image image = new Image(imageFile.toURI().toString());
+            imageView.setImage(image);
+
+            double screenWidth = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+            double screenHeight = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+
+            double maxWidth = screenWidth * 0.8;
+            double maxHeight = screenHeight * 0.8;
+
+            imageView.setFitWidth(maxWidth);
+            imageView.setFitHeight(maxHeight);
+            imageView.setPreserveRatio(true);
+
+            ScrollPane scrollPane = new ScrollPane(imageView);
+            scrollPane.setFitToWidth(true);
+            scrollPane.setFitToHeight(true);
+            scrollPane.setStyle("-fx-background: #F5F5F5; -fx-background-color: #F5F5F5;");
+
+            Label infoLabel = new Label(String.format("Dimensions: %.0f x %.0f pixels | Taille: %.2f KB",
+                    image.getWidth(), image.getHeight(), imageFile.length() / 1024.0));
+            infoLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #666666;");
+
+            Button closeButton = new Button("Fermer");
+            closeButton.setStyle("-fx-background-color: #81C784; -fx-text-fill: white; -fx-font-size: 13px; -fx-padding: 8 20; -fx-background-radius: 8; -fx-cursor: hand;");
+            closeButton.setOnAction(e -> imageStage.close());
+
+            HBox buttonBox = new HBox(closeButton);
+            buttonBox.setAlignment(Pos.CENTER);
+
+            vbox.getChildren().addAll(scrollPane, infoLabel, buttonBox);
+
+            Scene scene = new Scene(vbox);
+            imageStage.setScene(scene);
+            imageStage.initModality(Modality.WINDOW_MODAL);
+            imageStage.initOwner(tableView.getScene().getWindow());
+            imageStage.setMinWidth(400);
+            imageStage.setMinHeight(300);
+            imageStage.show();
+
+        } catch (Exception e) {
+            showAlert("Erreur", "Impossible de charger l'image: " + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
         }
     }
 
@@ -385,9 +487,10 @@ public class RessourcesController {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
         alert.setHeaderText("Supprimer la ressource");
-        alert.setContentText("Supprimer : " + ressource.getTitre() + " ?");
+        alert.setContentText("Voulez-vous vraiment supprimer la ressource: " + ressource.getTitre() + " ?");
 
-        if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 if (ressource.getFile_name() != null && !ressource.getFile_name().isEmpty()) {
                     File file = new File(ressource.getFile_name());

@@ -1,5 +1,6 @@
 package org.example.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,80 +15,138 @@ import java.io.IOException;
 
 public class MainMenuController {
 
-    // ── Sidebar ──────────────────────────────────────────────────────────────
-    @FXML private Button homeBtn, coursBtn, ressourcesBtn, questionsBtn,
-            projetsBtn, evenementsBtn, utilisateursBtn;
-
-    // ── Cartes raccourcis ────────────────────────────────────────────────────
-    @FXML private VBox coursCard, ressourcesCard, questionsCard,
-            projetsCard, evenementsCard, utilisateursCard;
-
-    // ── Labels de statistiques (optionnels — peuvent rester à "—") ───────────
-    @FXML private Label statsCoursLabel, statsRessourcesLabel,
-            statsQuizLabel, statsProjetsLabel;
-
-    // ────────────────────────────────────────────────────────────────────────
+    @FXML
+    private Button homeBtn, coursBtn, ressourcesBtn, questionsBtn, projetsBtn, evenementsBtn, utilisateursBtn;
 
     @FXML
-    private void initialize() {
-        setActiveButton(homeBtn);
-        addCardHoverEffect(coursCard);
-        addCardHoverEffect(ressourcesCard);
-        addCardHoverEffect(questionsCard);
-        addCardHoverEffect(projetsCard);
-        addCardHoverEffect(evenementsCard);
-        addCardHoverEffect(utilisateursCard);
+    private Label pageTitleLabel;
 
-        // Charger les statistiques réelles ici si nécessaire
-        // statsCoursLabel.setText(String.valueOf(coursService.count()));
-    }
+    @FXML
+    private VBox mainContentArea;
 
-    // ── Navigation sidebar ───────────────────────────────────────────────────
+    // ==================== NAVIGATION PRINCIPALE ====================
 
     @FXML
     private void handleHome() {
+        resetButtonStyles();
         setActiveButton(homeBtn);
+        naviguerVers("/fxml/MainMenu.fxml", "Path2Learn - Tableau de bord");
     }
 
     @FXML
     private void handleCours() {
-        naviguerVers("/fxml/CoursView.fxml", "Path2Learn - Cours");
+        resetButtonStyles();
+        setActiveButton(coursBtn);
+        naviguerVers("/fxml/CoursView.fxml", "Path2Learn - Gestion des cours");
     }
 
     @FXML
     private void handleRessources() {
-        naviguerVers("/fxml/RessourcesView.fxml", "Path2Learn - Ressources");
+        resetButtonStyles();
+        setActiveButton(ressourcesBtn);
+        naviguerVers("/fxml/RessourcesView.fxml", "Path2Learn - Gestion des ressources");
     }
 
     @FXML
     private void handleQuestions() {
-        naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Quiz");
+        resetButtonStyles();
+        setActiveButton(questionsBtn);
+        naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Questions");
     }
 
     @FXML
     private void handleProjets() {
-        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Projets");
+        resetButtonStyles();
+        setActiveButton(projetsBtn);
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
     }
 
     @FXML
     private void handleEvenements() {
-        showAlert("Événements", "Module Événements — Bientôt disponible.", Alert.AlertType.INFORMATION);
+        showAlert("Événements", "Module Événements - Bientôt disponible", Alert.AlertType.INFORMATION);
+        resetButtonStyles();
+        setActiveButton(evenementsBtn);
     }
 
     @FXML
     private void handleUtilisateurs() {
-        naviguerVers("/fxml/User.fxml", "Path2Learn - Communauté");
+        resetButtonStyles();
+        setActiveButton(utilisateursBtn);
+        naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs");
     }
 
-    // ── Utilitaires ──────────────────────────────────────────────────────────
+    // ==================== RETOUR VERS LE SITE FRONT ====================
+    @FXML
+    private void handleBackToSite() {
+        try {
+            System.out.println("Retour vers HomePage...");
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HomePage.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) homeBtn.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Path2Learn - Accueil");
+
+            // CRUCIAL : Ne pas mettre en maximisé, utiliser une taille fixe
+            stage.setMaximized(false);
+            stage.setWidth(1200);
+            stage.setHeight(800);
+            stage.centerOnScreen();
+
+            // Forcer le refresh de la scène
+            stage.sizeToScene();
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible de revenir à l'accueil: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    // ==================== GESTION DES CARTES (ACCÈS RAPIDES) ====================
+
+    @FXML
+    private void handleCoursCard() {
+        naviguerVers("/fxml/CoursView.fxml", "Path2Learn - Gestion des cours");
+    }
+
+    @FXML
+    private void handleRessourcesCard() {
+        naviguerVers("/fxml/RessourcesView.fxml", "Path2Learn - Gestion des ressources");
+    }
+
+    @FXML
+    private void handleQuestionsCard() {
+        naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Questions");
+    }
+
+    @FXML
+    private void handleProjetsCard() {
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
+    }
+
+    @FXML
+    private void handleEvenementsCard() {
+        showAlert("Événements", "Module Événements - Bientôt disponible", Alert.AlertType.INFORMATION);
+    }
+
+    @FXML
+    private void handleUtilisateursCard() {
+        naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs");
+    }
+
+    // ==================== MÉTHODE PRINCIPALE DE NAVIGATION ====================
 
     private void naviguerVers(String fxmlPath, String titre) {
         try {
             java.net.URL resource = getClass().getResource(fxmlPath);
             if (resource == null) {
-                showAlert("Erreur", "Page non trouvée : " + fxmlPath, Alert.AlertType.ERROR);
+                showAlert("Erreur", "Page non trouvée: " + fxmlPath, Alert.AlertType.ERROR);
                 return;
             }
+
             FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
             Stage stage = (Stage) homeBtn.getScene().getWindow();
@@ -96,28 +155,28 @@ public class MainMenuController {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Erreur", "Impossible de charger la page : " + e.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Erreur", "Impossible de charger la page: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
-    private void setActiveButton(Button active) {
-        String defaultStyle =
-                "-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px; "
-                        + "-fx-alignment: CENTER_LEFT; -fx-cursor: hand; -fx-padding: 10 16; "
-                        + "-fx-background-radius: 0; -fx-max-width: Infinity;";
-        String activeStyle =
-                "-fx-background-color: #E8F5E9; -fx-text-fill: #2E7D32; -fx-font-size: 13px; "
-                        + "-fx-font-weight: bold; -fx-alignment: CENTER_LEFT; -fx-cursor: hand; "
-                        + "-fx-padding: 10 16; -fx-background-radius: 0; "
-                        + "-fx-border-color: transparent #4CAF50 transparent transparent; "
-                        + "-fx-border-width: 0 3 0 0; -fx-max-width: Infinity;";
+    // ==================== GESTION DES STYLES ====================
 
-        for (Button btn : new Button[]{homeBtn, coursBtn, ressourcesBtn, questionsBtn,
-                projetsBtn, evenementsBtn, utilisateursBtn}) {
-            if (btn != null) btn.setStyle(defaultStyle);
-        }
-        if (active != null) active.setStyle(activeStyle);
+    private void resetButtonStyles() {
+        String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT;";
+        homeBtn.setStyle(defaultStyle);
+        coursBtn.setStyle(defaultStyle);
+        ressourcesBtn.setStyle(defaultStyle);
+        questionsBtn.setStyle(defaultStyle);
+        projetsBtn.setStyle(defaultStyle);
+        evenementsBtn.setStyle(defaultStyle);
+        utilisateursBtn.setStyle(defaultStyle);
     }
+
+    private void setActiveButton(Button btn) {
+        btn.setStyle("-fx-background-color: #E8F5E9; -fx-text-fill: #81C784; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-border-color: transparent #81C784 transparent transparent; -fx-border-width: 0 4 0 0;");
+    }
+
+    // ==================== ALERTES ====================
 
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
@@ -127,13 +186,11 @@ public class MainMenuController {
         alert.showAndWait();
     }
 
-    private void addCardHoverEffect(VBox card) {
-        if (card == null) return;
-        String base = card.getStyle();
-        card.setOnMouseEntered(e ->
-                card.setStyle(base + "-fx-border-color: #A5D6A7; -fx-scale-x: 1.01; -fx-scale-y: 1.01;")
-        );
-        card.setOnMouseExited(e -> card.setStyle(base));
+    // ==================== INITIALISATION ====================
+
+    @FXML
+    private void initialize() {
+        setActiveButton(homeBtn);
+        pageTitleLabel.setText("Tableau de bord");
     }
-    /// ////
 }

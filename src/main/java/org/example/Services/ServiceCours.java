@@ -34,10 +34,8 @@ public class ServiceCours implements IService<Cours> {
             ps.executeUpdate();
             System.out.println("✅ Cours ajouté !");
 
-
             // ← ajouter cette ligne
             new ServiceBadge().onCourseAdded(c.getUser_id());
-
 
         } catch (SQLException e) {
             System.out.println("❌ Erreur ajout cours : " + e.getMessage());

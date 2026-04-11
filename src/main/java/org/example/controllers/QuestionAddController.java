@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import org.example.Models.Question;
 import org.example.Services.QuestionService;
 import org.example.validators.QuestionValidator;
@@ -38,6 +39,7 @@ public class QuestionAddController {
         questionService = new QuestionService();
         validator = new QuestionValidator();
         datePicker.setValue(LocalDate.now());
+
         setupValidationListeners();
     }
 
@@ -93,6 +95,7 @@ public class QuestionAddController {
             dureeErrorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
             return;
         }
+
         try {
             int duree = Integer.parseInt(dureeText);
             if (duree <= 0) {
@@ -118,6 +121,7 @@ public class QuestionAddController {
             noteMaxErrorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
             return;
         }
+
         try {
             float noteMax = Float.parseFloat(noteText);
             if (noteMax <= 0) {
@@ -128,7 +132,7 @@ public class QuestionAddController {
                 noteMaxErrorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
             } else {
                 noteMaxErrorLabel.setText("✅ Note valide");
-                noteMaxErrorLabel.setStyle("-fx-text-fill: green; -fx-font-size: 11px");
+                noteMaxErrorLabel.setStyle("-fx-text-fill: green; -fx-font-size: 11px;");
             }
         } catch (NumberFormatException e) {
             noteMaxErrorLabel.setText("❌ Veuillez entrer un nombre valide");
@@ -143,11 +147,12 @@ public class QuestionAddController {
             userIdErrorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
             return;
         }
+
         try {
             int userId = Integer.parseInt(userIdText);
             if (userId <= 0) {
                 userIdErrorLabel.setText("❌ L'ID doit être un nombre positif");
-                userIdErrorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
+                userIdErrorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 11px");
             } else {
                 userIdErrorLabel.setText("✅ ID valide");
                 userIdErrorLabel.setStyle("-fx-text-fill: green; -fx-font-size: 11px;");
@@ -187,12 +192,15 @@ public class QuestionAddController {
 
         try {
             questionService.ajouter(question);
+
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Succès");
             alert.setHeaderText(null);
-            alert.setContentText("Question ajoutée avec succès !");
+            alert.setContentText("Question ajoutée avec succès !\n\nVous pouvez maintenant ajouter des options pour cette question.");
             alert.showAndWait();
+
             handleRetour(event);
+
         } catch (SQLException e) {
             showError("Erreur lors de l'ajout: " + e.getMessage());
         }
@@ -205,7 +213,7 @@ public class QuestionAddController {
 
     @FXML
     private void handleRetour(ActionEvent event) {
-        navigateTo("/fxml/QuestionListView.fxml");
+        naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Questions");
     }
 
     private void clearForm() {
@@ -215,11 +223,13 @@ public class QuestionAddController {
         noteMaxField.clear();
         userIdField.clear();
         datePicker.setValue(LocalDate.now());
+
         titreErrorLabel.setText("");
         descriptionErrorLabel.setText("");
         dureeErrorLabel.setText("");
         noteMaxErrorLabel.setText("");
         userIdErrorLabel.setText("");
+
         statusLabel.setText("Formulaire réinitialisé");
         statusLabel.setStyle("-fx-text-fill: blue;");
     }
@@ -227,6 +237,7 @@ public class QuestionAddController {
     private void showError(String message) {
         statusLabel.setText("❌ " + message);
         statusLabel.setStyle("-fx-text-fill: red;");
+
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Erreur");
         alert.setHeaderText(null);
@@ -234,27 +245,65 @@ public class QuestionAddController {
         alert.showAndWait();
     }
 
-    // ==================== NAVIGATION CORRIGÉE ====================
-    @FXML private void handleHome() { navigateTo("/fxml/MainMenu.fxml"); }
-    @FXML private void handleCours() { navigateTo("/fxml/CoursView.fxml"); }
-    @FXML private void handleRessources() { navigateTo("/fxml/RessourcesView.fxml"); }
-    @FXML private void handleQuestions() { navigateTo("/fxml/QuestionListView.fxml"); }
-    @FXML private void handleProjets() { navigateTo("/fxml/PortfolioListView.fxml"); }
-    @FXML private void handleEvenements() { showInfo("Événements", "Module en construction"); }
-    @FXML private void handleUtilisateurs() { navigateTo("/fxml/User.fxml"); }
+    // ==================== MÉTHODES DE NAVIGATION CORRIGÉES ====================
 
-    private void navigateTo(String fxmlPath) {
+    @FXML
+    private void handleHome() {
+        naviguerVers("/fxml/MainMenu.fxml", "Path2Learn - Accueil");
+    }
+
+    @FXML
+    private void handleCours() {
+        naviguerVers("/fxml/CoursView.fxml", "Path2Learn - Cours");
+    }
+
+    @FXML
+    private void handleRessources() {
+        naviguerVers("/fxml/RessourcesView.fxml", "Path2Learn - Ressources");
+    }
+
+    @FXML
+    private void handleQuestions() {
+        naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Quiz");
+    }
+
+    @FXML
+    private void handleProjets() {
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
+    }
+
+    @FXML
+    private void handleEvenements() {
+        showInfoAlert("Événements", "Module Événements - Bientôt disponible");
+    }
+
+    @FXML
+    private void handleUtilisateurs() {
+        naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs");
+    }
+
+    // ==================== MÉTHODES UTILITAIRES DE NAVIGATION ====================
+
+    private void naviguerVers(String fxmlPath, String titre) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            java.net.URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                showError("Page non trouvée: " + fxmlPath);
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
-            Scene scene = titreField.getScene();
-            scene.setRoot(root);
+            Stage stage = (Stage) titreField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle(titre);
+            stage.show();
         } catch (IOException e) {
+            e.printStackTrace();
             showError("Erreur de navigation: " + e.getMessage());
         }
     }
 
-    private void showInfo(String title, String message) {
+    private void showInfoAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);

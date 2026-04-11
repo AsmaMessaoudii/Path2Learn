@@ -62,6 +62,73 @@ public class UserController {
         badgeBtn.setOnAction(e -> openBadgePage());
     }
 
+    // ==================== MÉTHODES DE NAVIGATION ====================
+
+    @FXML
+    private void handleHome() {
+        naviguerVers("/fxml/MainMenu.fxml", "Path2Learn - Accueil");
+    }
+
+    @FXML
+    private void handleCours() {
+        naviguerVers("/fxml/CoursView.fxml", "Path2Learn - Cours");
+    }
+
+    @FXML
+    private void handleRessources() {
+        naviguerVers("/fxml/RessourcesView.fxml", "Path2Learn - Ressources");
+    }
+
+    @FXML
+    private void handleQuestions() {
+        naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Quiz");
+    }
+
+    @FXML
+    private void handleProjets() {
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
+    }
+
+    @FXML
+    private void handleEvenements() {
+        showInfoAlert("Événements", "Module Événements - Bientôt disponible");
+    }
+
+    @FXML
+    private void handleUtilisateurs() {
+        // Déjà sur la page des utilisateurs, juste rafraîchir
+        loadUsers();
+    }
+
+    private void naviguerVers(String fxmlPath, String titre) {
+        try {
+            java.net.URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                showAlert("Erreur", "Page non trouvée: " + fxmlPath);
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
+            Parent root = loader.load();
+            Stage stage = (Stage) userTable.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle(titre);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible de charger la page: " + e.getMessage());
+        }
+    }
+
+    private void showInfoAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    // ==================== MÉTHODES CRUD ====================
+
     private void loadUsers() {
         try {
             List<User> list = serviceUser.recuperer();
@@ -69,7 +136,7 @@ public class UserController {
             userTable.setItems(users);
         } catch (SQLException e) {
             e.printStackTrace();
-            showErrorAlert("Erreur", "Impossible de charger les utilisateurs !");
+            showAlert("Erreur", "Impossible de charger les utilisateurs !");
         }
     }
 
@@ -96,7 +163,6 @@ public class UserController {
         });
     }
 
-    // --- ADD USER ---
     private void handleAjouterUser(ActionEvent event) {
         Optional<User> result = showUserDialog(null);
         result.ifPresent(user -> {
@@ -104,14 +170,14 @@ public class UserController {
                 user.setDate_creation(new Timestamp(System.currentTimeMillis()));
                 serviceUser.ajouter(user);
                 loadUsers();
+                showSuccessAlert("Utilisateur ajouté avec succès !");
             } catch (SQLException e) {
                 e.printStackTrace();
-                showErrorAlert("Erreur", "Impossible d'ajouter l'utilisateur !");
+                showAlert("Erreur", "Impossible d'ajouter l'utilisateur !");
             }
         });
     }
 
-    // --- EDIT USER ---
     private void handleEdit(User user) {
         Optional<User> result = showUserDialog(user);
         result.ifPresent(updatedUser -> {
@@ -119,32 +185,41 @@ public class UserController {
                 updatedUser.setId(user.getId());
                 serviceUser.modifier(updatedUser);
                 loadUsers();
+                showSuccessAlert("Utilisateur modifié avec succès !");
             } catch (SQLException e) {
                 e.printStackTrace();
-                showErrorAlert("Erreur", "Impossible de modifier l'utilisateur !");
+                showAlert("Erreur", "Impossible de modifier l'utilisateur !");
             }
         });
     }
 
-    // --- DELETE USER ---
     private void handleDelete(User user) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Voulez-vous vraiment supprimer l'utilisateur " + user.getNom() + " ?", ButtonType.YES, ButtonType.NO);
+                "Voulez-vous vraiment supprimer l'utilisateur " + user.getNom() + " " + user.getPrenom() + " ?",
+                ButtonType.YES, ButtonType.NO);
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
                 try {
                     serviceUser.supprimer(user.getId());
                     loadUsers();
+                    showSuccessAlert("Utilisateur supprimé avec succès !");
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    showErrorAlert("Erreur", "Impossible de supprimer l'utilisateur !");
+                    showAlert("Erreur", "Impossible de supprimer l'utilisateur !");
                 }
             }
         });
     }
 
-    // --- ALERT ---
-    private void showErrorAlert(String title, String message) {
+    private void showSuccessAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Succès");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -152,7 +227,6 @@ public class UserController {
         alert.showAndWait();
     }
 
-    // --- USER DIALOG WITH VALIDATION ---
     private Optional<User> showUserDialog(User user) {
         Dialog<User> dialog = new Dialog<>();
         dialog.setTitle(user == null ? "Ajouter un utilisateur" : "Modifier un utilisateur");
@@ -161,6 +235,7 @@ public class UserController {
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
+        grid.setStyle("-fx-padding: 20;");
 
         TextField nomField = new TextField();
         nomField.setPromptText("Nom");
@@ -200,6 +275,7 @@ public class UserController {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {
+
                 String nom = nomField.getText();
                 String prenom = prenomField.getText();
                 String email = emailField.getText();
@@ -222,7 +298,7 @@ public class UserController {
                     errors.append("Statut doit être ENABLE ou DISABLE.\n");
 
                 if (errors.length() > 0) {
-                    showErrorAlert("Erreur de validation", errors.toString());
+                    showAlert("Erreur de validation", errors.toString());
                     return null;
                 }
 
@@ -246,9 +322,12 @@ public class UserController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Badge.fxml"));
             Parent root = loader.load();
+
             Stage stage = new Stage();
             stage.setTitle("Badge Page");
             stage.setScene(new Scene(root));
+            stage.initModality(javafx.stage.Modality.WINDOW_MODAL);
+            stage.initOwner(userTable.getScene().getWindow());
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -258,60 +337,5 @@ public class UserController {
             alert.setContentText(e.getMessage());
             alert.showAndWait();
         }
-    }
-
-    // ==================== NAVIGATION CORRIGÉE ====================
-    @FXML
-    private void handleHome() {
-        navigateTo("/fxml/MainMenu.fxml");
-    }
-
-    @FXML
-    private void handleCours() {
-        navigateTo("/fxml/CoursView.fxml");
-    }
-
-    @FXML
-    private void handleRessources() {
-        navigateTo("/fxml/RessourcesView.fxml");
-    }
-
-    @FXML
-    private void handleQuestions() {
-        navigateTo("/fxml/QuestionListView.fxml");
-    }
-
-    @FXML
-    private void handleProjets() {
-        navigateTo("/fxml/PortfolioListView.fxml");
-    }
-
-    @FXML
-    private void handleEvenements() {
-        showInfoAlert("Événements", "Module en construction");
-    }
-
-    @FXML
-    private void handleUtilisateurs() {
-        navigateTo("/fxml/User.fxml");
-    }
-
-    private void navigateTo(String fxmlPath) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
-            Scene scene = userTable.getScene();
-            scene.setRoot(root);
-        } catch (IOException e) {
-            showErrorAlert("Erreur de navigation", "Impossible de charger la page: " + e.getMessage());
-        }
-    }
-
-    private void showInfoAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

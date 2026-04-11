@@ -1,5 +1,7 @@
 package org.example.Models;
 
+import java.util.List;
+
 public class Choix {
     private int id;
     private String contenu;
@@ -65,6 +67,7 @@ public class Choix {
     public void setCorrect(boolean correct) {
         this.estCorrect = correct;
     }
+
 
 
 
