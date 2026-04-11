@@ -138,11 +138,13 @@ public class ProjetListController {
         colActions.setCellFactory(col -> new TableCell<Projet, Void>() {
             private final Button editBtn = new Button("✏️ Modifier");
             private final Button deleteBtn = new Button("🗑️ Supprimer");
-            private final HBox buttons = new HBox(8, editBtn, deleteBtn);
+            private final Button detailsBtn = new Button("👁️ Détails");
+            private final HBox buttons = new HBox(8, editBtn, deleteBtn, detailsBtn);
 
             {
                 editBtn.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 11px; -fx-padding: 5 10; -fx-background-radius: 5; -fx-cursor: hand;");
                 deleteBtn.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-size: 11px; -fx-padding: 5 10; -fx-background-radius: 5; -fx-cursor: hand;");
+                detailsBtn.setStyle("-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-font-size: 11px; -fx-padding: 5 10; -fx-background-radius: 5; -fx-cursor: hand;");
                 buttons.setAlignment(Pos.CENTER);
             }
 
@@ -155,6 +157,7 @@ public class ProjetListController {
                     Projet projet = getTableView().getItems().get(getIndex());
                     editBtn.setOnAction(e -> ouvrirDialog(projet));
                     deleteBtn.setOnAction(e -> handleSupprimer(projet));
+                    detailsBtn.setOnAction(e -> voirDetails(projet));
                     setGraphic(buttons);
                 }
             }
@@ -235,5 +238,25 @@ public class ProjetListController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void voirDetails(Projet projet) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjetDetailsDialog.fxml"));
+            VBox dialogVBox = loader.load();
+
+            ProjetDetailsController controller = loader.getController();
+            controller.setProjet(projet);
+
+            Stage dialogStage = new Stage();
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setTitle("Détails du projet");
+            dialogStage.setScene(new Scene(dialogVBox));
+            dialogStage.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible d'ouvrir les détails: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 }

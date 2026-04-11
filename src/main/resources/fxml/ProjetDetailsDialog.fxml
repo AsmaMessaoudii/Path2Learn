@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="15.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controllers.ProjetDetailsController"
+      style="-fx-background-color: white; -fx-background-radius: 10;"
+      minWidth="500">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <Label text="Détails du projet"
+           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2E5C2E;" />
+    <Separator />
+
+    <GridPane hgap="20.0" vgap="12.0">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="30" />
+            <ColumnConstraints percentWidth="70" />
+        </columnConstraints>
+
+        <Label text="ID :" style="-fx-font-weight: bold;"
+               GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <Label fx:id="labelId" style="-fx-text-fill: #555555;"
+               GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label text="Titre :" style="-fx-font-weight: bold;"
+               GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <Label fx:id="labelTitre" style="-fx-text-fill: #555555; -fx-font-weight: bold; -fx-font-size: 14px;"
+               GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <Label text="Texte :" style="-fx-font-weight: bold;"
+               GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <Label fx:id="labelText" style="-fx-text-fill: #555555;"
+               GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+        <Label text="Description :" style="-fx-font-weight: bold;"
+               GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <Label fx:id="labelDescription" style="-fx-text-fill: #555555; -fx-wrap-text: true;"
+               GridPane.columnIndex="1" GridPane.rowIndex="3" maxWidth="300"/>
+
+        <Label text="Technologies :" style="-fx-font-weight: bold;"
+               GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+        <Label fx:id="labelTechnologies"
+               style="-fx-text-fill: white; -fx-background-color: #81C784; -fx-background-radius: 10; -fx-padding: 3 10;"
+               GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+        <Label text="Date réalisation :" style="-fx-font-weight: bold;"
+               GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+        <Label fx:id="labelDateRealisation" style="-fx-text-fill: #555555;"
+               GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+
+        <Label text="Lien démo :" style="-fx-font-weight: bold;"
+               GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+        <Label fx:id="labelLienDemo" style="-fx-text-fill: #2196F3;"
+               GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+
+        <Label text="Portfolio ID :" style="-fx-font-weight: bold;"
+               GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+        <Label fx:id="labelPortfolioId" style="-fx-text-fill: #555555;"
+               GridPane.columnIndex="1" GridPane.rowIndex="7"/>
+    </GridPane>
+
+    <Separator />
+
+    <HBox alignment="CENTER_RIGHT">
+        <Button fx:id="closeButton" text="✖ Fermer" onAction="#handleFermer"
+                style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 25; -fx-background-radius: 8; -fx-cursor: hand;" />
+    </HBox>
+</VBox>
