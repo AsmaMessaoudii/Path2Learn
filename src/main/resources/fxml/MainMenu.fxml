@@ -6,21 +6,16 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
 
 <HBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controllers.MainMenuController" style="-fx-background-color: #F5F5F5;">
 
     <!-- SIDEBAR GAUCHE -->
     <VBox style="-fx-background-color: #FFFFFF; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 2, 0);" prefWidth="280">
 
-        <!-- Logo et titre - AVEC IMAGE -->
+        <!-- Logo et titre -->
         <VBox spacing="10.0" style="-fx-padding: 30 20 30 20; -fx-background-color: #F8F9FA; -fx-alignment: CENTER;">
-            <!-- Image Logo au lieu de l'emoji -->
-            <ImageView fitWidth="150" fitHeight="150" preserveRatio="true">
-                <Image url="@/logo.png" />
-            </ImageView>
+            <Label text="🌿" style="-fx-font-size: 48px; -fx-alignment: CENTER;" />
+            <Label text="Path2Learn" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #81C784; -fx-alignment: CENTER;" />
             <Label text="Plateforme d'apprentissage" style="-fx-font-size: 11px; -fx-text-fill: #999999; -fx-alignment: CENTER;" />
         </VBox>
 
@@ -37,10 +32,6 @@
             <Button fx:id="projetsBtn" onAction="#handleProjets" text="💼  Projets" style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
             <Button fx:id="evenementsBtn" onAction="#handleEvenements" text="📅  Événements" style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
             <Button fx:id="utilisateursBtn" onAction="#handleUtilisateurs" text="👥  Communauté" style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
-
-            <!-- Bouton Retour à l'accueil ajouté dans le menu -->
-            <Separator style="-fx-background-color: #EEEEEE; -fx-padding: 10 0;" />
-            <Button text="🏠  Retour à l'accueil" onAction="#handleRetourAccueil" style="-fx-background-color: transparent; -fx-text-fill: #81C784; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
         </VBox>
 
         <Separator style="-fx-background-color: #EEEEEE;" />

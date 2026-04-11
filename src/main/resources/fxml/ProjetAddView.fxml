@@ -4,14 +4,19 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <HBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.example.controllers.ProjetAddController"
       style="-fx-background-color: #F5F5F5;">
 
     <VBox style="-fx-background-color: #FFFFFF; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 2, 0);" prefWidth="280">
         <VBox spacing="10.0" style="-fx-padding: 30 20 30 20; -fx-background-color: #F8F9FA; -fx-alignment: CENTER;">
-            <Label text="🌿" style="-fx-font-size: 48px; -fx-alignment: CENTER;" />
-            <Label text="Path2Learn" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #81C784; -fx-alignment: CENTER;" />
+            <ImageView fitWidth="150" fitHeight="150" preserveRatio="true">
+
+                <Image url="/0c0390ea-b94e-4e66-bdee-dc1608f0674c.jpg" />
+
+            </ImageView>
             <Label text="Plateforme d'apprentissage" style="-fx-font-size: 11px; -fx-text-fill: #999999; -fx-alignment: CENTER;" />
         </VBox>
         <Separator style="-fx-background-color: #EEEEEE;" />
