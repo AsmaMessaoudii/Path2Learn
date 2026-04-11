@@ -75,6 +75,36 @@ public class MainMenuController {
         naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs");
     }
 
+    // ==================== RETOUR VERS LE SITE FRONT ====================
+    @FXML
+    private void handleBackToSite() {
+        try {
+            System.out.println("Retour vers HomePage...");
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HomePage.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) homeBtn.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Path2Learn - Accueil");
+
+            // CRUCIAL : Ne pas mettre en maximisé, utiliser une taille fixe
+            stage.setMaximized(false);
+            stage.setWidth(1200);
+            stage.setHeight(800);
+            stage.centerOnScreen();
+
+            // Forcer le refresh de la scène
+            stage.sizeToScene();
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible de revenir à l'accueil: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
     // ==================== GESTION DES CARTES (ACCÈS RAPIDES) ====================
 
     @FXML
