@@ -8,12 +8,19 @@ import org.example.Models.Cours;
 import org.example.Models.Question;
 import org.example.Models.RessourcePedagogique;
 
+import org.example.Models.Portfolio;
+import org.example.Models.Projet;
+
+
 import org.example.Services.ChoixService;
 import org.example.Services.ServiceCours;
 import org.example.Services.QuestionService;
 import org.example.Services.ServiceRessourcePedagogique;
 import org.example.Services.ServiceUser;
 import org.example.Services.ServiceBadge;
+
+import org.example.Services.ServicePortfolio;
+import org.example.Services.ServiceProjet;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -129,6 +136,50 @@ public class Main {
             serviceUser.supprimer(1);
             System.out.println("=== Après suppression User ===");
             serviceUser.recuperer().forEach(System.out::println);
+
+
+
+            // ==================== PORTFOLIO ====================
+            ServicePortfolio servicePortfolio = new ServicePortfolio();
+
+            servicePortfolio.ajouter(new Portfolio("Mon Portfolio", "Description de mon portfolio", new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis()), 1));
+            System.out.println("=== Après ajout Portfolio ===");
+            servicePortfolio.recuperer().forEach(System.out::println);
+
+            Portfolio pModifie = new Portfolio("Mon Portfolio Modifié", "Nouvelle description", new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis()), 1);
+            pModifie.setId(1);
+            servicePortfolio.modifier(pModifie);
+            System.out.println("=== Après modification Portfolio ===");
+            servicePortfolio.recuperer().forEach(System.out::println);
+
+            Portfolio pSupprimer = new Portfolio();
+            pSupprimer.setId(1);
+            servicePortfolio.supprimer(pSupprimer);
+            System.out.println("=== Après suppression Portfolio ===");
+            servicePortfolio.recuperer().forEach(System.out::println);
+
+// ==================== PROJET ====================
+            ServiceProjet serviceProjet = new ServiceProjet();
+
+            serviceProjet.ajouter(new Projet("Projet JavaFX", "Application desktop", "Projet de gestion", "Java, JavaFX, MySQL", new Date(System.currentTimeMillis()), "https://github.com/demo", 1));
+            System.out.println("=== Après ajout Projet ===");
+            serviceProjet.recuperer().forEach(System.out::println);
+
+            Projet projetModifie = new Projet("Projet JavaFX Modifié", "Application modifiée", "Nouvelle description", "Java, Spring", new Date(System.currentTimeMillis()), "https://github.com/demo-v2", 1);
+            projetModifie.setId(1);
+            serviceProjet.modifier(projetModifie);
+            System.out.println("=== Après modification Projet ===");
+            serviceProjet.recuperer().forEach(System.out::println);
+
+            Projet projetSupprimer = new Projet();
+            projetSupprimer.setId(1);
+            serviceProjet.supprimer(projetSupprimer);
+            System.out.println("=== Après suppression Projet ===");
+            serviceProjet.recuperer().forEach(System.out::println);
+
+            System.out.println("=== Projets du portfolio 1 ===");
+            serviceProjet.recupererParPortfolio(1).forEach(System.out::println);
+
 
 
             // ==================== BADGE (ADMIN CRUD) ====================

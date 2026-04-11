@@ -43,7 +43,7 @@ public class MainMenuController {
 
     @FXML
     private void handleProjets(ActionEvent actionEvent) {
-        showAlert("Projets", "Module Projets - Bientôt disponible", Alert.AlertType.INFORMATION);
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
         resetButtonStyles();
         setActiveButton(projetsBtn);
     }
@@ -78,7 +78,7 @@ public class MainMenuController {
 
     @FXML
     private void handleProjetsCard() {
-        showAlert("Projets", "Module Projets - Bientôt disponible", Alert.AlertType.INFORMATION);
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
         resetButtonStyles();
         setActiveButton(projetsBtn);
     }
@@ -117,17 +117,19 @@ public class MainMenuController {
 
     private void resetButtonStyles() {
         String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px; -fx-cursor: hand; -fx-padding: 0 0 5 0;";
-        homeBtn.setStyle(defaultStyle);
-        coursBtn.setStyle(defaultStyle);
-        ressourcesBtn.setStyle(defaultStyle);
-        questionsBtn.setStyle(defaultStyle);
-        projetsBtn.setStyle(defaultStyle);
-        evenementsBtn.setStyle(defaultStyle);
-        utilisateursBtn.setStyle(defaultStyle);
+        if (homeBtn != null) homeBtn.setStyle(defaultStyle);
+        if (coursBtn != null) coursBtn.setStyle(defaultStyle);
+        if (ressourcesBtn != null) ressourcesBtn.setStyle(defaultStyle);
+        if (questionsBtn != null) questionsBtn.setStyle(defaultStyle);
+        if (projetsBtn != null) projetsBtn.setStyle(defaultStyle);
+        if (evenementsBtn != null) evenementsBtn.setStyle(defaultStyle);
+        if (utilisateursBtn != null) utilisateursBtn.setStyle(defaultStyle);
     }
 
     private void setActiveButton(Button btn) {
-        btn.setStyle("-fx-background-color: transparent; -fx-text-fill: #81C784; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 0 0 5 0; -fx-border-color: transparent transparent #81C784 transparent; -fx-border-width: 0 0 2 0;");
+        if (btn != null) {
+            btn.setStyle("-fx-background-color: transparent; -fx-text-fill: #81C784; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 0 0 5 0; -fx-border-color: transparent transparent #81C784 transparent; -fx-border-width: 0 0 2 0;");
+        }
     }
 
     private void showAlert(String title, String message, Alert.AlertType type) {
@@ -147,7 +149,9 @@ public class MainMenuController {
         addCardHoverEffect(evenementsCard);
         addCardHoverEffect(utilisateursCard);
 
-        setActiveButton(homeBtn);
+        if (homeBtn != null) {
+            setActiveButton(homeBtn);
+        }
     }
 
     private void addCardHoverEffect(VBox card) {
