@@ -24,8 +24,19 @@ public class ProjetDetailsController {
         labelDescription.setText(projet.getDescription());
         labelTechnologies.setText(projet.getTechnologies());
         labelDateRealisation.setText(String.valueOf(projet.getDateRealisation()));
-        labelLienDemo.setText(projet.getLienDemo());
         labelPortfolioId.setText(String.valueOf(projet.getPortfolioId()));
+
+        // Clickable link
+        String lien = projet.getLienDemo();
+        labelLienDemo.setText(lien);
+        labelLienDemo.setStyle("-fx-text-fill: #2196F3; -fx-underline: true; -fx-cursor: hand;");
+        labelLienDemo.setOnMouseClicked(e -> {
+            try {
+                java.awt.Desktop.getDesktop().browse(new java.net.URI(lien));
+            } catch (Exception ex) {
+                System.out.println("❌ Impossible d'ouvrir le lien: " + ex.getMessage());
+            }
+        });
     }
 
     @FXML
