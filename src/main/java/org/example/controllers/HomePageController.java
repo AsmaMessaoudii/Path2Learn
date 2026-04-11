@@ -40,6 +40,39 @@ public class HomePageController {
         }
     }
 
+    private void naviguerVers(String fxmlPath, String titre) {
+        try {
+            java.net.URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                showError("Erreur", "Fichier FXML introuvable : " + fxmlPath);
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
+            Parent root = loader.load();
+
+            // Handle navigation from any bound element (buttons or cards)
+            Stage stage = null;
+            if (homeBtn != null && homeBtn.getScene() != null) {
+                stage = (Stage) homeBtn.getScene().getWindow();
+            } else if (coursCard != null && coursCard.getScene() != null) {
+                stage = (Stage) coursCard.getScene().getWindow();
+            }
+
+            if (stage == null) {
+                showError("Erreur", "Impossible de récupérer la fenêtre principale.");
+                return;
+            }
+            
+            stage.setScene(new Scene(root));
+            stage.setTitle(titre);
+            stage.setMaximized(true);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Erreur de chargement", e.getMessage());
+        }
+    }
+
     @FXML
     private void handleHome() {
         System.out.println("Page d'accueil");
@@ -47,22 +80,22 @@ public class HomePageController {
 
     @FXML
     private void handleCours() {
-        showInfo("Cours", "Page des cours - À venir");
+        naviguerVers("/fxml/CoursListFrontView.fxml", "Path2Learn - Cours");
     }
 
     @FXML
     private void handleRessources() {
-        showInfo("Ressources", "Page des ressources - À venir");
+        naviguerVers("/fxml/RessourcesViewFront.fxml", "Path2Learn - Ressources");
     }
 
     @FXML
     private void handleQuestions() {
-        showInfo("Quiz", "Page des quiz - À venir");
+        naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Quiz");
     }
 
     @FXML
     private void handleProjets() {
-        showInfo("Projets", "Page des projets - À venir");
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Projets");
     }
 
     @FXML
@@ -72,7 +105,7 @@ public class HomePageController {
 
     @FXML
     private void handleUtilisateurs() {
-        showInfo("Communauté", "Page de la communauté - À venir");
+        naviguerVers("/fxml/User.fxml", "Path2Learn - Communauté");
     }
 
     @FXML

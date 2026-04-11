@@ -7,16 +7,23 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.*?>
 
-<HBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controllers.MainMenuController" style="-fx-background-color: #F5F5F5;">
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<HBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controllers.MainMenuController"
+      style="-fx-background-color: #F5F5F5;">
 
     <!-- SIDEBAR GAUCHE -->
     <VBox style="-fx-background-color: #FFFFFF; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 2, 0);" prefWidth="280">
 
         <!-- Logo et titre -->
         <VBox spacing="10.0" style="-fx-padding: 30 20 30 20; -fx-background-color: #F8F9FA; -fx-alignment: CENTER;">
-            <Label text="🌿" style="-fx-font-size: 48px; -fx-alignment: CENTER;" />
-            <Label text="Path2Learn" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #81C784; -fx-alignment: CENTER;" />
-            <Label text="Plateforme d'apprentissage" style="-fx-font-size: 11px; -fx-text-fill: #999999; -fx-alignment: CENTER;" />
+            <ImageView fitWidth="150" fitHeight="150" preserveRatio="true">
+
+                    <Image url="/0c0390ea-b94e-4e66-bdee-dc1608f0674c.jpg" />
+
+            </ImageView>
+            <Label text="Administration" style="-fx-font-size: 12px; -fx-text-fill: #FF9800; -fx-font-weight: bold; -fx-alignment: CENTER;" />
         </VBox>
 
         <Separator style="-fx-background-color: #EEEEEE;" />
@@ -25,21 +32,41 @@
         <VBox spacing="5.0" style="-fx-padding: 20 10;">
             <Label text="MENU PRINCIPAL" style="-fx-font-size: 11px; -fx-text-fill: #BBBBBB; -fx-padding: 0 0 10 15; -fx-font-weight: bold;" />
 
-            <Button fx:id="homeBtn" onAction="#handleHome" text="🏠  Tableau de bord" style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
-            <Button fx:id="coursBtn" onAction="#handleCours" text="📚  Cours" style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
-            <Button fx:id="ressourcesBtn" onAction="#handleRessources" text="📎  Ressources" style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
-            <Button fx:id="questionsBtn" onAction="#handleQuestions" text="❓  Quiz" style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
-            <Button fx:id="projetsBtn" onAction="#handleProjets" text="💼  Projets" style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
-            <Button fx:id="evenementsBtn" onAction="#handleEvenements" text="📅  Événements" style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
-            <Button fx:id="utilisateursBtn" onAction="#handleUtilisateurs" text="👥  Communauté" style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
+            <Button fx:id="homeBtn" onAction="#handleHome" text="🏠  Tableau de bord"
+                    style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
+            <Button fx:id="coursBtn" onAction="#handleCours" text="📚  Cours"
+                    style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
+            <Button fx:id="ressourcesBtn" onAction="#handleRessources" text="📎  Ressources"
+                    style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
+            <Button fx:id="questionsBtn" onAction="#handleQuestions" text="❓  Quiz"
+                    style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
+            <Button fx:id="projetsBtn" onAction="#handleProjets" text="💼  Projets"
+                    style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
+            <Button fx:id="evenementsBtn" onAction="#handleEvenements" text="📅  Événements"
+                    style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
+            <Button fx:id="utilisateursBtn" onAction="#handleUtilisateurs" text="👥  Communauté"
+                    style="-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-graphic-text-gap: 12;" />
+        </VBox>
+
+        <Separator style="-fx-background-color: #EEEEEE;" />
+
+        <!-- Bouton Retour au site -->
+        <VBox spacing="10.0" style="-fx-padding: 15 20;">
+            <Button text="←  Retour au site" onAction="#handleBackToSite"
+                    style="-fx-background-color: transparent; -fx-text-fill: #FF9800; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 10 20; -fx-border-color: #FF9800; -fx-border-radius: 25; -fx-background-radius: 25;"
+                    maxWidth="Infinity" />
         </VBox>
 
         <Separator style="-fx-background-color: #EEEEEE;" />
 
         <!-- Section authentification -->
         <VBox spacing="10.0" style="-fx-padding: 20 20; -fx-background-color: #F8F9FA; -fx-alignment: CENTER;">
-            <Button text="🔑  Se connecter" style="-fx-background-color: transparent; -fx-text-fill: #81C784; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 20; -fx-border-color: #81C784; -fx-border-radius: 25; -fx-background-radius: 25;" maxWidth="Infinity" />
-            <Button text="📝  S'inscrire" style="-fx-background-color: #81C784; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 20; -fx-background-radius: 25;" maxWidth="Infinity" />
+            <Button text="🔑  Se connecter"
+                    style="-fx-background-color: transparent; -fx-text-fill: #81C784; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 20; -fx-border-color: #81C784; -fx-border-radius: 25; -fx-background-radius: 25;"
+                    maxWidth="Infinity" />
+            <Button text="📝  S'inscrire"
+                    style="-fx-background-color: #81C784; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 20; -fx-background-radius: 25;"
+                    maxWidth="Infinity" />
         </VBox>
 
         <Region VBox.vgrow="ALWAYS" />
@@ -62,26 +89,31 @@
         </HBox>
 
         <!-- Zone scrollable du contenu -->
-        <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background: #F5F5F5; -fx-background-color: #F5F5F5; -fx-border-width: 0;" VBox.vgrow="ALWAYS">
+        <ScrollPane fitToWidth="true" fitToHeight="true"
+                    style="-fx-background: #F5F5F5; -fx-background-color: #F5F5F5; -fx-border-width: 0;"
+                    VBox.vgrow="ALWAYS">
             <VBox fx:id="mainContentArea" spacing="20.0" style="-fx-background-color: #F5F5F5; -fx-padding: 30;">
 
                 <!-- Cartes de statistiques -->
                 <HBox spacing="20.0" alignment="CENTER">
-                    <VBox spacing="10.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                    <VBox spacing="10.0" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);">
                         <Label text="📊" style="-fx-font-size: 32px;" />
                         <Label text="Taux de réussite" style="-fx-font-size: 13px; -fx-text-fill: #888888;" />
                         <Label text="94%" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #81C784;" />
                         <Label text="+12% cette année" style="-fx-font-size: 11px; -fx-text-fill: #4CAF50;" />
                     </VBox>
 
-                    <VBox spacing="10.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                    <VBox spacing="10.0" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);">
                         <Label text="👨‍🎓" style="-fx-font-size: 32px;" />
                         <Label text="Apprenants actifs" style="-fx-font-size: 13px; -fx-text-fill: #888888;" />
                         <Label text="5,234" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #81C784;" />
                         <Label text="+328 ce mois" style="-fx-font-size: 11px; -fx-text-fill: #4CAF50;" />
                     </VBox>
 
-                    <VBox spacing="10.0" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                    <VBox spacing="10.0" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);">
                         <Label text="⭐" style="-fx-font-size: 32px;" />
                         <Label text="Note moyenne" style="-fx-font-size: 13px; -fx-text-fill: #888888;" />
                         <Label text="4.8/5" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #81C784;" />
@@ -132,13 +164,20 @@
                     <Label text="Accès rapides" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2E5C2E;" />
 
                     <HBox spacing="15.0">
-                        <Button text="📚 Gérer les cours" onAction="#handleCours" style="-fx-background-color: #E8F5E9; -fx-text-fill: #81C784; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 10; -fx-cursor: hand;" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
-                        <Button text="👥 Voir les utilisateurs" onAction="#handleUtilisateurs" style="-fx-background-color: #E8F5E9; -fx-text-fill: #81C784; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 10; -fx-cursor: hand;" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
-                        <Button text="❓ Gérer les quiz" onAction="#handleQuestions" style="-fx-background-color: #E8F5E9; -fx-text-fill: #81C784; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 10; -fx-cursor: hand;" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                        <Button text="📚 Gérer les cours" onAction="#handleCours"
+                                style="-fx-background-color: #E8F5E9; -fx-text-fill: #81C784; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 10; -fx-cursor: hand;"
+                                HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                        <Button text="👥 Voir les utilisateurs" onAction="#handleUtilisateurs"
+                                style="-fx-background-color: #E8F5E9; -fx-text-fill: #81C784; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 10; -fx-cursor: hand;"
+                                HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                        <Button text="❓ Gérer les quiz" onAction="#handleQuestions"
+                                style="-fx-background-color: #E8F5E9; -fx-text-fill: #81C784; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 10; -fx-cursor: hand;"
+                                HBox.hgrow="ALWAYS" maxWidth="Infinity" />
                     </HBox>
                 </VBox>
 
             </VBox>
         </ScrollPane>
     </VBox>
+
 </HBox>

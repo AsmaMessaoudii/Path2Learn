@@ -5,58 +5,89 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.io.IOException;
 
 public class FrontAccueilController {
 
-    @FXML
-    private void handleGoToDashboard() {
+    @FXML private VBox coursCard;
+    @FXML private VBox ressourcesCard;
+    @FXML private VBox questionsCard;
+    @FXML private VBox projetsCard;
+    @FXML private VBox evenementsCard;
+    @FXML private VBox utilisateursCard;
+
+    private Stage getStage() {
+        VBox[] candidates = { coursCard, ressourcesCard, questionsCard,
+                projetsCard, evenementsCard, utilisateursCard };
+        for (VBox v : candidates) {
+            if (v != null && v.getScene() != null) {
+                return (Stage) v.getScene().getWindow();
+            }
+        }
+        return null;
+    }
+
+    private void naviguerVers(String fxmlPath, String titre) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainMenu.fxml"));
+            java.net.URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                showAlert("Erreur", "Fichier FXML introuvable : " + fxmlPath);
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
 
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Path2Learn - Dashboard Administrateur");
+            Stage stage = getStage();
+            if (stage == null) {
+                showAlert("Erreur", "Impossible de récupérer la fenêtre principale.");
+                return;
+            }
+            stage.setScene(new Scene(root));
+            stage.setTitle(titre);
             stage.setMaximized(true);
             stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Erreur", "Impossible d'ouvrir le dashboard: " + e.getMessage());
+            showAlert("Erreur de chargement", e.getMessage());
         }
     }
 
     @FXML
+    private void handleGoToDashboard() {
+        naviguerVers("/fxml/MainMenu.fxml", "Path2Learn - Dashboard Administrateur");
+    }
+
+    @FXML
     private void handleCours() {
-        showInfoAlert("Cours", "Page des cours - Bientôt disponible");
+        naviguerVers("/fxml/CoursListFrontView.fxml", "Path2Learn - Cours");
     }
 
     @FXML
     private void handleRessources() {
-        showInfoAlert("Ressources", "Page des ressources - Bientôt disponible");
+        naviguerVers("/fxml/RessourcesViewFront.fxml", "Path2Learn - Ressources");
     }
 
     @FXML
     private void handleQuestions() {
-        showInfoAlert("Quiz", "Page des quiz - Bientôt disponible");
+        naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Quiz");
     }
 
     @FXML
     private void handleProjets() {
-        showInfoAlert("Projets", "Page des projets - Bientôt disponible");
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Projets");
     }
 
     @FXML
     private void handleEvenements() {
-        showInfoAlert("Événements", "Page des événements - Bientôt disponible");
+        showInfoAlert("Événements", "Le module Événements arrive très bientôt !");
     }
 
     @FXML
     private void handleUtilisateurs() {
-        showInfoAlert("Communauté", "Page de la communauté - Bientôt disponible");
+        naviguerVers("/fxml/User.fxml", "Path2Learn - Communauté");
     }
 
     private void showAlert(String title, String message) {

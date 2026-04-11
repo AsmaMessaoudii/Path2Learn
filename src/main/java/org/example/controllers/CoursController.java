@@ -70,9 +70,18 @@ public class CoursController {
 
     @FXML
     private void handleCours() {
-        // Déjà sur la page des cours, juste rafraîchir
-        chargerCours();
-        setActiveButton(coursBtn);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/FrontCoursView.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) coursBtn.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Path2Learn - Cours");
+            stage.setMaximized(true);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible d'ouvrir la page des cours: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     @FXML
