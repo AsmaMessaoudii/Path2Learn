@@ -56,9 +56,12 @@ public class CoursController {
         setupSearchFilter();
         setupMatiereFilter();
         setupActionButtons();
+
+        // Mettre en surbrillance le bouton actif
+        setActiveButton(coursBtn);
     }
 
-    // ==================== MÉTHODES DE NAVIGATION ====================
+    // ==================== MÉTHODES DE NAVIGATION CORRIGÉES ====================
 
     @FXML
     private void handleHome() {
@@ -67,7 +70,9 @@ public class CoursController {
 
     @FXML
     private void handleCours() {
+        // Déjà sur la page des cours, juste rafraîchir
         chargerCours();
+        setActiveButton(coursBtn);
     }
 
     @FXML
@@ -77,27 +82,33 @@ public class CoursController {
 
     @FXML
     private void handleQuestions() {
-        showAlert("Quiz", "Module Quiz - Bientôt disponible", Alert.AlertType.INFORMATION);
+        naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Quiz");
     }
 
     @FXML
     private void handleProjets() {
-        showAlert("Projets", "Module Projets - Bientôt disponible", Alert.AlertType.INFORMATION);
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Projets");
     }
 
     @FXML
     private void handleEvenements() {
         showAlert("Événements", "Module Événements - Bientôt disponible", Alert.AlertType.INFORMATION);
+        setActiveButton(evenementsBtn);
     }
 
     @FXML
     private void handleUtilisateurs() {
-        showAlert("Utilisateurs", "Module Utilisateurs - Bientôt disponible", Alert.AlertType.INFORMATION);
+        naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs");
     }
 
     private void naviguerVers(String fxmlPath, String titre) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            java.net.URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                showAlert("Erreur", "Page non trouvée: " + fxmlPath, Alert.AlertType.ERROR);
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
             Stage stage = (Stage) homeBtn.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -109,13 +120,27 @@ public class CoursController {
         }
     }
 
+    private void setActiveButton(Button activeBtn) {
+        String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT;";
+        String activeStyle = "-fx-background-color: #E8F5E9; -fx-text-fill: #81C784; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-border-color: transparent #81C784 transparent transparent; -fx-border-width: 0 4 0 0;";
+
+        homeBtn.setStyle(defaultStyle);
+        coursBtn.setStyle(defaultStyle);
+        ressourcesBtn.setStyle(defaultStyle);
+        questionsBtn.setStyle(defaultStyle);
+        projetsBtn.setStyle(defaultStyle);
+        evenementsBtn.setStyle(defaultStyle);
+        utilisateursBtn.setStyle(defaultStyle);
+
+        activeBtn.setStyle(activeStyle);
+    }
+
     // ==================== MÉTHODES CRUD ====================
 
     private void setupTableColumns() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colTitre.setCellValueFactory(new PropertyValueFactory<>("titre"));
 
-        // Tronquer la description si trop longue
         colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         colDescription.setCellFactory(col -> new TableCell<Cours, String>() {
             @Override
@@ -131,7 +156,6 @@ public class CoursController {
         });
 
         colNiveau.setCellValueFactory(new PropertyValueFactory<>("niveau"));
-        // Ajouter un style pour le niveau
         colNiveau.setCellFactory(col -> new TableCell<Cours, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -190,7 +214,6 @@ public class CoursController {
             coursList = FXCollections.observableArrayList(allCoursList);
             filteredList = new FilteredList<>(coursList, p -> true);
 
-            // Initialiser le filtre par matière
             setupMatiereFilterCombo();
 
             SortedList<Cours> sortedList = new SortedList<>(filteredList);

@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -18,34 +19,46 @@ public class MainMenuController {
     private Button homeBtn, coursBtn, ressourcesBtn, questionsBtn, projetsBtn, evenementsBtn, utilisateursBtn;
 
     @FXML
-    private VBox coursCard, ressourcesCard, questionsCard, projetsCard, evenementsCard, utilisateursCard;
+    private Label pageTitleLabel;
+
+    @FXML
+    private VBox mainContentArea;
+
+    // ==================== NAVIGATION PRINCIPALE ====================
 
     @FXML
     private void handleHome() {
         resetButtonStyles();
         setActiveButton(homeBtn);
+        naviguerVers("/fxml/MainMenu.fxml", "Path2Learn - Tableau de bord");
     }
 
     @FXML
     private void handleCours() {
+        resetButtonStyles();
+        setActiveButton(coursBtn);
         naviguerVers("/fxml/CoursView.fxml", "Path2Learn - Gestion des cours");
     }
 
     @FXML
     private void handleRessources() {
+        resetButtonStyles();
+        setActiveButton(ressourcesBtn);
         naviguerVers("/fxml/RessourcesView.fxml", "Path2Learn - Gestion des ressources");
     }
 
     @FXML
     private void handleQuestions() {
+        resetButtonStyles();
+        setActiveButton(questionsBtn);
         naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Questions");
     }
 
     @FXML
-    private void handleProjets(ActionEvent actionEvent) {
-        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
+    private void handleProjets() {
         resetButtonStyles();
         setActiveButton(projetsBtn);
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
     }
 
     @FXML
@@ -57,10 +70,13 @@ public class MainMenuController {
 
     @FXML
     private void handleUtilisateurs() {
+        resetButtonStyles();
+        setActiveButton(utilisateursBtn);
         naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs");
     }
 
-    // Navigation vers les cartes
+    // ==================== GESTION DES CARTES (ACCÈS RAPIDES) ====================
+
     @FXML
     private void handleCoursCard() {
         naviguerVers("/fxml/CoursView.fxml", "Path2Learn - Gestion des cours");
@@ -79,21 +95,19 @@ public class MainMenuController {
     @FXML
     private void handleProjetsCard() {
         naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
-        resetButtonStyles();
-        setActiveButton(projetsBtn);
     }
 
     @FXML
     private void handleEvenementsCard() {
         showAlert("Événements", "Module Événements - Bientôt disponible", Alert.AlertType.INFORMATION);
-        resetButtonStyles();
-        setActiveButton(evenementsBtn);
     }
 
     @FXML
     private void handleUtilisateursCard() {
         naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs");
     }
+
+    // ==================== MÉTHODE PRINCIPALE DE NAVIGATION ====================
 
     private void naviguerVers(String fxmlPath, String titre) {
         try {
@@ -115,22 +129,24 @@ public class MainMenuController {
         }
     }
 
+    // ==================== GESTION DES STYLES ====================
+
     private void resetButtonStyles() {
-        String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px; -fx-cursor: hand; -fx-padding: 0 0 5 0;";
-        if (homeBtn != null) homeBtn.setStyle(defaultStyle);
-        if (coursBtn != null) coursBtn.setStyle(defaultStyle);
-        if (ressourcesBtn != null) ressourcesBtn.setStyle(defaultStyle);
-        if (questionsBtn != null) questionsBtn.setStyle(defaultStyle);
-        if (projetsBtn != null) projetsBtn.setStyle(defaultStyle);
-        if (evenementsBtn != null) evenementsBtn.setStyle(defaultStyle);
-        if (utilisateursBtn != null) utilisateursBtn.setStyle(defaultStyle);
+        String defaultStyle = "-fx-background-color: transparent; -fx-text-fill: #A0A0A0; -fx-font-size: 14px; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT;";
+        homeBtn.setStyle(defaultStyle);
+        coursBtn.setStyle(defaultStyle);
+        ressourcesBtn.setStyle(defaultStyle);
+        questionsBtn.setStyle(defaultStyle);
+        projetsBtn.setStyle(defaultStyle);
+        evenementsBtn.setStyle(defaultStyle);
+        utilisateursBtn.setStyle(defaultStyle);
     }
 
     private void setActiveButton(Button btn) {
-        if (btn != null) {
-            btn.setStyle("-fx-background-color: transparent; -fx-text-fill: #81C784; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 0 0 5 0; -fx-border-color: transparent transparent #81C784 transparent; -fx-border-width: 0 0 2 0;");
-        }
+        btn.setStyle("-fx-background-color: #E8F5E9; -fx-text-fill: #81C784; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 12 20; -fx-alignment: CENTER_LEFT; -fx-border-color: transparent #81C784 transparent transparent; -fx-border-width: 0 4 0 0;");
     }
+
+    // ==================== ALERTES ====================
 
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
@@ -140,28 +156,11 @@ public class MainMenuController {
         alert.showAndWait();
     }
 
+    // ==================== INITIALISATION ====================
+
     @FXML
     private void initialize() {
-        addCardHoverEffect(coursCard);
-        addCardHoverEffect(ressourcesCard);
-        addCardHoverEffect(questionsCard);
-        addCardHoverEffect(projetsCard);
-        addCardHoverEffect(evenementsCard);
-        addCardHoverEffect(utilisateursCard);
-
-        if (homeBtn != null) {
-            setActiveButton(homeBtn);
-        }
-    }
-
-    private void addCardHoverEffect(VBox card) {
-        if (card != null) {
-            card.setOnMouseEntered(e -> {
-                card.setStyle("-fx-scale-x: 1.02; -fx-scale-y: 1.02; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.12), 10, 0, 0, 2);");
-            });
-            card.setOnMouseExited(e -> {
-                card.setStyle("-fx-scale-x: 1; -fx-scale-y: 1; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);");
-            });
-        }
+        setActiveButton(homeBtn);
+        pageTitleLabel.setText("Tableau de bord");
     }
 }

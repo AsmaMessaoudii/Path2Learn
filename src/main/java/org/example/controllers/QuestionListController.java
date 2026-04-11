@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import org.example.Models.Question;
 import org.example.Services.QuestionService;
 import java.io.IOException;
@@ -138,15 +139,7 @@ public class QuestionListController {
 
     @FXML
     private void handleAjouter(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/QuestionAddView.fxml"));
-            Parent root = loader.load();
-            Scene scene = btnModifier.getScene();
-            scene.setRoot(root);
-        } catch (IOException e) {
-            showError("Erreur: " + e.getMessage());
-            e.printStackTrace();
-        }
+        naviguerVers("/fxml/QuestionAddView.fxml", "Path2Learn - Ajouter une question");
     }
 
     @FXML
@@ -163,8 +156,10 @@ public class QuestionListController {
             QuestionEditController controller = loader.getController();
             controller.setQuestion(selectedQuestion);
 
-            Scene scene = btnModifier.getScene();
-            scene.setRoot(root);
+            Stage stage = (Stage) questionTable.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Path2Learn - Modifier une question");
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
             showError("Erreur: " + e.getMessage());
@@ -203,9 +198,7 @@ public class QuestionListController {
             System.out.println("=== Chargement des options ===");
             System.out.println("Question ID: " + question.getId());
             System.out.println("Question Titre: " + question.getTitre());
-            System.out.println("Chemin du FXML: /fxml/ChoixListView.fxml");
 
-            // Vérifier si le fichier FXML existe
             java.net.URL fxmlUrl = getClass().getResource("/fxml/ChoixListView.fxml");
             if (fxmlUrl == null) {
                 System.err.println("ERREUR: Fichier ChoixListView.fxml non trouvé !");
@@ -226,8 +219,10 @@ public class QuestionListController {
 
             controller.setQuestion(question);
 
-            Scene scene = questionTable.getScene();
-            scene.setRoot(root);
+            Stage stage = (Stage) questionTable.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Path2Learn - Gestion des options pour: " + question.getTitre());
+            stage.show();
 
             System.out.println("Navigation vers ChoixListController réussie !");
 
@@ -280,35 +275,61 @@ public class QuestionListController {
         }
     }
 
-    // Navigation Menu
-    @FXML
-    private void handleHome() { navigateTo("/fxml/MainMenu.fxml"); }
+    // ==================== MÉTHODES DE NAVIGATION CORRIGÉES ====================
 
     @FXML
-    private void handleCours() { showAlert("Cours", "Page en construction"); }
+    private void handleHome() {
+        naviguerVers("/fxml/MainMenu.fxml", "Path2Learn - Accueil");
+    }
 
     @FXML
-    private void handleRessources() { showAlert("Ressources", "Page en construction"); }
+    private void handleCours() {
+        naviguerVers("/fxml/CoursView.fxml", "Path2Learn - Cours");
+    }
 
     @FXML
-    private void handleQuestions() { /* Déjà sur la page des questions */ }
+    private void handleRessources() {
+        naviguerVers("/fxml/RessourcesView.fxml", "Path2Learn - Ressources");
+    }
 
     @FXML
-    private void handleProjets() { showAlert("Projets", "Page en construction"); }
+    private void handleQuestions() {
+        // Déjà sur la page des questions, juste rafraîchir
+        loadQuestions();
+    }
 
     @FXML
-    private void handleEvenements() { showAlert("Événements", "Page en construction"); }
+    private void handleProjets() {
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
+    }
 
     @FXML
-    private void handleUtilisateurs() { showAlert("Communauté", "Page en construction"); }
+    private void handleEvenements() {
+        showInfoAlert("Événements", "Module Événements - Bientôt disponible");
+    }
 
-    private void navigateTo(String fxmlPath) {
+    @FXML
+    private void handleUtilisateurs() {
+        naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs");
+    }
+
+    // ==================== MÉTHODES UTILITAIRES DE NAVIGATION ====================
+
+    private void naviguerVers(String fxmlPath, String titre) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            java.net.URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                showError("Page non trouvée: " + fxmlPath);
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
-            Scene scene = questionTable.getScene();
-            scene.setRoot(root);
+            Stage stage = (Stage) questionTable.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle(titre);
+            stage.show();
         } catch (IOException e) {
+            e.printStackTrace();
             showError("Erreur de navigation: " + e.getMessage());
         }
     }
@@ -329,7 +350,7 @@ public class QuestionListController {
         statusLabel.setStyle("-fx-text-fill: green;");
     }
 
-    private void showAlert(String title, String message) {
+    private void showInfoAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);

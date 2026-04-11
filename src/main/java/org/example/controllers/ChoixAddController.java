@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import org.example.Models.Choix;
 import org.example.Models.Question;
 import org.example.Services.ChoixService;
@@ -34,6 +35,7 @@ public class ChoixAddController {
     private int defaultQuestionId;
     private String defaultQuestionTitle;
 
+
     @FXML
     public void initialize() {
         choixService = new ChoixService();
@@ -42,10 +44,8 @@ public class ChoixAddController {
         correctNon.setSelected(true);
         loadQuestions();
 
-        // Ajouter un listener pour la validation en temps réel
         contenuArea.textProperty().addListener((obs, oldVal, newVal) -> validateContenu());
 
-        // Synchroniser ComboBox avec TextField
         questionCombo.setOnAction(e -> {
             String selected = questionCombo.getSelectionModel().getSelectedItem();
             if (selected != null) {
@@ -116,7 +116,6 @@ public class ChoixAddController {
 
     @FXML
     private void handleAjouter(ActionEvent event) {
-        // Valider le contenu
         validateContenu();
 
         if (contenuArea.getText().trim().isEmpty()) {
@@ -141,7 +140,6 @@ public class ChoixAddController {
             }
             choix.setQuestionId(questionId);
 
-            // Validation complète
             if (!validator.validate(choix)) {
                 showError("Erreurs de validation:\n• " + validator.getErrorsAsString());
                 return;
@@ -209,27 +207,65 @@ public class ChoixAddController {
         alert.showAndWait();
     }
 
-    // Navigation Menu (identique à avant)
-    @FXML private void handleHome() { navigateTo("/fxml/MainMenu.fxml"); }
-    @FXML private void handleCours() { showAlert("Cours", "Page en construction"); }
-    @FXML private void handleRessources() { showAlert("Ressources", "Page en construction"); }
-    @FXML private void handleQuestions() { navigateTo("/fxml/QuestionListView.fxml"); }
-    @FXML private void handleProjets() { showAlert("Projets", "Page en construction"); }
-    @FXML private void handleEvenements() { showAlert("Événements", "Page en construction"); }
-    @FXML private void handleUtilisateurs() { showAlert("Communauté", "Page en construction"); }
+    // ==================== MÉTHODES DE NAVIGATION ====================
 
-    private void navigateTo(String fxmlPath) {
+    @FXML
+    private void handleHome() {
+        naviguerVers("/fxml/MainMenu.fxml", "Path2Learn - Accueil");
+    }
+
+    @FXML
+    private void handleCours() {
+        naviguerVers("/fxml/CoursView.fxml", "Path2Learn - Cours");
+    }
+
+    @FXML
+    private void handleRessources() {
+        naviguerVers("/fxml/RessourcesView.fxml", "Path2Learn - Ressources");
+    }
+
+    @FXML
+    private void handleQuestions() {
+        naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Quiz");
+    }
+
+    @FXML
+    private void handleProjets() {
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
+    }
+
+    @FXML
+    private void handleEvenements() {
+        showInfoAlert("Événements", "Module Événements - Bientôt disponible");
+    }
+
+    @FXML
+    private void handleUtilisateurs() {
+        naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs");
+    }
+
+    // ==================== MÉTHODES UTILITAIRES DE NAVIGATION ====================
+
+    private void naviguerVers(String fxmlPath, String titre) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            java.net.URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                showError("Page non trouvée: " + fxmlPath);
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
-            Scene scene = contenuArea.getScene();
-            scene.setRoot(root);
+            Stage stage = (Stage) contenuArea.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle(titre);
+            stage.show();
         } catch (IOException e) {
+            e.printStackTrace();
             showError("Erreur de navigation: " + e.getMessage());
         }
     }
 
-    private void showAlert(String title, String message) {
+    private void showInfoAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);

@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import org.example.Models.Question;
 import org.example.Services.QuestionService;
 import org.example.validators.QuestionValidator;
@@ -39,7 +40,6 @@ public class QuestionAddController {
         validator = new QuestionValidator();
         datePicker.setValue(LocalDate.now());
 
-        // Ajouter des listeners pour la validation en temps réel
         setupValidationListeners();
     }
 
@@ -152,7 +152,7 @@ public class QuestionAddController {
             int userId = Integer.parseInt(userIdText);
             if (userId <= 0) {
                 userIdErrorLabel.setText("❌ L'ID doit être un nombre positif");
-                userIdErrorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 11px;");
+                userIdErrorLabel.setStyle("-fx-text-fill: red; -fx-font-size: 11px");
             } else {
                 userIdErrorLabel.setText("✅ ID valide");
                 userIdErrorLabel.setStyle("-fx-text-fill: green; -fx-font-size: 11px;");
@@ -165,14 +165,12 @@ public class QuestionAddController {
 
     @FXML
     private void handleAjouter(ActionEvent event) {
-        // Valider tous les champs avant l'ajout
         validateTitre();
         validateDescription();
         validateDuree();
         validateNoteMax();
         validateUserId();
 
-        // Créer l'objet Question
         Question question = new Question();
         question.setTitre(titreField.getText());
         question.setDescription(descriptionArea.getText());
@@ -187,7 +185,6 @@ public class QuestionAddController {
             return;
         }
 
-        // Validation complète
         if (!validator.validate(question)) {
             showError("Erreurs de validation:\n• " + validator.getErrorsAsString());
             return;
@@ -216,14 +213,7 @@ public class QuestionAddController {
 
     @FXML
     private void handleRetour(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/QuestionListView.fxml"));
-            Parent root = loader.load();
-            Scene scene = titreField.getScene();
-            scene.setRoot(root);
-        } catch (IOException e) {
-            showError("Erreur lors du retour");
-        }
+        naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Questions");
     }
 
     private void clearForm() {
@@ -255,27 +245,65 @@ public class QuestionAddController {
         alert.showAndWait();
     }
 
-    // Navigation Menu
-    @FXML private void handleHome() { navigateTo("/fxml/MainMenu.fxml"); }
-    @FXML private void handleCours() { showAlert("Cours", "Page en construction"); }
-    @FXML private void handleRessources() { showAlert("Ressources", "Page en construction"); }
-    @FXML private void handleQuestions() { navigateTo("/fxml/QuestionListView.fxml"); }
-    @FXML private void handleProjets() { showAlert("Projets", "Page en construction"); }
-    @FXML private void handleEvenements() { showAlert("Événements", "Page en construction"); }
-    @FXML private void handleUtilisateurs() { showAlert("Communauté", "Page en construction"); }
+    // ==================== MÉTHODES DE NAVIGATION CORRIGÉES ====================
 
-    private void navigateTo(String fxmlPath) {
+    @FXML
+    private void handleHome() {
+        naviguerVers("/fxml/MainMenu.fxml", "Path2Learn - Accueil");
+    }
+
+    @FXML
+    private void handleCours() {
+        naviguerVers("/fxml/CoursView.fxml", "Path2Learn - Cours");
+    }
+
+    @FXML
+    private void handleRessources() {
+        naviguerVers("/fxml/RessourcesView.fxml", "Path2Learn - Ressources");
+    }
+
+    @FXML
+    private void handleQuestions() {
+        naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Quiz");
+    }
+
+    @FXML
+    private void handleProjets() {
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
+    }
+
+    @FXML
+    private void handleEvenements() {
+        showInfoAlert("Événements", "Module Événements - Bientôt disponible");
+    }
+
+    @FXML
+    private void handleUtilisateurs() {
+        naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs");
+    }
+
+    // ==================== MÉTHODES UTILITAIRES DE NAVIGATION ====================
+
+    private void naviguerVers(String fxmlPath, String titre) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            java.net.URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                showError("Page non trouvée: " + fxmlPath);
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
-            Scene scene = titreField.getScene();
-            scene.setRoot(root);
+            Stage stage = (Stage) titreField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle(titre);
+            stage.show();
         } catch (IOException e) {
+            e.printStackTrace();
             showError("Erreur de navigation: " + e.getMessage());
         }
     }
 
-    private void showAlert(String title, String message) {
+    private void showInfoAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);

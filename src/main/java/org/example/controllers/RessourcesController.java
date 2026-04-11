@@ -70,7 +70,7 @@ public class RessourcesController {
         setupActionButtons();
     }
 
-    // ==================== MÉTHODES DE NAVIGATION ====================
+    // ==================== MÉTHODES DE NAVIGATION CORRIGÉES ====================
 
     @FXML
     private void handleHome() {
@@ -93,27 +93,32 @@ public class RessourcesController {
 
     @FXML
     private void handleQuestions() {
-        showAlert("Quiz", "Module Quiz - Bientôt disponible", Alert.AlertType.INFORMATION);
+        naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Quiz");
     }
 
     @FXML
     private void handleProjets() {
-        showAlert("Projets", "Module Projets - Bientôt disponible", Alert.AlertType.INFORMATION);
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
     }
 
     @FXML
     private void handleEvenements() {
-        showAlert("Événements", "Module Événements - Bientôt disponible", Alert.AlertType.INFORMATION);
+        showInfoAlert("Événements", "Module Événements - Bientôt disponible");
     }
 
     @FXML
     private void handleUtilisateurs() {
-        showAlert("Utilisateurs", "Module Utilisateurs - Bientôt disponible", Alert.AlertType.INFORMATION);
+        naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs");
     }
 
     private void naviguerVers(String fxmlPath, String titre) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            java.net.URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                showAlert("Erreur", "Page non trouvée: " + fxmlPath, Alert.AlertType.ERROR);
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
             Stage stage = (Stage) homeBtn.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -123,6 +128,14 @@ public class RessourcesController {
             e.printStackTrace();
             showAlert("Erreur", "Impossible de charger la page: " + e.getMessage(), Alert.AlertType.ERROR);
         }
+    }
+
+    private void showInfoAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     public void setCoursIdFiltre(int coursId, String coursTitre) {
@@ -142,7 +155,6 @@ public class RessourcesController {
         colTitre.setCellValueFactory(new PropertyValueFactory<>("titre"));
         colType.setCellValueFactory(new PropertyValueFactory<>("type"));
 
-        // Affichage de l'URL (si présente)
         colUrl.setCellValueFactory(new PropertyValueFactory<>("url"));
         colUrl.setCellFactory(col -> new TableCell<RessourcePedagogique, String>() {
             @Override
@@ -166,7 +178,6 @@ public class RessourcesController {
             }
         });
 
-        // Affichage du fichier (si présent) - VERSION CORRIGÉE AVEC CLICK SUR TOUS LES FICHIERS
         colFileName.setCellValueFactory(new PropertyValueFactory<>("file_name"));
         colFileName.setCellFactory(col -> new TableCell<RessourcePedagogique, String>() {
             @Override
@@ -179,7 +190,6 @@ public class RessourcesController {
                     try {
                         File file = new File(item);
                         String fileName = file.getName();
-                        // Enlever l'UUID au début pour l'affichage
                         String displayName = fileName;
                         if (fileName.contains("_")) {
                             int firstUnderscore = fileName.indexOf("_");
@@ -187,15 +197,12 @@ public class RessourcesController {
                         }
                         String extension = getFileExtension(fileName);
 
-                        // Créer un HBox pour contenir l'icône et le lien
                         HBox content = new HBox(5);
                         content.setAlignment(Pos.CENTER_LEFT);
 
-                        // Ajouter une icône
                         Label iconLabel = new Label(getFileIcon(extension));
                         iconLabel.setStyle("-fx-font-size: 16px;");
 
-                        // Vérifier si le fichier existe
                         if (file.exists()) {
                             Button fileButton = new Button(displayName);
                             fileButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #2196F3; -fx-underline: true; -fx-cursor: hand;");
@@ -210,7 +217,6 @@ public class RessourcesController {
                             setGraphic(content);
                             setText(null);
                         } else {
-                            // Si le fichier n'existe pas, afficher le texte normalement
                             Label label = new Label(iconLabel.getText() + " " + displayName + " (fichier non trouvé)");
                             label.setStyle("-fx-text-fill: #f44336;");
                             setGraphic(label);
@@ -262,12 +268,9 @@ public class RessourcesController {
         });
     }
 
-    // Méthode principale pour ouvrir les fichiers
     private void openFile(File file) {
         String fileName = file.getName();
         String extension = getFileExtension(fileName);
-
-        // Déterminer le type de fichier
         String fileType = detectFileType(extension);
 
         try {
@@ -280,7 +283,6 @@ public class RessourcesController {
                 case "PDF":
                 case "Document":
                 default:
-                    // Ouvrir avec l'application par défaut du système
                     Desktop.getDesktop().open(file);
                     break;
             }
@@ -314,7 +316,6 @@ public class RessourcesController {
         }
     }
 
-    // Méthode pour ouvrir un visualiseur d'images
     private void openImageViewer(File imageFile) {
         Stage imageStage = new Stage();
         imageStage.setTitle("Aperçu de l'image - " + imageFile.getName());
@@ -326,11 +327,9 @@ public class RessourcesController {
 
         ImageView imageView = new ImageView();
         try {
-            // Charger l'image
             Image image = new Image(imageFile.toURI().toString());
             imageView.setImage(image);
 
-            // Ajuster la taille de l'image
             double screenWidth = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
             double screenHeight = java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 
@@ -493,7 +492,6 @@ public class RessourcesController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                // Supprimer également le fichier physique si existe
                 if (ressource.getFile_name() != null && !ressource.getFile_name().isEmpty()) {
                     File file = new File(ressource.getFile_name());
                     if (file.exists()) {

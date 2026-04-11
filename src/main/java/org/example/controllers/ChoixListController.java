@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import org.example.Models.Choix;
 import org.example.Models.Question;
 import org.example.Services.ChoixService;
@@ -103,7 +104,6 @@ public class ChoixListController {
             choixList.clear();
             System.out.println("Chargement des choix pour la question ID: " + currentQuestionId);
 
-            // Récupérer tous les choix et filtrer
             for (Choix c : choixService.recuperer()) {
                 if (c.getQuestionId() == currentQuestionId) {
                     choixList.add(c);
@@ -131,7 +131,6 @@ public class ChoixListController {
             int totalPages = (int) Math.ceil((double) filteredList.size() / itemsPerPage);
             pageLabel.setText("Page " + (currentPage + 1) + " sur " + Math.max(1, totalPages));
         } else {
-            // Ne pas appeler updateTable récursivement, juste réinitialiser la page si nécessaire
             if (currentPage > 0 && filteredList.size() > 0) {
                 currentPage = 0;
                 updateTable();
@@ -207,6 +206,16 @@ public class ChoixListController {
         }
     }
 
+    private void showSuccess(String message) {
+        statusLabel.setText("✅ " + message);
+        statusLabel.setStyle("-fx-text-fill: green;");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Succès");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     @FXML
     private void handleActualiser(ActionEvent event) {
         loadChoix();
@@ -257,65 +266,78 @@ public class ChoixListController {
         }
     }
 
-    // Navigation Menu
+    // ==================== MÉTHODES DE NAVIGATION ====================
+
     @FXML
     private void handleHome() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainMenu.fxml"));
-            Parent root = loader.load();
-            Scene scene = choixTable.getScene();
-            scene.setRoot(root);
-        } catch (IOException e) {
-            showError("Erreur de navigation: " + e.getMessage());
-        }
+        naviguerVers("/fxml/MainMenu.fxml", "Path2Learn - Accueil");
     }
 
     @FXML
-    private void handleCours() { showAlert("Cours", "Page en construction"); }
+    private void handleCours() {
+        naviguerVers("/fxml/CoursView.fxml", "Path2Learn - Cours");
+    }
 
     @FXML
-    private void handleRessources() { showAlert("Ressources", "Page en construction"); }
+    private void handleRessources() {
+        naviguerVers("/fxml/RessourcesView.fxml", "Path2Learn - Ressources");
+    }
 
     @FXML
     private void handleQuestions() {
+        naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Quiz");
+    }
+
+    @FXML
+    private void handleProjets() {
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
+    }
+
+    @FXML
+    private void handleEvenements() {
+        showInfoAlert("Événements", "Module Événements - Bientôt disponible");
+    }
+
+    @FXML
+    private void handleUtilisateurs() {
+        naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs");
+    }
+
+    // ==================== MÉTHODES UTILITAIRES DE NAVIGATION ====================
+
+    private void naviguerVers(String fxmlPath, String titre) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/QuestionListView.fxml"));
+            java.net.URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                showError("Page non trouvée: " + fxmlPath);
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
-            Scene scene = choixTable.getScene();
-            scene.setRoot(root);
+            // CORRECTION: Utiliser choixTable au lieu de contenuArea
+            Stage stage = (Stage) choixTable.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle(titre);
+            stage.show();
         } catch (IOException e) {
+            e.printStackTrace();
             showError("Erreur de navigation: " + e.getMessage());
         }
     }
 
-    @FXML
-    private void handleProjets() { showAlert("Projets", "Page en construction"); }
-
-    @FXML
-    private void handleEvenements() { showAlert("Événements", "Page en construction"); }
-
-    @FXML
-    private void handleUtilisateurs() { showAlert("Communauté", "Page en construction"); }
-
-    private void showError(String message) {
-        statusLabel.setText("❌ " + message);
-        statusLabel.setStyle("-fx-text-fill: red;");
-
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Erreur");
+    private void showInfoAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
 
-    private void showSuccess(String message) {
-        statusLabel.setText("✅ " + message);
-        statusLabel.setStyle("-fx-text-fill: green;");
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
+    private void showError(String message) {
+        statusLabel.setText("❌ " + message);
+        statusLabel.setStyle("-fx-text-fill: red;");
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erreur");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
