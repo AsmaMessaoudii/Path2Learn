@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controllers.QuizDetailController"
+      style="-fx-background-color: #F5F5F5;"
+      prefWidth="1200" prefHeight="800">
+
+    <!-- HEADER FIXE -->
+    <VBox style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 10, 0, 0, 2);">
+        <HBox alignment="CENTER_LEFT" spacing="30.0" style="-fx-padding: 15 40;">
+
+            <!-- Logo -->
+            <ImageView fitWidth="150" fitHeight="150" preserveRatio="true">
+                <Image url="/0c0390ea-b94e-4e66-bdee-dc1608f0674c.jpg" />
+            </ImageView>
+
+            <!-- Bouton de retour à la liste des quiz -->
+            <Button fx:id="backToQuizListBtn" onAction="#handleBackToQuizList" text="← Retour aux quiz"
+                    style="-fx-background-color: transparent; -fx-text-fill: #4CAF50; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 8 16; -fx-border-color: #4CAF50; -fx-border-radius: 20; -fx-background-radius: 20;" />
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Navigation -->
+            <HBox spacing="25.0">
+                <Button fx:id="homeBtn" onAction="#handleHome" text="Accueil"
+                        style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 0 0 5 0;" />
+                <Button fx:id="coursBtn" onAction="#handleCours" text="Cours"
+                        style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px; -fx-cursor: hand; -fx-padding: 0 0 5 0;" />
+                <Button fx:id="ressourcesBtn" onAction="#handleRessources" text="Ressources"
+                        style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px; -fx-cursor: hand; -fx-padding: 0 0 5 0;" />
+                <Button fx:id="questionsBtn" onAction="#handleQuestions" text="Quiz"
+                        style="-fx-background-color: transparent; -fx-text-fill: #4CAF50; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 0 0 5 0; -fx-border-color: transparent transparent #4CAF50 transparent; -fx-border-width: 0 0 2 0;" />
+                <Button fx:id="projetsBtn" onAction="#handleProjets" text="Projets"
+                        style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px; -fx-cursor: hand; -fx-padding: 0 0 5 0;" />
+                <Button fx:id="evenementsBtn" onAction="#handleEvenements" text="Événements"
+                        style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px; -fx-cursor: hand; -fx-padding: 0 0 5 0;" />
+                <Button fx:id="utilisateursBtn" onAction="#handleUtilisateurs" text="Communauté"
+                        style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px; -fx-cursor: hand; -fx-padding: 0 0 5 0;" />
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Boutons connexion/inscription/admin -->
+            <HBox spacing="12.0">
+                <Button fx:id="loginBtn" onAction="#handleLogin" text="Se connecter"
+                        style="-fx-background-color: transparent; -fx-text-fill: #4CAF50; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 6 18; -fx-border-color: #4CAF50; -fx-border-radius: 25; -fx-background-radius: 25;" />
+                <Button fx:id="registerBtn" onAction="#handleRegister" text="S'inscrire"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 6 22; -fx-background-radius: 25;" />
+                <Button fx:id="adminBtn" onAction="#handleGoToAdmin" text="⚙️ Administration"
+                        style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 5 15; -fx-background-radius: 20;"
+                        visible="true" managed="true" />
+            </HBox>
+        </HBox>
+    </VBox>
+
+    <!-- SCROLLABLE BODY -->
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                style="-fx-background: #F5F5F5; -fx-background-color: #F5F5F5; -fx-border-width: 0;">
+        <VBox maxWidth="860"
+              style="-fx-background-color: #F5F5F5; -fx-padding: 32 100 50 100; -fx-spacing: 20;">
+
+            <!-- Question header -->
+            <HBox spacing="20" alignment="TOP_LEFT">
+                <VBox spacing="8" HBox.hgrow="ALWAYS">
+                    <Label fx:id="questionTitle" text="" wrapText="true"
+                           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2E5C2E;"/>
+                    <Label fx:id="questionDesc" text="" wrapText="true"
+                           style="-fx-font-size: 13px; -fx-text-fill: #777;"/>
+                </VBox>
+
+                <!-- Timer + Score widget -->
+                <VBox style="-fx-background-color: white; -fx-background-radius: 14;
+                             -fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.09),10,0,0,2);
+                             -fx-min-width: 160; -fx-max-width: 160; -fx-padding: 16 18;" spacing="2">
+                    <Label text="⏱ Temps restant" style="-fx-font-size: 10px; -fx-text-fill: #999; -fx-font-weight: bold;"/>
+                    <Label fx:id="timerLabel" text="—" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1A237E; -fx-padding: 2 0 12 0;"/>
+                    <Label text="⭐ Score" style="-fx-font-size: 10px; -fx-text-fill: #999; -fx-font-weight: bold;"/>
+                    <HBox spacing="2" alignment="CENTER_LEFT" style="-fx-padding: 2 0 0 0;">
+                        <Label fx:id="currentScoreLabel" text="0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;"/>
+                        <Label fx:id="maxScoreLabel" text="/0" style="-fx-font-size: 16px; -fx-text-fill: #bbb; -fx-padding: 5 0 0 0;"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+
+            <!-- Info banner -->
+            <HBox spacing="8" alignment="CENTER_LEFT" style="-fx-background-color: #E3F2FD; -fx-background-radius: 10; -fx-padding: 11 14;">
+                <Label text="ℹ️" style="-fx-font-size: 15px;"/>
+                <Label fx:id="infoLabel" text="" wrapText="true" style="-fx-font-size: 13px; -fx-text-fill: #1565C0;"/>
+            </HBox>
+
+            <!-- Already-answered banner -->
+            <HBox fx:id="answeredBanner" spacing="8" alignment="CENTER_LEFT"
+                  style="-fx-background-color: #FFF3CD; -fx-background-radius: 10; -fx-padding: 11 14;"
+                  visible="false" managed="false">
+                <Label text="⚠️" style="-fx-font-size: 15px;"/>
+                <Label text="Vous avez déjà répondu à cette question. Mode consultation." wrapText="true"
+                       style="-fx-font-size: 13px; -fx-text-fill: #856404;"/>
+            </HBox>
+
+            <!-- Choices -->
+            <VBox fx:id="choicesContainer" spacing="10"/>
+
+            <!-- Validate button -->
+            <HBox alignment="CENTER_RIGHT" style="-fx-padding: 8 0 0 0;">
+                <Button fx:id="validateBtn" onAction="#handleValidate" text="✔  Valider la réponse" disable="true"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 11 28; -fx-background-radius: 28; -fx-cursor: hand;"/>
+            </HBox>
+
+            <!-- Feedback card -->
+            <VBox fx:id="feedbackCard" spacing="14" alignment="CENTER"
+                  style="-fx-background-color: white; -fx-background-radius: 16; -fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.09),12,0,0,3); -fx-padding: 30 40;"
+                  visible="false" managed="false">
+                <Label fx:id="feedbackIcon" text="" style="-fx-font-size: 50px;"/>
+                <Label fx:id="feedbackTitle" text="" style="-fx-font-size: 21px; -fx-font-weight: bold;"/>
+                <Label fx:id="feedbackMessage" text="" wrapText="true" maxWidth="460"
+                       style="-fx-font-size: 13px; -fx-text-fill: #666; -fx-text-alignment: CENTER;"/>
+                <HBox alignment="CENTER" spacing="4" style="-fx-background-color: #F5F5F5; -fx-background-radius: 10; -fx-padding: 14 28;">
+                    <Label text="Score : " style="-fx-font-size: 15px; -fx-text-fill: #555;"/>
+                    <Label fx:id="feedbackScore" text="0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;"/>
+                    <Label fx:id="feedbackMaxScore" text="/0" style="-fx-font-size: 17px; -fx-text-fill: #bbb; -fx-padding: 5 0 0 0;"/>
+                </HBox>
+                <Button fx:id="backToQuizListBtn2" onAction="#handleBackToQuizList" text="← Retour à la liste des quiz"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 9 26; -fx-background-radius: 24; -fx-cursor: hand;"/>
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+</VBox>

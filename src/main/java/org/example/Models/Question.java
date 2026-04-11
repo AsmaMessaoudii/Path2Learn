@@ -1,6 +1,9 @@
 package org.example.Models;
 
 import java.sql.Date;
+import java.util.List;
+import org.example.Models.Choix;
+import java.util.List;
 
 public class Question {
     private int id;
@@ -69,4 +72,18 @@ public class Question {
                 ", userId=" + userId +
                 "}\n";
     }
+
+
+// 2. Add the field and accessors inside the Question class body:
+
+    private List<Choix> choix;
+
+    public List<Choix> getChoix() {
+        return choix;
+    }
+
+    public void setChoix(List<Choix> choix) {
+        this.choix = choix;
+    }
+
 }

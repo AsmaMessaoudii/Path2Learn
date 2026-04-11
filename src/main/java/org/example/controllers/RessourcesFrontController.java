@@ -307,7 +307,7 @@ public class RessourcesFrontController {
     @FXML private void handleHome()         { naviguerVers("/fxml/HomePage.fxml",             "Path2Learn - Accueil"); }
     @FXML private void handleCours()        { naviguerVers("/fxml/CoursListFrontView.fxml",   "Path2Learn — Cours"); }
     @FXML private void handleRessources()   { /* déjà sur la page */ }
-    @FXML private void handleQuestions()    { naviguerVers("/fxml/QuestionListView.fxml",     "Path2Learn - Quiz"); }
+    @FXML private void handleQuestions()    { naviguerVers("/fxml/QuizList.fxml",     "Path2Learn - Quiz"); }
     @FXML private void handleProjets()      { naviguerVers("/fxml/PortfolioListView.fxml",    "Path2Learn - Projets"); }
     @FXML private void handleEvenements()   { showAlert("Bientôt disponible", "Le module Événements arrive très bientôt !"); }
     @FXML private void handleUtilisateurs() { naviguerVers("/fxml/User.fxml",                 "Path2Learn - Communauté"); }

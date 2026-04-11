@@ -22,19 +22,16 @@ public class HomePageController {
     public void initialize() {
         System.out.println("HomePageController initialisé");
 
-        // Forcer l'affichage du bouton admin
         if (adminBtn != null) {
             adminBtn.setVisible(true);
             adminBtn.setManaged(true);
             adminBtn.setStyle("-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 5 15; -fx-background-radius: 20;");
         }
 
-        // Appliquer un refresh de la scène
         refreshScene();
     }
 
     private void refreshScene() {
-        // Forcer le recalcul de la mise en page
         if (adminBtn != null && adminBtn.getScene() != null) {
             adminBtn.getScene().getWindow().sizeToScene();
         }
@@ -50,7 +47,6 @@ public class HomePageController {
             FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
 
-            // Handle navigation from any bound element (buttons or cards)
             Stage stage = null;
             if (homeBtn != null && homeBtn.getScene() != null) {
                 stage = (Stage) homeBtn.getScene().getWindow();
@@ -90,7 +86,7 @@ public class HomePageController {
 
     @FXML
     private void handleQuestions() {
-        naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Quiz");
+        naviguerVers("/fxml/QuizList.fxml", "Path2Learn - Quiz");
     }
 
     @FXML
@@ -120,23 +116,7 @@ public class HomePageController {
 
     @FXML
     private void handleGoToAdmin() {
-        try {
-            System.out.println("Navigation vers MainMenu...");
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainMenu.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) adminBtn.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Path2Learn - Administration");
-            stage.setMaximized(true);
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            showError("Erreur", "Impossible d'ouvrir le panneau d'administration: " + e.getMessage());
-        }
+        naviguerVers("/fxml/MainMenu.fxml", "Path2Learn - Administration");
     }
 
     private void showInfo(String title, String message) {
