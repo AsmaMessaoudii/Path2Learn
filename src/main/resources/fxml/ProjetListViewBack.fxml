@@ -7,7 +7,7 @@
 <?import javafx.scene.image.ImageView?>
 
 <HBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.example.controllers.PortfolioListBackController"
+      fx:controller="org.example.controllers.ProjetListBackController"
       style="-fx-background-color: #F5F5F5;">
 
     <!-- SIDEBAR -->
@@ -45,40 +45,43 @@
     <!-- MAIN CONTENT -->
     <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #F5F5F5;">
         <HBox style="-fx-background-color: white; -fx-padding: 20 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);" alignment="CENTER_LEFT">
-            <Label text="Gestion des Portfolios" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2E5C2E;" />
+            <Label text="Gestion des Projets" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2E5C2E;" />
             <Region HBox.hgrow="ALWAYS" />
             <Label text="👤 Administrateur" style="-fx-font-size: 13px; -fx-text-fill: #666666;" />
         </HBox>
 
         <VBox spacing="20.0" style="-fx-padding: 30 40;" VBox.vgrow="ALWAYS">
 
+            <!-- Retour button and portfolio info -->
+            <HBox alignment="CENTER_LEFT" spacing="20.0">
+                <Button text="← Retour aux portfolios" onAction="#handleRetourPortfolios"
+                        style="-fx-background-color: #42A5F5; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15; -fx-background-radius: 5; -fx-cursor: hand;"/>
+                <Label text="Projets du portfolio :" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2E5C2E;"/>
+                <Label fx:id="portfolioInfoLabel" style="-fx-font-size: 14px; -fx-text-fill: #666666;"/>
+            </HBox>
+
             <!-- Barre d'outils -->
             <HBox spacing="15.0" alignment="CENTER_LEFT">
                 <Button text="🔄 Actualiser" onAction="#handleActualiser"
                         style="-fx-background-color: #42A5F5; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5; -fx-cursor: hand;"/>
-                <Button text="🔍 Rechercher" onAction="#handleRechercher"
-                        style="-fx-background-color: #81C784; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5; -fx-cursor: hand;"/>
-                <Button text="🗑️ Réinitialiser" onAction="#handleResetRecherche"
-                        style="-fx-background-color: #FFA726; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5; -fx-cursor: hand;"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <TextField fx:id="searchField" promptText="Rechercher par titre ou description..."
-                           prefWidth="250" style="-fx-padding: 8; -fx-background-radius: 5;"/>
-                <ComboBox fx:id="userFilterCombo" prefWidth="160" promptText="Filtrer par utilisateur"
-                          style="-fx-background-radius: 5; -fx-padding: 8;"/>
+                <TextField fx:id="searchField" promptText="Rechercher un projet par titre, techno, description..."
+                           prefWidth="300" style="-fx-padding: 8; -fx-background-radius: 5;"/>
             </HBox>
 
             <Label fx:id="statsLabel" style="-fx-font-size: 12px; -fx-text-fill: #666666;"/>
 
-            <!-- Tableau des portfolios -->
+            <!-- Tableau des projets -->
             <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
                 <columns>
                     <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
-                    <TableColumn fx:id="colTitre" text="Titre du Portfolio" prefWidth="180"/>
-                    <TableColumn fx:id="colDescription" text="Description" prefWidth="300"/>
-                    <TableColumn fx:id="colDateCreation" text="Date création" prefWidth="120"/>
-                    <TableColumn fx:id="colDateMiseAjour" text="Dernière mise à jour" prefWidth="130"/>
-                    <TableColumn fx:id="colUserId" text="ID Utilisateur" prefWidth="100"/>
-                    <TableColumn fx:id="colActions" text="Actions" prefWidth="120"/>
+                    <TableColumn fx:id="colTitre" text="Titre" prefWidth="150"/>
+                    <TableColumn fx:id="colText" text="Texte" prefWidth="120"/>
+                    <TableColumn fx:id="colDescription" text="Description" prefWidth="200"/>
+                    <TableColumn fx:id="colTechnologies" text="Technologies" prefWidth="130"/>
+                    <TableColumn fx:id="colDateRealisation" text="Date réalisation" prefWidth="120"/>
+                    <TableColumn fx:id="colLienDemo" text="Lien démo" prefWidth="150"/>
+                    <TableColumn fx:id="colActions" text="Actions" prefWidth="150"/>
                 </columns>
                 <columnResizePolicy>
                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
