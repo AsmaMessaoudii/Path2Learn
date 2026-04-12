@@ -52,9 +52,9 @@ public class PortfolioListController {
     // ==================== NAVIGATION ====================
 
     @FXML private void handleHome() { naviguerVers("/fxml/HomePage.fxml", "Path2Learn - Accueil"); }
-    @FXML private void handleCours() { naviguerVers("/fxml/CoursView.fxml", "Path2Learn - Cours"); }
-    @FXML private void handleRessources() { naviguerVers("/fxml/RessourcesView.fxml", "Path2Learn - Ressources"); }
-    @FXML private void handleQuestions() { naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Quiz"); }
+    @FXML private void handleCours() { naviguerVers("/fxml/CoursListFrontView.fxml", "Path2Learn - Cours"); }
+    @FXML private void handleRessources() { naviguerVers("/fxml/RessourcesViewFront.fxml", "Path2Learn - Ressources"); }
+    @FXML private void handleQuestions() { naviguerVers("/fxml/QuizList.fxml", "Path2Learn - Quiz"); }
     @FXML private void handleProjets() { chargerPortfolios(); }
     @FXML private void handleEvenements() { showAlert("Événements", "Bientôt disponible", Alert.AlertType.INFORMATION); }
     @FXML private void handleUtilisateurs() { naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs"); }
