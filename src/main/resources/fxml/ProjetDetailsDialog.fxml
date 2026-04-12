@@ -8,71 +8,79 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
 
-<VBox spacing="15.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.example.controllers.ProjetDetailsController"
-      style="-fx-background-color: white; -fx-background-radius: 10;"
-      minWidth="500">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
+      prefWidth="550"
+      style="-fx-background-color: #F0F4FF;">
 
-    <Label text="Détails du projet"
-           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2E5C2E;" />
-    <Separator />
+    <!-- Header band -->
+    <VBox style="-fx-background-color: #1565C0; -fx-padding: 25 30 20 30;" spacing="5">
+        <Label text="🚀" style="-fx-font-size: 32px;"/>
+        <Label text="Détails du projet"
+               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+        <Label fx:id="labelTitre"
+               style="-fx-font-size: 13px; -fx-text-fill: #90CAF9;"/>
+    </VBox>
 
-    <GridPane hgap="20.0" vgap="12.0">
-        <columnConstraints>
-            <ColumnConstraints percentWidth="30" />
-            <ColumnConstraints percentWidth="70" />
-        </columnConstraints>
+    <!-- Content -->
+    <VBox spacing="15" style="-fx-padding: 25 30;">
 
-        <Label text="ID :" style="-fx-font-weight: bold;"
-               GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-        <Label fx:id="labelId" style="-fx-text-fill: #555555;"
-               GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        <!-- Row: Text -->
+        <VBox spacing="4"
+              style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15;">
+            <Label text="💬  Texte"
+                   style="-fx-font-size: 11px; -fx-text-fill: #999999; -fx-font-weight: bold;"/>
+            <Label fx:id="labelText"
+                   style="-fx-font-size: 13px; -fx-text-fill: #333333; -fx-wrap-text: true;"/>
+        </VBox>
 
-        <Label text="Titre :" style="-fx-font-weight: bold;"
-               GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-        <Label fx:id="labelTitre" style="-fx-text-fill: #555555; -fx-font-weight: bold; -fx-font-size: 14px;"
-               GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <!-- Row: Description -->
+        <VBox spacing="4"
+              style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15;">
+            <Label text="📝  Description"
+                   style="-fx-font-size: 11px; -fx-text-fill: #999999; -fx-font-weight: bold;"/>
+            <Label fx:id="labelDescription"
+                   style="-fx-font-size: 13px; -fx-text-fill: #333333; -fx-wrap-text: true;"
+                   maxWidth="460"/>
+        </VBox>
 
-        <Label text="Texte :" style="-fx-font-weight: bold;"
-               GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-        <Label fx:id="labelText" style="-fx-text-fill: #555555;"
-               GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <!-- Row: Technologies -->
+        <HBox spacing="15" alignment="CENTER_LEFT"
+              style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15;">
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="🛠️  Technologies"
+                       style="-fx-font-size: 11px; -fx-text-fill: #999999; -fx-font-weight: bold;"/>
+                <Label fx:id="labelTechnologies"
+                       style="-fx-text-fill: white; -fx-background-color: #1565C0;
+                              -fx-background-radius: 20; -fx-padding: 4 12;
+                              -fx-font-size: 12px; -fx-font-weight: bold;"/>
+            </VBox>
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="📅  Date de réalisation"
+                       style="-fx-font-size: 11px; -fx-text-fill: #999999; -fx-font-weight: bold;"/>
+                <Label fx:id="labelDateRealisation"
+                       style="-fx-font-size: 13px; -fx-text-fill: #333333;"/>
+            </VBox>
+        </HBox>
 
-        <Label text="Description :" style="-fx-font-weight: bold;"
-               GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-        <Label fx:id="labelDescription" style="-fx-text-fill: #555555; -fx-wrap-text: true;"
-               GridPane.columnIndex="1" GridPane.rowIndex="3" maxWidth="300"/>
+        <!-- Row: Lien démo -->
+        <VBox spacing="4"
+              style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15;">
+            <Label text="🔗  Lien démo"
+                   style="-fx-font-size: 11px; -fx-text-fill: #999999; -fx-font-weight: bold;"/>
+            <Label fx:id="labelLienDemo"
+                   style="-fx-font-size: 13px; -fx-text-fill: #1565C0;
+                          -fx-underline: true; -fx-cursor: hand;"/>
+        </VBox>
 
-        <Label text="Technologies :" style="-fx-font-weight: bold;"
-               GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-        <Label fx:id="labelTechnologies"
-               style="-fx-text-fill: white; -fx-background-color: #81C784; -fx-background-radius: 10; -fx-padding: 3 10;"
-               GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-
-        <Label text="Date réalisation :" style="-fx-font-weight: bold;"
-               GridPane.columnIndex="0" GridPane.rowIndex="5"/>
-        <Label fx:id="labelDateRealisation" style="-fx-text-fill: #555555;"
-               GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-
-        <Label text="Lien démo :" style="-fx-font-weight: bold;"
-               GridPane.columnIndex="0" GridPane.rowIndex="6"/>
-        <Label fx:id="labelLienDemo" style="-fx-text-fill: #2196F3;"
-               GridPane.columnIndex="1" GridPane.rowIndex="6"/>
-
-        <Label text="Portfolio ID :" style="-fx-font-weight: bold;"
-               GridPane.columnIndex="0" GridPane.rowIndex="7"/>
-        <Label fx:id="labelPortfolioId" style="-fx-text-fill: #555555;"
-               GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-    </GridPane>
-
-    <Separator />
-
-    <HBox alignment="CENTER_RIGHT">
-        <Button fx:id="closeButton" text="✖ Fermer" onAction="#handleFermer"
-                style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 25; -fx-background-radius: 8; -fx-cursor: hand;" />
-    </HBox>
+        <!-- Close button -->
+        <HBox alignment="CENTER_RIGHT" style="-fx-padding: 5 0 0 0;">
+            <Button fx:id="closeButton" text="✖  Fermer" onAction="#handleFermer"
+                    style="-fx-background-color: #1565C0; -fx-text-fill: white;
+                           -fx-font-weight: bold; -fx-font-size: 13px;
+                           -fx-padding: 10 30; -fx-background-radius: 25; -fx-cursor: hand;"/>
+        </HBox>
+    </VBox>
 </VBox>

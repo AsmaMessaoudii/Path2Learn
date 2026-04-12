@@ -14,12 +14,9 @@ public class PortfolioDialogController {
     @FXML private Label dialogTitle;
     @FXML private TextField titreField;
     @FXML private TextArea descriptionArea;
-    @FXML private TextField userIdField;
     @FXML private Button saveButton;
-
     @FXML private Label titreError;
     @FXML private Label descriptionError;
-    @FXML private Label userIdError;
 
     private ServicePortfolio servicePortfolio;
     private Portfolio portfolio;
@@ -29,7 +26,6 @@ public class PortfolioDialogController {
     public void initialize() {
         titreField.textProperty().addListener((obs, old, newVal) -> validateTitre());
         descriptionArea.textProperty().addListener((obs, old, newVal) -> validateDescription());
-        userIdField.textProperty().addListener((obs, old, newVal) -> validateUserId());
     }
 
     private boolean validateTitre() {
@@ -66,35 +62,10 @@ public class PortfolioDialogController {
         }
     }
 
-    private boolean validateUserId() {
-        String userId = userIdField.getText();
-        if (userId == null || userId.trim().isEmpty()) {
-            userIdError.setText("Le User ID est obligatoire");
-            userIdField.setStyle("-fx-border-color: #f44336; -fx-border-radius: 8;");
-            return false;
-        }
-        try {
-            int id = Integer.parseInt(userId.trim());
-            if (id <= 0) {
-                userIdError.setText("Le User ID doit être positif");
-                userIdField.setStyle("-fx-border-color: #f44336; -fx-border-radius: 8;");
-                return false;
-            }
-            userIdError.setText("");
-            userIdField.setStyle("-fx-border-color: #4CAF50; -fx-border-radius: 8;");
-            return true;
-        } catch (NumberFormatException e) {
-            userIdError.setText("Le User ID doit être un nombre");
-            userIdField.setStyle("-fx-border-color: #f44336; -fx-border-radius: 8;");
-            return false;
-        }
-    }
-
     private boolean validateAllFields() {
         boolean isValid = true;
         isValid &= validateTitre();
         isValid &= validateDescription();
-        isValid &= validateUserId();
         return isValid;
     }
 
@@ -105,10 +76,9 @@ public class PortfolioDialogController {
     public void setPortfolio(Portfolio portfolio) {
         this.portfolio = portfolio;
         if (portfolio != null) {
-            dialogTitle.setText("Modifier le portfolio");
+            dialogTitle.setText("Modifier mon portfolio");
             titreField.setText(portfolio.getTitre());
             descriptionArea.setText(portfolio.getDescription());
-            userIdField.setText(String.valueOf(portfolio.getUserId()));
         }
     }
 
@@ -124,7 +94,7 @@ public class PortfolioDialogController {
 
         portfolio.setTitre(titreField.getText().trim());
         portfolio.setDescription(descriptionArea.getText().trim());
-        portfolio.setUserId(Integer.parseInt(userIdField.getText().trim()));
+        portfolio.setUserId(1);
         portfolio.setDateMiseAjour(new Date());
         if (portfolio.getDateCreation() == null) {
             portfolio.setDateCreation(new Date());
@@ -133,7 +103,7 @@ public class PortfolioDialogController {
         try {
             if (portfolio.getId() == 0) {
                 servicePortfolio.ajouter(portfolio);
-                showSuccessMessage("Portfolio ajouté avec succès !");
+                showSuccessMessage("Portfolio créé avec succès !");
             } else {
                 servicePortfolio.modifier(portfolio);
                 showSuccessMessage("Portfolio modifié avec succès !");

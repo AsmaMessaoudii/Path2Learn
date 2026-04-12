@@ -1,61 +1,42 @@
 package org.example.controllers;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.Models.Portfolio;
 import org.example.Services.ServicePortfolio;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 public class PortfolioListController {
 
-    @FXML private TableView<Portfolio> tableView;
-    @FXML private TableColumn<Portfolio, Integer> colId;
-    @FXML private TableColumn<Portfolio, String> colTitre;
-    @FXML private TableColumn<Portfolio, String> colDescription;
-    @FXML private TableColumn<Portfolio, String> colDateCreation;
-    @FXML private TableColumn<Portfolio, String> colDateMiseAjour;
-    @FXML private TableColumn<Portfolio, Integer> colUserId;
-    @FXML private TableColumn<Portfolio, Void> colActions;
-
-    @FXML private TextField searchField;
-    @FXML private Label statsLabel;
+    @FXML private VBox mainContent;
     @FXML private Button homeBtn;
+    @FXML private Button btnAjouter;
 
     private ServicePortfolio servicePortfolio;
-    private ObservableList<Portfolio> portfolioList;
-    private FilteredList<Portfolio> filteredList;
+    private Portfolio currentPortfolio;
 
     @FXML
     public void initialize() {
         servicePortfolio = new ServicePortfolio();
-        setupTableColumns();
-        chargerPortfolios();
-        setupSearchFilter();
-        setupActionButtons();
+        chargerPortfolio();
     }
 
     // ==================== NAVIGATION ====================
 
     @FXML private void handleHome() { naviguerVers("/fxml/HomePage.fxml", "Path2Learn - Accueil"); }
-    @FXML private void handleCours() { naviguerVers("/fxml/CoursListFrontView.fxml", "Path2Learn - Cours"); }
-    @FXML private void handleRessources() { naviguerVers("/fxml/RessourcesViewFront.fxml", "Path2Learn - Ressources"); }
-    @FXML private void handleQuestions() { naviguerVers("/fxml/QuizList.fxml", "Path2Learn - Quiz"); }
-    @FXML private void handleProjets() { chargerPortfolios(); }
+    @FXML private void handleCours() { naviguerVers("/fxml/CoursView.fxml", "Path2Learn - Cours"); }
+    @FXML private void handleRessources() { naviguerVers("/fxml/RessourcesView.fxml", "Path2Learn - Ressources"); }
+    @FXML private void handleQuestions() { naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Quiz"); }
+    @FXML private void handleProjets() { chargerPortfolio(); }
     @FXML private void handleEvenements() { showAlert("Événements", "Bientôt disponible", Alert.AlertType.INFORMATION); }
     @FXML private void handleUtilisateurs() { naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs"); }
 
@@ -72,70 +53,118 @@ public class PortfolioListController {
         }
     }
 
-    // ==================== TABLE ====================
+    // ==================== LOAD ====================
 
-    private void setupTableColumns() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colTitre.setCellValueFactory(new PropertyValueFactory<>("titre"));
-        colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-        colDateCreation.setCellValueFactory(new PropertyValueFactory<>("dateCreation"));
-        colDateMiseAjour.setCellValueFactory(new PropertyValueFactory<>("dateMiseAjour"));
-        colUserId.setCellValueFactory(new PropertyValueFactory<>("userId"));
-    }
-
-    private void chargerPortfolios() {
+    private void chargerPortfolio() {
+        mainContent.getChildren().clear();
         try {
-            portfolioList = FXCollections.observableArrayList(servicePortfolio.recuperer());
-            filteredList = new FilteredList<>(portfolioList, p -> true);
-            SortedList<Portfolio> sortedList = new SortedList<>(filteredList);
-            sortedList.comparatorProperty().bind(tableView.comparatorProperty());
-            tableView.setItems(sortedList);
-            updateStats();
+            List<Portfolio> list = servicePortfolio.recuperer();
+
+            if (list.isEmpty()) {
+                afficherEtatVide();
+            } else {
+                currentPortfolio = list.get(0);
+                afficherCartePortfolio(currentPortfolio);
+                // hide add button since portfolio exists
+                btnAjouter.setVisible(false);
+                btnAjouter.setManaged(false);
+            }
         } catch (Exception e) {
-            showAlert("Erreur", "Impossible de charger les portfolios: " + e.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Erreur", "Impossible de charger: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
-    private void setupSearchFilter() {
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredList.setPredicate(portfolio -> {
-                if (newValue == null || newValue.isEmpty()) return true;
-                String lower = newValue.toLowerCase();
-                return portfolio.getTitre().toLowerCase().contains(lower) ||
-                        portfolio.getDescription().toLowerCase().contains(lower);
-            });
-            updateStats();
-        });
+    private void afficherEtatVide() {
+        btnAjouter.setVisible(true);
+        btnAjouter.setManaged(true);
+
+        VBox emptyState = new VBox(15);
+        emptyState.setAlignment(javafx.geometry.Pos.CENTER);
+        emptyState.setStyle("-fx-padding: 80 0;");
+
+        Label icon = new Label("📂");
+        icon.setStyle("-fx-font-size: 60px;");
+
+        Label msg = new Label("Vous n'avez pas encore de portfolio");
+        msg.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #888888;");
+
+        Label sub = new Label("Créez votre portfolio pour commencer à ajouter vos projets !");
+        sub.setStyle("-fx-font-size: 14px; -fx-text-fill: #AAAAAA;");
+
+        emptyState.getChildren().addAll(icon, msg, sub);
+        mainContent.getChildren().add(emptyState);
     }
 
-    private void setupActionButtons() {
-        colActions.setCellFactory(col -> new TableCell<Portfolio, Void>() {
-            private final Button editBtn = new Button("✏️ Modifier");
-            private final Button deleteBtn = new Button("🗑️ Supprimer");
-            private final Button projetsBtn = new Button("📁 Voir projets");
-            private final HBox buttons = new HBox(8, editBtn, deleteBtn, projetsBtn);
+    private void afficherCartePortfolio(Portfolio portfolio) {
+        // Portfolio card
+        VBox card = new VBox(15);
+        card.setStyle(
+                "-fx-background-color: white;" +
+                        "-fx-background-radius: 15;" +
+                        "-fx-padding: 30;" +
+                        "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 15, 0, 0, 3);"
+        );
 
-            {
-                editBtn.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 11px; -fx-padding: 5 10; -fx-background-radius: 5; -fx-cursor: hand;");
-                deleteBtn.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-size: 11px; -fx-padding: 5 10; -fx-background-radius: 5; -fx-cursor: hand;");
-                projetsBtn.setStyle("-fx-background-color: #81C784; -fx-text-fill: white; -fx-font-size: 11px; -fx-padding: 5 10; -fx-background-radius: 5; -fx-cursor: hand;");
-                buttons.setAlignment(Pos.CENTER);
-            }
+        // Top row: title + badges
+        HBox topRow = new HBox(15);
+        topRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    Portfolio portfolio = getTableView().getItems().get(getIndex());
-                    editBtn.setOnAction(e -> ouvrirDialog(portfolio));
-                    deleteBtn.setOnAction(e -> handleSupprimer(portfolio));
-                    projetsBtn.setOnAction(e -> voirProjets(portfolio));
-                    setGraphic(buttons);
-                }
-            }
-        });
+        Label icon = new Label("💼");
+        icon.setStyle("-fx-font-size: 36px;");
+
+        VBox titleBlock = new VBox(4);
+        Label titre = new Label(portfolio.getTitre());
+        titre.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2E5C2E;");
+
+        Label dateCreation = new Label("📅 Créé le : " + portfolio.getDateCreation());
+        dateCreation.setStyle("-fx-font-size: 12px; -fx-text-fill: #999999;");
+
+        Label dateMaj = new Label("🔄 Mis à jour : " + portfolio.getDateMiseAjour());
+        dateMaj.setStyle("-fx-font-size: 12px; -fx-text-fill: #999999;");
+
+        titleBlock.getChildren().addAll(titre, dateCreation, dateMaj);
+        topRow.getChildren().addAll(icon, titleBlock);
+
+        // Description
+        Label description = new Label(portfolio.getDescription());
+        description.setStyle("-fx-font-size: 14px; -fx-text-fill: #555555; -fx-wrap-text: true;");
+        description.setMaxWidth(Double.MAX_VALUE);
+
+        // Separator
+        Separator sep = new Separator();
+
+        // Action buttons
+        HBox actions = new HBox(12);
+        actions.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        Button btnModifier = new Button("✏️ Modifier le portfolio");
+        btnModifier.setStyle(
+                "-fx-background-color: #2196F3; -fx-text-fill: white;" +
+                        "-fx-font-weight: bold; -fx-padding: 10 20;" +
+                        "-fx-background-radius: 8; -fx-cursor: hand;"
+        );
+        btnModifier.setOnAction(e -> ouvrirDialog(portfolio));
+
+        Button btnSupprimer = new Button("🗑️ Supprimer");
+        btnSupprimer.setStyle(
+                "-fx-background-color: #f44336; -fx-text-fill: white;" +
+                        "-fx-font-weight: bold; -fx-padding: 10 20;" +
+                        "-fx-background-radius: 8; -fx-cursor: hand;"
+        );
+        btnSupprimer.setOnAction(e -> handleSupprimer(portfolio));
+
+        Button btnProjets = new Button("📁 Voir mes projets");
+        btnProjets.setStyle(
+                "-fx-background-color: #81C784; -fx-text-fill: white;" +
+                        "-fx-font-weight: bold; -fx-padding: 10 20;" +
+                        "-fx-background-radius: 8; -fx-cursor: hand;"
+        );
+        btnProjets.setOnAction(e -> voirProjets(portfolio));
+
+        actions.getChildren().addAll(btnModifier, btnSupprimer, btnProjets);
+
+        card.getChildren().addAll(topRow, description, sep, actions);
+        mainContent.getChildren().add(card);
     }
 
     // ==================== CRUD ====================
@@ -157,7 +186,7 @@ public class PortfolioListController {
 
             Stage dialogStage = new Stage();
             dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.setTitle(portfolio == null ? "Ajouter un portfolio" : "Modifier un portfolio");
+            dialogStage.setTitle(portfolio == null ? "Créer mon portfolio" : "Modifier mon portfolio");
             dialogStage.setScene(new Scene(dialogVBox));
             dialogStage.showAndWait();
 
@@ -171,14 +200,13 @@ public class PortfolioListController {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
         alert.setHeaderText("Supprimer le portfolio");
-        alert.setContentText("Voulez-vous vraiment supprimer : " + portfolio.getTitre() + " ?");
+        alert.setContentText("Voulez-vous vraiment supprimer \"" + portfolio.getTitre() + "\" ?\n\nTous les projets associés seront également supprimés !");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 servicePortfolio.supprimer(portfolio);
-                chargerPortfolios();
-                showAlert("Succès", "Portfolio supprimé avec succès !", Alert.AlertType.INFORMATION);
+                chargerPortfolio();
             } catch (Exception e) {
                 showAlert("Erreur", "Erreur lors de la suppression: " + e.getMessage(), Alert.AlertType.ERROR);
             }
@@ -200,19 +228,8 @@ public class PortfolioListController {
         }
     }
 
-    @FXML
-    private void handleActualiser() {
-        chargerPortfolios();
-        searchField.clear();
-    }
-
-    private void updateStats() {
-        int total = filteredList.size();
-        statsLabel.setText(total + " portfolio(s) trouvé(s)");
-    }
-
     public void refreshTable() {
-        chargerPortfolios();
+        chargerPortfolio();
     }
 
     private void showAlert(String title, String message, Alert.AlertType type) {

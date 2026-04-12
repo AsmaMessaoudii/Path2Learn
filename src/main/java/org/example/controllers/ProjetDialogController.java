@@ -8,7 +8,6 @@ import org.example.Models.Projet;
 import org.example.Services.ServiceProjet;
 
 import java.sql.Date;
-import java.time.LocalDate;
 
 public class ProjetDialogController {
 
@@ -24,6 +23,7 @@ public class ProjetDialogController {
     @FXML private Label titreError;
     @FXML private Label descriptionError;
     @FXML private Label dateError;
+    @FXML private Label lienDemoError;
 
     private ServiceProjet serviceProjet;
     private Projet projet;
@@ -35,20 +35,24 @@ public class ProjetDialogController {
         titreField.textProperty().addListener((obs, old, newVal) -> validateTitre());
         descriptionArea.textProperty().addListener((obs, old, newVal) -> validateDescription());
         dateRealisationPicker.valueProperty().addListener((obs, old, newVal) -> validateDate());
+        lienDemoField.textProperty().addListener((obs, old, newVal) -> validateLienDemo());
     }
+
+    // ==================== VALIDATIONS ====================
 
     private boolean validateTitre() {
         String titre = titreField.getText();
         if (titre == null || titre.trim().isEmpty()) {
-            titreError.setText("Le titre est obligatoire");
+            titreError.setText("❌ Le titre est obligatoire");
             titreField.setStyle("-fx-border-color: #f44336; -fx-border-radius: 8;");
             return false;
         } else if (titre.trim().length() < 3) {
-            titreError.setText("Le titre doit contenir au moins 3 caractères");
+            titreError.setText("❌ Le titre doit contenir au moins 3 caractères");
             titreField.setStyle("-fx-border-color: #f44336; -fx-border-radius: 8;");
             return false;
         } else {
-            titreError.setText("");
+            titreError.setText("✅ Titre valide");
+            titreError.setStyle("-fx-text-fill: #4CAF50; -fx-font-size: 11px;");
             titreField.setStyle("-fx-border-color: #4CAF50; -fx-border-radius: 8;");
             return true;
         }
@@ -57,15 +61,18 @@ public class ProjetDialogController {
     private boolean validateDescription() {
         String description = descriptionArea.getText();
         if (description == null || description.trim().isEmpty()) {
-            descriptionError.setText("La description est obligatoire");
+            descriptionError.setText("❌ La description est obligatoire");
+            descriptionError.setStyle("-fx-text-fill: #f44336; -fx-font-size: 11px;");
             descriptionArea.setStyle("-fx-border-color: #f44336; -fx-border-radius: 8;");
             return false;
         } else if (description.trim().length() < 10) {
-            descriptionError.setText("La description doit contenir au moins 10 caractères");
+            descriptionError.setText("❌ La description doit contenir au moins 10 caractères");
+            descriptionError.setStyle("-fx-text-fill: #f44336; -fx-font-size: 11px;");
             descriptionArea.setStyle("-fx-border-color: #f44336; -fx-border-radius: 8;");
             return false;
         } else {
-            descriptionError.setText("");
+            descriptionError.setText("✅ Description valide");
+            descriptionError.setStyle("-fx-text-fill: #4CAF50; -fx-font-size: 11px;");
             descriptionArea.setStyle("-fx-border-color: #4CAF50; -fx-border-radius: 8;");
             return true;
         }
@@ -73,12 +80,33 @@ public class ProjetDialogController {
 
     private boolean validateDate() {
         if (dateRealisationPicker.getValue() == null) {
-            dateError.setText("La date est obligatoire");
+            dateError.setText("❌ La date est obligatoire");
+            dateError.setStyle("-fx-text-fill: #f44336; -fx-font-size: 11px;");
             dateRealisationPicker.setStyle("-fx-border-color: #f44336; -fx-border-radius: 8;");
             return false;
         } else {
-            dateError.setText("");
+            dateError.setText("✅ Date valide");
+            dateError.setStyle("-fx-text-fill: #4CAF50; -fx-font-size: 11px;");
             dateRealisationPicker.setStyle("-fx-border-color: #4CAF50; -fx-border-radius: 8;");
+            return true;
+        }
+    }
+
+    private boolean validateLienDemo() {
+        String lien = lienDemoField.getText();
+        if (lien == null || lien.trim().isEmpty()) {
+            lienDemoError.setText("");
+            lienDemoField.setStyle("-fx-border-color: #E0E0E0; -fx-border-radius: 8;");
+            return true;
+        } else if (!lien.trim().startsWith("https://")) {
+            lienDemoError.setText("❌ Le lien doit commencer par https://");
+            lienDemoError.setStyle("-fx-text-fill: #f44336; -fx-font-size: 11px;");
+            lienDemoField.setStyle("-fx-border-color: #f44336; -fx-border-radius: 8;");
+            return false;
+        } else {
+            lienDemoError.setText("✅ Lien valide");
+            lienDemoError.setStyle("-fx-text-fill: #4CAF50; -fx-font-size: 11px;");
+            lienDemoField.setStyle("-fx-border-color: #4CAF50; -fx-border-radius: 8;");
             return true;
         }
     }
@@ -88,8 +116,11 @@ public class ProjetDialogController {
         isValid &= validateTitre();
         isValid &= validateDescription();
         isValid &= validateDate();
+        isValid &= validateLienDemo();
         return isValid;
     }
+
+    // ==================== SETTERS ====================
 
     public void setServiceProjet(ServiceProjet serviceProjet) {
         this.serviceProjet = serviceProjet;
@@ -119,6 +150,8 @@ public class ProjetDialogController {
     public void setParentController(ProjetListController parentController) {
         this.parentController = parentController;
     }
+
+    // ==================== ACTIONS ====================
 
     @FXML
     private void handleSauvegarder() {
@@ -164,8 +197,12 @@ public class ProjetDialogController {
         VBox parent = (VBox) saveButton.getScene().getRoot();
         parent.getChildren().add(label);
         new Thread(() -> {
-            try { Thread.sleep(2000); Platform.runLater(() -> parent.getChildren().remove(label)); }
-            catch (InterruptedException e) { e.printStackTrace(); }
+            try {
+                Thread.sleep(2000);
+                Platform.runLater(() -> parent.getChildren().remove(label));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }).start();
     }
 
@@ -175,8 +212,12 @@ public class ProjetDialogController {
         VBox parent = (VBox) saveButton.getScene().getRoot();
         parent.getChildren().add(label);
         new Thread(() -> {
-            try { Thread.sleep(3000); Platform.runLater(() -> parent.getChildren().remove(label)); }
-            catch (InterruptedException e) { e.printStackTrace(); }
+            try {
+                Thread.sleep(3000);
+                Platform.runLater(() -> parent.getChildren().remove(label));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }).start();
     }
 }
