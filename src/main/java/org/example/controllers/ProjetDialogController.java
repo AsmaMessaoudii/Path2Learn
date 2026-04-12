@@ -71,6 +71,7 @@ public class ProjetDialogController {
         }
     }
 
+
     private boolean validateDate() {
         if (dateRealisationPicker.getValue() == null) {
             dateError.setText("La date est obligatoire");
