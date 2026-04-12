@@ -51,7 +51,7 @@ public class PortfolioListController {
 
     // ==================== NAVIGATION ====================
 
-    @FXML private void handleHome() { naviguerVers("/fxml/MainMenu.fxml", "Path2Learn - Accueil"); }
+    @FXML private void handleHome() { naviguerVers("/fxml/HomePage.fxml", "Path2Learn - Accueil"); }
     @FXML private void handleCours() { naviguerVers("/fxml/CoursView.fxml", "Path2Learn - Cours"); }
     @FXML private void handleRessources() { naviguerVers("/fxml/RessourcesView.fxml", "Path2Learn - Ressources"); }
     @FXML private void handleQuestions() { naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Quiz"); }
