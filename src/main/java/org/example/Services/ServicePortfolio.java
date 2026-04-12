@@ -53,12 +53,24 @@ public class ServicePortfolio implements IService<Portfolio> {
     }
 
     @Override
-    public void supprimer(Portfolio p) throws SQLDataException {
-        String sql = "DELETE FROM portfolio WHERE id=?";
+    public void supprimer(Portfolio p) throws SQLException {
+        // First delete all projects of this portfolio
+        String deleteProjets = "DELETE FROM projet WHERE portfolio_id=?";
         try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, p.getId());
-            ps.executeUpdate();
+            PreparedStatement ps1 = connection.prepareStatement(deleteProjets);
+            ps1.setInt(1, p.getId());
+            ps1.executeUpdate();
+            System.out.println("✅ Projets du portfolio supprimés !");
+        } catch (SQLException e) {
+            System.out.println("❌ Erreur suppression projets : " + e.getMessage());
+        }
+
+        // Then delete the portfolio
+        String deletePortfolio = "DELETE FROM portfolio WHERE id=?";
+        try {
+            PreparedStatement ps2 = connection.prepareStatement(deletePortfolio);
+            ps2.setInt(1, p.getId());
+            ps2.executeUpdate();
             System.out.println("✅ Portfolio supprimé !");
         } catch (SQLException e) {
             System.out.println("❌ Erreur suppression portfolio : " + e.getMessage());
