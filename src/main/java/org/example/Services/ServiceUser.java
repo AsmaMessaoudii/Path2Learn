@@ -30,6 +30,16 @@ public class ServiceUser {
         ps.executeUpdate();
         System.out.println("User ajouté avec succès !");
     }
+    public User authentifier(String email, String password) throws SQLException {
+
+        for (User u : recuperer()) {
+            if (u.getEmail().equals(email) &&
+                    u.getMot_de_passe().equals(password)) {
+                return u;
+            }
+        }
+        return null;
+    }
 
     // ── MODIFIER ──────────────────────────────────────────────
     public void modifier(User user) throws SQLException {

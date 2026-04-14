@@ -52,7 +52,7 @@ public class RessourcesFrontController {
         serviceRessource = new ServiceRessourcePedagogique();
         serviceCours     = new ServiceCours();
         setupTypeFilter();
-        
+
         // Par défaut (accès via menu), charger sans cours
         chargerToutesRessources();
     }
@@ -108,7 +108,7 @@ public class RessourcesFrontController {
         try {
             allRessources = serviceRessource.recuperer();
             searchField.textProperty().addListener((obs, o, n) -> appliquerFiltres());
-            
+
             // Adjust appearance for generic view
             breadcrumbCours.setText("Toutes les ressources");
             coursTitreLabel.setText("Ressources Générales");
@@ -181,7 +181,7 @@ public class RessourcesFrontController {
         iconeBox.setPrefSize(48, 48);
         iconeBox.setMinSize(48, 48);
         iconeBox.setStyle("-fx-background-color: " + typeCouleur + "22; -fx-background-radius: 10;");
-        
+
         boolean hasImageThumbnail = false;
         if (r.getType() != null && r.getType().toLowerCase().contains("image")) {
             if (r.getFile_name() != null && !r.getFile_name().isEmpty()) {

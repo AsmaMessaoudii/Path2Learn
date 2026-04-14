@@ -9,7 +9,9 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.example.Models.Portfolio;
+import org.example.Models.Projet;
 import org.example.Services.ServicePortfolio;
+import org.example.Services.ServiceProjet;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,20 +24,22 @@ public class PortfolioListController {
     @FXML private Button btnAjouter;
 
     private ServicePortfolio servicePortfolio;
+    private ServiceProjet serviceProjet;
     private Portfolio currentPortfolio;
 
     @FXML
     public void initialize() {
         servicePortfolio = new ServicePortfolio();
+        serviceProjet = new ServiceProjet();
         chargerPortfolio();
     }
 
     // ==================== NAVIGATION ====================
 
     @FXML private void handleHome() { naviguerVers("/fxml/HomePage.fxml", "Path2Learn - Accueil"); }
-    @FXML private void handleCours() { naviguerVers("/fxml/CoursView.fxml", "Path2Learn - Cours"); }
-    @FXML private void handleRessources() { naviguerVers("/fxml/RessourcesView.fxml", "Path2Learn - Ressources"); }
-    @FXML private void handleQuestions() { naviguerVers("/fxml/QuestionListView.fxml", "Path2Learn - Quiz"); }
+    @FXML private void handleCours() { naviguerVers("/fxml/CoursListFrontView.fxml", "Path2Learn - Cours"); }
+    @FXML private void handleRessources() { naviguerVers("/fxml/RessourcesViewFront.fxml", "Path2Learn - Ressources"); }
+    @FXML private void handleQuestions() { naviguerVers("/fxml/QuizList.fxml", "Path2Learn - Quiz"); }
     @FXML private void handleProjets() { chargerPortfolio(); }
     @FXML private void handleEvenements() { showAlert("Événements", "Bientôt disponible", Alert.AlertType.INFORMATION); }
     @FXML private void handleUtilisateurs() { naviguerVers("/fxml/User.fxml", "Path2Learn - Utilisateurs"); }
@@ -70,6 +74,7 @@ public class PortfolioListController {
                 btnAjouter.setManaged(false);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             showAlert("Erreur", "Impossible de charger: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
@@ -197,19 +202,52 @@ public class PortfolioListController {
     }
 
     private void handleSupprimer(Portfolio portfolio) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation");
-        alert.setHeaderText("Supprimer le portfolio");
-        alert.setContentText("Voulez-vous vraiment supprimer \"" + portfolio.getTitre() + "\" ?\n\nTous les projets associés seront également supprimés !");
+        // First, check if there are any projects linked to this portfolio
+        try {
+            List<Projet> projets = serviceProjet.recupererParPortfolio(portfolio.getId());
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            try {
-                servicePortfolio.supprimer(portfolio);
-                chargerPortfolio();
-            } catch (Exception e) {
-                showAlert("Erreur", "Erreur lors de la suppression: " + e.getMessage(), Alert.AlertType.ERROR);
+            String message;
+            if (projets != null && !projets.isEmpty()) {
+                message = "Voulez-vous vraiment supprimer \"" + portfolio.getTitre() + "\" ?\n\n"
+                        + "⚠️ ATTENTION : Ce portfolio contient " + projets.size() + " projet(s).\n"
+                        + "Tous les projets associés seront également supprimés !";
+            } else {
+                message = "Voulez-vous vraiment supprimer \"" + portfolio.getTitre() + "\" ?";
             }
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation de suppression");
+            alert.setHeaderText("Supprimer le portfolio");
+            alert.setContentText(message);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                try {
+                    // First delete all linked projects
+                    if (projets != null && !projets.isEmpty()) {
+                        for (Projet projet : projets) {
+                            try {
+                                serviceProjet.supprimer(projet);
+                            } catch (Exception e) {
+                                System.err.println("Error deleting project " + projet.getId() + ": " + e.getMessage());
+                            }
+                        }
+                    }
+
+                    // Then delete the portfolio
+                    servicePortfolio.supprimer(portfolio);
+
+                    showAlert("Succès", "Portfolio et ses projets supprimés avec succès !", Alert.AlertType.INFORMATION);
+                    chargerPortfolio(); // Refresh the view
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    showAlert("Erreur", "Erreur lors de la suppression: " + e.getMessage(), Alert.AlertType.ERROR);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur lors de la vérification des projets: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 

@@ -20,7 +20,7 @@
         <VBox spacing="10.0" style="-fx-padding: 30 20 30 20; -fx-background-color: #F8F9FA; -fx-alignment: CENTER;">
             <ImageView fitWidth="150" fitHeight="150" preserveRatio="true">
 
-                    <Image url="/0c0390ea-b94e-4e66-bdee-dc1608f0674c.jpg" />
+                <Image url="/0c0390ea-b94e-4e66-bdee-dc1608f0674c.jpg" />
 
             </ImageView>
             <Label text="Administration" style="-fx-font-size: 12px; -fx-text-fill: #FF9800; -fx-font-weight: bold; -fx-alignment: CENTER;" />

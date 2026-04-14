@@ -48,7 +48,7 @@ public class CoursListFrontController {
         setupFilters();
         chargerCours();
         setupSearch();
-        
+
         // Hide filter chips since users should only see published courses
         if (chipTous != null) { chipTous.setVisible(false); chipTous.setManaged(false); }
         if (chipPublies != null) { chipPublies.setVisible(false); chipPublies.setManaged(false); }

@@ -58,8 +58,7 @@ public class MainMenuController {
     private void handleProjets() {
         resetButtonStyles();
         setActiveButton(projetsBtn);
-        // CHANGE THIS LINE - use the back office portfolio view
-        naviguerVers("/fxml/PortfolioListViewBack.fxml", "Path2Learn - Gestion des Portfolios");
+        naviguerVers("/fxml/PortfolioListViewBack.fxml", "Path2Learn - Portfolios");
     }
 
     @FXML
@@ -125,7 +124,7 @@ public class MainMenuController {
 
     @FXML
     private void handleProjetsCard() {
-        naviguerVers("/fxml/PortfolioListViewBack.fxml", "Path2Learn - Gestion des Portfolios");
+        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
     }
 
     @FXML

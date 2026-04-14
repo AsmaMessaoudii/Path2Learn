@@ -290,7 +290,7 @@ public class ChoixListController {
 
     @FXML
     private void handleProjets() {
-        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Portfolios");
+        naviguerVers("/fxml/PortfolioListViewBack.fxml", "Path2Learn - Portfolios");
     }
 
     @FXML

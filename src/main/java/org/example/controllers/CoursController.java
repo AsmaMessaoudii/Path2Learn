@@ -87,7 +87,7 @@ public class CoursController {
 
     @FXML
     private void handleProjets() {
-        naviguerVers("/fxml/PortfolioListView.fxml", "Path2Learn - Projets");
+        naviguerVers("/fxml/PortfolioListViewBack.fxml", "Path2Learn - Projets");
     }
 
     @FXML

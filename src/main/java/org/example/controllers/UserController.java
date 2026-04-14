@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import javafx.scene.control.PasswordField;
 
 public class UserController {
 
@@ -34,6 +35,7 @@ public class UserController {
 
     @FXML private Button addUserBtn;
     @FXML private Button badgeBtn;
+
 
     // Boutons de navigation
     @FXML private Button homeBtn, coursBtn, ressourcesBtn, questionsBtn, projetsBtn, evenementsBtn, utilisateursBtn;
@@ -228,29 +230,33 @@ public class UserController {
     }
 
     private Optional<User> showUserDialog(User user) {
+
         Dialog<User> dialog = new Dialog<>();
         dialog.setTitle(user == null ? "Ajouter un utilisateur" : "Modifier un utilisateur");
+
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.setStyle("-fx-padding: 20;");
+        grid.setStyle("-fx-padding: 20; -fx-alignment: center;");
 
         TextField nomField = new TextField();
-        nomField.setPromptText("Nom");
         TextField prenomField = new TextField();
-        prenomField.setPromptText("Prénom");
         TextField emailField = new TextField();
-        emailField.setPromptText("Email");
+        PasswordField passwordField = new PasswordField();
 
         ComboBox<String> roleCombo = new ComboBox<>();
-        roleCombo.getItems().addAll("TEACHER", "STUDENT", "ADMIN");
-        roleCombo.setPromptText("Rôle");
+        roleCombo.getItems().addAll("ADMIN","STUDENT", "TEACHER");
 
+        // ❌ IMPORTANT: hide status from FRONT
         ComboBox<String> statusCombo = new ComboBox<>();
         statusCombo.getItems().addAll("ENABLE", "DISABLE");
-        statusCombo.setPromptText("Statut");
+
+        nomField.setPromptText("Nom");
+        prenomField.setPromptText("Prénom");
+        emailField.setPromptText("Email");
+        passwordField.setPromptText("Mot de passe");
 
         if (user != null) {
             nomField.setText(user.getNom());
@@ -258,47 +264,57 @@ public class UserController {
             emailField.setText(user.getEmail());
             roleCombo.setValue(user.getRole());
             statusCombo.setValue(user.getStatus());
+            passwordField.setText(user.getMot_de_passe());
         }
 
         grid.add(new Label("Nom:"), 0, 0);
         grid.add(nomField, 1, 0);
+
         grid.add(new Label("Prénom:"), 0, 1);
         grid.add(prenomField, 1, 1);
+
         grid.add(new Label("Email:"), 0, 2);
         grid.add(emailField, 1, 2);
-        grid.add(new Label("Rôle:"), 0, 3);
-        grid.add(roleCombo, 1, 3);
-        grid.add(new Label("Statut:"), 0, 4);
-        grid.add(statusCombo, 1, 4);
+
+        grid.add(new Label("Mot de passe:"), 0, 3);
+        grid.add(passwordField, 1, 3);
+
+        grid.add(new Label("Rôle:"), 0, 4);
+        grid.add(roleCombo, 1, 4);
+
+        grid.add(new Label("Statut:"), 0, 5);
+        grid.add(statusCombo, 1, 5);
 
         dialog.getDialogPane().setContent(grid);
 
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == ButtonType.OK) {
+        dialog.setResultConverter(btn -> {
+            if (btn == ButtonType.OK) {
 
                 String nom = nomField.getText();
                 String prenom = prenomField.getText();
                 String email = emailField.getText();
+                String password = passwordField.getText();
                 String role = roleCombo.getValue();
                 String status = statusCombo.getValue();
 
                 StringBuilder errors = new StringBuilder();
 
-                if (nom == null || nom.isBlank()) errors.append("Nom est obligatoire.\n");
-                if (prenom == null || prenom.isBlank()) errors.append("Prénom est obligatoire.\n");
-                if (email == null || email.isBlank()) errors.append("Email est obligatoire.\n");
-                else if (!email.matches("^\\S+@\\S+\\.\\S+$")) errors.append("Email invalide.\n");
+                if (nom == null || nom.isBlank()) errors.append("Nom obligatoire\n");
+                if (prenom == null || prenom.isBlank()) errors.append("Prénom obligatoire\n");
 
-                if (role == null || (!role.equalsIgnoreCase("TEACHER") &&
-                        !role.equalsIgnoreCase("STUDENT") && !role.equalsIgnoreCase("ADMIN")))
-                    errors.append("Rôle doit être TEACHER, STUDENT ou ADMIN.\n");
+                if (email == null || email.isBlank())
+                    errors.append("Email obligatoire\n");
+                else if (!email.matches("^\\S+@\\S+\\.\\S+$"))
+                    errors.append("Email invalide\n");
 
-                if (status == null || (!status.equalsIgnoreCase("ENABLE") &&
-                        !status.equalsIgnoreCase("DISABLE")))
-                    errors.append("Statut doit être ENABLE ou DISABLE.\n");
+                if (password == null || password.length() < 6)
+                    errors.append("Mot de passe >= 6 caractères\n");
+
+                if (role == null)
+                    errors.append("Rôle obligatoire\n");
 
                 if (errors.length() > 0) {
-                    showAlert("Erreur de validation", errors.toString());
+                    showAlert("Erreur", errors.toString());
                     return null;
                 }
 
@@ -306,9 +322,10 @@ public class UserController {
                 u.setNom(nom);
                 u.setPrenom(prenom);
                 u.setEmail(email);
-                u.setRole(role.toUpperCase());
-                u.setStatus(status.toUpperCase());
-                u.setMot_de_passe("default123");
+                u.setRole(role);
+                u.setStatus(status != null ? status : "ENABLE");
+                u.setMot_de_passe(password);
+
                 return u;
             }
             return null;

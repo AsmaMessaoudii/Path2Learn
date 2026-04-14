@@ -19,7 +19,7 @@
                 <Image url="/0c0390ea-b94e-4e66-bdee-dc1608f0674c.jpg" />
             </ImageView>
             <Region HBox.hgrow="ALWAYS" />
-            
+
             <!-- Liens -->
             <HBox spacing="25.0" alignment="CENTER">
                 <Button fx:id="homeBtn" onAction="#handleHome" text="Accueil"
@@ -37,9 +37,9 @@
                 <Button fx:id="utilisateursBtn" onAction="#handleUtilisateurs" text="Communauté"
                         style="-fx-background-color: transparent; -fx-text-fill: #555555; -fx-font-size: 13px; -fx-cursor: hand; -fx-padding: 0 0 5 0;" />
             </HBox>
-            
+
             <Region HBox.hgrow="ALWAYS" />
-            
+
             <!-- Auth Buttons -->
             <HBox spacing="12.0" alignment="CENTER">
                 <Button text="Se connecter"
