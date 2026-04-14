@@ -142,7 +142,7 @@ public class PortfolioListController {
         HBox actions = new HBox(12);
         actions.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-        Button btnModifier = new Button("✏️ Modifier le portfolio");
+        Button btnModifier = new Button("✏ Modifier le portfolio");
         btnModifier.setStyle(
                 "-fx-background-color: #2196F3; -fx-text-fill: white;" +
                         "-fx-font-weight: bold; -fx-padding: 10 20;" +
@@ -150,7 +150,7 @@ public class PortfolioListController {
         );
         btnModifier.setOnAction(e -> ouvrirDialog(portfolio));
 
-        Button btnSupprimer = new Button("🗑️ Supprimer");
+        Button btnSupprimer = new Button("🗑 Supprimer");
         btnSupprimer.setStyle(
                 "-fx-background-color: #f44336; -fx-text-fill: white;" +
                         "-fx-font-weight: bold; -fx-padding: 10 20;" +

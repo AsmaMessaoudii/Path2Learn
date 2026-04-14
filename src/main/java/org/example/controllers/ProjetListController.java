@@ -1,7 +1,11 @@
 package org.example.controllers;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -15,6 +19,7 @@ import org.example.Services.ServiceProjet;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class ProjetListController {
 
@@ -23,12 +28,24 @@ public class ProjetListController {
     @FXML private Button btnAjouter;
     @FXML private Label portfolioInfoLabel;
 
+    // Search components
+    @FXML private TextField searchField;
+    @FXML private ComboBox<String> techFilterCombo;
+    @FXML private Label searchStatsLabel;
+    @FXML private Button btnSearch;
+    @FXML private Button btnReset;
+
     private ServiceProjet serviceProjet;
     private Portfolio currentPortfolio;
+    private ObservableList<Projet> projetList;
+    private FilteredList<Projet> filteredList;
+    private List<Projet> allProjetsList;
 
     @FXML
     public void initialize() {
         serviceProjet = new ServiceProjet();
+        setupSearchFilter();
+        setupTechFilter();
     }
 
     // ==================== NAVIGATION ====================
@@ -59,6 +76,105 @@ public class ProjetListController {
         }
     }
 
+    // ==================== SEARCH & FILTER ====================
+
+    private void setupSearchFilter() {
+        if (searchField != null) {
+            searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+                applyFilters();
+            });
+        }
+    }
+
+    private void setupTechFilter() {
+        if (techFilterCombo != null) {
+            techFilterCombo.getItems().clear();
+            techFilterCombo.getItems().add("Toutes les technologies");
+            techFilterCombo.setValue("Toutes les technologies");
+
+            techFilterCombo.valueProperty().addListener((observable, oldValue, newValue) -> {
+                applyFilters();
+            });
+        }
+    }
+
+    private void updateTechFilterCombo() {
+        if (techFilterCombo != null && allProjetsList != null) {
+            // Get unique technologies
+            List<String> technologies = allProjetsList.stream()
+                    .map(Projet::getTechnologies)
+                    .filter(tech -> tech != null && !tech.isEmpty())
+                    .distinct()
+                    .sorted()
+                    .toList();
+
+            // Preserve "Toutes les technologies" and add others
+            String currentValue = techFilterCombo.getValue();
+            techFilterCombo.getItems().clear();
+            techFilterCombo.getItems().add("Toutes les technologies");
+            techFilterCombo.getItems().addAll(technologies);
+
+            // Restore previous selection if still valid
+            if (currentValue != null && techFilterCombo.getItems().contains(currentValue)) {
+                techFilterCombo.setValue(currentValue);
+            } else {
+                techFilterCombo.setValue("Toutes les technologies");
+            }
+        }
+    }
+
+    private void applyFilters() {
+        if (filteredList == null) return;
+
+        filteredList.setPredicate(projet -> {
+            // Search by title or description
+            if (searchField != null && searchField.getText() != null && !searchField.getText().isEmpty()) {
+                String searchText = searchField.getText().toLowerCase();
+                boolean matchesSearch = projet.getTitreProjet().toLowerCase().contains(searchText) ||
+                        (projet.getDescription() != null && projet.getDescription().toLowerCase().contains(searchText));
+                if (!matchesSearch) return false;
+            }
+
+            // Filter by technology
+            if (techFilterCombo != null && techFilterCombo.getValue() != null
+                    && !techFilterCombo.getValue().equals("Toutes les technologies")) {
+                String selectedTech = techFilterCombo.getValue();
+                if (projet.getTechnologies() == null || !projet.getTechnologies().equals(selectedTech)) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        updateSearchStats();
+        afficherGalerie(filteredList);
+    }
+
+    private void updateSearchStats() {
+        if (searchStatsLabel != null && filteredList != null) {
+            int total = filteredList.size();
+            int originalTotal = allProjetsList != null ? allProjetsList.size() : 0;
+            if (total == originalTotal) {
+                searchStatsLabel.setText(total + " projet" + (total > 1 ? "s" : ""));
+            } else {
+                searchStatsLabel.setText(total + " / " + originalTotal + " projet" + (total > 1 ? "s" : ""));
+            }
+        }
+    }
+
+    @FXML
+    private void handleSearch() {
+        applyFilters();
+    }
+
+    @FXML
+    private void handleResetSearch() {
+        if (searchField != null) searchField.clear();
+        if (techFilterCombo != null) techFilterCombo.setValue("Toutes les technologies");
+        applyFilters();
+    }
+
     // ==================== LOAD ====================
 
     public void setPortfolio(Portfolio portfolio) {
@@ -70,16 +186,22 @@ public class ProjetListController {
     }
 
     private void chargerProjets() {
-        mainContent.getChildren().clear();
         try {
-            List<Projet> list = serviceProjet.recupererParPortfolio(currentPortfolio.getId());
+            allProjetsList = serviceProjet.recupererParPortfolio(currentPortfolio.getId());
+            projetList = FXCollections.observableArrayList(allProjetsList);
+            filteredList = new FilteredList<>(projetList, p -> true);
 
-            if (list.isEmpty()) {
+            updateTechFilterCombo();
+            updateSearchStats();
+
+            if (allProjetsList.isEmpty()) {
                 afficherEtatVide();
+                btnAjouter.setVisible(true);
+                btnAjouter.setManaged(true);
             } else {
                 btnAjouter.setVisible(true);
                 btnAjouter.setManaged(true);
-                afficherGalerie(list);
+                afficherGalerie(filteredList);
             }
         } catch (Exception e) {
             showAlert("Erreur", "Impossible de charger les projets: " + e.getMessage(), Alert.AlertType.ERROR);
@@ -87,11 +209,10 @@ public class ProjetListController {
     }
 
     private void afficherEtatVide() {
-        btnAjouter.setVisible(true);
-        btnAjouter.setManaged(true);
+        mainContent.getChildren().clear();
 
         VBox emptyState = new VBox(15);
-        emptyState.setAlignment(javafx.geometry.Pos.CENTER);
+        emptyState.setAlignment(Pos.CENTER);
         emptyState.setStyle("-fx-padding: 80 0;");
 
         Label icon = new Label("🚀");
@@ -108,6 +229,31 @@ public class ProjetListController {
     }
 
     private void afficherGalerie(List<Projet> projets) {
+        afficherGalerie(FXCollections.observableArrayList(projets));
+    }
+
+    private void afficherGalerie(ObservableList<Projet> projets) {
+        mainContent.getChildren().clear();
+
+        if (projets.isEmpty()) {
+            VBox emptyState = new VBox(15);
+            emptyState.setAlignment(Pos.CENTER);
+            emptyState.setStyle("-fx-padding: 80 0;");
+
+            Label icon = new Label("🔍");
+            icon.setStyle("-fx-font-size: 60px;");
+
+            Label msg = new Label("Aucun résultat trouvé");
+            msg.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #888888;");
+
+            Label sub = new Label("Essayez de modifier vos critères de recherche");
+            sub.setStyle("-fx-font-size: 14px; -fx-text-fill: #AAAAAA;");
+
+            emptyState.getChildren().addAll(icon, msg, sub);
+            mainContent.getChildren().add(emptyState);
+            return;
+        }
+
         // Wrap in a FlowPane for gallery grid
         javafx.scene.layout.FlowPane gallery = new javafx.scene.layout.FlowPane();
         gallery.setHgap(20);
@@ -152,7 +298,7 @@ public class ProjetListController {
 
         // Technologies badge
         HBox techBox = new HBox(5);
-        techBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        techBox.setAlignment(Pos.CENTER_LEFT);
         Label techIcon = new Label("🛠️");
         Label tech = new Label(projet.getTechnologies() != null ? projet.getTechnologies() : "N/A");
         tech.setStyle(
@@ -171,9 +317,9 @@ public class ProjetListController {
 
         // Buttons
         HBox btnRow = new HBox(8);
-        btnRow.setAlignment(javafx.geometry.Pos.CENTER);
+        btnRow.setAlignment(Pos.CENTER);
 
-        Button detailsBtn = new Button("👁️ Détails");
+        Button detailsBtn = new Button("👁 Détails");
         detailsBtn.setStyle(
                 "-fx-background-color: #9C27B0; -fx-text-fill: white;" +
                         "-fx-font-size: 11px; -fx-padding: 6 12;" +
@@ -181,7 +327,7 @@ public class ProjetListController {
         );
         detailsBtn.setOnAction(e -> voirDetails(projet));
 
-        Button editBtn = new Button("✏️ Modifier");
+        Button editBtn = new Button("✏ Modifier");
         editBtn.setStyle(
                 "-fx-background-color: #2196F3; -fx-text-fill: white;" +
                         "-fx-font-size: 11px; -fx-padding: 6 12;" +
@@ -189,7 +335,7 @@ public class ProjetListController {
         );
         editBtn.setOnAction(e -> ouvrirDialog(projet));
 
-        Button deleteBtn = new Button("🗑️");
+        Button deleteBtn = new Button("🗑");
         deleteBtn.setStyle(
                 "-fx-background-color: #f44336; -fx-text-fill: white;" +
                         "-fx-font-size: 11px; -fx-padding: 6 10;" +
