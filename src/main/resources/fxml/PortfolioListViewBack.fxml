@@ -60,6 +60,8 @@
                         style="-fx-background-color: #81C784; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5; -fx-cursor: hand;"/>
                 <Button text="🗑️ Réinitialiser" onAction="#handleResetRecherche"
                         style="-fx-background-color: #FFA726; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5; -fx-cursor: hand;"/>
+                <Button text="📊 Statistiques" onAction="#handleShowStatistics"
+                        style="-fx-background-color: #9C27B0; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5; -fx-cursor: hand;"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <TextField fx:id="searchField" promptText="Rechercher par titre ou description..."
                            prefWidth="250" style="-fx-padding: 8; -fx-background-radius: 5;"/>

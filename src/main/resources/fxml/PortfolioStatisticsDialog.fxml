@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.controllers.StatisticsDialogController"
+      prefWidth="600"
+      style="-fx-background-color: #F0F4FF;">
+
+    <!-- Header band -->
+    <VBox style="-fx-background-color: #1565C0; -fx-padding: 25 30 20 30;" spacing="5">
+        <Label text="📊" style="-fx-font-size: 32px;"/>
+        <Label text="Statistiques des Portfolios"
+               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+        <Label text="Étudiants et leurs portfolios"
+               style="-fx-font-size: 13px; -fx-text-fill: #90CAF9;"/>
+    </VBox>
+
+    <!-- Content -->
+    <ScrollPane fitToWidth="true" fitToHeight="true"
+                style="-fx-background-color: transparent; -fx-background: transparent;">
+        <VBox spacing="15" style="-fx-padding: 25 30;">
+
+            <!-- Row: Student Statistics -->
+            <VBox spacing="10"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15;">
+                <Label text="👨‍🎓  APERÇU DES ÉTUDIANTS"
+                       style="-fx-font-size: 11px; -fx-text-fill: #999999; -fx-font-weight: bold;"/>
+
+                <GridPane hgap="15" vgap="12" style="-fx-padding: 5 0 0 0;">
+                    <Label text="Total des étudiants :"
+                           style="-fx-font-size: 13px; -fx-text-fill: #555555; -fx-font-weight: bold;"
+                           GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Label fx:id="totalStudentsLabel"
+                           style="-fx-font-size: 18px; -fx-text-fill: #1565C0; -fx-font-weight: bold;"
+                           GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                    <Label text="Étudiants avec portfolio :"
+                           style="-fx-font-size: 13px; -fx-text-fill: #555555; -fx-font-weight: bold;"
+                           GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Label fx:id="studentsWithPortfolioLabel"
+                           style="-fx-font-size: 18px; -fx-text-fill: #4CAF50; -fx-font-weight: bold;"
+                           GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                    <Label text="Étudiants sans portfolio :"
+                           style="-fx-font-size: 13px; -fx-text-fill: #555555; -fx-font-weight: bold;"
+                           GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <Label fx:id="studentsWithoutPortfolioLabel"
+                           style="-fx-font-size: 18px; -fx-text-fill: #FF9800; -fx-font-weight: bold;"
+                           GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                </GridPane>
+            </VBox>
+
+            <!-- Row: Coverage Statistics -->
+            <VBox spacing="10"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15;">
+                <Label text="📈  TAUX DE COUVERTURE"
+                       style="-fx-font-size: 11px; -fx-text-fill: #999999; -fx-font-weight: bold;"/>
+
+                <GridPane hgap="15" vgap="12" style="-fx-padding: 5 0 0 0;">
+                    <Label text="Pourcentage :"
+                           style="-fx-font-size: 13px; -fx-text-fill: #555555; -fx-font-weight: bold;"
+                           GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Label fx:id="coveragePercentageLabel"
+                           style="-fx-font-size: 18px; -fx-text-fill: #2196F3; -fx-font-weight: bold;"
+                           GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                </GridPane>
+
+                <ProgressBar fx:id="coverageProgressBar" prefWidth="Infinity"
+                             style="-fx-accent: #4CAF50;"
+                             minHeight="10" maxHeight="10"/>
+            </VBox>
+
+            <!-- Row: Portfolio Statistics -->
+            <VBox spacing="10"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15;">
+                <Label text="📁  STATISTIQUES DES PORTFOLIOS"
+                       style="-fx-font-size: 11px; -fx-text-fill: #999999; -fx-font-weight: bold;"/>
+
+                <GridPane hgap="15" vgap="12" style="-fx-padding: 5 0 0 0;">
+                    <Label text="Total des portfolios :"
+                           style="-fx-font-size: 13px; -fx-text-fill: #555555; -fx-font-weight: bold;"
+                           GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Label fx:id="totalPortfoliosLabel"
+                           style="-fx-font-size: 18px; -fx-text-fill: #9C27B0; -fx-font-weight: bold;"
+                           GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                    <Label text="Moyenne par étudiant :"
+                           style="-fx-font-size: 13px; -fx-text-fill: #555555; -fx-font-weight: bold;"
+                           GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Label fx:id="averagePerStudentLabel"
+                           style="-fx-font-size: 18px; -fx-text-fill: #FF5722; -fx-font-weight: bold;"
+                           GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                </GridPane>
+            </VBox>
+
+            <!-- Row: Information message -->
+            <VBox spacing="10"
+                  style="-fx-background-color: #E3F2FD; -fx-background-radius: 10; -fx-padding: 15;">
+                <Label text="💡  INFORMATION"
+                       style="-fx-font-size: 11px; -fx-text-fill: #1565C0; -fx-font-weight: bold;"/>
+                <Label fx:id="infoMessageLabel"
+                       style="-fx-font-size: 12px; -fx-text-fill: #1565C0; -fx-wrap-text: true;"/>
+            </VBox>
+
+            <!-- Close button -->
+            <HBox alignment="CENTER_RIGHT" style="-fx-padding: 5 0 0 0;">
+                <Button fx:id="closeButton" text="✖  Fermer" onAction="#handleFermer"
+                        style="-fx-background-color: #1565C0; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-font-size: 13px;
+                               -fx-padding: 10 30; -fx-background-radius: 25; -fx-cursor: hand;"/>
+            </HBox>
+        </VBox>
+    </ScrollPane>
+</VBox>

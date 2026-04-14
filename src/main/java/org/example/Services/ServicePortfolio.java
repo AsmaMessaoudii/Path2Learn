@@ -65,6 +65,70 @@ public class ServicePortfolio implements IService<Portfolio> {
         }
     }
 
+    // Add this method to your existing ServicePortfolio class
+
+    public int countPortfoliosByStudentRole() throws SQLException {
+        String sql = "SELECT COUNT(DISTINCT p.id) FROM portfolio p " +
+                "JOIN user u ON p.user_id = u.id " +
+                "WHERE u.role = 'etudiant'";
+
+        try (Statement st = connection.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 0;
+        }
+    }
+
+    public int countTotalStudents() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM user WHERE role = 'etudiant'";
+
+        try (Statement st = connection.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 0;
+        }
+    }
+
+    public double getPortfolioCoveragePercentage() throws SQLException {
+        int studentsWithPortfolio = countPortfoliosByStudentRole();
+        int totalStudents = countTotalStudents();
+
+        if (totalStudents == 0) return 0.0;
+        return (studentsWithPortfolio * 100.0) / totalStudents;
+    }
+
+    public List<String> getStudentPortfolioStatistics() throws SQLException {
+        List<String> stats = new ArrayList<>();
+
+        String sql = "SELECT " +
+                "COUNT(DISTINCT u.id) as total_students, " +
+                "COUNT(DISTINCT p.id) as students_with_portfolio, " +
+                "(COUNT(DISTINCT u.id) - COUNT(DISTINCT p.id)) as students_without_portfolio " +
+                "FROM user u " +
+                "LEFT JOIN portfolio p ON u.id = p.user_id " +
+                "WHERE u.role = 'etudiant'";
+
+        try (Statement st = connection.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            if (rs.next()) {
+                stats.add("Total étudiants: " + rs.getInt("total_students"));
+                stats.add("Étudiants avec portfolio: " + rs.getInt("students_with_portfolio"));
+                stats.add("Étudiants sans portfolio: " + rs.getInt("students_without_portfolio"));
+
+                int withPortfolio = rs.getInt("students_with_portfolio");
+                int total = rs.getInt("total_students");
+                double percentage = total > 0 ? (withPortfolio * 100.0 / total) : 0;
+                stats.add(String.format("Taux de couverture: %.1f%%", percentage));
+            }
+        }
+
+        return stats;
+    }
+
     @Override
     public List<Portfolio> recuperer() throws SQLDataException {
         List<Portfolio> portfolioList = new ArrayList<>();

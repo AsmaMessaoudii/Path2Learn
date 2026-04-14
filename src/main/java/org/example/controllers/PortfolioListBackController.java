@@ -6,17 +6,21 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.Models.Portfolio;
 import org.example.Services.ServicePortfolio;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -237,11 +241,9 @@ public class PortfolioListBackController {
 
     private void voirProjets(Portfolio portfolio) {
         try {
-            // CHANGED: Now points to ProjetListViewBack.fxml instead of ProjetListView.fxml
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProjetListViewBack.fxml"));
             Parent root = loader.load();
 
-            // CHANGED: Now uses ProjetListBackController instead of ProjetListController
             ProjetListBackController projetController = loader.getController();
             projetController.setPortfolio(portfolio);
 
@@ -254,6 +256,54 @@ public class PortfolioListBackController {
             e.printStackTrace();
             showAlert("Erreur", "Impossible de charger les projets: " + e.getMessage(), Alert.AlertType.ERROR);
         }
+    }
+
+    // ==================== STATISTICS DIALOG ====================
+
+    @FXML
+    private void handleShowStatistics() {
+        try {
+            // Get statistics data
+            int totalStudents = servicePortfolio.countTotalStudents();
+            int studentsWithPortfolio = servicePortfolio.countPortfoliosByStudentRole();
+            int studentsWithoutPortfolio = totalStudents - studentsWithPortfolio;
+            double coveragePercentage = servicePortfolio.getPortfolioCoveragePercentage();
+            int totalPortfolios = servicePortfolio.recuperer().size();
+            double averagePerStudent = totalStudents > 0 ? (double) totalPortfolios / totalStudents : 0;
+
+            // Load the dialog FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PortfolioStatisticsDialog.fxml"));
+            Parent root = loader.load();
+
+            // Get controller and set statistics
+            StatisticsDialogController controller = loader.getController();
+            controller.setStatistics(totalStudents, studentsWithPortfolio, studentsWithoutPortfolio,
+                    coveragePercentage, totalPortfolios, averagePerStudent);
+
+            // Create dialog stage
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("📊 Statistiques des Portfolios");
+            dialogStage.setScene(new Scene(root));
+            dialogStage.setResizable(false);
+            dialogStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            dialogStage.initOwner(homeBtn.getScene().getWindow());
+            dialogStage.showAndWait();
+
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible de charger les statistiques: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    private void addStatRow(GridPane grid, String label, String value, String color, int row) {
+        Label labelField = new Label(label);
+        labelField.setStyle("-fx-font-size: 14px; -fx-text-fill: #333; -fx-font-weight: bold;");
+
+        Label valueField = new Label(value);
+        valueField.setStyle("-fx-font-size: 18px; -fx-text-fill: " + color + "; -fx-font-weight: bold;");
+
+        grid.add(labelField, 0, row);
+        grid.add(valueField, 1, row);
     }
 
     @FXML
